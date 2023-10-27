@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>{{name}}</title>
+</head>
+
+<body>
+    <div style='text-align: center;'>
+        <img src='{{logo}}' style="width: '70px'" />
+        <h6>{{address}} </h6>
+        <h6>{{phone}} </h6>
+        <h4 style="margin-top:10px">
+            --------------------- {{title}} ---------------------
+        </h4>
+        <p>
+            DATE {{date}} MEMBERSHIP {{membership.name}} EXPIRATION {{membership.endDate}}
+        </p>
+    </div>
+    <h6>Buyer Details</h6>
+    <table>
+        <tr>
+            <td>Name: {{membership.buyer.fullName}}</td>
+            <td>Date of Birth: {{membership.buyer.dob}}</td>
+            <td>Gender: {{membership.buyer.gender}}</td>
+        </tr>
+        <tr>
+            <td>Phone: {{membership.buyer.phone}}</td>
+            <td>email: {{membership.buyer.email}}</td>
+        </tr>
+        <tr>
+            <td>Address: {{membership.buyer.address.street}}</td>
+            <td>City: {{membership.buyer.address.city}}</td>
+            <td>State: {{membership.buyer.address.state}}</td>
+            <td>ZipCode: {{membership.buyer.address.zipCode}}</td>
+        </tr>
+    </table>
+    <h6>Members</h6>
+    <table>
+        {{#each members}}
+        <tr>
+            <td>Name: {{this.fullName}}</td>
+            <td>DOB: {{this.dob}}</td>
+            <td>Gender: {{this.gender}}</td>
+            {{#each this.questions}}
+            <td>{{this.question}}: {{this.answer}}</td>
+
+            {{/each}}
+        </tr>
+        {{/each}}
+    </table>
+    <h6>Membership Fees</h6>
+    <table>
+        <tr>
+            <td>TOTAL: {{membership.total}}</td>
+            <td>TOTAL: {{membership.regFee}}</td>
+            <td>TOTAL: {{membership.downPayment}}</td>
+        </tr>
+        <tr>
+            <td> Your Monthly Membership Fee will be billed to the account below on or around the {{
+                membership.startPaymentDate
+                }} of
+                each month beginning on {{
+                membership.paymentStartDate
+                }} until you cancel in accordance with this agreement.</td>
+        </tr>
+    </table>
+    {{contractText}}
+    <table>
+        {{#each waiver}}
+        <tr>
+            <td>{{this.waiver}}</td>
+        </tr>
+        {{/each}}
+
+    </table>
+
+</body>
+
+</html>

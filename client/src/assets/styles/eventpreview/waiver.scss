@@ -1,0 +1,94 @@
+.field {
+  font-size: 1rem;
+}
+
+.fieldLabel {
+  margin: 0 10px 0 0;
+  padding: 10px 0;
+  justify-content: flex-end;
+  text-align: end;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.fieldContent {
+  background-color: #f0f4f5;
+  margin: 0 10px 0 0;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 10px 0 10px 10px;
+  width: 100%;
+}
+
+.sign {
+  background-color: #f8ffff;
+  color: #276f86;
+  box-shadow: inset 0 0 0 1px #a9d5de, 0 0 0 0 transparent;
+  border-radius: 0.28571429rem;
+  padding: 2rem;
+}
+
+.sign .header {
+  font-size: 1.14285714em;
+  font-weight: 700;
+}
+
+.sign p {
+  color: #0e566c;
+}
+
+.sign .signature {
+  // font-family: Arizonia, Helvetica, Arial, sans-serif !important;
+  font-family: style3;
+  font-style: oblique;
+  font-size: 220%;
+  font-weight: 500;
+  color: #0e566c;
+}
+
+.signed {
+  background-color: #f8ffff;
+  color: #27782b;
+  border: 1px solid #a3c293;
+  border-radius: 0.28571429rem;
+  padding: 2rem;
+}
+
+.signed .header {
+  font-size: 1.14285714em;
+  font-weight: 700;
+}
+
+.signed p {
+  color: #008e07;
+}
+
+.signed .signature {
+  // font-family: Arizonia, Helvetica, Arial, sans-serif !important;
+  font-family: style3;
+  font-style: oblique;
+  font-size: 220%;
+  font-weight: 500;
+  color: #474747;
+  padding: 20px;
+}
+
+.signature-border {
+  border: solid 4px #7b00ff;
+  width: 40px;
+  height: 76px;
+  position: absolute;
+  border-radius: 14px;
+  border-right: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.signature-border-title {
+  position: absolute;
+  width: 100px;
+  margin-left: 44px;
+  margin-top: -7px;
+  color: black;
+  font-weight: 600;
+}

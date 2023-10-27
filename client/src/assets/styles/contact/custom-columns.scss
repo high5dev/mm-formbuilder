@@ -1,0 +1,49 @@
+// .wrapper-table-contact .rdt_TableCol:hover{
+//     border-right: 2px rgb(228, 225, 225) dotted;
+//     cursor: col-resize;
+// }
+// .react-resizable-handle {
+//     position: relative;
+//     background: transparent;
+//     width: 10px;
+//     height: 100%;
+//     right: -5px;
+//     cursor: col-resize;
+//   }
+  
+//   .resizing .react-resizable-handle {
+//     background: #e50c0c; // Custom handle color during resizing
+//   }
+
+.resizable-column {
+    position: relative;
+    display: flex;
+    //align-items: center;
+    user-select: none;
+  }
+  
+  .resizable-column.dragging {
+    cursor: col-resize;
+  }
+  
+  .resizer {
+    position: absolute;
+    top: 0;
+    bottom: 0;  
+    right: 0;
+    //width: 3px;
+    cursor: col-resize;
+    //background-color: #d2cece;
+    border-left: 3px solid #e2dcdc00;
+  }
+  .resizer:hover{
+    border-left: 3px solid #d6d4d4;
+  }
+
+  // css for contact filter column mobile view
+  @media only screen and (max-width: 600px) {
+    .col-custom-width.col{
+      min-width: 100%;
+      margin-top: 10px;
+    }
+  }

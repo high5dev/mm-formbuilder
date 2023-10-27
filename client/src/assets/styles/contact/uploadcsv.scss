@@ -1,0 +1,101 @@
+.container {
+  text-align: center;
+  padding: 15px;
+  margin: 0;
+}
+
+.react-csv-input {
+  padding: 10px;
+  display: block;
+  margin: 15px auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  border: 2px dashed #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.container p {
+  margin: 0;
+  padding-top: 10px;
+  color: #666;
+  cursor: pointer;
+}
+
+.csv-label {
+  padding: 4rem;
+  width: 100%;
+  cursor: pointer;
+}
+
+.csv-table-container {
+  border: 1px solid #d8d6de;
+  border-top: none;
+  border-left: none;
+  .csv-table-column-1 {
+    text-align: center;
+    padding-top: 7px;
+    flex: 1;
+    border: 1px solid #d8d6de;
+    border-bottom: none;
+    border-right: none;
+  }
+  .csv-table-column-2 {
+    text-align: left;
+    flex: 5;
+    border: 1px solid #d8d6de;
+    border-bottom: none;
+    border-right: none;
+  }
+
+  .csv-table-input {
+    border: 0;
+  }
+
+  .react-select {
+    border: none;
+  }
+
+  .select__control {
+    border: none;
+  }
+}
+
+.matching-selector {
+  .select__control.select__control--is-focused {
+    border-color: #ededed;
+  }
+}
+
+.multiline {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* start showing ellipsis when 3rd line is reached */
+  white-space: pre-wrap; /* let the text wrap preserving spaces */
+}
+
+.show-all {
+  height: auto;
+}
+
+.show-less {
+  max-height: 320px;
+  background-color: white;
+  position: relative;
+  overflow: hidden;
+  transition: filter 0.5s ease;
+  &:hover .content {
+    filter: blur(0);
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+  }
+}

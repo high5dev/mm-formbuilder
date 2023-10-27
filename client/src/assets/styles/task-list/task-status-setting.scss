@@ -1,0 +1,58 @@
+@import '../../../@core/scss/base/bootstrap-extended/include';
+@import '../../../@core/scss/base/components/include';
+
+.task-status-setting {
+  .list-group-item {
+    padding: 0.5rem 0;
+    border: none;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.4px;
+    border-radius: 0;
+    overflow: hidden;
+    cursor: pointer;
+    .ws-name {
+      max-width: 11.8rem;
+      cursor: pointer;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    + .list-group-item.active {
+      margin-top: 0;
+    }
+    &:hover {
+      color: $primary;
+      background-color: transparent;
+      margin-left: 0.2rem;
+    }
+    &:focus,
+    &.active {
+      margin-left: 0;
+      background: transparent;
+      color: $primary;
+      height: min-content !important;
+      border-left: 2px solid #174ae7;
+    }
+  }
+  .list-group-item.active {
+    border-left: 2px solid #174ae7;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+.modal-content {
+  width: 64%;
+}
+.mobile-view-responsive-tsm{
+  display: contents;
+}
+.mobile-view-responsive-tsm-column{
+  width: 98%;
+}
+.mobile-view-responsive-tsm-scroll{
+  height: 80% !important;
+}
+.list-group {
+  padding-left: 8px !important;
+}
+}

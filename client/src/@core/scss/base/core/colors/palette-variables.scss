@@ -1,0 +1,289 @@
+// Overrides user _variables-components
+//@import '../../bootstrap-extended/include';
+
+// Google Color Palette defined: http://www.google.com/design/spec/style/color.html
+
+$tomato:#E45434 ;
+$tangerine:#FA7A51;
+$banana:#FACA5C ;
+$basil:#539A68 ;
+$sage:#68C693 ;
+$peacock:#63AEED ;
+$blueberry:#6A6EC1 ;
+$lavender:#909BD1 ;
+$grape:#A55ABB ;
+$flamingo:#F39790 ;
+$graphite:#7E7F7E ;
+
+$other-colors:(
+      "tomato": $tomato,
+  "tangerine": $tangerine,
+  "banana": $banana,
+  "basil": $basil,
+  "sage": $sage,
+  "peacock": $peacock,
+  "blueberry": $blueberry,
+  "lavender": $lavender,
+  "grape": $grape,
+  "flamingo": $flamingo,
+  "graphite": $graphite,
+
+);
+
+
+//$theme-colors: map-merge($theme-colors, $other-colors );
+
+$theme-colors: map-merge($theme-colors, $other-colors );
+$theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
+$utilities-colors: map-merge($utilities-colors, $theme-colors-rgb);
+$utilities-text-colors: map-loop($utilities-colors, rgba-css-var, "$key", "text");
+$utilities-bg-colors: map-loop($utilities-colors, rgba-css-var, "$key", "bg");
+
+$white-color: (
+  'base': #ffffff
+);
+$black-color: (
+  'base': #000000
+);
+$dark-color: (
+  'base': $dark,
+  'darken-1': #343434,
+  'darken-2': #1e1e1e,
+  'darken-3': #626262
+);
+$light-color: (
+  'base': $light
+);
+
+$primary-color: (
+  'lighten-4': lighten($primary, 20%),
+  'lighten-3': lighten($primary, 15%),
+  'lighten-2': lighten($primary, 10%),
+  'lighten-1': lighten($primary, 5%),
+  'base': $primary,
+  'darken-1': darken($primary, 5%),
+  'darken-2': darken($primary, 10%),
+  'darken-3': darken($primary, 15%),
+  'darken-4': darken($primary, 20%)
+);
+$secondary-color: (
+  'lighten-4': lighten($secondary, 20%),
+  'lighten-3': lighten($secondary, 15%),
+  'lighten-2': lighten($secondary, 10%),
+  'lighten-1': lighten($secondary, 5%),
+  'base': $secondary,
+  'darken-1': darken($secondary, 5%),
+  'darken-2': darken($secondary, 10%),
+  'darken-3': darken($secondary, 15%),
+  'darken-4': darken($secondary, 20%)
+);
+
+// #4839EB
+//
+$success-color: (
+  'lighten-4': lighten($success, 20%),
+  'lighten-3': lighten($success, 15%),
+  'lighten-2': lighten($success, 10%),
+  'lighten-1': lighten($success, 5%),
+  'base': $success,
+  'darken-1': darken($success, 5%),
+  'darken-2': darken($success, 10%),
+  'darken-3': darken($success, 15%),
+  'darken-4': darken($success, 20%)
+);
+$info-color: (
+  'lighten-4': lighten($info, 20%),
+  'lighten-3': lighten($info, 15%),
+  'lighten-2': lighten($info, 10%),
+  'lighten-1': lighten($info, 5%),
+  'base': $info,
+  'darken-1': darken($info, 5%),
+  'darken-2': darken($info, 10%),
+  'darken-3': darken($info, 15%),
+  'darken-4': darken($info, 20%)
+);
+$warning-color: (
+  'lighten-4': lighten($warning, 20%),
+  'lighten-3': lighten($warning, 15%),
+  'lighten-2': lighten($warning, 10%),
+  'lighten-1': lighten($warning, 5%),
+  'base': $warning,
+  // #FFAC5D
+  'darken-1': darken($warning, 5%),
+  'darken-2': darken($warning, 10%),
+  'darken-3': darken($warning, 15%),
+  'darken-4': darken($warning, 20%)
+);
+$danger-color: (
+  'lighten-4': lighten($danger, 20%),
+  'lighten-3': lighten($danger, 15%),
+  'lighten-2': lighten($danger, 10%),
+  'lighten-1': lighten($danger, 5%),
+  'base': $danger,
+  'darken-1': darken($danger, 5%),
+  'darken-2': darken($danger, 10%),
+  'darken-3': darken($danger, 15%),
+  'darken-4': darken($danger, 20%)
+);
+
+$tomato-color: (
+  'lighten-4': lighten($tomato, 20%),
+  'lighten-3': lighten($tomato, 15%),
+  'lighten-2': lighten($tomato, 10%),
+  'lighten-1': lighten($tomato, 5%),
+  'base': $tomato,
+  'darken-1': darken($tomato, 5%),
+  'darken-2': darken($tomato, 10%),
+  'darken-3': darken($tomato, 15%),
+  'darken-4': darken($tomato, 20%)
+);
+//#FA7A51
+$tangerine-color: (
+  'lighten-4': lighten($tangerine, 20%),
+  'lighten-3': lighten($tangerine, 15%),
+  'lighten-2': lighten($tangerine, 10%),
+  'lighten-1': lighten($tangerine, 5%),
+  'base': $tangerine,
+  'darken-1': darken($tangerine, 5%),
+  'darken-2': darken($tangerine, 10%),
+  'darken-3': darken($tangerine, 15%),
+  'darken-4': darken($tangerine, 20%)
+);
+//#FACA5C
+$banana-color: (
+  'lighten-4': lighten($banana, 20%),
+  'lighten-3': lighten($banana, 15%),
+  'lighten-2': lighten($banana, 10%),
+  'lighten-1': lighten($banana, 5%),
+  'base': $banana,
+  'darken-1': darken($banana, 5%),
+  'darken-2': darken($banana, 10%),
+  'darken-3': darken($banana, 15%),
+  'darken-4': darken($banana, 20%)
+);
+//#539A68
+$basil-color: (
+  'lighten-4': lighten($basil, 20%),
+  'lighten-3': lighten($basil, 15%),
+  'lighten-2': lighten($basil, 10%),
+  'lighten-1': lighten($basil, 5%),
+  'base': $basil,
+  'darken-1': darken($basil, 5%),
+  'darken-2': darken($basil, 10%),
+  'darken-3': darken($basil, 15%),
+  'darken-4': darken($basil, 20%)
+);
+//#68C693
+$sage-color: (
+  'lighten-4': lighten($sage, 20%),
+  'lighten-3': lighten($sage, 15%),
+  'lighten-2': lighten($sage, 10%),
+  'lighten-1': lighten($sage, 5%),
+  'base': $sage,
+  'darken-1': darken($sage, 5%),
+  'darken-2': darken($sage, 10%),
+  'darken-3': darken($sage, 15%),
+  'darken-4': darken($sage, 20%)
+);
+//#63AEED
+$peacock-color: (
+  'lighten-4': lighten($peacock, 20%),
+  'lighten-3': lighten($peacock, 15%),
+  'lighten-2': lighten($peacock, 10%),
+  'lighten-1': lighten($peacock, 5%),
+  'base': $peacock,
+  'darken-1': darken($peacock, 5%),
+  'darken-2': darken($peacock, 10%),
+  'darken-3': darken($peacock, 15%),
+  'darken-4': darken($peacock, 20%)
+);
+//#6A6EC1
+$blueberry-color: (
+  'lighten-4': lighten($blueberry, 20%),
+  'lighten-3': lighten($blueberry, 15%),
+  'lighten-2': lighten($blueberry, 10%),
+  'lighten-1': lighten($blueberry, 5%),
+  'base': $blueberry,
+  'darken-1': darken($blueberry, 5%),
+  'darken-2': darken($blueberry, 10%),
+  'darken-3': darken($blueberry, 15%),
+  'darken-4': darken($blueberry, 20%)
+);
+//#909BD1
+$lavender-color: (
+  'lighten-4': lighten($lavender, 20%),
+  'lighten-3': lighten($lavender, 15%),
+  'lighten-2': lighten($lavender, 10%),
+  'lighten-1': lighten($lavender, 5%),
+  'base': $lavender,
+  'darken-1': darken($lavender, 5%),
+  'darken-2': darken($lavender, 10%),
+  'darken-3': darken($lavender, 15%),
+  'darken-4': darken($lavender, 20%)
+);
+//#A55ABB
+$grape-color: (
+  'lighten-4': lighten($grape, 20%),
+  'lighten-3': lighten($grape, 15%),
+  'lighten-2': lighten($grape, 10%),
+  'lighten-1': lighten($grape, 5%),
+  'base': $grape,
+  'darken-1': darken($grape, 5%),
+  'darken-2': darken($grape, 10%),
+  'darken-3': darken($grape, 15%),
+  'darken-4': darken($grape, 20%)
+);
+//#F39790
+$flamingo-color: (
+  'lighten-4': lighten($flamingo, 20%),
+  'lighten-3': lighten($flamingo, 15%),
+  'lighten-2': lighten($flamingo, 10%),
+  'lighten-1': lighten($flamingo, 5%),
+  'base': $flamingo,
+  'darken-1': darken($flamingo, 5%),
+  'darken-2': darken($flamingo, 10%),
+  'darken-3': darken($flamingo, 15%),
+  'darken-4': darken($flamingo, 20%)
+);
+
+
+
+//#7E7F7E
+$graphite-color: (
+  'lighten-4': lighten($graphite, 20%),
+  'lighten-3': lighten($graphite, 15%),
+  'lighten-2': lighten($graphite, 10%),
+  'lighten-1': lighten($graphite, 5%),
+  'base': $graphite,
+  'darken-1': darken($graphite, 5%),
+  'darken-2': darken($graphite, 10%),
+  'darken-3': darken($graphite, 15%),
+  'darken-4': darken($graphite, 20%)
+);
+
+
+
+$colors: (
+  'white': $white-color,
+  'black': $black-color,
+  'dark': $dark-color,
+  'light': $light-color,
+  'primary': $primary-color,
+  'secondary': $secondary-color,
+  'success': $success-color,
+  'info': $info-color,
+  'warning': $warning-color,
+  'danger': $danger-color,
+  'tomato': $tomato-color,
+  'tangerine': $tangerine-color,
+  'banana': $banana-color,
+  'basil': $basil-color,
+  'sage': $sage-color,
+  'peacock': $peacock-color,
+  'blueberry': $blueberry-color,
+  'lavender': $lavender-color,
+  'grape': $grape-color,
+  'flamingo': $flamingo-color,
+  'graphite': $graphite-color,
+);
+

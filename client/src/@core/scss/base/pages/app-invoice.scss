@@ -1,0 +1,284 @@
+// ================================================================================================
+//  File Name: app-invoice.scss
+//  Description: Invoice Layout page layouts SCSS.
+//  ----------------------------------------------------------------------------------------------
+//  Item Name: MyManager HTML Admin Template
+//  Version: 1.0
+//  Author: PIXINVENT
+//  Author URL: http://www.themeforest.net/user/pixinvent
+// ================================================================================================
+
+@import '../bootstrap-extended/include'; // Bootstrap includes
+@import '../components/include'; // Components includes
+
+$product-details-bg: #fcfcfc;
+$invoice-spacing: 1.45rem 0;
+$invoice-card-body-padding: 2.5rem;
+
+// Invoice Preview, Edit & Add
+.invoice-preview,
+.invoice-edit,
+.invoice-add {
+    .invoice-padding {
+        padding-left: $invoice-card-body-padding;
+        padding-right: $invoice-card-body-padding;
+    }
+
+    .table {
+
+        th:first-child,
+        td:first-child {
+            padding-left: 2.5rem;
+        }
+    }
+
+    .logo-wrapper {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.9rem;
+
+        .invoice-logo {
+            font-size: 2.142rem;
+            font-weight: bold;
+            letter-spacing: -0.54px;
+            margin-left: 1rem;
+            margin-bottom: 0;
+        }
+    }
+
+    .invoice-title {
+        font-size: 1.285rem;
+        margin-bottom: 1rem;
+
+        .invoice-number {
+            font-weight: 600;
+        }
+    }
+
+    .invoice-date-wrapper {
+        display: flex;
+        align-items: center;
+
+        &:not(:last-of-type) {
+            margin-bottom: 0.5rem;
+        }
+
+        .invoice-date-title {
+            width: 7rem;
+            margin-bottom: 0;
+        }
+
+        .invoice-date {
+            margin-left: 0.5rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+    }
+
+    .invoice-spacing {
+        margin: $invoice-spacing;
+    }
+
+    .invoice-number-date {
+        .title {
+            width: 115px;
+        }
+    }
+
+    .invoice-total-wrapper {
+        width: 100%;
+        max-width: 12rem;
+
+        .invoice-total-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .invoice-total-title {
+                margin-bottom: 0.35rem;
+            }
+
+            .invoice-total-amount {
+                margin-bottom: 0.35rem;
+                font-weight: 600;
+            }
+        }
+    }
+
+    @media (min-width: 768px) {
+        .invoice-title {
+            text-align: right;
+            margin-bottom: 3rem;
+        }
+    }
+}
+
+// Invoice Edit & Add
+.invoice-edit,
+.invoice-add {
+    .invoice-preview-card {
+        .invoice-title {
+            text-align: left;
+            margin-right: 3.5rem;
+            margin-bottom: 0;
+        }
+
+        .invoice-edit-input,
+        .invoice-edit-input-group {
+            max-width: 11.21rem;
+        }
+
+        .invoice-product-details {
+            background-color: $product-details-bg;
+            padding: 3.75rem 3.45rem 2.3rem 3.45rem;
+
+            .product-details-border {
+                border: 1px solid $border-color;
+                border-radius: $border-radius;
+            }
+        }
+
+        .invoice-to-title {
+            margin-bottom: 1.9rem;
+        }
+
+        .col-title {
+            position: absolute;
+            top: -1.75rem;
+        }
+
+        .item-options-menu {
+            min-width: 20rem;
+        }
+
+        .repeater-wrapper {
+            &:not(:last-child) {
+                margin-bottom: 3rem;
+            }
+        }
+
+        .invoice-calculations {
+            .total-amt-title {
+                width: 100px;
+            }
+        }
+    }
+
+    @media (max-width: 769px) {
+        .invoice-preview-card {
+            .invoice-title {
+                margin-right: 0;
+                width: 115px;
+            }
+
+            .invoice-edit-input {
+                max-width: 100%;
+            }
+        }
+    }
+
+    @media (max-width: 992px) {
+        .col-title {
+            position: unset !important;
+            top: -1.5rem !important;
+        }
+    }
+}
+
+
+@media only screen and (max-width: 600px) {
+    .mobile-view-responsive-preview-card-main{
+        margin-left: -25px !important;
+    }
+    .mobile-responsive-invoice-main{
+        width: 110%;
+        margin-right: 0px !important;
+        margin-left: -19px !important;
+    }
+    .mobile-responsive-invoice-text-h3{
+        font-size: 13px;
+    }
+    .mobile-responsive-invoice {
+        padding-top: 1px !important;
+        text-align: center;
+    }
+
+    .mobile-responsive-preview-sales {
+        margin-top: 0px !important;
+        padding-left: 25px;
+    }
+
+    .mobile-responsive-invoice-sales {
+        margin-top: -45px !important;
+        display: block;
+        margin-left: -30px;
+    }
+
+    .mobile-responsive-invoice-sales-list {
+        padding-left: 0px;
+    }
+
+    .mobile-view-pr {
+        padding-right: 80px;
+    }
+
+    .mobile-responsive-invoice-sales-total {
+        margin-left: 0px;
+        justify-content: right !important;
+    }
+
+    .mobile-responsive-invoice-to {
+        margin-left: -3% !important;
+        margin-top: 2rem !important;
+    }
+
+    .mobile-responsive-invoice-text {
+        text-align: left !important;
+    }
+
+    .mobile-responsive-invoice-to-row {
+        display: table-cell;
+    }
+
+    .mobile-responsive-invoice-btn {
+        padding-top: 10px !important;
+        justify-content: center !important;
+        padding-bottom: 15px;
+    }
+
+    .mobile-responsive-invoice-container {
+        justify-content: center !important;
+        padding-bottom: 10px;
+        margin: 0px !important;
+        margin-left: -55% !important;
+    }
+
+    .mobile-responsive-invoice-header {
+        display: contents !important;
+    }
+
+    .mobile-responsive-invoice-img {
+        width: 100%;
+        padding-bottom: 5px;
+    }
+.mobile-responsive-preview-sales-total{
+    padding-left: 2px !important;
+    margin-top: -30px !important;
+}
+    .mobile-responsive-preview-container {
+        padding-left: 10px;
+        padding-top: 10px;
+    }
+    .mobile-view-responsive-preview-card{
+        margin-right: -28px;
+    }
+    .mobile-responsive-invoice-to-cardbody{
+        padding-left: 18px !important;
+    }
+}
+@media screen and (max-width: 1024px) {
+.mobile-responsive-invoice-text-h3{
+    font-size: 10px;
+    padding-left: 11px;
+}
+}

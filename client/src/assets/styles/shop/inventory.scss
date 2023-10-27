@@ -1,0 +1,37 @@
+.bin-wrapper {
+  position: relative;
+  width: 200px;
+}
+.bin-image {
+  position: relative;
+  z-index: 1;
+}
+.bin-front-side {
+  position: absolute;
+  z-index: 2;
+  top: 40px;
+  transform: skewY(12deg);
+  margin: 10px;
+}
+.scrap-product-name {
+  color: #181818;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px #d4d4d4;
+}
+.bin-front-bottom {
+  position: absolute;
+  z-index: 2;
+  bottom: 20px;
+  left: 20px;
+  transform: skewY(12deg);
+  margin: 10px;
+}
+.bin-right-side {
+  position: absolute;
+  z-index: 2;
+  top: 90px;
+  right: 15px;
+  transform: skewY(-14deg);
+  margin: 10px;
+  //   color: #ffffff;
+}

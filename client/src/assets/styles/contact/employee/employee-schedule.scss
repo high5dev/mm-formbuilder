@@ -1,0 +1,90 @@
+.employee-schedule-data-table {
+  .react-dataTable .rdt_TableBody .rdt_TableRow .rdt_TableCell {
+    height: auto;
+    min-height: 70px;
+  }
+}
+
+.schedule-card {
+  border: solid 1px #76a939;
+  border-radius: 0.4rem;
+  margin: 0.5rem 0.1rem;
+  width: 100%;
+  font-weight: 500;
+}
+
+.schedule-card-header {
+  background-color: #76a939;
+  padding: 0.7rem;
+  color: white;
+}
+
+.schedule-card-body {
+  color: white;
+  padding: 0.4rem;
+  border: solid 1px #76a939;
+}
+
+.schedule-time {
+  padding: 0.4rem;
+}
+
+.schedule-card-actions {
+  width: 100%;
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  .schedule-button {
+    font-size: 12px;
+    padding: 6px 12px;
+    margin: 3px;
+  }
+}
+
+.weekly-header {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: max-content;
+}
+
+.open-shifts {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: max-content;
+}
+
+.employees {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: max-content;
+}
+
+.categories {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: max-content;
+}
+
+.weekly-header-no-cell {
+  padding: 0.5rem;
+  max-width: 190px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.weekly-header-cell {
+  padding: 0.4rem;
+  width: 100%;
+  height: 100%;
+  &.today {
+    background-color: #eeeeee7d;
+  }
+  &.drag-over {
+    background-color: #d1d1d18d;
+  }
+}

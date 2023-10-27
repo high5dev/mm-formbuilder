@@ -1,0 +1,247 @@
+$tomato:#E45434 ;
+$tangerine:#FA7A51;
+$banana:#FACA5C ;
+$basil:#539A68 ;
+$sage:#68C693 ;
+$peacock:#63AEED ;
+$blueberry:#6A6EC1 ;
+$lavender:#909BD1 ;
+$grape:#A55ABB ;
+$flamingo:#F39790 ;
+$graphite:#7E7F7E ;
+
+
+.bg-tomato{
+    background-color: $tomato;
+  }
+  .border-top-tomato{
+    border-top-color: $tomato;
+  }
+  .bg-light-tomato{
+    background-color:lighten($tomato, 20%);
+  }
+  .bg-tangerine{
+    background-color: $tangerine;
+  }
+  .border-top-tangerine{
+    border-top-color: $tangerine;
+  }
+  .bg-light-tangerine{
+    background-color:lighten($tangerine, 20%);
+  }
+  .bg-banana{
+    background-color: $banana;
+  }
+  .border-top-banana{
+    border-top-color: $banana;
+  }
+  .bg-light-banana{
+    background-color:lighten($banana, 20%);
+  }
+  .bg-basil{
+    background-color: $basil;
+  }
+  .border-top-basil{
+    border-top-color: $basil;
+  }
+  .bg-light-basil{
+    background-color:lighten($basil, 20%);
+  }
+  .bg-sage{
+    background-color: $sage;
+  }
+  .border-top-sage{
+    border-top-color: $sage;
+  }
+  .bg-light-sage{
+    background-color:lighten($sage, 20%);
+  }
+  .bg-peacock{
+    background-color: $peacock;
+  }
+  .border-top-peacock{
+    border-top-color: $peacock;
+  }
+  .bg-light-peacock{
+    background-color:lighten($peacock, 20%);
+  }
+  .bg-blueberry{
+    background-color: $blueberry;
+  }
+  .border-top-blueberry{
+    border-top-color: $blueberry;
+  }
+  .bg-light-blueberry{
+    background-color:lighten($blueberry, 20%);
+  }
+  .bg-lavender{
+    background-color: $lavender;
+  }
+  .border-top-lavender{
+    border-top-color: $lavender;
+  }
+  .bg-light-lavender{
+    background-color:lighten($lavender, 20%);
+  }
+  .bg-grape{
+    background-color: $grape;
+  }
+  .border-top-grape{
+    border-top-color: $grape;
+  }
+  .bg-light-grape{
+    background-color:lighten($grape, 20%);
+  }
+  .bg-flamingo{
+    background-color: $flamingo;
+  }
+  .border-top-flamingo{
+    border-top-color: $flamingo;
+  }
+  .bg-light-flamingo{
+    background-color:lighten($flamingo, 20%);
+  }
+  .bg-graphite{
+    background-color: $graphite;
+  }
+  .border-top-graphite{
+    border-top-color: $graphite;
+  }
+  .bg-light-graphite{
+    background-color:lighten($graphite, 20%);
+  }
+  
+  // $tomato-color: (
+  //   'lighten-4': lighten($tomato, 20%),
+  //   'lighten-3': lighten($tomato, 15%),
+  //   'lighten-2': lighten($tomato, 10%),
+  //   'lighten-1': lighten($tomato, 5%),
+  //   'base': $tomato,
+  //   'darken-1': darken($tomato, 5%),
+  //   'darken-2': darken($tomato, 10%),
+  //   'darken-3': darken($tomato, 15%),
+  //   'darken-4': darken($tomato, 20%)
+  // );
+  // //#FA7A51
+  // $tangerine-color: (
+  //   'lighten-4': lighten($tangerine, 20%),
+  //   'lighten-3': lighten($tangerine, 15%),
+  //   'lighten-2': lighten($tangerine, 10%),
+  //   'lighten-1': lighten($tangerine, 5%),
+  //   'base': $tangerine,
+  //   'darken-1': darken($tangerine, 5%),
+  //   'darken-2': darken($tangerine, 10%),
+  //   'darken-3': darken($tangerine, 15%),
+  //   'darken-4': darken($tangerine, 20%)
+  // );
+  // //#FACA5C
+  // $banana-color: (
+  //   'lighten-4': lighten($banana, 20%),
+  //   'lighten-3': lighten($banana, 15%),
+  //   'lighten-2': lighten($banana, 10%),
+  //   'lighten-1': lighten($banana, 5%),
+  //   'base': $banana,
+  //   'darken-1': darken($banana, 5%),
+  //   'darken-2': darken($banana, 10%),
+  //   'darken-3': darken($banana, 15%),
+  //   'darken-4': darken($banana, 20%)
+  // );
+  // //#539A68
+  // $basil-color: (
+  //   'lighten-4': lighten($basil, 20%),
+  //   'lighten-3': lighten($basil, 15%),
+  //   'lighten-2': lighten($basil, 10%),
+  //   'lighten-1': lighten($basil, 5%),
+  //   'base': $basil,
+  //   'darken-1': darken($basil, 5%),
+  //   'darken-2': darken($basil, 10%),
+  //   'darken-3': darken($basil, 15%),
+  //   'darken-4': darken($basil, 20%)
+  // );
+  // //#68C693
+  // $sage-color: (
+  //   'lighten-4': lighten($sage, 20%),
+  //   'lighten-3': lighten($sage, 15%),
+  //   'lighten-2': lighten($sage, 10%),
+  //   'lighten-1': lighten($sage, 5%),
+  //   'base': $sage,
+  //   'darken-1': darken($sage, 5%),
+  //   'darken-2': darken($sage, 10%),
+  //   'darken-3': darken($sage, 15%),
+  //   'darken-4': darken($sage, 20%)
+  // );
+  // //#63AEED
+  // $peacock-color: (
+  //   'lighten-4': lighten($peacock, 20%),
+  //   'lighten-3': lighten($peacock, 15%),
+  //   'lighten-2': lighten($peacock, 10%),
+  //   'lighten-1': lighten($peacock, 5%),
+  //   'base': $peacock,
+  //   'darken-1': darken($peacock, 5%),
+  //   'darken-2': darken($peacock, 10%),
+  //   'darken-3': darken($peacock, 15%),
+  //   'darken-4': darken($peacock, 20%)
+  // );
+  // //#6A6EC1
+  // $blueberry-color: (
+  //   'lighten-4': lighten($blueberry, 20%),
+  //   'lighten-3': lighten($blueberry, 15%),
+  //   'lighten-2': lighten($blueberry, 10%),
+  //   'lighten-1': lighten($blueberry, 5%),
+  //   'base': $blueberry,
+  //   'darken-1': darken($blueberry, 5%),
+  //   'darken-2': darken($blueberry, 10%),
+  //   'darken-3': darken($blueberry, 15%),
+  //   'darken-4': darken($blueberry, 20%)
+  // );
+  // //#909BD1
+  // $lavender-color: (
+  //   'lighten-4': lighten($lavender, 20%),
+  //   'lighten-3': lighten($lavender, 15%),
+  //   'lighten-2': lighten($lavender, 10%),
+  //   'lighten-1': lighten($lavender, 5%),
+  //   'base': $lavender,
+  //   'darken-1': darken($lavender, 5%),
+  //   'darken-2': darken($lavender, 10%),
+  //   'darken-3': darken($lavender, 15%),
+  //   'darken-4': darken($lavender, 20%)
+  // );
+  // //#A55ABB
+  // $grape-color: (
+  //   'lighten-4': lighten($grape, 20%),
+  //   'lighten-3': lighten($grape, 15%),
+  //   'lighten-2': lighten($grape, 10%),
+  //   'lighten-1': lighten($grape, 5%),
+  //   'base': $grape,
+  //   'darken-1': darken($grape, 5%),
+  //   'darken-2': darken($grape, 10%),
+  //   'darken-3': darken($grape, 15%),
+  //   'darken-4': darken($grape, 20%)
+  // );
+  // //#F39790
+  // $flamingo-color: (
+  //   'lighten-4': lighten($flamingo, 20%),
+  //   'lighten-3': lighten($flamingo, 15%),
+  //   'lighten-2': lighten($flamingo, 10%),
+  //   'lighten-1': lighten($flamingo, 5%),
+  //   'base': $flamingo,
+  //   'darken-1': darken($flamingo, 5%),
+  //   'darken-2': darken($flamingo, 10%),
+  //   'darken-3': darken($flamingo, 15%),
+  //   'darken-4': darken($flamingo, 20%)
+  // );
+  
+  
+  
+  // //#7E7F7E
+  // $graphite-color: (
+  //   'lighten-4': lighten($graphite, 20%),
+  //   'lighten-3': lighten($graphite, 15%),
+  //   'lighten-2': lighten($graphite, 10%),
+  //   'lighten-1': lighten($graphite, 5%),
+  //   'base': $graphite,
+  //   'darken-1': darken($graphite, 5%),
+  //   'darken-2': darken($graphite, 10%),
+  //   'darken-3': darken($graphite, 15%),
+  //   'darken-4': darken($graphite, 20%)
+  // );

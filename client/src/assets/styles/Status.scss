@@ -1,0 +1,159 @@
+span.badge.bg-yellow.rounded-pill {
+  background-color: #ff9800;
+}
+span.badge.bg-green.rounded-pill {
+  background-color: #0aaa05;
+}
+span.badge.bg-red.rounded-pill {
+  background-color: hsl(12, 100%, 50%);
+}
+li.am-1.active.list-group-item {
+  border-left: 2px solid;
+}
+// modal
+.modal-dialog.modal-dialog-centered.custom-width {
+  max-width: 900px;
+}
+
+// setting ui issue css
+.sidebar-left {
+  width: 260px !important;
+}
+.hover-clr.active:hover {
+  color: #fff;
+}
+.email-app-menu.bg-clr-full {
+  height: 100vh !important;
+  background: #fff !important;
+}
+body.dark-layout.email-app-menu.bg-clr-full {
+  background: #161d31 !important;
+}
+.setting-right-side.ash-1.col-sm-12.col-md-3 {
+  background: #fff;
+  height: 100% !important;
+  padding-left: 0px;
+}
+a.justify-content-start.left-bar.nav-link.active {
+  background: none;
+  box-shadow: none;
+  border: none;
+  color: #174ae7;
+  border-left: 1px solid;
+  border-radius: inherit;
+}
+.am-1.p-1.active.list-group-item {
+  border-left: 1px solid#174ae7 !important;
+}
+// tody
+// .email-application .content-area-wrapper .sidebar .list-group .list-group-item:hover,
+.email-application .content-area-wrapper .sidebar .list-group .list-group-item:focus,
+.email-application .content-area-wrapper .sidebar .list-group .list-group-item.active {
+  color: #174ae7;
+  border-left: 3px solid;
+}
+.email-application .content-area-wrapper .sidebar .list-group .list-group-item:hover {
+  color: unset;
+  border-left: unset;
+}
+.email-application .content-area-wrapper .sidebar .list-group .list-group-item.active {
+  &:hover {
+    color: #174ae7;
+    border-left: 3px solid;
+  }
+}
+
+// Qrcode sidebar
+a.justify-content-start.si-bar.nav-link.active {
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  border-left: 2px solid !important;
+  color: #174ae7;
+  border-radius: 0px;
+}
+//funnel Table
+.as-drp.dropdown-menu.show {
+  top: -80px !important;
+  left: -105px !important;
+}
+
+a.justify-content-start.si-bar.nav-link.active {
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  border-left: 2px solid !important;
+  color: #174ae7;
+  border-radius: 0px;
+}
+
+a.notification-tour-step-2.hover-clr.active.list-group-item.nav-link {
+  border-radius: 0px !important;
+  background: none !important;
+  border: none !important;
+  color: blue !important;
+  border-left: 2px solid !important;
+}
+a.notification-tour-step-4.hover-clr.active.list-group-item.nav-link {
+  border-radius: 0px !important;
+  background: none !important;
+  border: none !important;
+  color: blue !important;
+  border-left: 2px solid !important;
+}
+a.notification-tour-step-6.hover-clr.active.list-group-item.nav-link {
+  border-radius: 0px !important;
+  background: none !important;
+  border: none !important;
+  color: blue !important;
+  border-left: 2px solid !important;
+}
+a.notification-tour-step-8.hover-clr.active.list-group-item.nav-link {
+  border-radius: 0px !important;
+  background: none !important;
+  border: none !important;
+  color: blue !important;
+  border-left: 2px solid !important;
+}
+.hover-clr {
+  border: unset !important;
+}
+
+// rs
+.rs-hover:hover {
+  background-color: #e3e9fc !important;
+}
+
+.act-1.border.p-1.d-flex.justify-content-between {
+  background: #cccccc21;
+}
+
+// modal custom width css for text modal 
+.modal-dialog.modal-custom-size.modal-lg.modal-dialog-centered {
+  max-width: 60% !important;
+}
+.cus-width.col-md-9 {
+  max-width: 72%;
+}
+// modal custom width css for text modal  close
+
+// mobile css
+@media only screen and (max-width: 600px) {
+  .sidebar-left {
+    width: unset !important;
+  }
+  .modal-dialog.modal-custom-size.modal-lg.modal-dialog-centered {
+    max-width: 100% !important;
+  }
+}
+
+//business side bar
+.sidebar.side-hight-full {
+  height: 100vh !important;
+}
+
+.fit-box {
+  padding: 10px !important;
+  border-radius: unset !important;
+  width: 100% !important;
+}

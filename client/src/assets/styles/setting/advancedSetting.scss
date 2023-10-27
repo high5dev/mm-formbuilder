@@ -1,0 +1,100 @@
+@import '../../../@core/scss/base/bootstrap-extended/include';
+@import '../../../@core/scss/base/components/include';
+
+.advanced-setting {
+  .ps-container > .ps-scrollbar-x-rail,
+  .ps-container > .ps-scrollbar-y-rail {
+    opacity: 0.6;
+  }
+  .list-group .list-group-item {
+    padding: 0.58rem 1.5rem;
+    border: 0;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.4px;
+    border-left: 2px solid transparent;
+    border-radius: 0;
+    cursor: pointer;
+    .ws-name {
+      max-width: 11.8rem;
+      min-height: 1.8rem;
+      cursor: pointer;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    + .list-group-item.active {
+      margin-top: 0;
+    }
+    &:hover {
+      color: $primary;
+      background: transparent;
+    }
+    &:focus,
+    &.active {
+      background: transparent;
+      color: $primary;
+      height: min-content !important;
+      border-color: #174ae7;
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .reponsive-mobile-view-setting {
+    display: inline-table;
+    width: 100%;
+  }
+  .reponsive-mobile-buttons{
+    padding-top: 10px;
+    display: list-item;
+  }
+  .responsive-mobile-view-scrollbar{
+    padding-top: 10px;
+  }
+  .responsive-mobile-view-stripe{
+    padding-bottom: 10px;
+  }
+  .reponsive-mobile-view-border-bottom{
+    border-bottom: 5px solid #f3f1fe !important;
+    display: block !important;
+  }
+  .reponsive-mobile-view-retention{
+    display: inline !important;
+  }
+  .stripe-notification{
+    box-shadow: none !important;
+  }
+  .stripe-notification {
+    display: flex !important;
+    flex-direction: column-reverse;
+    padding: 0px;
+    max-width: 80% !important;
+  }
+
+  .card-content-wrapper {
+    flex-direction: column;
+  }
+
+  .stripe-image-wrapper {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .reponsive-tablet-view-setting {
+    display: contents;
+  }
+  .reponsive-tablet-view-border-bottom{
+    border-bottom: 5px solid #f3f1fe !important;
+    display: block !important;
+  }
+  .responsive-mobile-view-scrollbar{
+    padding-top: 10px;
+  }
+  .responsive-tablet-view-ad-setting{
+    width: 26%;
+  }
+  .responsive-tablet-view-ad-setting-2{
+    width: 74%;
+  }
+}

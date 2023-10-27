@@ -1,0 +1,13 @@
+@import '../../../../../@core/scss/base/bootstrap-extended/include';
+@import '../../../../../@core/scss/base/components/include';
+
+.dropzone {
+  position: relative;
+  .single-file-image {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    position: absolute;
+    border-radius: $border-radius;
+  }
+}
