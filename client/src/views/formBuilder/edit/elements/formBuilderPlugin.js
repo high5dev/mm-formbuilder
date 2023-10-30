@@ -126,7 +126,7 @@ export const formBuilderPlugin = (editor) => {
 
   //Membership
   // editor.DomComponents.addType('product', cartProductType);
-  editor.DomComponents.addType('membership', membershipType);
+  //editor.DomComponents.addType('membership', membershipType);
 
   //Contact block
   // editor.DomComponents.addType(
@@ -144,32 +144,32 @@ export const formBuilderPlugin = (editor) => {
   // editor.DomComponents.addType('merge_phone', new mergeElement('Phone', 'phone', 'tel'));
   // editor.DomComponents.addType('merge_email', new mergeElement('Email', 'email', 'email'));
   //Membership block
-  editor.DomComponents.addType(
-    'membership_start_date',
-    new mergeElement('Start Date', 'start_date', 'date')
-  );
-  editor.DomComponents.addType(
-    'membership_end_date',
-    new mergeElement('End Date', 'end_date', 'date')
-  );
-  editor.DomComponents.addType('membership_type', new mergeElement('Type', 'type', 'select'));
-  editor.DomComponents.addType('membership_due', new mergeElement('Due', 'due', 'select'));
-  editor.DomComponents.addType('membership_total', new mergeElement('Total', 'total', 'number'));
-  editor.DomComponents.addType(
-    'membership_down_pay',
-    new mergeElement('Down Pay', 'down_pay', 'number')
-  );
-  editor.DomComponents.addType(
-    'membership_reg_fee',
-    new mergeElement('Reg.Fee', 'reg_fee', 'number')
-  );
+  // editor.DomComponents.addType(
+  //   'membership_start_date',
+  //   new mergeElement('Start Date', 'start_date', 'date')
+  // );
+  // editor.DomComponents.addType(
+  //   'membership_end_date',
+  //   new mergeElement('End Date', 'end_date', 'date')
+  // );
+  // editor.DomComponents.addType('membership_type', new mergeElement('Type', 'type', 'select'));
+  // editor.DomComponents.addType('membership_due', new mergeElement('Due', 'due', 'select'));
+  // editor.DomComponents.addType('membership_total', new mergeElement('Total', 'total', 'number'));
+  // editor.DomComponents.addType(
+  //   'membership_down_pay',
+  //   new mergeElement('Down Pay', 'down_pay', 'number')
+  // );
+  // editor.DomComponents.addType(
+  //   'membership_reg_fee',
+  //   new mergeElement('Reg.Fee', 'reg_fee', 'number')
+  // );
 
-  editor.DomComponents.addType('fill_waiver', waiverType);
+  //editor.DomComponents.addType('fill_waiver', waiverType);
 
   //fullText
-  let fullText =
-    'Lorem ipsum dolor sit {firstname}, consectetur adipiscing elit. Suspendisse cursus, turpis sit amet cursus pulvinar, tellus est efficitur diam, ut varius turpis leo sed odio. Nullam tristique, justo laoreet egestas elementum, ipsum sapien vulputate metus, nec ultrices ante lectus efficitur tellus. Maecenas tincidunt orci sed est malesuada euismod. Nunc ultricies consectetur massa nec semper. Phasellus feugiat id nisl in vulputate. Pellentesque id malesuada tellus. Maecenas et tellus sagittis lectus pharetra sagittis. Curabitur vitae condimentum quam. Cras efficitur libero eget facilisis scelerisque. Fusce tempor ipsum sit amet eros volutpat interdum et sit amet erat. Aliquam erat volutpat. Vivamus convallis nibh finibus sollicitudin rutrum. Nulla sapien purus, iaculis ut varius et, varius ut nibh. Sed convallis ipsum ligula, sit amet gravida arcu accumsan id.\n' +
-    '\n' +
-    'Nullam suscipit sem tellus, auctor porttitor tortor molestie sit amet. Integer mattis sit amet magna vel bibendum. Nunc ac dolor vitae ex fermentum consequat. Nam interdum a odio a interdum. Cras commodo, diam feugiat auctor varius, ipsum felis aliquet mi, id porta purus orci sed nisi. Sed id turpis sapien. In pulvinar lorem sed urna blandit fermentum. Duis mattis consectetur accumsan. Vivamus consequat bibendum maximus. Duis vel venenatis ligula, at euismod metus. Maecenas semper, nisi non fringilla ullamcorper, neque diam molestie dui, quis finibus quam sapien id lacus. Aenean sapien sem, pretium id dignissim eu, ullamcorper eu est. Suspendisse eget libero nec est porta sollicitudin vel et arcu.';
-  editor.DomComponents.addType('mym_text_box', new fillableElement(fullText, 'text_box', 'text'));
+  // let fullText =
+  //   'Lorem ipsum dolor sit {firstname}, consectetur adipiscing elit. Suspendisse cursus, turpis sit amet cursus pulvinar, tellus est efficitur diam, ut varius turpis leo sed odio. Nullam tristique, justo laoreet egestas elementum, ipsum sapien vulputate metus, nec ultrices ante lectus efficitur tellus. Maecenas tincidunt orci sed est malesuada euismod. Nunc ultricies consectetur massa nec semper. Phasellus feugiat id nisl in vulputate. Pellentesque id malesuada tellus. Maecenas et tellus sagittis lectus pharetra sagittis. Curabitur vitae condimentum quam. Cras efficitur libero eget facilisis scelerisque. Fusce tempor ipsum sit amet eros volutpat interdum et sit amet erat. Aliquam erat volutpat. Vivamus convallis nibh finibus sollicitudin rutrum. Nulla sapien purus, iaculis ut varius et, varius ut nibh. Sed convallis ipsum ligula, sit amet gravida arcu accumsan id.\n' +
+  //   '\n' +
+  //   'Nullam suscipit sem tellus, auctor porttitor tortor molestie sit amet. Integer mattis sit amet magna vel bibendum. Nunc ac dolor vitae ex fermentum consequat. Nam interdum a odio a interdum. Cras commodo, diam feugiat auctor varius, ipsum felis aliquet mi, id porta purus orci sed nisi. Sed id turpis sapien. In pulvinar lorem sed urna blandit fermentum. Duis mattis consectetur accumsan. Vivamus consequat bibendum maximus. Duis vel venenatis ligula, at euismod metus. Maecenas semper, nisi non fringilla ullamcorper, neque diam molestie dui, quis finibus quam sapien id lacus. Aenean sapien sem, pretium id dignissim eu, ullamcorper eu est. Suspendisse eget libero nec est porta sollicitudin vel et arcu.';
+  // editor.DomComponents.addType('mym_text_box', new fillableElement(fullText, 'text_box', 'text'));
 };
