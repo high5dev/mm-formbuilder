@@ -3,6 +3,16 @@ const mongoose = require("mongoose");
 
 const WebPageSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "auths",
+      required: true,
+    },
+    organizationId: {
+      type: mongoose.Types.ObjectId,
+      ref: "organizations",
+      default: null,
+    },
     websiteId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "web-builders",
