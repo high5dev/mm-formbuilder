@@ -600,7 +600,6 @@ export default function Editor({
           }
 
           if (element.classList.contains('section-column-child')) {
-            console.log(element.children.length);
             if (element.children.length <= 2) {
               element.classList.remove('non-empty');
             }

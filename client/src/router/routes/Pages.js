@@ -12,6 +12,12 @@ const PagesRoutes = [
     }
   },
   {
+    path: '/pages/editor/:stepId',
+    component: lazy(() => import('../../views/formBuilder/editor')),
+    layout: 'BlankLayout',
+    exact: true
+  },
+  {
     path: '/login/:contactTypeId/:assignerId',
     exact: true,
     component: lazy(() => import('../../views/pages/authentication/LoginContact')),
@@ -62,6 +68,7 @@ const PagesRoutes = [
     component: lazy(() => import('../../views/pages/authentication/RegisterCover')),
     layout: 'BlankLayout'
   },
+
   {
     path: '/forgot-password',
     component: lazy(() => import('../../views/pages/authentication/ForgotPassword')),
