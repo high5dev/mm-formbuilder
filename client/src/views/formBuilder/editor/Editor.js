@@ -23,11 +23,8 @@ import '../../../assets/scss/form-builder/style.scss';
 import '../../../assets/scss/form-builder/main.scss';
 
 import grapesjs from 'grapesjs';
-import blocksJson from './configuration/blocks';
-import { formBuilderPlugin } from './elements/formBuilderPlugin';
 import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
-import FontFamily from './configuration/fontfamily';
 import '@src/assets/styles/web-builder.scss';
 
 export default function Editor({ stepId, store, device, sidebarOpen, setSidebarOpen }) {
