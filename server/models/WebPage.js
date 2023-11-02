@@ -3,6 +3,11 @@ const mongoose = require("mongoose");
 
 const WebPageSchema = new mongoose.Schema(
   {
+    websiteId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "web-builders",
+      required: true,
+    },
     name: {
       type: String,
       required: true,

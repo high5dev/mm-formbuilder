@@ -12,11 +12,6 @@ const WebBuilderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    memberType: {
-      type: String, 
-      default: null,
-      //required: true,
-    },
     contactType:{
       type:mongoose.Schema.Types.ObjectId,
       default:null,
@@ -35,10 +30,6 @@ const WebBuilderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    pages: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "web-pages",
-    }],
     clonedFrom: {
       type: String,
       default: null,
