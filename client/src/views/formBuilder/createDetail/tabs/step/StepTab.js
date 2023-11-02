@@ -34,7 +34,7 @@ export default function StepTab({ store, step, dispatch, isMobileView, isTabletV
   // ** Toggle
   const toggleEditor = () => {
     localStorage.removeItem('gjsProject');
-    setOpenEditor(!openEditor);
+    history.push(`/pages/editor/${step.id}`);
   };
 
   const handleClone = () => {

@@ -12,7 +12,6 @@ export default function EditModal({ toggle, open, store, dispatch, step, shepher
   const [editor, setEditor] = useState(null);
   const [blockTitle, setBlockTitle] = useState('');
   const [stylesTitle, setStylesTitle] = useState('');
-
   const toggleBlocks = (val) => {
     setIsBlock(val);
   };

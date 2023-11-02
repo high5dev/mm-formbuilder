@@ -223,16 +223,6 @@ export default function MainNav({
                 </button>
                 <button
                   onClick={handleElements}
-                  style={{ background: '#F5AB5A' }}
-                  className="btn text-light"
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#f79948';
-                    e.currentTarget.style.borderColor = '#f79948';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#F5AB5A';
-                    e.currentTarget.style.borderColor = '#F5AB5A';
-                  }}
                 >
                   <span>ELEMENTS</span>
                 </button>
