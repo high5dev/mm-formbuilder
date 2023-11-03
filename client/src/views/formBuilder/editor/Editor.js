@@ -16,26 +16,32 @@ import {
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import websitePlugin from 'grapesjs-preset-webpage';
 import basicBlockPlugin from 'grapesjs-blocks-basic';
-import formPlugin from 'grapesjs-plugin-forms'
+import formPlugin from 'grapesjs-plugin-forms';
 
 import 'grapesjs/dist/css/grapes.min.css';
 import '../../../assets/scss/form-builder/style.scss';
 import '../../../assets/scss/form-builder/main.scss';
 
 import grapesjs from 'grapesjs';
+import ImportModal from './ImportModal';
 import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
 import '@src/assets/styles/web-builder.scss';
 
-export default function Editor({ stepId, store, device, sidebarOpen, setSidebarOpen }) {
-  const [editor, setEditor] = useState(null);
-  const blockRef = useRef();
+export default function Editor({
+  open,
+  setOpen,
+  store,
+  impStatus,
+  device,
+  sidebarOpen,
+  setSidebarOpen
+}) {
   const [originContent, setOriginContent] = useState(undefined);
+  const [editor, setEditor] = useState(null);
   const [blocks, setBlocks] = useState([]);
-  const handleBlocks = (props) => {
-    setBlocks(props.blocks);
-    window.dragStart = props.dragStart;
-    window.dragStop = props.dragStop;
+  const toggle = () => {
+    setOpen(!open);
   };
 
   const handleSidebarOpen = (e) => {
@@ -43,82 +49,10 @@ export default function Editor({ stepId, store, device, sidebarOpen, setSidebarO
     setSidebarOpen(false);
   };
 
-  //   if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-  //     return;
-  //   }
-  //   setSidebarOpen(false);
-  // };
-
-  // const checkAddElement = (element) => {
-  //   if (element.classList.contains('add-new-column')) {
-  //     return true;
-  //   } else if (element.classList.contains('add-new-section')) {
-  //     return true;
-  //   } else if (element.classList.contains('add-new-element')) {
-  //     return true;
-  //   } else if (element.classList.contains('add-more-element')) {
-  //     return true;
-  //   }
-  //   if (!element.parentElement) {
-  //     return false;
-  //   }
-  //   if (element.tagName.toLowerCase() == 'body') {
-  //     return false;
-  //   }
-  //   return checkAddElement(element.parentElement);
-  // };
-
-  // function checkEditElement(element) {
-  //   let gjsType = element.getAttribute('data-gjs-type');
-  //   if (gjsType) {
-  //     let editTypeList = [
-  //       'heading',
-  //       'paragraph',
-  //       'bullet',
-  //       'short-text',
-  //       'long-text',
-  //       'address',
-  //       'mym_text_box',
-  //       'signature',
-  //       'checkbox'
-  //     ];
-  //     if (editTypeList.includes(gjsType)) {
-  //       return true;
-  //     }
-  //   }
-  //   if (element.tagName.toLowerCase() == 'textarea' || element.tagName.toLowerCase() == 'input') {
-  //     return true;
-  //   }
-
-  //   if (!element.parentElement) {
-  //     return false;
-  //   }
-  //   if (element.tagName.toLowerCase() == 'body') {
-  //     return false;
-  //   }
-  //   return checkEditElement(element.parentElement);
-  // }
-
-  // const toggleButtonAction = (event, value) => {
-  //   if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-  //     return;
-  //   }
-  //   toggleFormProperties({}, false);
-  //   //setOpenButtonAction(value);
-  //   if (value == true) {
-  //     let attributes = editor.getSelected().getChildAt(0).getAttributes();
-  //     if (!attributes.selectedOption) {
-  //       setButtonAction(4);
-  //     }
-  //   }
-  // };
-  // const filteredBlocks = blocksJson.filter((block) => {
-  //   return block;
-  // });
   useEffect(() => {
     const gjsEditor = grapesjs.init({
       container: '#editor',
-      plugins: [basicBlockPlugin,formPlugin],
+      plugins: [basicBlockPlugin, formPlugin, websitePlugin],
       richTextEditor: {
         actions: []
       },
@@ -164,12 +98,17 @@ export default function Editor({ stepId, store, device, sidebarOpen, setSidebarO
         defaults: [{}]
       }
     });
-
+    gjsEditor.Commands.add('set-device-desktop', (editor) => {
+      editor.setDevice('desktop');
+    });
+    gjsEditor.Commands.add('set-device-tablet', (editor) => {
+      editor.setDevice('tablet');
+    });
+    gjsEditor.Commands.add('set-device-mobile', (editor) => {
+      editor.setDevice('mobilePortrait');
+    });
     setEditor(gjsEditor);
-    return () => {
-      gjsEditor.off('block:custom', handleBlocks);
-    };
-  }, [store.form]);
+  }, []);
   useEffect(() => {
     if (editor !== null) {
       switch (device) {
@@ -192,34 +131,35 @@ export default function Editor({ stepId, store, device, sidebarOpen, setSidebarO
   return (
     <div className="d-flex">
       <div className="expanded-sidebar">
-      <PerfectScrollbar
+        <PerfectScrollbar
           options={{ suppressScrollX: true }}
           style={{ height: `calc(100vh - 120px)` }}
         >
-      <Collapse isOpen={sidebarOpen} horizontal={true} delay={{ show: 10, hide: 20 }}>
-        <div>
-          <div className="expanded-header">
-            <span>Quick Add</span>
+          <Collapse isOpen={sidebarOpen} horizontal={true} delay={{ show: 10, hide: 20 }}>
             <div>
-              <span className="header-icon">
-                <RiQuestionMark size={16} />
-              </span>
-              <span className="header-icon" onClick={handleSidebarOpen}>
-                <X size={16} />
-              </span>
+              <div className="expanded-header">
+                <span>Quick Add</span>
+                <div>
+                  <span className="header-icon">
+                    <RiQuestionMark size={16} />
+                  </span>
+                  <span className="header-icon" onClick={handleSidebarOpen}>
+                    <X size={16} />
+                  </span>
+                </div>
+              </div>
+              <div className="expanded-content px-1">
+                <div id="blocks"></div>
+              </div>
             </div>
-          </div>
-          <div className="expanded-content px-1">
-            <div id="blocks"></div>
-          </div>
-        </div>
-      </Collapse>
-      </PerfectScrollbar>
+          </Collapse>
+        </PerfectScrollbar>
       </div>
 
       <div className="w-100 border">
         <div id="editor"></div>
       </div>
+      <ImportModal editor={editor} setEditor={setEditor} open={open} toggle={toggle} />
     </div>
   );
 }
