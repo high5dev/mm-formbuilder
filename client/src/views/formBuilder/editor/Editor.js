@@ -23,7 +23,7 @@ import '../../../assets/scss/form-builder/style.scss';
 import '../../../assets/scss/form-builder/main.scss';
 
 import grapesjs from 'grapesjs';
-import ImportModal from './ImportModal';
+import ImportModal from './topNav/import/ImportModal';
 import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
 import '@src/assets/styles/web-builder.scss';

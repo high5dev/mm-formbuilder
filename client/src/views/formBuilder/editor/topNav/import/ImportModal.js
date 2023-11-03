@@ -6,7 +6,7 @@ import CodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import FileUploaderrMultiple from './FileUploaderMultiple';
 import { setFontAndSize } from 'pdf-lib';
-export default function ImportModal({ editor, setEditor, open, toggle }) {
+export default function Index({ editor, setEditor, open, toggle }) {
   const [code, setCode] = useState('');
   const [files, setFiles] = useState([]);
   const importHtml = () => {

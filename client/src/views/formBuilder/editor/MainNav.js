@@ -39,7 +39,6 @@ import {
   UncontrolledTooltip
 } from 'reactstrap';
 import { updateFormDataAction } from '../store/action';
-import ImportModal from './ImportModal';
 var previewTimerId;
 
 export default function MainNav({open, setOpen, store, impStatus, setImpStatus, device, setDevice}) {

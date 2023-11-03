@@ -7,7 +7,7 @@ import { Button, ListGroup, ListGroupItem } from 'reactstrap';
 // ** Third Party Imports
 import { useDropzone } from 'react-dropzone';
 import { FileText, X, DownloadCloud } from 'react-feather';
-import { DocumentContext } from '../../../utility/context/Document';
+import { DocumentContext } from '../../../../../utility/context/Document';
 import { toast } from 'react-toastify';
 
 const FileUploaderMultiple = ({ files, setFiles }) => {
