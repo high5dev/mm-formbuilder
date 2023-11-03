@@ -21,6 +21,8 @@
     "@reduxjs/toolkit": "^1.2.5",
     "@stripe/react-stripe-js": "^2.0.0",
     "@stripe/stripe-js": "^1.50.0",
+    "@uiw/codemirror-theme-vscode": "^4.21.20",
+    "@uiw/react-codemirror": "^4.21.20",
     "animate.css": "4.1.1",
     "apexcharts": "3.29.0",
     "apexcharts-clevision": "3.28.3",

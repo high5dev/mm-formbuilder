@@ -41,7 +41,11 @@ import {
 import { updateFormDataAction } from '../store/action';
 var previewTimerId;
 
-export default function MainNav({store, device, setDevice}) {
+export default function MainNav({open, setOpen, store, impStatus, setImpStatus, device, setDevice}) {
+  const handleImport=(e)=>{
+    setOpen(!open);
+  }
+
   return (
     <div className='navbar'>
       <div className="up-navbar d-flex justify-content-between align-items-center">
@@ -225,7 +229,7 @@ export default function MainNav({store, device, setDevice}) {
         </div>
         <div className="zoom-size d-flex justify-content-around align-items-center">
             <span className='hover-bg'>
-                <MdOutlineDownloading size={26} color={'black'} id='import'/>
+                <MdOutlineDownloading size={26} color={'black'} id='import' onClick={(e)=>handleImport(e)}/>
                 <UncontrolledTooltip placement='bottom' target='import'>
               Import
             </UncontrolledTooltip>
