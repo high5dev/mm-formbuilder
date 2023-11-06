@@ -26,6 +26,7 @@ import grapesjs from 'grapesjs';
 import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
 import '@src/assets/styles/web-builder.scss';
+import { webBuilderPlugin } from './elements/webBuilderPlugin';
 
 export default function Editor({ stepId, store, device, sidebarOpen, setSidebarOpen }) {
   const [editor, setEditor] = useState(null);
@@ -118,7 +119,7 @@ export default function Editor({ stepId, store, device, sidebarOpen, setSidebarO
   useEffect(() => {
     const gjsEditor = grapesjs.init({
       container: '#editor',
-      plugins: [basicBlockPlugin,formPlugin],
+      plugins: [basicBlockPlugin,formPlugin, (editor) => webBuilderPlugin(editor), websitePlugin],
       richTextEditor: {
         actions: []
       },
@@ -162,7 +163,7 @@ export default function Editor({ stepId, store, device, sidebarOpen, setSidebarO
       storageManager: {},
       commands: {
         defaults: [{}]
-      }
+      },
     });
 
     setEditor(gjsEditor);
