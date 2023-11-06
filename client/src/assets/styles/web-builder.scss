@@ -1,6 +1,14 @@
 @import '../../@core/scss/base/bootstrap-extended/include';
 @import '../../@core/scss/base/components/include';
 
+.gjs-pn-panels{
+  display: none;
+}
+.gjs-mdl-dialog{
+  max-width: 1200px;
+  width: 90%;
+}
+
 .navbar{
   width: 100%;
   background-color: white;
@@ -204,7 +212,18 @@
 
 }
 
-
+.dropzone{
+  display: flex;
+  min-height: 300px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: #f8f8f8;
+  border: 1px dashed #174ae7;
+  border-radius: 0.357rem;
+  width:300px;
+  height: 300px;
+}
 
 
 
