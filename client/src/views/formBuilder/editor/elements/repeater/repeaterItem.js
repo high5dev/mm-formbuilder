@@ -7,7 +7,7 @@ let repeaterItem = {
       droppable: true,
       attributes: { class: 'repeater-item' },
       styles: `.repeater-item {min-height: 300px; background-color: #b9dbcb;}`,
-      stylable: ['width', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
+      stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
     },
   },
 };
