@@ -29,6 +29,9 @@ import TraitSidebar from './topNav/traits';
 import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
+import '@src/assets/styles/web-builder.scss';
+import { webBuilderPlugin } from './elements/webBuilderPlugin';
+
 
 export default function Editor({
   styleTab,
@@ -64,7 +67,8 @@ export default function Editor({
     const gjsEditor = grapesjs.init({
       container: '#editor',
       height: window. innerHeight-117,
-      plugins: [basicBlockPlugin, websitePlugin],
+      plugins: [basicBlockPlugin,(editor) => webBuilderPlugin(editor), websitePlugin],
+
       richTextEditor: {
         actions: []
       },
@@ -120,7 +124,7 @@ export default function Editor({
       },
       commands: {
         defaults: [{}]
-      }
+      },
     });
     gjsEditor.on('block:drag:start', function (model) {
       setSidebarOpen(false);

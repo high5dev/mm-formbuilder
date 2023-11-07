@@ -170,6 +170,9 @@ const SocialProofDisplayUrl = require("../SocialProofDisplayUrl");
 // //employeeActivityLog
 // const EmployeeActivityLog = require("../EmployeeActivityLog");
 
+const WebBuilder = require("../WebBuilder");
+const WebPage = require("../WebPage");
+
 const models = {
   Authenticate,
   User,
@@ -328,6 +331,8 @@ const models = {
   // TournamentEvent,
   // Division,
   // Tournament,
+  WebBuilder,
+  WebPage,
 };
 
 module.exports = models;
