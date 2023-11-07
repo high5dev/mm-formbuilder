@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-
 import { Bold, X } from 'react-feather';
 import { RiQuestionMark } from 'react-icons/ri';
 import {
@@ -17,42 +16,55 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import websitePlugin from 'grapesjs-preset-webpage';
 import basicBlockPlugin from 'grapesjs-blocks-basic';
 import formPlugin from 'grapesjs-plugin-forms';
-
 import 'grapesjs/dist/css/grapes.min.css';
 import '../../../assets/scss/form-builder/style.scss';
 import '../../../assets/scss/form-builder/main.scss';
-
+// import '@src/assets/styles/web-builder.scss';
 import grapesjs from 'grapesjs';
 import ImportModal from './topNav/import/ImportModal';
+import StyleSidebar from './topNav/styles';
+import LayerSidebar from './topNav/layers';
+import PageSidebar from './topNav/pages';
+import TraitSidebar from './topNav/traits';
 import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
-import '@src/assets/styles/web-builder.scss';
+import { employeeUpdateIdError } from '../../contacts/store/reducer';
 
 export default function Editor({
+  styleTab,
+  layerTab,
+  traitTab,
+  pageTab,
+  setStyleTab,
+  setLayerTab,
+  setTraitTab,
+  setPageTab,
   open,
   setOpen,
-  store,
-  impStatus,
+  rsidebarOpen,
+  setRSidebarOpen,
   device,
   sidebarOpen,
   setSidebarOpen
 }) {
-  const [originContent, setOriginContent] = useState(undefined);
+  
   const [editor, setEditor] = useState(null);
-  const [blocks, setBlocks] = useState([]);
+  const [selectedCmp, setSelectedCmp] = useState(null);
+  const [isOpen, setIsOpen]=useState(false);
   const toggle = () => {
     setOpen(!open);
   };
-
   const handleSidebarOpen = (e) => {
     e.preventDefault();
     setSidebarOpen(false);
   };
+  
 
   useEffect(() => {
     const gjsEditor = grapesjs.init({
       container: '#editor',
-      plugins: [basicBlockPlugin, formPlugin, websitePlugin],
+      height: window. innerHeight-117,
+      plugins: [basicBlockPlugin, websitePlugin],
       richTextEditor: {
         actions: []
       },
@@ -60,7 +72,17 @@ export default function Editor({
         custom: true,
         appendTo: '#blocks'
       },
-
+      storageManager: {
+        type: 'local',
+        autoload: true,
+        autosave: true,
+        stepsBeforeSave: 1,
+        storeComponents: true,
+        storeStyles: true,
+        storeHtml: true,
+        storeCss: true,
+        autorender: false
+    },
       deviceManager: {
         default: 'desktop',
         devices: [
@@ -90,13 +112,19 @@ export default function Editor({
           }
         ]
       },
+      pageManager:{
+
+      },
       panels: {
         defaults: []
       },
-      storageManager: {},
       commands: {
         defaults: [{}]
       }
+    });
+    gjsEditor.on('block:drag:start', function (model) {
+      setSidebarOpen(false);
+
     });
     gjsEditor.Commands.add('set-device-desktop', (editor) => {
       editor.setDevice('desktop');
@@ -107,8 +135,14 @@ export default function Editor({
     gjsEditor.Commands.add('set-device-mobile', (editor) => {
       editor.setDevice('mobilePortrait');
     });
-    setEditor(gjsEditor);
+    
+    setEditor(gjsEditor)
   }, []);
+
+  editor?.on('component:selected', (cmp) => {
+    console.log('selected component ------------', cmp);
+    setSelectedCmp(cmp);
+  });
   useEffect(() => {
     if (editor !== null) {
       switch (device) {
@@ -155,9 +189,22 @@ export default function Editor({
           </Collapse>
         </PerfectScrollbar>
       </div>
-
       <div className="w-100 border">
         <div id="editor"></div>
+      </div>
+      <div className="property-sidebar">
+           <Collapse isOpen={styleTab} horizontal={true} delay={{ show: 10, hide: 20 }}>
+             <StyleSidebar editor={editor} setEditor={setEditor} setStyleTab={setStyleTab}/>
+           </Collapse>
+           <Collapse isOpen={layerTab} horizontal={true} delay={{ show: 10, hide: 20 }}>
+             <LayerSidebar editor={editor} setEditor={setEditor} setLayerTab={setLayerTab}/>
+          </Collapse>
+           <Collapse isOpen={traitTab} horizontal={true} delay={{ show: 10, hide: 20 }}>
+             <TraitSidebar editor={editor} selectedCmp={selectedCmp} setEditor={setEditor} setTraitTab={setTraitTab}/>
+          </Collapse>
+           <Collapse isOpen={pageTab} horizontal={true} delay={{ show: 10, hide: 20 }}>
+             <PageSidebar editor={editor} setEditor={setEditor} setPageTab={setPageTab}/>
+          </Collapse>
       </div>
       <ImportModal editor={editor} setEditor={setEditor} open={open} toggle={toggle} />
     </div>

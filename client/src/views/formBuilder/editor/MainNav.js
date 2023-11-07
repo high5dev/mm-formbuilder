@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Eye, Save, X, ChevronDown,MoreHorizontal } from 'react-feather';
+import { Eye, Save, X, ChevronDown, MoreHorizontal } from 'react-feather';
 
 import { BiMobile } from 'react-icons/bi';
 import { FaBox, FaPaintBrush } from 'react-icons/fa';
+import { FiSettings } from 'react-icons/fi';
 import {
   MdOutlineDesktopMac,
   MdOutlineTablet,
@@ -41,13 +42,65 @@ import {
 import { updateFormDataAction } from '../store/action';
 var previewTimerId;
 
-export default function MainNav({open, setOpen, store, impStatus, setImpStatus, device, setDevice}) {
-  const handleImport=(e)=>{
+export default function MainNav({
+  styleTab,
+  layerTab,
+  traitTab,
+  pageTab,
+  setStyleTab,
+  setLayerTab,
+  setTraitTab,
+  setPageTab,
+  rsidebarOpen,
+  setRSidebarOpen,
+  open,
+  setOpen,
+  tab,
+  setTab,
+  store,
+  device,
+  setDevice
+}) {
+  const [selectedTab, setSelectedTab]=useState('style');
+  const handleImport = (e) => {
     setOpen(!open);
-  }
+  };
 
+  const handleTab=(type)=>{
+    if(rsidebarOpen){
+      setRSidebarOpen(false);
+      setTab('')
+    }
+    else{
+      setTab(type);
+      setRSidebarOpen(true);
+    }
+  };
+  useEffect(()=>{
+    if(styleTab && selectedTab==='style'){
+      setLayerTab(false);
+      setTraitTab(false);
+      setPageTab(false);
+    }
+    if(layerTab && selectedTab==='layers'){
+      setStyleTab(false);
+      setTraitTab(false);
+      setPageTab(false);
+      
+    }
+    if(traitTab && selectedTab==='traits'){
+      setStyleTab(false);
+      setLayerTab(false);
+      setPageTab(false);
+    }
+    if(pageTab && selectedTab==='pages'){
+      setStyleTab(false);
+      setLayerTab(false);
+      setTraitTab(false);
+    }
+  }, [styleTab, layerTab, traitTab, pageTab, selectedTab])
   return (
-    <div className='navbar'>
+    <div className="navbar">
       <div className="up-navbar d-flex justify-content-between align-items-center">
         <div className="d-flex justify-content align-items-center">
           <div className="logo">
@@ -136,9 +189,7 @@ export default function MainNav({open, setOpen, store, impStatus, setImpStatus, 
         </div>
         <div className="additional-bar d-flex align-items-center justify-content-around">
           <div className="menu-item hover-effect text-white">Invite</div>
-          <span className="menu-item text-primary text-white">
-            Preview
-            </span>
+          <span className="menu-item text-primary text-white">Preview</span>
           <Button className="btn btn-primary" color="primary">
             Publish
           </Button>
@@ -146,79 +197,71 @@ export default function MainNav({open, setOpen, store, impStatus, setImpStatus, 
       </div>
       <div className="down-navbar d-flex align-items-center">
         <div className="feature-icons d-flex align-items-center">
-          <span className='menu-icon'>
-            <MdOutlineLayers size={24} color={'black'} id='layers'/>
-            <UncontrolledTooltip placement='bottom' target='layers'>
-                Layers
+          <span className="px-2">
+            <MdOutlineLensBlur size={26} color={'#0275d8'} id="inspector" />
+            <UncontrolledTooltip placement="bottom" target="inspector">
+              Inspector
             </UncontrolledTooltip>
           </span>
-          <span className='menu-icon'>
-            <MdWorkspacesOutline size={24} color={'black'} id='global'/>
-            <UncontrolledTooltip placement='bottom' target='global'>
-                Global Sections
+          <span className="px-2">
+            <MdOutlineInsertComment size={26} color={'black'} id="comments" />
+            <UncontrolledTooltip placement="bottom" target="comments">
+              Comments
             </UncontrolledTooltip>
           </span>
-          <span className='menu-icon'>
-            <MdOutlineLibraryBooks size={24} color={'black'} id='pages'/>
-            <UncontrolledTooltip placement='bottom' target='pages'>
-              Pages
+          <span className="hover-bg px-2">
+            <MdOutlineDownloading
+              size={26}
+              color={'black'}
+              id="import"
+              onClick={(e) => handleImport(e)}
+            />
+            <UncontrolledTooltip placement="bottom" target="import">
+              Import
             </UncontrolledTooltip>
           </span>
-          <span className='menu-icon'>
-            <MdOutlineFormatColorReset size={24} color={'black'} id='styles'/>
-            <UncontrolledTooltip placement='bottom' target='styles'>
-              Site Styles
-            </UncontrolledTooltip>
-          </span>
-          <span className='menu-icon'>
-            <MdOutlineGridView size={24} color={'black'} id='market'/>
-            <UncontrolledTooltip placement='bottom' target='market'>
-              App Market
-            </UncontrolledTooltip>
-          </span>
-          <span className='menu-icon'>
-            <MdOutlineNewspaper size={24} color={'black'} id='cms'/>
-            <UncontrolledTooltip placement='bottom' target='cms'>
-             CMS
+          <span className="hover-bg px-2">
+            <MdZoomIn size={30} color={'black'} id="zoom" />
+            <UncontrolledTooltip placement="bottom" target="zoom">
+              Zoom
             </UncontrolledTooltip>
           </span>
         </div>
-        <div className='home-pages d-flex align-items-center'>
-        <UncontrolledDropdown style={{ cursor: 'pointer' }}>
-              <DropdownToggle tag="div" className="btn btn-sm hover-effect">
-                <div className='d-flex'>
-                    Home
-                <div className='px-2'>
-                <ChevronDown size={15} />
-                </div>         
+        <div className="home-pages d-flex align-items-center">
+          <UncontrolledDropdown style={{ cursor: 'pointer' }}>
+            <DropdownToggle tag="div" className="btn btn-sm hover-effect">
+              <div className="d-flex">
+                Home
+                <div className="px-2">
+                  <ChevronDown size={15} />
                 </div>
-              </DropdownToggle>
-              <DropdownMenu container="body">
-                <DropdownItem tag="span" className="w-100">
-                  <span className="">Home</span>
-                </DropdownItem>
-                <DropdownItem tag="span" className="w-100">
-                  <span className="">Plans & Pricing</span>
-                </DropdownItem>
-                <DropdownItem tag="span" className="w-100">
-                  <span className="">Menu</span>
-                </DropdownItem>
-                <DropdownItem tag="span" className="w-100 text-primary">
-                  <span className="">Manage Pages</span>
-                </DropdownItem>
-              </DropdownMenu>
-        </UncontrolledDropdown>
+              </div>
+            </DropdownToggle>
+            <DropdownMenu container="body">
+              <DropdownItem tag="span" className="w-100">
+                <span className="">Home</span>
+              </DropdownItem>
+              <DropdownItem tag="span" className="w-100">
+                <span className="">Plans & Pricing</span>
+              </DropdownItem>
+              <DropdownItem tag="span" className="w-100">
+                <span className="">Menu</span>
+              </DropdownItem>
+              <DropdownItem tag="span" className="w-100 text-primary">
+                <span className="">Manage Pages</span>
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
         </div>
         <div className="devices-icons d-flex justify-content-around align-items-center">
-          <MdOutlineDesktopMac size={22} color={'black'} onClick={()=>setDevice('desktop')}/>
-          <MdOutlineTablet size={22} color={'black'} onClick={()=>setDevice('tablet')}/>
-          <BiMobile size={22} color={'black'} onClick={()=>setDevice('mobile')}/>
+          <MdOutlineDesktopMac size={22} color={'black'} onClick={() => setDevice('desktop')} />
+          <MdOutlineTablet size={22} color={'black'} onClick={() => setDevice('tablet')} />
+          <BiMobile size={22} color={'black'} onClick={() => setDevice('mobile')} />
           <UncontrolledDropdown style={{ cursor: 'pointer' }}>
-              <DropdownToggle tag="div" className="btn btn-sm hover-effect">
-              <MoreHorizontal size={24} color={'black'}/>
-              </DropdownToggle>
-        </UncontrolledDropdown>
-     
+            <DropdownToggle tag="div" className="btn btn-sm hover-effect">
+              <MoreHorizontal size={24} color={'black'} />
+            </DropdownToggle>
+          </UncontrolledDropdown>
         </div>
         <div className="devices-size d-flex align-items-center">
           <span className="px-1 text-dark">w</span>
@@ -228,33 +271,68 @@ export default function MainNav({open, setOpen, store, impStatus, setImpStatus, 
           <span className="px-1 text-dark">px</span>
         </div>
         <div className="zoom-size d-flex justify-content-around align-items-center">
-            <span className='hover-bg'>
-                <MdOutlineDownloading size={26} color={'black'} id='import' onClick={(e)=>handleImport(e)}/>
-                <UncontrolledTooltip placement='bottom' target='import'>
-              Import
-            </UncontrolledTooltip>
+          <div className='d-flex'>
+            <span className="menu-icon">
+              <MdWorkspacesOutline size={24} color={'black'} id="global" />
+              <UncontrolledTooltip placement="bottom" target="global">
+                Global Sections
+              </UncontrolledTooltip>
             </span>
-            <span className='hover-bg'>
-            <MdZoomIn size={30} color={'black'} id='zoom'/>
-            <UncontrolledTooltip placement='bottom' target='zoom'>
-              Zoom
-            </UncontrolledTooltip>
+            <span className="menu-icon">
+              <MdOutlineFormatColorReset size={24} color={'black'} id="styles"/>
+              <UncontrolledTooltip placement="bottom" target="styles">
+                Site Styles
+              </UncontrolledTooltip>
             </span>
-        </div>
-        <div className="comments d-flex justify-content-around align-items-center">
-          <span>
-          <MdOutlineInsertComment size={26} color={'black'} id='comments'/>
-          <UncontrolledTooltip placement='bottom' target='comments'>
-              Comments
-            </UncontrolledTooltip>
-          </span>
-          <span>
-          <MdOutlineLensBlur size={26} color={'#0275d8'} id='inspector'/>
-          <UncontrolledTooltip placement='bottom' target='inspector'>
-              Inspector
-            </UncontrolledTooltip>
-          </span>
-  
+            <span className="menu-icon">
+              <MdOutlineGridView size={24} color={'black'} id="market" />
+              <UncontrolledTooltip placement="bottom" target="market">
+                App Market
+              </UncontrolledTooltip>
+            </span>
+            <span className="menu-icon">
+              <MdOutlineNewspaper size={24} color={'black'} id="cms" />
+              <UncontrolledTooltip placement="bottom" target="cms">
+                CMS
+              </UncontrolledTooltip>
+            </span>
+          </div>
+          <div className='d-flex'>
+            <span className="menu-icon">
+              <FaPaintBrush size={24} color={'black'} id="styles" onClick={(e)=>{
+                setSelectedTab('style');
+                setStyleTab(!styleTab)
+              }}/>
+              <UncontrolledTooltip placement="bottom" target="styles">
+                Styles
+              </UncontrolledTooltip>
+            </span>
+            <span className="menu-icon">
+              <MdOutlineLayers size={26} color={'black'} id="layers" onClick={(e)=>{
+                setSelectedTab('layers');
+                setLayerTab(!layerTab)
+                }}/>
+              <UncontrolledTooltip placement="bottom" target="layers">
+                Layers
+              </UncontrolledTooltip>
+            </span>
+            <span className="menu-icon">
+              <FiSettings size={24} color={'black'} id="traits" onClick={(e)=>{
+                setSelectedTab('traits');
+                setTraitTab(!traitTab)}}/>
+              <UncontrolledTooltip placement="bottom" target="traits">
+                Traits
+              </UncontrolledTooltip>
+            </span>
+            <span className="menu-icon">
+              <MdOutlineLibraryBooks size={24} color={'black'} id="pages" onClick={(e)=>{
+                setSelectedTab('pages');
+                setPageTab(!pageTab)}}/>
+              <UncontrolledTooltip placement="bottom" target="pages">
+                Pages
+              </UncontrolledTooltip>
+            </span>
+          </div>
         </div>
       </div>
     </div>
