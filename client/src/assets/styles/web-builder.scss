@@ -9,9 +9,16 @@
   width: 90%;
 }
 
+.gjs-editor-cont{
+  height: calc(100vh - 117px);
+}
+
 .navbar{
+  max-height:110px;
   width: 100%;
   background-color: white;
+  padding-bottom: 0px;
+  padding-top: 0px;
   padding-bottom: 0px;
   span{
     padding:5px;
@@ -89,31 +96,30 @@
     }
     .devices-size{
       height: 52px;
-      width: 20%;
+      width: 15%;
       border-right:1px solid #b8b8b8;
     }
     .zoom-size{
       height: 52px;
-      width: 15%;
-      border-right:1px solid #b8b8b8;
+      width: 35%;
     }
-  
-    .comments{
-      width: 15%;
-    }
-  
   }
 }
 
 .land-body{
-  height:calc(100vh - 120px);
+  height:calc(100vh - 110px);
 }
 
 .editor-content{
   width: 100%;
-  height: 900px;
 }
 
+.sidebar-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding:12px;
+}
 
 .sidebar{
   width: 80px;
@@ -145,7 +151,7 @@
   border:1px solid #e4e4e4;
   background-color: white;
   position: absolute;
-  height: 100%;
+  height: calc(100vh - 115px);
   .expanded-header{
     height: 50px;
     display: flex;
@@ -182,6 +188,37 @@
     }
   }
 
+}
+
+.style-sidebar{
+  width: 400px;
+  max-height: calc(100vh - 110px);
+}
+
+.layer-sidebar{
+  min-width: 400px;
+  max-height: calc(100vh - 110px);
+  .layer-item{
+    margin-left: 5px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    &:hover{
+      cursor:pointer;
+    }
+  }
+}
+.trait-sidebar{
+  width: 400px;
+  max-height: calc(100vh - 110px);
+}
+.page-sidebar{
+  max-height: calc(100vh - 110px);
+  width: 400px;
+  .page-item{
+    &:hover{
+      cursor: pointer;
+    }
+  }
 }
 
 #blocks{
