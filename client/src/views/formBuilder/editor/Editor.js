@@ -27,6 +27,7 @@ import ImportModal from './topNav/import/ImportModal';
 import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
 import '@src/assets/styles/web-builder.scss';
+import { webBuilderPlugin } from './elements/webBuilderPlugin';
 
 export default function Editor({
   open,
@@ -52,7 +53,7 @@ export default function Editor({
   useEffect(() => {
     const gjsEditor = grapesjs.init({
       container: '#editor',
-      plugins: [basicBlockPlugin, formPlugin, websitePlugin],
+      plugins: [basicBlockPlugin,formPlugin, (editor) => webBuilderPlugin(editor), websitePlugin],
       richTextEditor: {
         actions: []
       },
@@ -96,7 +97,7 @@ export default function Editor({
       storageManager: {},
       commands: {
         defaults: [{}]
-      }
+      },
     });
     gjsEditor.Commands.add('set-device-desktop', (editor) => {
       editor.setDevice('desktop');
