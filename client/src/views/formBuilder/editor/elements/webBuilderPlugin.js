@@ -1,42 +1,24 @@
 import { GiConsoleController } from "react-icons/gi";
 import repeater from "./repeater/repeater"
 import repeaterItem from "./repeater/repeaterItem";
+import { blocks } from "./Blocks";
+import { customSectors, customProperties } from "./CustomStyles";
 
 export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('repeater-item', repeaterItem);
   editor.DomComponents.addType('repeater', repeater);
 
-  editor.Blocks.add('repeater', {
-    label: 'Repeater',
-    attributes: { class: 'fa fa-text' },
-    content: { type: 'repeater' },
-  });
+  blocks.forEach(block => {
+    editor.Blocks.add(block.id, block);
+  })
 
-  // Add new sector
-  editor.StyleManager.addSector('custom-sector', {
-    name: 'Custom sector',
-    open: true,
-    properties: [],
-  });
+  customSectors.forEach(sector => {
+    editor.StyleManager.addSector(sector.id, sector);
+  })
 
-  // Add new property to the sector
-  editor.StyleManager.addProperty("custom-sector", {
-    type: 'number',
-    label: 'Column gap',
-    property: 'column-gap',
-    units: ['px', 'em', 'rem'],
-    default: '10px',
-    min: 0,
-  }, { at: 0 });
-
-  editor.StyleManager.addProperty("custom-sector", {
-    type: 'number',
-    label: 'Row gap',
-    property: 'row-gap',
-    units: ['px', 'em', 'rem'],
-    default: '10px',
-    min: 0,
-  });
+  customProperties.forEach(property => {
+    editor.StyleManager.addProperty(property.sector, property);
+  })
 
   editor.on(`block:drag:stop`, (component, block) => {
     if (component && component.isChildOf('repeater-item')) {
@@ -65,7 +47,6 @@ export const webBuilderPlugin = (editor) => {
   });
 
   editor.on(`component:update:numOfItems`, (model) => {
-    console.log('efef=========');
     if (model.get('type') === 'repeater') {
       const itemCmp = editor.getSelected().getLastChild();
       // const html = itemCmp.toHTML();

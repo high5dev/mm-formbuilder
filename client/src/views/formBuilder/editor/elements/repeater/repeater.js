@@ -34,11 +34,13 @@ let repeater = {
           type: 'number',
           name: 'numPerRow',
           changeProp: true,
+          min: 1,
         },
         {
           type: 'number',
           name: 'numOfItems',
           changeProp: true,
+          min: 1,
         }
       ],
       
