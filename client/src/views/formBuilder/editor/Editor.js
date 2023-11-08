@@ -19,7 +19,7 @@ import formPlugin from 'grapesjs-plugin-forms';
 import 'grapesjs/dist/css/grapes.min.css';
 import '../../../assets/scss/form-builder/style.scss';
 import '../../../assets/scss/form-builder/main.scss';
-// import '@src/assets/styles/web-builder.scss';
+import '@src/assets/styles/web-builder.scss';
 import grapesjs from 'grapesjs';
 import ImportModal from './topNav/import/ImportModal';
 import StyleSidebar from './topNav/styles';
@@ -29,16 +29,9 @@ import TraitSidebar from './topNav/traits';
 import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
-
 export default function Editor({
-  styleTab,
-  layerTab,
-  traitTab,
-  pageTab,
-  setStyleTab,
-  setLayerTab,
-  setTraitTab,
-  setPageTab,
+  tab,
+  setTab,
   open,
   setOpen,
   rsidebarOpen,
@@ -50,16 +43,16 @@ export default function Editor({
   
   const [editor, setEditor] = useState(null);
   const [selectedCmp, setSelectedCmp] = useState(null);
-  const [isOpen, setIsOpen]=useState(false);
   const toggle = () => {
     setOpen(!open);
   };
   const handleSidebarOpen = (e) => {
-    e.preventDefault();
     setSidebarOpen(false);
   };
   
-
+  const handleRSideBarOpen = (e) => {
+    setRSidebarOpen(false);
+  };
   useEffect(() => {
     const gjsEditor = grapesjs.init({
       container: '#editor',
@@ -71,6 +64,22 @@ export default function Editor({
       blockManager: {
         custom: true,
         appendTo: '#blocks'
+      },
+      styleManager:{
+        appendTo: document.querySelector('#style-manager-container'),
+      },
+      selectorManager:{
+        appendTo:document.querySelector('#selector-manager-container'),
+      },
+      layerManager:{
+        appendTo: document.querySelector('#layer-manager-container'),
+      },
+      traitManager:{
+        appendTo: document.querySelector('#trait-manager-container'),
+      },
+      pageManager: true,
+      pageManager:{
+        appendTo: document.querySelector('#page-manager-container'),
       },
       storageManager: {
         type: 'local',
@@ -111,9 +120,6 @@ export default function Editor({
             widthMedia: '480px'
           }
         ]
-      },
-      pageManager:{
-
       },
       panels: {
         defaults: []
@@ -192,19 +198,37 @@ export default function Editor({
       <div className="w-100 border">
         <div id="editor"></div>
       </div>
-      <div className="property-sidebar">
-           <Collapse isOpen={styleTab} horizontal={true} delay={{ show: 10, hide: 20 }}>
-             <StyleSidebar editor={editor} setEditor={setEditor} setStyleTab={setStyleTab}/>
-           </Collapse>
-           <Collapse isOpen={layerTab} horizontal={true} delay={{ show: 10, hide: 20 }}>
-             <LayerSidebar editor={editor} setEditor={setEditor} setLayerTab={setLayerTab}/>
-          </Collapse>
-           <Collapse isOpen={traitTab} horizontal={true} delay={{ show: 10, hide: 20 }}>
-             <TraitSidebar editor={editor} selectedCmp={selectedCmp} setEditor={setEditor} setTraitTab={setTraitTab}/>
-          </Collapse>
-           <Collapse isOpen={pageTab} horizontal={true} delay={{ show: 10, hide: 20 }}>
-             <PageSidebar editor={editor} setEditor={setEditor} setPageTab={setPageTab}/>
-          </Collapse>
+      <div className="property-sidebar" style={{display:rsidebarOpen?'block':'none'}}>
+      <PerfectScrollbar
+        className="scrollable-content"
+        options={{ suppressScrollX: true }}
+        style={{ height: `calc(100vh - 120px)` }}
+      >
+            <div className="sidebar-header px-1">
+            <span className="px-1 fs-5 fw-bolder text-black">{tab}</span>
+            <span>
+              <X
+                size={20}
+                onClick={(e) => {
+                  handleRSideBarOpen(e);
+                }}
+              />
+            </span>
+          </div>
+              <div style={{display:tab==='Styles'?'block':'none'}}>
+                  <div id="selector-manager-container" />
+                  <div id="style-manager-container" />
+                </div>
+              <div style={{display:tab==='Layers'?'block':'none'}}>
+                <div id="layer-manager-container" />  
+              </div>
+              <div style={{display:tab==='Traits'?'block':'none'}}>
+                <div id="trait-manager-container" />
+              </div>
+              <div style={{display:tab==='Pages'?'block':'none'}}>
+                <PageSidebar editor={editor} setEditor={setEditor}/>
+              </div>
+        </PerfectScrollbar>
       </div>
       <ImportModal editor={editor} setEditor={setEditor} open={open} toggle={toggle} />
     </div>

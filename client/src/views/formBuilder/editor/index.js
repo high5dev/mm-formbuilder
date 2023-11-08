@@ -9,10 +9,7 @@ export default function Index() {
   const [impStatus, setImpStatus] = useState(false);
   const [open, setOpen] = useState(false);
   const [device, setDevice] = useState('desktop');
-  const [styleTab, setStyleTab]=useState(false);
-  const [layerTab, setLayerTab]=useState(false);
-  const [traitTab, setTraitTab]=useState(false);
-  const [pageTab, setPageTab]=useState(false);
+  const [tab, setTab]=useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [rsidebarOpen, setRSidebarOpen]=useState(false);
   const { stepId } = useParams();
@@ -27,16 +24,10 @@ export default function Index() {
       <div className="editor-body">
         <div>
           <MainNav
+            tab={tab}
+            setTab={setTab}
             rsidebarOpen={rsidebarOpen}
             setRSidebarOpen={setRSidebarOpen}
-            styleTab={styleTab}
-            layerTab={layerTab}
-            traitTab={traitTab}
-            pageTab={pageTab}
-            setStyleTab={setStyleTab}
-            setLayerTab={setLayerTab}
-            setTraitTab={setTraitTab}
-            setPageTab={setPageTab}
             open={open}
             setOpen={setOpen}
             impStatus={impStatus}
@@ -50,14 +41,8 @@ export default function Index() {
           <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} /> 
           <div className="editor-content">
             <Editor
-              styleTab={styleTab}
-              layerTab={layerTab}
-              traitTab={traitTab}
-              pageTab={pageTab}
-              setStyleTab={setStyleTab}
-              setLayerTab={setLayerTab}
-              setTraitTab={setTraitTab}
-              setPageTab={setPageTab}
+              tab={tab}
+              setTab={setTab}
               rsidebarOpen={rsidebarOpen}
               setRSidebarOpen={setRSidebarOpen}
               open={open}

@@ -1,6 +1,6 @@
 // // This is style to overwrite grapesjs default styles
 // // Please DO NOT import it anywhere else
-
+@import '../../../@core//scss//base/bootstrap-extended/variables';
 .gjs-cv-canvas {
   /* remove the right gap */
   width: 100%;
@@ -16,6 +16,81 @@
 .gjs-title {
   display: none;
 }
+.gjs-two-color,
+.gjs-input-holder input,
+.gjs-clm-tags-field,
+.gjs-select,
+.gjs-layer-vis
+{
+  color:$gray-700
+}
+
+.gjs-clm-tags-c,
+#gjs-clm-states,
+.gjs-field-units,
+.gjs-clm-header-label,
+.gjs-input-unit,
+.gjs-field,
+.gjs-clm-sels-info,
+#gjs-clm-add-tag,
+.gjs-layer-count,
+.gjs-layer-move
+{
+  color:$gray-700;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.gjs-clm-sel{
+  font-size: 12px;
+  .gjs-clm-sel-id{
+    opacity: 1;
+  }
+}
+
+#gjs-clm-tag-label{
+  color: white;
+}
+.gjs-layer-name,
+.gjs-sm-sector-label{
+  font-weight: 900;
+}
+.gjs-field{
+  background-color: white;
+  border: 1px solid $gray-200;
+  color:$gray-700;
+
+}
+.gjs-input-holder > input[type='text'],
+#gjs-sm-input-holder > select{
+  color:$gray-700;
+
+}
+
+.gjs-sm-label{
+  color:$gray-700;
+  font-weight: 900;
+
+}
+.gjs-sm-sector{
+  .gjs-sm-sector-title,
+  .gjs-radio-item{
+    color:$gray-700;
+  }
+}
+.gjs-layer-title {
+  background-color: white;
+  color: $gray-700;
+  font-size: 12px;
+  padding:5px
+}
+
+.gjs-trt-traits{
+  color: $gray-700;
+  padding-top: 15px;
+}
+.gjs-label-wrp{
+  color: $gray-700;
+}
+
 .gjs-block-label {
   font-size: 12px;
   display: inline-block;
@@ -26,7 +101,7 @@
 }
 .gjs-blocks-cs {
   width: 100%;
-  color: #061033;
+  color: $gray-700;
 }
 .gjs-blocks-c {
   justify-content: start !important;
@@ -54,6 +129,10 @@
   width: 25px;
   height: 25px;
   margin: 0;
+}
+.gjs-clm-tags #gjs-clm-new{
+  color: $gray-700;
+  font-weight: 900;
 }
 #blocks {
   width: 100%;
