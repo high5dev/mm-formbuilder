@@ -43,62 +43,19 @@ import { updateFormDataAction } from '../store/action';
 var previewTimerId;
 
 export default function MainNav({
-  styleTab,
-  layerTab,
-  traitTab,
-  pageTab,
-  setStyleTab,
-  setLayerTab,
-  setTraitTab,
-  setPageTab,
-  rsidebarOpen,
-  setRSidebarOpen,
+  setTab,
   open,
   setOpen,
-  tab,
-  setTab,
+  rsidebarOpen,
+  setRSidebarOpen,
   store,
   device,
   setDevice
 }) {
-  const [selectedTab, setSelectedTab]=useState('style');
   const handleImport = (e) => {
     setOpen(!open);
   };
 
-  const handleTab=(type)=>{
-    if(rsidebarOpen){
-      setRSidebarOpen(false);
-      setTab('')
-    }
-    else{
-      setTab(type);
-      setRSidebarOpen(true);
-    }
-  };
-  useEffect(()=>{
-    if(styleTab && selectedTab==='style'){
-      setLayerTab(false);
-      setTraitTab(false);
-      setPageTab(false);
-    }
-    if(layerTab && selectedTab==='layers'){
-      setStyleTab(false);
-      setTraitTab(false);
-      setPageTab(false);
-      
-    }
-    if(traitTab && selectedTab==='traits'){
-      setStyleTab(false);
-      setLayerTab(false);
-      setPageTab(false);
-    }
-    if(pageTab && selectedTab==='pages'){
-      setStyleTab(false);
-      setLayerTab(false);
-      setTraitTab(false);
-    }
-  }, [styleTab, layerTab, traitTab, pageTab, selectedTab])
   return (
     <div className="navbar">
       <div className="up-navbar d-flex justify-content-between align-items-center">
@@ -300,8 +257,9 @@ export default function MainNav({
           <div className='d-flex'>
             <span className="menu-icon">
               <FaPaintBrush size={24} color={'black'} id="styles" onClick={(e)=>{
-                setSelectedTab('style');
-                setStyleTab(!styleTab)
+                setTab('Styles');
+                setRSidebarOpen(true);
+                
               }}/>
               <UncontrolledTooltip placement="bottom" target="styles">
                 Styles
@@ -309,8 +267,8 @@ export default function MainNav({
             </span>
             <span className="menu-icon">
               <MdOutlineLayers size={26} color={'black'} id="layers" onClick={(e)=>{
-                setSelectedTab('layers');
-                setLayerTab(!layerTab)
+                  setTab('Layers');
+                  setRSidebarOpen(true);
                 }}/>
               <UncontrolledTooltip placement="bottom" target="layers">
                 Layers
@@ -318,16 +276,18 @@ export default function MainNav({
             </span>
             <span className="menu-icon">
               <FiSettings size={24} color={'black'} id="traits" onClick={(e)=>{
-                setSelectedTab('traits');
-                setTraitTab(!traitTab)}}/>
+                  setTab('Traits');
+                  setRSidebarOpen(true);
+                }}/>
               <UncontrolledTooltip placement="bottom" target="traits">
                 Traits
               </UncontrolledTooltip>
             </span>
             <span className="menu-icon">
               <MdOutlineLibraryBooks size={24} color={'black'} id="pages" onClick={(e)=>{
-                setSelectedTab('pages');
-                setPageTab(!pageTab)}}/>
+                setTab('Pages');
+                setRSidebarOpen(true);
+             }}/>
               <UncontrolledTooltip placement="bottom" target="pages">
                 Pages
               </UncontrolledTooltip>
