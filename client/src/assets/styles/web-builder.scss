@@ -13,6 +13,40 @@
   height: calc(100vh - 117px);
 }
 
+.gjs-field-replace-image{
+  border:none
+}
+.trait-image-url{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.gallery-image-list{
+  margin-top: 10px;
+  display:grid;
+  grid-template-columns: repeat(8,1fr);
+  max-height: 300px;
+  gap:10px
+
+  // ({ 'grid-template-columns': `repeat(${numPerRow}, 1fr)` });
+}
+.gallery-view-footer{
+  margin-top: 20px;
+}
+.item-change-element{
+  display: flex;
+  justify-content: space-around;
+}
+.trait-image-btn{
+  width: 20px;
+  font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#select-btn,#cancel-btn{
+  min-width: 100px;
+}
 .navbar{
   max-height:110px;
   width: 100%;

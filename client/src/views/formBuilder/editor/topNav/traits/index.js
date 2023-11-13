@@ -34,7 +34,7 @@ export default function Index({ editor, selectedCmp, setEditor, setTraitTab, cha
 
   return (
     <div className="d-flex">
-                  <PerfectScrollbar
+       <PerfectScrollbar
               className="scrollable-content"
               options={{ suppressScrollX: true }}
               style={{ height: `calc(100vh - 120px)` }}

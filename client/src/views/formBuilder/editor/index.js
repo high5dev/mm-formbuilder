@@ -10,6 +10,7 @@ export default function Index() {
   const [open, setOpen] = useState(false);
   const [device, setDevice] = useState('desktop');
   const [tab, setTab]=useState('');
+  const [customwidth, setCustomWidth]=useState();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [rsidebarOpen, setRSidebarOpen]=useState(false);
   const { stepId } = useParams();
@@ -24,6 +25,8 @@ export default function Index() {
       <div className="editor-body">
         <div>
           <MainNav
+            customwidth={customwidth}
+            setCustomWidth={setCustomWidth}
             tab={tab}
             setTab={setTab}
             rsidebarOpen={rsidebarOpen}
@@ -32,8 +35,6 @@ export default function Index() {
             setOpen={setOpen}
             impStatus={impStatus}
             setImpStatus={setImpStatus}
-            device={device}
-            setDevice={setDevice}
             store={store}
           />
         </div>
@@ -41,6 +42,7 @@ export default function Index() {
           <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} /> 
           <div className="editor-content">
             <Editor
+              customwidth={customwidth}
               tab={tab}
               setTab={setTab}
               rsidebarOpen={rsidebarOpen}
@@ -50,7 +52,6 @@ export default function Index() {
               impStatus={impStatus}
               stepId={stepId}
               store={store}
-              device={device}
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
             />

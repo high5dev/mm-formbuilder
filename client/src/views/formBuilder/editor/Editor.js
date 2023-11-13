@@ -32,13 +32,13 @@ import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
 import { webBuilderPlugin } from './elements/webBuilderPlugin';
 export default function Editor({
+  customwidth,
   tab,
   setTab,
   open,
   setOpen,
   rsidebarOpen,
   setRSidebarOpen,
-  device,
   sidebarOpen,
   setSidebarOpen
 }) {
@@ -107,14 +107,8 @@ export default function Editor({
           {
             id: 'tablet',
             name: 'Tablet',
-            width: '770px',
+            width: '768px',
             widthMedia: '992px'
-          },
-          {
-            id: 'mobileLandscape',
-            name: 'Mobile landscape',
-            width: '568px',
-            widthMedia: '768px'
           },
           {
             id: 'mobilePortrait',
@@ -144,32 +138,39 @@ export default function Editor({
     gjsEditor.Commands.add('set-device-mobile', (editor) => {
       editor.setDevice('mobilePortrait');
     });
-    
-    setEditor(gjsEditor)
+    setEditor(gjsEditor);
   }, []);
 
-  editor?.on('component:selected', (cmp) => {
-    console.log('selected component ------------', cmp);
-    setSelectedCmp(cmp);
-  });
-  useEffect(() => {
-    if (editor !== null) {
-      switch (device) {
-        case 'desktop':
-          editor.runCommand('set-device-desktop');
-          break;
-        case 'tablet':
-          editor.runCommand('set-device-tablet');
-          break;
-        case 'mobile':
-          editor.runCommand('set-device-mobile');
-          break;
-        default:
-          editor.runCommand('set-device-desktop');
-          break;
+  useEffect(()=>{
+    if(customwidth && customwidth!=320 && customwidth!=768 && customwidth!=1280){
+      const device_name=(Math.random() + 1).toString();
+      const command_name= (Math.random() + 2).toString();
+      editor?.DeviceManager.add({
+        id: device_name,
+        name: device_name,
+        width: customwidth.toString()+'px'
+       });
+       editor.Commands.add(command_name, (editor) => {
+        editor?.setDevice(device_name);
+      });
+      editor?.runCommand(command_name);
+    }
+    else{
+      if(customwidth===320){
+        editor?.runCommand('set-device-mobile');
+      }
+      else if(customwidth===768){
+        editor?.runCommand('set-device-tablet');
+      }
+      else{
+        editor?.runCommand('set-device-desktop');
       }
     }
-  }, [device]);
+  }, [customwidth])
+
+  editor?.on('component:selected', (cmp) => {
+    setSelectedCmp(cmp);
+  });
 
   return (
     <div className="d-flex">
