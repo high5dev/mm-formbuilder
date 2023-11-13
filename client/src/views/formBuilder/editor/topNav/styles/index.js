@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Eye, Save, X, ChevronDown, MoreHorizontal, Plus } from 'react-feather';
-
 import { useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import PerfectScrollbar from 'react-perfect-scrollbar';

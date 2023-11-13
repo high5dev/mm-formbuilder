@@ -19,7 +19,7 @@
   background-color: white;
   padding-bottom: 0px;
   padding-top: 0px;
-  padding-bottom: 0px;
+  padding-bottom: 0px;  
   span{
     padding:5px;
     color: white;
@@ -118,7 +118,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding:12px;
+  padding:5px;
+  background-color:#dddddd;
 }
 
 .sidebar{
@@ -167,7 +168,6 @@
     }
   }
   .expanded-content{
-    margin-top: 25px;
     .element-card{
       border-radius: 6px;
       padding: 10px;
@@ -213,8 +213,9 @@
 }
 .page-sidebar{
   max-height: calc(100vh - 110px);
-  width: 400px;
+  width: 300px;
   .page-item{
+    padding:5px;
     &:hover{
       cursor: pointer;
     }
@@ -223,9 +224,8 @@
 
 #blocks{
   .gjs-blocks-c{
-    margin-top: 25px;
     display: grid;
-    gap: 25px;
+    gap: 10px;
     grid-template-columns: auto auto auto;
     .gjs-block{
       border-radius: 6px;
@@ -261,6 +261,34 @@
   width:300px;
   height: 300px;
 }
+
+.property-sidebar{
+  background-color:white;
+  #selector-manager-container{
+    width: 300px;
+    max-width: 300px;
+  }
+  
+  #style-manager-container{
+    width: 300px;
+    max-width: 300px;
+    max-height: calc(100vh - 110px);
+  }
+  
+  #layer-manager-container{
+    width: 300px;
+    max-width: 300px;
+    max-height: calc(100vh - 110px);
+  }
+  
+  #trait-manager-container{
+    width: 300px;
+    max-width: 300px;
+    max-height: calc(100vh - 110px);
+  }
+  
+}
+
 
 
 

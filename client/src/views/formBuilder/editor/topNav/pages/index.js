@@ -27,15 +27,17 @@ import {
 
 export default function Index({ editor, setEditor, setPageTab }) {
   const [pages, setPages] = useState([]);
+  const [pagenum, setPageNum]=useState(1);
   const [selectedPage, setSelectedPage] = useState();
   const addNewPage = () => {
     if (pages) {
-      const nextIndex = pages.length + 1;
+      const nextIndex = pagenum + 1;
       editor.Pages.add({
         name: `New page ${nextIndex}`,
         component: `<h1>Page content ${nextIndex}</h1>`
       });
       setPages([...editor.Pages.getAll()]);
+      setPageNum(nextIndex);
       setEditor(editor);
     }
   };
@@ -54,6 +56,7 @@ export default function Index({ editor, setEditor, setPageTab }) {
   useEffect(() => {
     const _pages = editor?.Pages.getAll();
     if (_pages) {
+      setPageNum(_pages.length);
       setPages([..._pages]);
       setSelectedPage(_pages[0]);
     }
@@ -67,23 +70,12 @@ export default function Index({ editor, setEditor, setPageTab }) {
         style={{ height: `calc(100vh - 120px)` }}
       >
         <div className="page-sidebar">
-          <div className="sidebar-header">
-            <span className="px-1 fs-5 fw-bolder text-black">Pages</span>
-            <span>
-              <X
-                size={20}
-                onClick={(e) => {
-                  setPageTab(false);
-                }}
-              />
-            </span>
-          </div>
           <div className="bg-white px-2">
             <div className="p-2 d-flex justify-content-around my-1  ">
               <button
                 className="btn btn-primary"
                 onClick={addNewPage}
-                style={{ minWidth: '200px' }}
+                style={{ minWidth: '100px', fontSize:'12px' }}
               >
                 <Plus size={15} />
                 Add page
@@ -93,9 +85,9 @@ export default function Index({ editor, setEditor, setPageTab }) {
               pages.map((page, index) => (
                 <div
                   key={page.getId()}
-                  className="page-item d-flex p-1 border-black border rounded-3 my-1 justify-content-between"
+                  className="page-item d-flex my-1 justify-content-between"
                 >
-                  <div className="fs-5 fw-bolder text-black" onClick={() => selectPage(page)}>
+                  <div className="fs-6 fw-bolder text-black" onClick={() => selectPage(page)}>
                     {page.getName() || 'Home page'}
                   </div>
                   {selectedPage !== page && (
