@@ -38,6 +38,10 @@ export const addToImageLibrary = (payload) => {
 export const getImageLibrary = () => {
   return API.get('/image-library/');
 };
+
+export const delImageFromLibrary =(id) =>{
+  return API.delete('/image-library/' + id);
+}
 export const getFormsCount = () => {
   return API.get('/form-builder/get-user-forms-count');
 };

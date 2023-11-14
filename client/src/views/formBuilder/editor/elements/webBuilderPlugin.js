@@ -5,6 +5,7 @@ import gallery from './gallery/gallery';
 import galleryItem from './gallery/galleryItem'
 import { blocks } from "./Blocks";
 import { customSectors, customProperties } from "./CustomStyles";
+import * as api from  '../../store/api'
 
 export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('repeater-item', repeaterItem);
@@ -13,21 +14,13 @@ export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('gallery', gallery);
   editor.TraitManager.addType('image-url', {
     createInput({trait, component}){
+      let image_url="https://storage.googleapis.com/mymember-storage/my-manager/a4fbe6f0-192e-4c2a-bf03-7db291aafbd2-@fabbiyedev.png";
       let _url;
+      let _id;
       let selected_index;
       const trait_name=trait.get('name');
+      let images=component.get('images');
       const src=component.getAttributes().src;
-      const gallery_list= [
-        "https://i.ibb.co/S3sTCQY/image-large.png",
-        "https://i.ibb.co/1qb5Kbs/image-large-1.png",
-        "https://i.ibb.co/4VkNYMt/image-large.png",
-        "https://i.ibb.co/RgdgdZK/image-fixed-width-1.png",
-        "https://i.ibb.co/G3Cqdcp/1-1.png",
-        "https://i.ibb.co/y0WGRGR/1-3.webp",
-        "https://i.ibb.co/SQKpyVj/1-4.webp",
-        "https://i.ibb.co/BCC4bWK/1-5.webp",
-        
-      ];  
       const newLinkElement = document.createElement('div');
       newLinkElement.className = 'trait-image-url';
       newLinkElement.innerHTML = `
@@ -37,19 +30,24 @@ export const webBuilderPlugin = (editor) => {
       modalElement.innerHTML=`
         <div class="gallery-image-list">
           ${
-            gallery_list.map((url)=>{
-              return(
-                `<img class="select-image-item" src=${url} width="120" height="120"/>`
-              )
-            })
+            images && images.map((item)=>{
+                return(
+                  `<img class="select-image-item" id=${item.id} src=${item.url} width="110" height="110"/>`
+                )
+            }).join('')
           }
         </div>
-        <div class="gallery-view-footer d-flex justify-content-center">
-          <div class="mx-3">
-            <button id="select-btn" class="btn btn-primary">Ok</button>
+        <div class="gallery-view-footer d-flex justify-content-between">
+          <div class="">
+            <button id="del-btn" class="btn btn btn-outline-danger">Delete</button>
           </div>
-          <div class="mx-3">
-           <button id="cancel-btn" class="btn btn-secondary">Cancel</button>
+          <div class="d-flex">
+            <div class="mx-3">
+            <button id="select-btn" class="btn btn-primary">Ok</button>
+            </div>
+            <div class="mx-3">
+               <button id="cancel-btn" class="btn btn-secondary">Cancel</button>
+            </div>
           </div>
         <div>
       `;
@@ -62,18 +60,18 @@ export const webBuilderPlugin = (editor) => {
       modalElement.querySelectorAll('.select-image-item').forEach((item, index) => {
         item.addEventListener('click', event => {
           _url=event.target.src;
+          _id=event.target.id;
           selected_index=index;
           newLinkElement.querySelector('.input-image-url').value=_url;
           for(let i=0; i<modalElement.querySelectorAll('.select-image-item').length; i++){
             const el=modalElement.querySelectorAll('.select-image-item')[i];
             if (selected_index===i){
-              el.style.border="1px solid blue";
+              el.style.border="2px solid blue";
             }
             else{
               el.style.border="none";
             }
           }
-
         });
       });
 
@@ -82,6 +80,34 @@ export const webBuilderPlugin = (editor) => {
           component.set(trait_name, _url);
           editor.Modal.close();
         }
+      });
+      modalElement.querySelector('#del-btn').addEventListener('click', (ev)=>{
+        if(_id){
+          api.delImageFromLibrary(_id).then((res)=>{
+            const {data}=res;
+            if(data.success){
+              let _images=images && images.filter((item)=>item.id!=_id);
+              component.set('images', _images);
+              document.getElementById(_id).remove();
+              const parentElements = component.parents();
+              let parentRepeater=null;
+              for (let i = 0; i < parentElements.length; i++) {
+                if (parentElements[i].get('type') === 'gallery') {
+                  parentRepeater = parentElements[i];
+                  break;
+                }
+              }
+              for (let i = 0; i < parentRepeater.components().length; i++){
+                parentRepeater.getChildAt(i).set('images', _images);
+              }
+            }
+          }
+          )
+        }
+        else{
+          editor.Modal.close();
+        }
+        // api.addToImageLibrary({image:image_url});
       });
       modalElement.querySelector('#cancel-btn').addEventListener('click', (ev)=>{
         editor.Modal.close();

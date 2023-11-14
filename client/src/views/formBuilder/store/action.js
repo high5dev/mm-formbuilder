@@ -15,7 +15,6 @@ import { getUserData } from '../../../auth/utils';
 export const createFormAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.createForm(payload);
-
     dispatch(setFormReducer(data.data));
     if (data?.success === true) {
       toast.success('Form created successfully');
@@ -132,6 +131,22 @@ export const getToImageLibraryAction = () => async (dispatch) => {
     dispatch(setImageLibraryReducer(data));
   } catch (error) { }
 };
+
+export const delImageAction =(id) =>async(dispatch) => {
+  try{
+    const {data}=await api.delImageFromLibrary(id);
+    dispatch(getToImageLibraryAction());
+    if (data?.success) {
+      toast.success('Contact deleted successfully');
+    } else {
+      toast.error('Something went wrong! Please try again!');
+    }
+
+  }
+  catch(error){
+  }
+}
+
 
 ///------------- ** save data action
 export const addFormEntryAction = (id, payload) => async (dispatch) => {
