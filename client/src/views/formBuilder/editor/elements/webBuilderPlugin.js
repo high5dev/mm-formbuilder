@@ -1,12 +1,14 @@
 import { GiConsoleController } from "react-icons/gi";
 import repeater from "./repeater/repeater"
 import repeaterItem from "./repeater/repeaterItem";
+import iframe from "./iframe/iframe";
 import { blocks } from "./Blocks";
 import { customSectors, customProperties } from "./CustomStyles";
 
 export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('repeater-item', repeaterItem);
   editor.DomComponents.addType('repeater', repeater);
+  editor.DomComponents.addType('iframe-element', iframe);
 
   blocks.forEach(block => {
     editor.Blocks.add(block.id, block);
