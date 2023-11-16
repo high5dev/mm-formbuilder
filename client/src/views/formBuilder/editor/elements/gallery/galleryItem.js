@@ -28,12 +28,15 @@ let galleryItem = {
     },
     view: {
       async init() {
-        const {data}=await api.getImageLibrary();
-        let temp_images=[];
-        for(let i=0; i<data.data.length; i++){
-          temp_images.push({id:data.data[i]._id, url:data.data[i].image});
-        };
+        const payload={page:1, pageSize:21};
+        const {data}=await api.getImageLibrary(payload);
+        if(data.data){
+          let temp_images=[];
+          for(let i=0; i<data.data.length; i++){
+            temp_images.push({id:data.data[i]._id, url:data.data[i].image});
+          };
         this.model.set('images', temp_images);
+        }
         this.listenTo(this.model, 'change:url', this.handleChangeUrl);
         this.listenTo(this.model, 'change:images', this.handleChangeImages);
       },
@@ -43,12 +46,6 @@ let galleryItem = {
         this.render();
       },
       async handleChangeImages(e){
-        const {data}=await api.getImageLibrary();
-        let temp_images=[];
-        for(let i=0; i<data.data.length; i++){
-          temp_images.push({id:data.data[i]._id, url:data.data[i].image});
-        };
-        this.model.set('images', [...temp_images]);
         this.render();
       }
     }

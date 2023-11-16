@@ -17,6 +17,8 @@ export const webBuilderPlugin = (editor) => {
       let image_url="https://storage.googleapis.com/mymember-storage/my-manager/a4fbe6f0-192e-4c2a-bf03-7db291aafbd2-@fabbiyedev.png";
       let _url;
       let _id;
+      let pageSize=21;
+      let pageNum=2;
       let selected_index;
       const trait_name=trait.get('name');
       let images=component.get('images');
@@ -57,6 +59,63 @@ export const webBuilderPlugin = (editor) => {
           content: modalElement
         });
       });
+
+      const scrollElement=modalElement.querySelector(".gallery-image-list")
+      scrollElement.addEventListener('scroll', (ev)=>{
+        if (scrollElement.scrollTop + scrollElement.clientHeight >= scrollElement.scrollHeight) {
+          const payload={
+            page:pageNum,
+            pageSize 
+          }
+          api.getImageLibrary(payload).then((res)=>{
+            if(res.data){
+              pageNum+=1;
+              const result=res.data;
+              if(result.data){
+                let temp_images=images;
+                for(let i=0; i<result.data.length; i++){
+                  temp_images.push({id:result.data[i]._id, url:result.data[i].image});
+                };
+
+              document.querySelector(".gallery-image-list").innerHTML= 
+              temp_images && temp_images.map((item)=>{
+                    return(
+                      `<img class="select-image-item" id=${item.id} src=${item.url} width="110" height="110"/>`
+                    )
+                }).join('');
+                modalElement.querySelectorAll('.select-image-item').forEach((item, index) => {
+                  item.addEventListener('click', event => {
+                    _url=event.target.src;
+                    _id=event.target.id;
+                    selected_index=index;
+                    newLinkElement.querySelector('.input-image-url').value=_url;
+                    for(let i=0; i<modalElement.querySelectorAll('.select-image-item').length; i++){
+                      const el=modalElement.querySelectorAll('.select-image-item')[i];
+                      if (selected_index===i){
+                        el.style.border="2px solid blue";
+                      }
+                      else{
+                        el.style.border="none";
+                      }
+                    }
+                  });
+                });
+              const parentElements = component.parents();
+              let parentRepeater=null;
+              for (let i = 0; i < parentElements.length; i++) {
+                if (parentElements[i].get('type') === 'gallery') {
+                  parentRepeater = parentElements[i];
+                  break;
+                }
+              }
+              for (let i = 0; i < parentRepeater.components().length; i++){
+                parentRepeater.getChildAt(i).set('images', temp_images);
+              }   
+              }
+            }
+          })
+        } 
+      })
       modalElement.querySelectorAll('.select-image-item').forEach((item, index) => {
         item.addEventListener('click', event => {
           _url=event.target.src;
@@ -74,7 +133,6 @@ export const webBuilderPlugin = (editor) => {
           }
         });
       });
-
       modalElement.querySelector('#select-btn').addEventListener('click', (ev)=>{
         if(_url){
           component.set(trait_name, _url);

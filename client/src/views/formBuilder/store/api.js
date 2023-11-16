@@ -35,8 +35,8 @@ export const addLeads = (id, payload) => {
 export const addToImageLibrary = (payload) => {
   return API.post('/image-library/', payload);
 };
-export const getImageLibrary = () => {
-  return API.get('/image-library/');
+export const getImageLibrary = (payload) => {
+  return API.get('/image-library',{ params: { ...payload }});
 };
 
 export const delImageFromLibrary =(id) =>{
