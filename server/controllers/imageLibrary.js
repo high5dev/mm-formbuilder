@@ -16,8 +16,7 @@ exports.addImageLibrary = asyncHandler(async(req,res)=>{
         creatorType:organization?user.organizations.find(x=>x.organizationId.toString()===organization).userType:user.userType
     }
     try {
-        const data = await ImageLibrary.create(payload);
-        console.log('data', data);
+        const data = await ImageLibrary.create(payload)
         if(data){
             res.status(200).json({ success: true });
         }
