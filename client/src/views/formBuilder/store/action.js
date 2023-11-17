@@ -6,7 +6,8 @@ import {
   setImageLibraryReducer,
   setFormCategoriesReducer,
   setFormOrderElementsReducer,
-  setFormProductsReducer
+  setFormProductsReducer,
+  setWebElementsReducer
 } from './reducer';
 import * as api from './api';
 import { toast } from 'react-toastify';
@@ -267,6 +268,23 @@ export const sendInvoiceAction = (payload) => async (dispatch) => {
 export const sendEmailToUserAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.sendEmailToUser(payload);
+    return data;
+  } catch (error) { }
+};
+
+export const getWebElementsAction = () => async (dispatch) => {
+  try {
+    const { data } = await api.getWebElements();
+    dispatch(setWebElementsReducer(data.data));
+    return data;
+  } catch (error) { }
+};
+
+export const createWebElementAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createWebElement(payload);
+    if (data.success)
+      dispatch(getWebElementsAction(data.data));
     return data;
   } catch (error) { }
 };

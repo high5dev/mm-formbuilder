@@ -50,7 +50,7 @@ export default function Index({ editor, setEditor, open, toggle }) {
         </ModalHeader>
         <ModalBody className="d-flex justify-content-between">
           <FileUploaderrMultiple files={files} setFiles={setFiles} />
-          <div className="code-viewer">
+          <div className="code-viewer ms-1">
             <CodeMirror
               value={code}
               width="400px"

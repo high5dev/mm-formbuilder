@@ -106,3 +106,15 @@ export const searchDomain = (domain) =>{
   return API.get(`/form-builder/search/domain/${domain}`);
 }
 
+// get Categories
+export const getCategoriesByMenu = (payload) =>{
+  return API.post(`/web-builder-element/categories`, payload);
+}
+
+export const createWebElement = (payload) => {
+  return API.post(`/web-builder-element/create`, payload);
+}
+
+export const getWebElements = () => {
+  return API.get(`/web-builder-element/elements`);
+}

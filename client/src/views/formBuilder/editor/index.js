@@ -12,8 +12,14 @@ export default function Index() {
   const [tab, setTab]=useState('');
   const [customwidth, setCustomWidth]=useState();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarData, setSidebarData] = useState({
+    isOpen: false,
+    menu: '',
+  });
   const [rsidebarOpen, setRSidebarOpen]=useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const { stepId } = useParams();
+  const [openAddElementMdl, setOpenAddElementMdl] = useState(false);
   const store = useSelector((state) => {
     return {
       ...state.formEditor
@@ -36,10 +42,17 @@ export default function Index() {
             impStatus={impStatus}
             setImpStatus={setImpStatus}
             store={store}
+            openAddElementMdl={openAddElementMdl}
+            setOpenAddElementMdl={setOpenAddElementMdl}
           />
         </div>
         <div className="land-body d-flex">
-          <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} /> 
+          <Sidebar
+            sidebarData={sidebarData}
+            setSidebarData={setSidebarData}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          /> 
           <div className="editor-content">
             <Editor
               customwidth={customwidth}
@@ -54,6 +67,13 @@ export default function Index() {
               store={store}
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
+              device={device}
+              sidebarData={sidebarData}
+              setSidebarData={setSidebarData}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              openAddElementMdl={openAddElementMdl}
+              setOpenAddElementMdl={setOpenAddElementMdl}
             />
           </div>
         </div>
