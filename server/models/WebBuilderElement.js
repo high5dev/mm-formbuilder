@@ -8,20 +8,6 @@ const WebBuilderElementSchema = new mongoose.Schema(
       ref: "auths",
       required: true,
     },
-    name: {
-      type: String,
-      required: true,
-    },
-    mainMenu: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "web-element-mainmenus",
-      required: true,
-    },
-    subMenu: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "web-element-submenus",
-      required: true,
-    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "web-element-categories",
@@ -30,6 +16,10 @@ const WebBuilderElementSchema = new mongoose.Schema(
     html: {
       type: String,
       default: '',
+    },
+    imageUrl: {
+      type: String,
+      required: true,
     },
     isDefault: {
       type: Boolean,

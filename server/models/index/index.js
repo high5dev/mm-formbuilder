@@ -174,8 +174,6 @@ const WebBuilder = require("../WebBuilder");
 const WebPage = require("../WebPage");
 const WebBuilderElement = require("../WebBuilderElement");
 const WebBuilderElementCategory = require("../WebElementCategory");
-const WebBuilderElementSubMenu = require("../WebElementSubMenu");
-const WebBuilderElementMainMenu = require("../WebElementMainMenu");
 
 const models = {
   Authenticate,
@@ -339,8 +337,6 @@ const models = {
   WebPage,
   WebBuilderElement,
   WebBuilderElementCategory,
-  WebBuilderElementMainMenu,
-  WebBuilderElementSubMenu,
 };
 
 module.exports = models;

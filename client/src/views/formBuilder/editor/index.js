@@ -10,8 +10,12 @@ export default function Index() {
   const [open, setOpen] = useState(false);
   const [device, setDevice] = useState('desktop');
   const [tab, setTab]=useState('');
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarData, setSidebarData] = useState({
+    isOpen: false,
+    menu: '',
+  });
   const [rsidebarOpen, setRSidebarOpen]=useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const { stepId } = useParams();
   const store = useSelector((state) => {
     return {
@@ -38,7 +42,12 @@ export default function Index() {
           />
         </div>
         <div className="land-body d-flex">
-          <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} /> 
+          <Sidebar
+            sidebarData={sidebarData}
+            setSidebarData={setSidebarData}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          /> 
           <div className="editor-content">
             <Editor
               tab={tab}
@@ -51,8 +60,10 @@ export default function Index() {
               stepId={stepId}
               store={store}
               device={device}
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
+              sidebarData={sidebarData}
+              setSidebarData={setSidebarData}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
             />
           </div>
         </div>

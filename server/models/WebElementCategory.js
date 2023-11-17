@@ -3,10 +3,13 @@ const mongoose = require("mongoose");
 
 const WebBuilderElementCategorySchema = new mongoose.Schema(
   {
-    subMenu: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "web-element-submenus",
+    mainMenu: {
+      type: String,
       required: true,
+    },
+    subMenu: {
+      type: String,
+      default: '',
     },
     name: {
       type: String,
