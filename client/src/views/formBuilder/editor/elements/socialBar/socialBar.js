@@ -1,15 +1,7 @@
-const script = function(props) {
-  alert('Hi');
-  // `this` is bound to the component element
-  console.log('the element', props.repeaterWidth, props.myprop2);
-  return 111;
-};
-
 let socialBar = {
   isComponent: el => el.tagName === 'div',
   model: {
     defaults: {
-      // script,
       tagName: 'div',
       draggable: '*',
       droppable: false,
@@ -18,73 +10,85 @@ let socialBar = {
         const socialList = props.attributes.socialList;
         const components = [];
 
-        for (let i = 0; i < socialList; i++) {
+        for (let i = 0; i < socialList.length; i++) {
           const socialItem = socialList[i];
-          components.push(`
-            <a href="${socialItem.url}" target="_blank" rel="noreferrer">
-              <img
-                src="${socialItem.image}"
-                alt="${socialItem.name}"
-              />
-            </a>
-          `);
+
+          components.push(
+            {
+              tagName: 'a',
+              draggable: false,
+              droppable: false,
+              hoverable: false,
+              attributes: { href: `${socialItem.url}` },
+              components: [
+                {
+                  tagName: 'img',
+                  draggable: false,
+                  droppable: false,
+                  hoverable: false,
+                  attributes: {
+                    class: 'social-icon',
+                    src: socialItem.image || `https://i.ibb.co/YZX14HG/image33.png`,
+                    alt: socialItem.name,
+                  },
+                },
+              ],
+            }
+          );
         }
         return components;
       },
       socialList: [
         {
-          id: 'instagram',
           name: 'Instagram',
           url: 'https://www.instagram.com',
-          image: '',
+          image: 'https://i.ibb.co/XWvs3qw/instagram.png',
           type: 'webaddress'
         },
         {
-          id: 'facebook',
           name: 'Facebook',
           url: 'https://www.facebook.com',
-          image: '',
+          image: 'https://i.ibb.co/0BCsZKL/facebook-1.png',
           type: 'webaddress'
         },
         {
-          id: 'twitter',
           name: 'Twitter',
           url: 'https://www.twitter.com',
-          image: '',
+          image: 'https://i.ibb.co/BCwkqfN/twitter.png',
           type: 'webaddress'
         },
         {
-          id: 'linkedin',
           name: 'LinkedIn',
           url: 'https://www.linkedin.com',
-          image: '',
+          image: 'https://i.ibb.co/8sL8mF4/linkedin.png',
           type: 'webaddress'
         },
         {
-          id: 'youtube',
           name: 'Youtube',
           url: 'https://www.youtube.com',
-          image: '',
+          image: 'https://i.ibb.co/tm0rJ2c/youtube-1.png',
           type: 'webaddress'
         },
         {
-          id: 'tiktok',
           name: 'TikTok',
           url: 'https://www.tiktok.com',
-          image: '',
+          image: 'https://i.ibb.co/ZWnZPqr/tiktok.png',
           type: 'webaddress'
         }
       ],
       traits: [
         {
-          type: 'number',
+          type: 'social-link',
           name: 'socialList',
           changeProp: true,
           min: 1,
         },
       ],
       
-      styles: `.social-bar {display: flex; flex-direction: row; justify-content: space-between;}`,
+      styles: `
+        .social-bar {display: flex; flex-direction: row; width: fit-content;}
+        .social-icon {width: 40px; height: 40px; margin: 5px; border-radius: 5px;}
+      `,
       stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius'],
     },
   },
@@ -94,9 +98,36 @@ let socialBar = {
     },
     handleChangeSocialList() {
       const comps = this.model.get('components');
-      const numPerRow = this.model.get('socialList');
+      const socialList = this.model.get('socialList');
       comps.reset();
-      // comps.parent.addStyle({ 'grid-socialList-columns': `repeat(${numPerRow}, 1fr)` })
+      
+      for (let i = 0; i < socialList.length; i++) {
+          const socialItem = socialList[i];
+
+          comps.add(
+            {
+              tagName: 'a',
+              draggable: false,
+              droppable: false,
+              hoverable: false,
+              attributes: { href: `${socialItem.url}` },
+              components: [
+                {
+                  tagName: 'img',
+                  draggable: false,
+                  droppable: false,
+                  hoverable: false,
+                  attributes: {
+                    class: 'social-icon',
+                    src: socialItem.image || `https://i.ibb.co/1Q0tjDs/image-7.png`,
+                    alt: socialItem.name
+                  }
+                },
+              ],
+            }
+          );
+        }
+
       this.render();
     },
   }

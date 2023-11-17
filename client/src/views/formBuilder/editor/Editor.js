@@ -149,7 +149,6 @@ export default function Editor({
   }, []);
 
   editor?.on('component:selected', (cmp) => {
-    console.log('selected component ------------', cmp);
     setSelectedCmp(cmp);
   });
   useEffect(() => {
