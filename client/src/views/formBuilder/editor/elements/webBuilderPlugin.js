@@ -3,6 +3,7 @@ import repeater from "./repeater/repeater"
 import repeaterItem from "./repeater/repeaterItem";
 import gallery from './gallery/gallery';
 import galleryItem from './gallery/galleryItem'
+import iframe from "./iframe/iframe";
 import { blocks } from "./Blocks";
 import { customSectors, customProperties } from "./CustomStyles";
 import * as api from  '../../store/api'
@@ -186,6 +187,7 @@ export const webBuilderPlugin = (editor) => {
       return newLinkElement;
     }
 
+  editor.DomComponents.addType('iframe-element', iframe);
   editor.DomComponents.addType('social-bar', socialBar);
 
   editor.TraitManager.addType('social-link', {
@@ -420,6 +422,7 @@ export const webBuilderPlugin = (editor) => {
       });      
     },
   });
+
 
   blocks.forEach(block => {
     editor.Blocks.add(block.id, block);
