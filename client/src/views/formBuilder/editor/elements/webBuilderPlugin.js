@@ -1,6 +1,7 @@
 import { GiConsoleController } from "react-icons/gi";
 import repeater from "./repeater/repeater"
 import repeaterItem from "./repeater/repeaterItem";
+import iframe from "./iframe/iframe";
 import { blocks } from "./Blocks";
 import { customSectors, customProperties } from "./CustomStyles";
 import socialBar from "./socialBar/socialBar";
@@ -19,6 +20,7 @@ const testImageUrls = [
 export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('repeater-item', repeaterItem);
   editor.DomComponents.addType('repeater', repeater);
+  editor.DomComponents.addType('iframe-element', iframe);
   editor.DomComponents.addType('social-bar', socialBar);
 
   editor.TraitManager.addType('social-link', {
@@ -253,6 +255,7 @@ export const webBuilderPlugin = (editor) => {
       });      
     },
   });
+
 
   blocks.forEach(block => {
     editor.Blocks.add(block.id, block);
