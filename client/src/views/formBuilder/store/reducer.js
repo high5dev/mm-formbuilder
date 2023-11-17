@@ -24,7 +24,8 @@ export const formEditor = createSlice({
     funnels: [],
     templates: [],
     imageLibrary: [],
-    formCategories:[]
+    formCategories:[],
+    webElements: [],
   },
   reducers: {
     setFormReducer: (state, action) => {
@@ -85,7 +86,10 @@ export const formEditor = createSlice({
     },
     setFormCategoriesReducer:(state,action) =>{
       state.formCategories = action?.payload
-    }
+    },
+    setWebElementsReducer: (state, action) => {
+      state.webElements = action?.payload;
+    },
   }
 });
 
@@ -99,6 +103,7 @@ export const {
   setImageLibraryReducer,
   setFormOrderElementsReducer,
   setFormProductsReducer,
-  setFormSalesTypeReducer
+  setFormSalesTypeReducer,
+  setWebElementsReducer,
 } = formEditor.actions;
 export default formEditor.reducer;
