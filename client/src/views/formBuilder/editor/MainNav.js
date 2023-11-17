@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Eye, Save, X, ChevronDown, MoreHorizontal } from 'react-feather';
+import { Eye, Save, X, ChevronDown, MoreHorizontal, PlusSquare } from 'react-feather';
 
 import { BiMobile } from 'react-icons/bi';
 import { FaBox, FaPaintBrush } from 'react-icons/fa';
@@ -16,7 +16,7 @@ import {
   MdZoomIn,
   MdOutlineDownloading,
   MdOutlineInsertComment,
-  MdOutlineLensBlur
+  MdOutlineLensBlur,
 } from 'react-icons/md';
 import { useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
@@ -40,6 +40,7 @@ import {
   UncontrolledTooltip
 } from 'reactstrap';
 import { updateFormDataAction } from '../store/action';
+import { BsPlusSquare } from 'react-icons/bs';
 var previewTimerId;
 
 export default function MainNav({
@@ -50,10 +51,16 @@ export default function MainNav({
   setRSidebarOpen,
   store,
   device,
-  setDevice
+  setDevice,
+  openAddElementMdl,
+  setOpenAddElementMdl
 }) {
   const handleImport = (e) => {
     setOpen(!open);
+  };
+
+  const handleAddElement = () => {
+    setOpenAddElementMdl(true);
   };
 
   return (
@@ -181,6 +188,12 @@ export default function MainNav({
             <MdZoomIn size={30} color={'black'} id="zoom" />
             <UncontrolledTooltip placement="bottom" target="zoom">
               Zoom
+            </UncontrolledTooltip>
+          </span>
+          <span className="hover-bg px-2" onClick={() => {handleAddElement()}}>
+            <PlusSquare size={26} color={'black'} id="add-element" />
+            <UncontrolledTooltip placement="bottom" target="add-element">
+              Add Element
             </UncontrolledTooltip>
           </span>
         </div>

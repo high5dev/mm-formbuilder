@@ -172,6 +172,8 @@ const SocialProofDisplayUrl = require("../SocialProofDisplayUrl");
 
 const WebBuilder = require("../WebBuilder");
 const WebPage = require("../WebPage");
+const WebBuilderElement = require("../WebBuilderElement");
+const WebBuilderElementCategory = require("../WebElementCategory");
 
 const models = {
   Authenticate,
@@ -333,6 +335,8 @@ const models = {
   // Tournament,
   WebBuilder,
   WebPage,
+  WebBuilderElement,
+  WebBuilderElementCategory,
 };
 
 module.exports = models;
