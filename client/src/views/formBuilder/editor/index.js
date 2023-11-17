@@ -17,6 +17,7 @@ export default function Index() {
   const [rsidebarOpen, setRSidebarOpen]=useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const { stepId } = useParams();
+  const [openAddElementMdl, setOpenAddElementMdl] = useState(false);
   const store = useSelector((state) => {
     return {
       ...state.formEditor
@@ -39,6 +40,8 @@ export default function Index() {
             device={device}
             setDevice={setDevice}
             store={store}
+            openAddElementMdl={openAddElementMdl}
+            setOpenAddElementMdl={setOpenAddElementMdl}
           />
         </div>
         <div className="land-body d-flex">
@@ -64,6 +67,8 @@ export default function Index() {
               setSidebarData={setSidebarData}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
+              openAddElementMdl={openAddElementMdl}
+              setOpenAddElementMdl={setOpenAddElementMdl}
             />
           </div>
         </div>

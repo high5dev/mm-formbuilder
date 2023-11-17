@@ -10,7 +10,7 @@ import { FileText, X, DownloadCloud } from 'react-feather';
 import { DocumentContext } from '../../../../../utility/context/Document';
 import { toast } from 'react-toastify';
 
-const FileUploaderMultiple = ({ files, setFiles }) => {
+const FileUploaderMultiple = ({ files, setFiles, setCode }) => {
   // ** State
   const { setDocumentFiles } = useContext(DocumentContext);
   const fileTypes = ['text/html'];
@@ -25,7 +25,7 @@ const FileUploaderMultiple = ({ files, setFiles }) => {
           accept.push(f);
         }
       }
-      setFiles([...files, ...accept.map((file) => Object.assign(file))]);
+      setFiles([...accept.map((file) => Object.assign(file))]);
     }
   });
 
@@ -49,6 +49,7 @@ const FileUploaderMultiple = ({ files, setFiles }) => {
     const uploadedFiles = files;
     const filtered = uploadedFiles.filter((i) => i.name !== file.name);
     setFiles([...filtered]);
+    setCode && setCode('');
   };
 
   const renderFileSize = (size) => {
@@ -88,11 +89,11 @@ const FileUploaderMultiple = ({ files, setFiles }) => {
   }, [files]);
 
   return (
-    <div className="d-flex flex-column">
-      <div {...getRootProps({ className: 'dropzone mb-1' })}>
+    <div className="d-flex flex-column flex-1">
+      <div {...getRootProps({ className: 'dropzone mb-1 pt-1' })}>
         <input {...getInputProps()} accept=".html" />
         <div className="d-flex align-items-center justify-content-center flex-column">
-          <DownloadCloud size={64} />
+          <DownloadCloud size={50} />
           <h5>Drop Files here or click to upload</h5>
           <p className="text-secondary">
             You can choose from{' '}
@@ -104,7 +105,7 @@ const FileUploaderMultiple = ({ files, setFiles }) => {
       </div>
       {files.length ? (
         <Fragment>
-          <ListGroup className="my-2">{fileList}</ListGroup>
+          <ListGroup>{fileList}</ListGroup>
         </Fragment>
       ) : null}
     </div>

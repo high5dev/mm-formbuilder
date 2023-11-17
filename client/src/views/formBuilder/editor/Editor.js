@@ -32,10 +32,11 @@ import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
 import { webBuilderPlugin } from './elements/webBuilderPlugin';
 import { useDispatch, useSelector } from 'react-redux';
-import { getWebElementsAction } from '../store/action';
+import { getWebElementsAction, createWebElementAction } from '../store/action';
 import { menu } from './util';
 import { getCategoriesByMenu, createWebElement } from '../store/api';
 import * as htmlToImage from 'html-to-image';
+import AddElementModal from './topNav/import/AddElementModal';
 export default function Editor({
   tab,
   setTab,
@@ -48,6 +49,8 @@ export default function Editor({
   setSidebarData,
   selectedCategory,
   setSelectedCategory,
+  openAddElementMdl,
+  setOpenAddElementMdl,
 }) {
   const dispatch = useDispatch();
   const store = useSelector(state => state.formEditor);
@@ -302,15 +305,8 @@ export default function Editor({
           const html = selectedCmp.toHTML();
           const css = editor.CodeManager.getCode(selectedCmp, 'css', { cssc: editor.CssComposer });
 
-          createWebElement({mainMenu, subMenu, category, html: `${html}<style>${css}</style>`, imageUrl: dataUrl}).then((res) => {
-            if (res.data.success) {
-
-            } else {
-
-            }
-
+          dispatch(createWebElementAction({mainMenu, subMenu, category, html: `${html}<style>${css}</style>`, imageUrl: dataUrl})).then((res) => {
             editor.Modal.close();
-            dispatch(getWebElementsAction());
           });
         });
         
@@ -357,6 +353,7 @@ export default function Editor({
 
   useEffect(() => {
     if (editor) {
+      console.log('count================', store.webElements.length, store.webElements);
       store.webElements.map((el, idx) => {
         editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
           label: el.category[0].name,
@@ -367,7 +364,7 @@ export default function Editor({
         });
       });
     }
-  }, [store.webElements, editor])
+  }, [store.webElements, editor]);
 
   useEffect(() => {
     if (editor !== null) {
@@ -540,6 +537,7 @@ export default function Editor({
         </PerfectScrollbar>
       </div>
       <ImportModal editor={editor} setEditor={setEditor} open={open} toggle={toggle} />
+      <AddElementModal editor={editor} setEditor={setEditor} openAddElementMdl={openAddElementMdl} setOpenAddElementMdl={setOpenAddElementMdl} />
     </div>
   );
 }

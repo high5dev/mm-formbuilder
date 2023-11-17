@@ -264,3 +264,12 @@ export const getWebElementsAction = () => async (dispatch) => {
     return data;
   } catch (error) { }
 };
+
+export const createWebElementAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createWebElement(payload);
+    if (data.success)
+      dispatch(getWebElementsAction(data.data));
+    return data;
+  } catch (error) { }
+};
