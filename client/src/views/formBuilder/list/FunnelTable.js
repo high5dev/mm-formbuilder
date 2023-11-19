@@ -67,7 +67,6 @@ export default function FunnelTable({
   checkedCategoryData
 }) {
   const ability = useContext(AbilityContext);
-
   // ** STATES
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -91,7 +90,7 @@ export default function FunnelTable({
   // ** FUNCTIONS
 
   const handleDetails = (row) => {
-    history.push('/form-funnel/form-setting/' + row._id);
+    history.push(`/pages/editor/${row._id}`);
   };
   useEffect(() => {
     if (tableData && tableData?.length > 0 && rowsPerPage) {
@@ -537,20 +536,23 @@ export default function FunnelTable({
                                 height: `${collapse === true ? '200px' : '180px'}`
                               }}
                             >
-                              <iframe
-                                style={{ borderRadius: '12px' }}
-                                scrolling="no"
-                                width="100%"
-                                height="100%"
-                                srcDoc={
-                                  bootstrapClass +
-                                  item?.formData?.[0].html +
-                                  '<style>' +
-                                  item?.formData?.[0].css +
-                                  '</style>'
-                                }
-                                title="Customized Form"
-                              ></iframe>
+                              {
+                                    item?.formData?.[0] &&              
+                                    <iframe
+                                        style={{ borderRadius: '12px' }}
+                                        scrolling="no"
+                                        width="100%"
+                                        height="100%"
+                                        srcDoc={
+                                          bootstrapClass +
+                                          item?.formData?.[0].html +
+                                          '<style>' +
+                                          item?.formData?.[0].css +
+                                          '</style>'
+                                        }
+                                        title="Customized Form"
+                                      ></iframe>
+                              }
                             </div>
                           </div>
                           <div className="template-btn-group p-1">

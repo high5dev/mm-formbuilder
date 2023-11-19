@@ -12,10 +12,24 @@ const PagesRoutes = [
     }
   },
   {
-    path: '/pages/editor/:stepId',
+    path: '/pages/editor/:id',
     component: lazy(() => import('../../views/formBuilder/editor')),
     layout: 'BlankLayout',
     exact: true
+  },
+  {
+    path: '/website/:id',
+    component: lazy(() => import('../../views/website')),
+    layout: 'BlankLayout',
+    exact: true
+  },
+  {
+    path: '/website/:id/:pageName',
+    component: lazy(() => import('../../views/website')),
+    layout: 'BlankLayout',
+    meta: {
+      publicRoute: true
+    }
   },
   {
     path: '/login/:contactTypeId/:assignerId',

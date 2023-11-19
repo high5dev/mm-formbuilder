@@ -30,6 +30,10 @@ const WebBuilderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    memberType: {
+      type: String,
+      required: true,
+    },
     clonedFrom: {
       type: String,
       default: null,
@@ -40,6 +44,10 @@ const WebBuilderSchema = new mongoose.Schema(
     isTemplate: {
       type: Boolean,
       default: false,
+    },
+    isPublish:{
+      type:Boolean,
+      default: false
     },
     isDelete: {
       type: Boolean,

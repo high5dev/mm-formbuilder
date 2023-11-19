@@ -7,14 +7,49 @@ export const createForm = (payload) => {
   return API.post('/form-builder/create', payload);
 };
 
+//create webbuilder
+
+export const createWebBuilder=(payload) => {
+  return API.post('/web-builder/create', payload)
+}
+
 //save
 export const updateForm = (id, payload) => {
-  return API.put('/form-builder/edit/' + id, payload);
+  return API.put('/web-builder/edit/' + id, payload);
 };
+
+export const createPage=(payload) => {
+  return API.post('/web-builder/create-page', payload);
+}
+
+export const getPage = (id) => {
+  return API.get('/web-builder/page/' + id);  
+};
+
+
+export const getPublishPage = (payload) => {
+  return API.get('/web-builder/publish-page/', {params:payload});
+};
+
 export const updateFormData = (id, payload) => {
   return API.put('/form-builder/edit/' + id, payload);
 };
 
+export const updatePage =(id, payload) => {
+  return API.put('/web-builder/update/' + id, payload);
+}
+
+export const publishWebsite =(id, payload) =>{
+  return API.put('/web-builder/publish/' + id, payload);
+}
+
+export const updatePageName =(id, payload) =>{
+  return API.put('/web-builder/update-page/' + id, payload);
+}
+
+export const deletePage =(id) =>{
+  return API.delete(`/web-builder/delete-page/${id}`)
+}
 //redirect to live link
 export const getForm = (id) => {
   return API.get('/form-builder/preview/' + id);
@@ -27,6 +62,16 @@ export const deleteForm = (id) => {
 export const getForms = (payload) => {
   return API.get('/form-builder/forms/',{params:payload});
 };
+
+//Get Websites
+
+export const getWebBuilders =(payload) => {
+  return API.get('/web-builder/websites/',{params:payload});
+}
+
+export const getWebBuilder =(id) =>{
+  return API.get(`/web-builder/website/${id}`);
+}
 
 export const addLeads = (id, payload) => {
   return API.post('/form-builder/addleads/' + id, payload);

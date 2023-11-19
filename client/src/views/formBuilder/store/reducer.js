@@ -6,13 +6,12 @@ export const formEditor = createSlice({
   name: 'formEditor',
   initialState: {
     form: {
-
       name: '',
       memberType: '',
       smartList: '',
       subCategory: null,
       formType: 'leads',
-      formData: [{ id: '', step: '1', name: '', css: '', html: '', path: '' }],
+      formData: [{ id: '', step: '1', name: 'Home', css: '', html: '', path: 'Home' }],
       automateEntry: false,
       status: '',
       isTemplate: false
@@ -37,7 +36,7 @@ export const formEditor = createSlice({
     setFormOrderElementsReducer: (state, action) => {
       state.formOrderElements = action?.payload;
     },
-    
+ 
     setToDefaultReducer: (state, action) => {
       if (action?.payload?.isTemplate && action?.payload?.isTemplate === true) {
         state.form = {
