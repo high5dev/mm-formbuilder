@@ -16,7 +16,7 @@ import { setFormReducer } from '../../store/reducer';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { Settings } from 'react-feather';
 import CreateFormCategoryModal from '../CreateFormCategoryModal';
-import { createFormAction } from '../../store/action';
+import { createFormAction, createWebBuilderAction } from '../../store/action';
 const typeOptions = [
   { value: 'leads', label: 'Leads' },
   { value: 'sales', label: 'Sales' },
@@ -42,7 +42,8 @@ export default function FormInfoStep({ form, setForm, store, dispatch, stepper }
   };
   const handleCreateForm = () => {
     dispatch(setFormReducer(form));
-    dispatch(createFormAction(form)).then(res=>{
+    dispatch(createWebBuilderAction({...form, clonedFrom: 'blank'})).then(res=>{
+      localStorage.setItem('pageNum', 1);
       history.push(`/form-funnel/create/${form?.formType}/${form.isTemplate===true?"template":"form"}/${res._id}`);
     })
    

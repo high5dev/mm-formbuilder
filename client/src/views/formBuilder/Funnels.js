@@ -10,7 +10,7 @@ import CategorySidebar from './CategorySidebar';
 
 import 'shepherd.js/dist/css/shepherd.css';
 import '@styles/react/libs/shepherd-tour/shepherd-tour.scss';
-import { getFormCategoriesAction, getFormsAction, getFormsCountAction } from './store/action';
+import { getFormCategoriesAction, getFormsAction, getFormsCountAction, getWebBuildersAction } from './store/action';
 import { setAllFormsReducer } from './store/reducer';
 
 export const Start = ({ startTour, setTourStarted, tourStarted, orderContactType, index }) => {
@@ -83,10 +83,9 @@ export default function Funnels({
       case '1':
         setTableData([]);
         dispatch(setAllFormsReducer([]));
-        dispatch(getFormsAction({ template: false, isDelete: false })).then((res) => {
+        dispatch(getWebBuildersAction({ template: false, isDelete: false })).then((res)=>{
           setTableData(res);
-        });
-
+        })
         break;
       case '2':
         setTableData([]);

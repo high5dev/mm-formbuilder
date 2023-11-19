@@ -51,7 +51,7 @@ const FunnelSettings = () => {
 
   useEffect(() => {
     dispatch(getFormDataAction(id));
-    dispatch(getFormsEntryAction(id));
+    // dispatch(getFormsEntryAction(id));
   }, []);
   useEffect(() => {
     if (contactTypes && contactTypes.length > 0) {

@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Bold, X } from 'react-feather';
+import {useDispatch} from 'react-redux';
+import { Bold, X, Trash2} from 'react-feather';
 import { RiQuestionMark } from 'react-icons/ri';
+import { toast } from 'react-toastify';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import {
   Button,
   ButtonGroup,
@@ -10,7 +13,8 @@ import {
   NavLink,
   Offcanvas,
   OffcanvasBody,
-  OffcanvasHeader
+  OffcanvasHeader,
+  Spinner
 } from 'reactstrap';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import websitePlugin from 'grapesjs-preset-webpage';
@@ -26,12 +30,22 @@ import StyleSidebar from './topNav/styles';
 import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
+import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction} from '../store/action'
 import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
 import { webBuilderPlugin } from './elements/webBuilderPlugin';
+import PublishModal from './topNav/publish/publishModal'
 export default function Editor({
+  page,
+  setPage,
+  isclear,
+  setIsClear,
+  ispreview,
+  ispublish,
+  setIsPreview,
+  setIsPublish,
   tab,
   setTab,
   open,
@@ -39,15 +53,26 @@ export default function Editor({
   rsidebarOpen,
   setRSidebarOpen,
   device,
+  store,
   sidebarOpen,
   setSidebarOpen
 }) {
-  
+  const {id}=useParams();
+  const dispatch=useDispatch();
   const [editor, setEditor] = useState(null);
+  const [isLoading, setIsLoading]=useState(false);
   const [selectedCmp, setSelectedCmp] = useState(null);
+  const [isPublishModal, setIsPublishModal]=useState(false);
+  const [publishUrl, setPublishUrl]=useState();
   const toggle = () => {
     setOpen(!open);
   };
+
+  const togglePublish=(_open)=>{
+    setIsPublishModal(_open);
+    setIsPublish(false);
+  }
+
   const handleSidebarOpen = (e) => {
     setSidebarOpen(false);
   };
@@ -102,7 +127,7 @@ export default function Editor({
             id: 'desktop',
             name: 'Desktop',
             width: '1280px',
-            widthMedia: '1440px'
+            widthMedia: '1920px'
           },
           {
             id: 'tablet',
@@ -133,7 +158,6 @@ export default function Editor({
     });
     gjsEditor.on('block:drag:start', function (model) {
       setSidebarOpen(false);
-
     });
     gjsEditor.Commands.add('set-device-desktop', (editor) => {
       editor.setDevice('desktop');
@@ -144,12 +168,26 @@ export default function Editor({
     gjsEditor.Commands.add('set-device-mobile', (editor) => {
       editor.setDevice('mobilePortrait');
     });
-    
-    setEditor(gjsEditor)
+    setEditor(gjsEditor);
+    dispatch(getWebsiteAction(id)).then(res=>{
+      if(res){
+        setPage(res[0]);
+      }
+    })
   }, []);
 
+
+  useEffect(() =>{
+    if(isclear){
+      if(editor){
+        editor.Components.clear();
+      }
+      
+      setIsClear(false);
+    }
+  }, [isclear])
+
   editor?.on('component:selected', (cmp) => {
-    console.log('selected component ------------', cmp);
     setSelectedCmp(cmp);
   });
   useEffect(() => {
@@ -170,6 +208,52 @@ export default function Editor({
       }
     }
   }, [device]);
+
+  useEffect(()=>{
+    if(editor){
+      const current_page=editor.Pages.getSelected();
+      const html = editor.getHtml({ current_page });
+      const css = editor.getCss({ current_page });
+      const payload={
+        page:page?._id,
+        html:html,
+        css:css,
+      };
+
+      if(ispreview){
+        dispatch(updatePageAction(id, payload)).then((res)=>{
+          if(res){
+            toast.success('Current page saved successfully');
+          }
+        });
+        setIsPreview(false);
+      }
+      if(ispublish){
+        dispatch(publishWebsiteAction(id, payload)).then((res)=>{
+          if(res){
+            setIsPublishModal(true);
+            setPublishUrl(`/website/${id}`);
+            toast.success('Website published successfully');
+            setIsPublish(false);
+          } 
+        });
+      }
+    };
+  }, [ispreview, ispublish]);
+
+  useEffect(()=>{
+    if(page){
+      setIsLoading(true);
+      dispatch(getPageAction(page._id)).then((res)=>{
+        if(res){
+          setIsLoading(false);
+          if(editor){
+            editor.setComponents(res);
+          };
+        }  
+      })
+    }
+  }, [page?._id])
 
   return (
     <div className="d-flex">
@@ -199,6 +283,10 @@ export default function Editor({
         </PerfectScrollbar>
       </div>
       <div className="w-100 border">
+        {isLoading ?      <div className="d-flex  justify-content-center mb-2 mt-2" style={{position:'absolute', top:"50%", left:"50%", zIndex:10}}>
+            <Spinner color="secondary">Loading...</Spinner>
+          </div>:<></>}
+
         <div id="editor"></div>
       </div>
       <div className="property-sidebar" style={{display:rsidebarOpen?'block':'none'}}>
@@ -229,11 +317,12 @@ export default function Editor({
                 <div id="trait-manager-container" />
               </div>
               <div style={{display:tab==='Pages'?'block':'none'}}>
-                <PageSidebar editor={editor} setEditor={setEditor}/>
+                <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} page={page} setPage={setPage}/>
               </div>
         </PerfectScrollbar>
       </div>
       <ImportModal editor={editor} setEditor={setEditor} open={open} toggle={toggle} />
+      <PublishModal publishUrl={publishUrl} isOpen={isPublishModal} toggle={togglePublish}/>
     </div>
   );
 }
