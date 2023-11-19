@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Eye, Save, X, ChevronDown, MoreHorizontal, Trash2 } from 'react-feather';
-
+import { Eye, Save, X, ChevronDown, MoreHorizontal, Trash2, PlusSquare } from 'react-feather';
 import { BiMobile } from 'react-icons/bi';
 import { FaBox, FaPaintBrush } from 'react-icons/fa';
 import { FiSettings } from 'react-icons/fi';
@@ -16,7 +16,7 @@ import {
   MdZoomIn,
   MdOutlineDownloading,
   MdOutlineInsertComment,
-  MdOutlineLensBlur
+  MdOutlineLensBlur,
 } from 'react-icons/md';
 import { useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
@@ -40,6 +40,7 @@ import {
   UncontrolledTooltip
 } from 'reactstrap';
 import { updateFormDataAction } from '../store/action';
+import { BsPlusSquare } from 'react-icons/bs';
 var previewTimerId;
 
 export default function MainNav({
@@ -55,13 +56,16 @@ export default function MainNav({
   setRSidebarOpen,
   store,
   device,
-  setDevice
+  setDevice,
+  openAddElementMdl,
+  setOpenAddElementMdl
 }) {
   const form=store.form;
   const {formData}=form;
   const handleImport = (e) => {
     setOpen(!open);
   };
+
 
   const handleClear=()=>{
     setIsClear(true);
@@ -71,12 +75,14 @@ export default function MainNav({
     setPage(item);
   }
 
+  const handleAddElement = () => {
+    setOpenAddElementMdl(true);
+  };
+  
   useEffect(()=>{
-    console.log(';;;;;;;;;;;', formData[0]);
     setPage(formData[0]);
   }, [])
-
- 
+  
   return (
     <div className="navbar">
       <div className="up-navbar d-flex justify-content-between align-items-center">
@@ -204,10 +210,16 @@ export default function MainNav({
               Zoom
             </UncontrolledTooltip>
           </span>
-            <span className="hover-bg px-2">
+           <span className="hover-bg px-2">
             <Trash2 size={24} color={'black'} id="trash2" onClick={handleClear}/>
             <UncontrolledTooltip placement="bottom" target="trash2">
               Clear
+            </UncontrolledTooltip>
+          </span>
+          <span className="hover-bg px-2" onClick={() => {handleAddElement()}}>
+            <PlusSquare size={26} color={'black'} id="add-element" />
+            <UncontrolledTooltip placement="bottom" target="add-element">
+              Add Element
             </UncontrolledTooltip>
           </span>
         </div>
