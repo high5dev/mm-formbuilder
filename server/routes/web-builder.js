@@ -7,6 +7,8 @@ const {
   editWebsite,
   getWebSites,
   deleteWebsite,
+  renameWebsite,
+  duplicateWebsite,
   publishWebsite,
   updateAllPages,
   getPublishPage,
@@ -22,8 +24,10 @@ router.get("/website/:id", isAuthenticated, getWebsite);
 router.get("/websites/", isAuthenticated, getWebSites);
 router.get("/templates", isAuthenticated, getTemplates);
 router.post("/create", isAuthenticated, createWebsite);
+router.post("/duplicate", isAuthenticated, duplicateWebsite);
 router.put("/edit/:id", isAuthenticated,  editWebsite);
 router.delete("/delete/:id", isAuthenticated, deleteWebsite);
+router.put('/rename/:id', isAuthenticated, renameWebsite);
 router.get("/publish-page/", getPublishPage);
 //page
 router.post("/create-page", isAuthenticated, createPage);

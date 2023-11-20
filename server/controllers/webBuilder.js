@@ -54,8 +54,10 @@ exports.createWebsite = asyncHandler(async (req, res) => {
         userId: mongoose.Types.ObjectId(req.user._id)
       };
       const newPage = await WebPage.create(pageData);
+      console.log('newPage', newPage);
       const blankPageData = "<body></body><style></style>"
       await googleCloudStorageWebBuilder.createAndUpdatePage(`${websiteData._id}/${newPage._id}`, blankPageData);
+      console.log('********************')
       return res.send({
         success: true,
         message: "Website created successfully",
@@ -168,6 +170,65 @@ exports.createWebsite = asyncHandler(async (req, res) => {
   }
 });
 
+exports.duplicateWebsite = asyncHandler (async(req, res) => {
+  try{
+    const {id, name}=req.body;
+    const { organization } = req.headers;
+    const user = req.user;
+    const webToClone = await WebBuilder.findOne({_id: mongoose.Types.ObjectId(id)});
+    const pagesToClone = await WebPage.find({websiteId: mongoose.Types.ObjectId(webToClone._id)});
+
+    const temp_webData=JSON.parse(JSON.stringify(webToClone));
+    delete temp_webData._id;
+    delete temp_webData.userId;
+    delete temp_webData.isPublish;
+    delete temp_webData.organizationId;
+    const webData = {
+      ...temp_webData,
+      name,
+      isPublish:false,
+      userId: mongoose.Types.ObjectId(req.user._id),
+      organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+      creatorType: organization
+        ? user.organizations.find((x) => x.organizationId.toString() === organization).userType
+        : user.userType,
+    };
+    const websiteData = await WebBuilder.create(webData);
+    const newPageData = pagesToClone.map(e => {
+      const tempPage = JSON.parse(JSON.stringify(e));
+      delete tempPage._id;
+      delete tempPage.createdAt;
+      delete tempPage.updatedAt;
+      return {
+        ...tempPage,
+        websiteId: mongoose.Types.ObjectId(websiteData._id),
+      };
+    });
+    let pageData=[];
+    for(let i=0; i<newPageData.length; i++){
+      const page=await WebPage.create(newPageData[i]);
+      pageData.push(page);   
+    };
+    for (let i=0; i<pageData.length; i++) {
+      const result=await googleCloudStorageWebBuilder.readPage(`${webToClone._id}/${pagesToClone[i]._id}`);
+      await googleCloudStorageWebBuilder.createAndUpdatePage(`${websiteData._id}/${pageData[i]._id}`, result);
+    };
+    // console.log('website ===== >data', websiteData);
+    return res.send({
+      success: true,
+      message: "Website duplicated successfully",
+      data: {
+        websiteData,
+        formData:pageData
+      },
+    });
+  }
+  catch(error){
+    res.status(500).send({ msg: err.message });
+  }
+
+})
+
 exports.editWebsite = asyncHandler(async (req, res) => {
   let { id } = req.params;
   try {
@@ -273,6 +334,27 @@ exports.deleteWebsite = asyncHandler(async (req, res) => {
     res.send({ msg: err.message.replace(/\'/g, ""), success: false });
   }
 });///////////////////////////////////////////////////////////////////
+
+exports.renameWebsite =asyncHandler(async (req, res) =>{
+  let {id} =req.params;
+  const Obj=req.body; 
+  try{
+    id=mongoose.Types.ObjectId(id);
+    const data=await WebBuilder.findOneAndUpdate({_id:id}, Obj, {new: true});
+    if(data){
+      return res.status(200).json({ success: true, data });
+    }
+    else{
+      return res.status(404).json({ success: false, message: `website with id: ${id} not found` });
+    }
+  }
+  catch(err){
+    res.send({ msg: err.message.replace(/\'/g, ""), success: false });
+  }
+})
+
+
+
 
 exports.createPage = asyncHandler(async (req, res) => {
   const {id, pageData} = req.body;

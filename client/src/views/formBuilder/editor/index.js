@@ -14,6 +14,9 @@ export default function Index() {
   const [ispublish, setIsPublish]=useState(false);
   const [isclear, setIsClear] =useState(false);
   const [tab, setTab]=useState('');
+  const [createMdl, setCreateMdl]=useState(false);
+  const [renameMdl, setRenameMdl]=useState(false);
+  const [duplicateMdl, setDuplicateMdl]=useState(false);
   const [customwidth, setCustomWidth]=useState();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarData, setSidebarData] = useState({
@@ -36,6 +39,12 @@ export default function Index() {
       <div className="editor-body">
         <div>
           <MainNav
+            createMdl={createMdl}
+            setCreateMdl={setCreateMdl}
+            renameMdl ={renameMdl}
+            setRenameMdl={setRenameMdl}
+            duplicateMdl={duplicateMdl}
+            setDuplicateMdl={setDuplicateMdl}
             customwidth={customwidth}
             setCustomWidth={setCustomWidth}
             setIsClear={setIsClear}
@@ -65,6 +74,12 @@ export default function Index() {
           /> 
           <div className="editor-content">
             <Editor
+              createMdl={createMdl}
+              setCreateMdl={setCreateMdl}
+              renameMdl ={renameMdl}
+              setRenameMdl={setRenameMdl}
+              duplicateMdl={duplicateMdl}
+              setDuplicateMdl={setDuplicateMdl}
               customwidth={customwidth}
               isclear={isclear}
               setIsClear={setIsClear}

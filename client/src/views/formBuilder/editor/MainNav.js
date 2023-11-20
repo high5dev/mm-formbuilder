@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Eye, Save, X, ChevronDown, MoreHorizontal, Trash2 } from 'react-feather';
 import { Eye, Save, X, ChevronDown, MoreHorizontal, Trash2, PlusSquare } from 'react-feather';
 import { BiMobile } from 'react-icons/bi';
 import { FaBox, FaPaintBrush } from 'react-icons/fa';
@@ -44,6 +43,12 @@ import { BsPlusSquare } from 'react-icons/bs';
 var previewTimerId;
 
 export default function MainNav({
+  createMdl,
+  setCreateMdl,
+  renameMdl,
+  setRenameMdl,
+  duplicateMdl,
+  setDuplicateMdl,
   customwidth,
   setCustomWidth,
   page,
@@ -66,6 +71,7 @@ export default function MainNav({
   const [devicetype, setDeviceType]=useState('desktop');
   const form=store.form;
   const {formData}=form;
+  console.log('formData==========>', formData);
   const handleImport = (e) => {
     setOpen(!open);
   };
@@ -130,15 +136,15 @@ export default function MainNav({
                     <span className="ms-3 font-small-2">Ctrl+Shift+P</span>
                   </div>
                 </DropdownItem>
-                <DropdownItem tag="span" className="w-100">
+                <DropdownItem tag="span" className="w-100" onClick={(e) => setCreateMdl(true)}>
                   {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
                   <span className="align-middle">Create New Site</span>
                 </DropdownItem>
-                <DropdownItem tag="span" className="w-100">
+                <DropdownItem tag="span" className="w-100" onClick={(e)=>setRenameMdl(true)}>
                   {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
                   <span className="align-middle">Rename Site</span>
                 </DropdownItem>
-                <DropdownItem tag="span" className="w-100">
+                <DropdownItem tag="span" className="w-100" onClick={(e) =>setDuplicateMdl(true)}>
                   {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
                   <span className="align-middle">Duplicate Site</span>
                 </DropdownItem>

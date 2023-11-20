@@ -43,8 +43,10 @@ export default function FormInfoStep({ form, setForm, store, dispatch, stepper }
   const handleCreateForm = () => {
     dispatch(setFormReducer(form));
     dispatch(createWebBuilderAction({...form, clonedFrom: 'blank'})).then(res=>{
-      localStorage.setItem('pageNum', 1);
-      history.push(`/form-funnel/create/${form?.formType}/${form.isTemplate===true?"template":"form"}/${res._id}`);
+      if(res){
+        localStorage.setItem('pageNum', 1);
+        history.push(`/form-funnel/create/${form?.formType}/${form.isTemplate===true?"template":"form"}/${res?._id}`);
+      }
     })
    
     //toggle();
