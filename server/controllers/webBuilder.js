@@ -32,41 +32,36 @@ exports.createWebsite = asyncHandler(async (req, res) => {
   try {
     const { organization } = req.headers;
     const user = req.user;
-    const { clonedFrom } = req.body;
+    const { clonedFrom, formData } = req.body;
     if (clonedFrom === 'blank') {
+      delete req.body.formData;
       const webData = {
         ...req.body,
-        clonedFrom: null,
+        clonedFrom: 'blank',
         userId: mongoose.Types.ObjectId(req.user._id),
         organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
         creatorType: organization
           ? user.organizations.find((x) => x.organizationId.toString() === organization).userType
           : user.userType,
-      }
-      const data = await WebBuilder.create(webData);
-
-      const pageData = {
-        name: 'Home',
-        path: 'home',
-        step: 1,
       };
-      const newPage = await WebPage.create({
-        ...pageData,
-        websiteId: data._id,
-      });
-
+      const websiteData = await WebBuilder.create(webData);
+      const {name, html, css, step, path}=formData[0];
+      const pageData={
+        name,
+        step,
+        path,
+        websiteId: websiteData._id,
+        userId: mongoose.Types.ObjectId(req.user._id)
+      };
+      const newPage = await WebPage.create(pageData);
       const blankPageData = "<body></body><style></style>"
-      await googleCloudStorageWebBuilder.createAndUpdatePage(`${data._id}/${newPage.name}`, blankPageData);
-
+      await googleCloudStorageWebBuilder.createAndUpdatePage(`${websiteData._id}/${newPage._id}`, blankPageData);
       return res.send({
         success: true,
         message: "Website created successfully",
         data: {
-          ...data,
-          newPages: [newPage],
-          pageData: [
-            {[newPage._id]: blankPageData}
-          ],
+          websiteData,
+          formData:newPage
         },
       });
     } else if (clonedFrom === 'default') {
@@ -107,7 +102,7 @@ exports.createWebsite = asyncHandler(async (req, res) => {
       const newData = [];
       for (const d of newPages) {
         const blankPageData = "<body></body><style></style>"
-        await googleCloudStorageWebBuilder.createAndUpdatePage(`${data._id}/${d.name}`, blankPageData);
+        await googleCloudStorageWebBuilder.createAndUpdatePage(`${data._id}/${d._id}`, blankPageData);
         newData.push({
           [d._id]: blankPageData
         });
@@ -137,7 +132,6 @@ exports.createWebsite = asyncHandler(async (req, res) => {
       };
 
       const data = await WebBuilder.create(webData);
-
       const newPageData = pagesToClone.map(e => {
         const tempPage = {...e};
         delete tempPage._id;
@@ -152,7 +146,7 @@ exports.createWebsite = asyncHandler(async (req, res) => {
 
       const pageData = [];
       for (const page of newPages) {
-        const tempData = await googleCloudStorageWebBuilder.copyPage(`${webToClone._id}/${page.name}`, `${data._id}/${page.name}`);
+        const tempData = await googleCloudStorageWebBuilder.copyPage(`${webToClone._id}/${page._id}`, `${data._id}/${page._id}`);
         pageData.push({[page._id]: tempData.toString()});
       }
 
@@ -174,19 +168,59 @@ exports.createWebsite = asyncHandler(async (req, res) => {
   }
 });
 
+exports.editWebsite = asyncHandler(async (req, res) => {
+  let { id } = req.params;
+  try {
+    const Obj=req.body;
+    id = mongoose.Types.ObjectId(id);
+    const data = await WebBuilder.findOneAndUpdate({ _id: id}, Obj);
+    console.log('edited data', data);
+    if (data) {
+      return res.send({ success: true, data });
+    }
+    else{
+      return res.status(404).json({ success: false, message: `website with id: ${id} not found` });
+    }
+  } catch (error) {
+    return res.status(400).send({ msg: error.message.replace(/"/g, ""), success: false });
+  }
+});
+
+exports.updateAllPages =asyncHandler(async(req, res)=>{
+  let { id } = req.params;
+  try {
+    const pageData=req.body;
+    id = mongoose.Types.ObjectId(id);
+    for(let i=0; i<pageData.length;i++){
+      const page=pageData[i];
+      const {name, path, step, html, css}=page;
+      const newPage = await WebPage.create({
+        name,
+        path,
+        step,
+        websiteId: mongoose.Types.ObjectId(id),
+        userId: mongoose.Types.ObjectId(req.user._id)
+      });
+      await googleCloudStorageWebBuilder.createAndUpdatePage(`${id}/${newPage._id}`, `${html} <style>${css}</style>`);
+    }
+    return res.send({success:true});
+    
+  } catch (error) {
+    return res.status(400).send({ msg: error.message.replace(/"/g, ""), success: false });
+  }
+})
+
 exports.getWebSites = asyncHandler(async (req, res) => {
   try {
     const { organization } = req.headers;
     const user = req.user;
     const { template } = req.query;
-
     let query = {
-        userId: user._id,
+        userId: mongoose.Types.ObjectId(user._id),
         organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
         isTemplate: template === "true" ? true : false,
         isDelete: false,
     };
-
     const data = await WebBuilder.aggregate([
       {$match: query},
       {
@@ -199,24 +233,32 @@ exports.getWebSites = asyncHandler(async (req, res) => {
       }
     ]);
 
-    const result = [];
-    for (const d of data) {
-      const pageData = [];
-      for (const p of d.pageInfo) {
-        const pData = await googleCloudStorageWebBuilder.readPage(`${d._id}/${p.name}`);
-        pageData.push(pData);
-      }
-      result.push({
-        ...d,
-        pageData,
-      });
-    }
-
-    return res.status(200).json({ success: true, data: result });
+    return res.status(200).json({ success: true, data: data});
   } catch (err) {
     res.status(500).send({ msg: err.message });
   }
 });
+
+exports.getWebsite= asyncHandler(async(req, res) =>{
+  const {id} =req.params;
+  try{
+    const websiteData=await WebBuilder.findOne({_id:id});
+    if(websiteData){
+      const pageData=await WebPage.find({websiteId:mongoose.Types.ObjectId(websiteData._id)});
+      return res.send({
+        success: true,
+        message: "Website created successfully",
+        data: {
+          websiteData,
+          formData:pageData
+        },
+      });
+    }
+  }
+  catch(err){
+    res.send({ msg: err.message.replace(/\'/g, ""), success: false });
+  }
+})
 
 exports.deleteWebsite = asyncHandler(async (req, res) => {
   let { id } = req.params;
@@ -233,17 +275,18 @@ exports.deleteWebsite = asyncHandler(async (req, res) => {
 });///////////////////////////////////////////////////////////////////
 
 exports.createPage = asyncHandler(async (req, res) => {
-  let { id } = req.params;
-  const { html, css, pageData } = req.body;
+  const {id, pageData} = req.body;
   try {
-    const newPage = await WebPage.create({
+    const page = new WebPage({
       ...pageData,
+      userId: mongoose.Types.ObjectId(req.user._id),
       websiteId: mongoose.Types.ObjectId(id),
     });
+    const newPage = await page.save();
+    const blankPageData = "<body></body><style></style>"
+    await googleCloudStorageWebBuilder.createAndUpdatePage(`${id}/${newPage._id}`, blankPageData);
 
-    await googleCloudStorageWebBuilder.createAndUpdatePage(`${id}/${newPage.name}`, `${html} <style>${css}</style>`);
-
-    return res.status(200).json({ success: true, data });
+    return res.status(200).json({ success: true, data:newPage });
   } catch (err) {
     res.send({ msg: "error" });
   }
@@ -251,14 +294,42 @@ exports.createPage = asyncHandler(async (req, res) => {
 
 exports.updatePage = asyncHandler(async (req, res) => {
   let { id } = req.params;
-  const { html, css, pageData } = req.body;
+  const { html, css, page} = req.body;
   try {
-    const newPage = await WebPage.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, pageData);
-    const data = await WebBuilder.findOne({_id: newPage.websiteId});
+    const _page=await WebPage.findOne({_id: page});
+    const data = await WebBuilder.findOne({_id: id});
+    const url=await googleCloudStorageWebBuilder.createAndUpdatePage(`${data._id}/${_page._id}`, `${html} <style>${css}</style>`);
+    return res.status(200).json({ success: true, data, url });
+  } catch (err) {
+    res.send({ msg: "error" });
+  }
+});
 
-    await googleCloudStorageWebBuilder.createAndUpdatePage(`${data._id}/${newPage.name}`, `${html} <style>${css}</style>`);
+exports.publishWebsite = asyncHandler(async (req, res) => {
+  let { id } = req.params;
+  const { html, css, page} = req.body;
+  try {
+    const _page=await WebPage.findOne({_id: page});
+    const data = await WebBuilder.findOne({_id: id});
+    const result=await WebBuilder.findOneAndUpdate({_id: id}, {isPublish:true}, {new: true});
+    const url=await googleCloudStorageWebBuilder.createAndUpdatePage(`${data._id}/${_page._id}`, `${html} <style>${css}</style>`);
+    if(result){
+      return res.status(200).json({ success: true, message: `Success`});
+    }
+  } catch (err) {
+    res.send({ msg: "error" });
+  }
+});
 
-    return res.status(200).json({ success: true, data });
+exports.updatePageName = asyncHandler(async (req, res) => {
+  let { id } = req.params;
+  try {
+    const Obj=req.body;
+    const _page=await WebPage.findOneAndUpdate({_id: id}, Obj);
+    if(_page){
+      return res.status(200).json({ success: true, message: `Success`});
+    }
+    return res.status(404).json({ success: false, message: `Page not found` });
   } catch (err) {
     res.send({ msg: "error" });
   }
@@ -269,10 +340,9 @@ exports.deletePage = asyncHandler(async (req, res) => {
   try {
     const pageToDelete = await WebPage.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, {isDelete: true});
     const data = await WebBuilder.findOne({_id: pageToDelete.websiteId});
+    await googleCloudStorageWebBuilder.deletePage(`${data._id}/${pageToDelete._id}`);
 
-    await googleCloudStorageWebBuilder.deletePage(`${data._id}/${pageToDelete.name}`);
-
-    return res.status(200).json({ success: true, data });
+    return res.status(200).json({ success: true, data:pageToDelete });
   } catch (err) {
     res.send({ msg: "error" });
   }
@@ -283,10 +353,23 @@ exports.getPage = asyncHandler(async (req, res) => {
   try {
     const page = await WebPage.findOne({_id: mongoose.Types.ObjectId(id)});
     const data = await WebBuilder.findOne({_id: page.websiteId});
+    const result=await googleCloudStorageWebBuilder.readPage(`${data._id}/${page._id}`);
+    return res.status(200).json({ success: true, data:result });
+  } catch (err) {
+    res.send({ msg: "error" });
+  }
+});
 
-    await googleCloudStorageWebBuilder.readPage(`${data._id}/${pageToDelete.name}`);
-
-    return res.status(200).json({ success: true, data });
+exports.getPublishPage = asyncHandler(async (req, res) => {
+  let {id, pageName} = req.query;
+  try {
+    const data = await WebBuilder.findOne({_id: id});
+    const page=await WebPage.findOne({name:pageName, websiteId:mongoose.Types.ObjectId(id)});
+    if(data && data.isPublish){
+      const result=await googleCloudStorageWebBuilder.readPage(`${data._id}/${page._id}`);
+      return res.status(200).json({ success: true, data:result });
+    }
+    return res.status(404).json({ success: false, message: `Page not found` });
   } catch (err) {
     res.send({ msg: "error" });
   }
@@ -348,7 +431,7 @@ exports.getTemplates = asyncHandler(async (req, res) => {
     for (const d of webData) {
       const pageData = [];
       for (const p of d.pageInfo) {
-        const pData = await googleCloudStorageWebBuilder.readPage(`${d._id}/${p.name}`);
+        const pData = await googleCloudStorageWebBuilder.readPage(`${d._id}/${p._id}`);
         pageData.push(pData);
       }
       result.push({

@@ -177,26 +177,7 @@ export default function Templates({
 
   const handleClickBlankTemplate = () => {
     setSelectedTemplate({ _id: 'blank' });
-    dispatch(
-      setFormReducer({
-        ...store.form,
-        clonedFrom: 'blank',
-      })
-    );
-    let payload = { ...store?.form, clonedFrom: 'blank', isTemplate: template ==='template'?true:false, };
-    delete payload._id;
-    delete payload.userId;
-    delete payload.organizationId;
-    dispatch(updateFormAction(store?.form?._id, payload)).then(res=>{
-      history.push(`/form-funnel/form-setting/${store?.form._id}`);
-    })
-    // dispatch(createFormAction({ ...store.form, clonedFrom: null, subCategory: null })).then(
-    //   (res) => {
-    //     if (res._id) {
-    //       history.push(`/form-funnel/form-setting/${res._id}`);
-    //     }
-    //   }
-    // );
+    history.push(`/form-funnel/form-setting/${store?.form._id}`);
   };
 
   const itemAddToFavorite = (templateItem) => {

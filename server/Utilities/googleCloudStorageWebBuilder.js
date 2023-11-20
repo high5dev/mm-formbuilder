@@ -49,8 +49,7 @@ function googleCloudStorageWebBuilder() {
     configureBucketCors().catch(console.error);
     const pageDoc = bucket.file(`website-builder/${pageDirectory}/index.html`);
     const contents = await pageDoc.download();
-    console.log('contents----------------', contents.toString());
-    return contents;
+    return contents.toString();
   };
 
   this.copyPage = async(srcName, destName) => {
@@ -59,7 +58,6 @@ function googleCloudStorageWebBuilder() {
     const srcFile = bucket.file(`website-builder/${srcName}/index.html`);
     await srcFile.copy(destFile);
     const contents = await destFile.download();
-    console.log('read copy contents----------------', contents.toString());
     return contents;
   };
 

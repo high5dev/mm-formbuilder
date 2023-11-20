@@ -8,7 +8,11 @@ import Editor from './Editor';
 export default function Index() {
   const [impStatus, setImpStatus] = useState(false);
   const [open, setOpen] = useState(false);
+  const [page, setPage]=useState();
   const [device, setDevice] = useState('desktop');
+  const [ispreview, setIsPreview]=useState(false);
+  const [ispublish, setIsPublish]=useState(false);
+  const [isclear, setIsClear] =useState(false);
   const [tab, setTab]=useState('');
   const [customwidth, setCustomWidth]=useState();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,6 +30,7 @@ export default function Index() {
     };
   });
 
+
   return (
     <>
       <div className="editor-body">
@@ -33,6 +38,11 @@ export default function Index() {
           <MainNav
             customwidth={customwidth}
             setCustomWidth={setCustomWidth}
+            setIsClear={setIsClear}
+            page={page}
+            setPage={setPage}
+            setIsPreview={setIsPreview}
+            setIsPublish={setIsPublish}
             tab={tab}
             setTab={setTab}
             rsidebarOpen={rsidebarOpen}
@@ -56,6 +66,14 @@ export default function Index() {
           <div className="editor-content">
             <Editor
               customwidth={customwidth}
+              isclear={isclear}
+              setIsClear={setIsClear}
+              page={page}
+              setPage={setPage}
+              ispreview={ispreview}
+              ispublish={ispublish}
+              setIsPreview={setIsPreview}
+              setIsPublish={setIsPublish}
               tab={tab}
               setTab={setTab}
               rsidebarOpen={rsidebarOpen}

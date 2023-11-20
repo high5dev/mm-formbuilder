@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Eye, Save, X, ChevronDown, MoreHorizontal, PlusSquare } from 'react-feather';
-
+import { Eye, Save, X, ChevronDown, MoreHorizontal, Trash2 } from 'react-feather';
+import { Eye, Save, X, ChevronDown, MoreHorizontal, Trash2, PlusSquare } from 'react-feather';
 import { BiMobile } from 'react-icons/bi';
 import { FaBox, FaPaintBrush } from 'react-icons/fa';
 import { FiSettings } from 'react-icons/fi';
@@ -46,6 +46,11 @@ var previewTimerId;
 export default function MainNav({
   customwidth,
   setCustomWidth,
+  page,
+  setPage,
+  setIsClear,
+  setIsPreview,
+  setIsPublish,
   setTab,
   open,
   setOpen,
@@ -59,6 +64,8 @@ export default function MainNav({
 }) {
   const [width, setWidth]=useState(1280);
   const [devicetype, setDeviceType]=useState('desktop');
+  const form=store.form;
+  const {formData}=form;
   const handleImport = (e) => {
     setOpen(!open);
   };
@@ -81,10 +88,22 @@ export default function MainNav({
       setCustomWidth(width)
     }
   }
+  const handleClear=()=>{
+    setIsClear(true);
+  }
+
+  const handlePage =(item)=>{
+    setPage(item);
+  }
+
   const handleAddElement = () => {
     setOpenAddElementMdl(true);
   };
-
+  
+  useEffect(()=>{
+    setPage(formData[0]);
+  }, [])
+  
   return (
     <div className="navbar">
       <div className="up-navbar d-flex justify-content-between align-items-center">
@@ -175,8 +194,8 @@ export default function MainNav({
         </div>
         <div className="additional-bar d-flex align-items-center justify-content-around">
           <div className="menu-item hover-effect text-white">Invite</div>
-          <span className="menu-item text-primary text-white">Preview</span>
-          <Button className="btn btn-primary" color="primary">
+          <span className="menu-item text-primary text-white" onClick={(e)=>setIsPreview(true)}>Preview</span>
+          <Button className="btn btn-primary" color="primary" onClick={(e)=>setIsPublish(true)}>
             Publish
           </Button>
         </div>
@@ -212,6 +231,12 @@ export default function MainNav({
               Zoom
             </UncontrolledTooltip>
           </span>
+           <span className="hover-bg px-2">
+            <Trash2 size={24} color={'black'} id="trash2" onClick={handleClear}/>
+            <UncontrolledTooltip placement="bottom" target="trash2">
+              Clear
+            </UncontrolledTooltip>
+          </span>
           <span className="hover-bg px-2" onClick={() => {handleAddElement()}}>
             <PlusSquare size={26} color={'black'} id="add-element" />
             <UncontrolledTooltip placement="bottom" target="add-element">
@@ -223,14 +248,20 @@ export default function MainNav({
           <UncontrolledDropdown style={{ cursor: 'pointer' }}>
             <DropdownToggle tag="div" className="btn btn-sm hover-effect">
               <div className="d-flex">
-                Home
+                {page?.name}
                 <div className="px-2">
                   <ChevronDown size={15} />
                 </div>
               </div>
             </DropdownToggle>
             <DropdownMenu container="body">
-              <DropdownItem tag="span" className="w-100">
+              {formData && formData.map((item)=>{
+                return(            
+                <DropdownItem tag="span" className="w-100">
+                  <span className="" onClick={(e)=>handlePage(item)}>{item.name}</span>
+              </DropdownItem>);
+              })}
+              {/* <DropdownItem tag="span" className="w-100">
                 <span className="">Home</span>
               </DropdownItem>
               <DropdownItem tag="span" className="w-100">
@@ -238,10 +269,10 @@ export default function MainNav({
               </DropdownItem>
               <DropdownItem tag="span" className="w-100">
                 <span className="">Menu</span>
-              </DropdownItem>
-              <DropdownItem tag="span" className="w-100 text-primary">
+              </DropdownItem> */}
+              {/* <DropdownItem tag="span" className="w-100 text-primary">
                 <span className="">Manage Pages</span>
-              </DropdownItem>
+              </DropdownItem> */}
             </DropdownMenu>
           </UncontrolledDropdown>
         </div>

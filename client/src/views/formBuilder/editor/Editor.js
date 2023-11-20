@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Bold, X } from 'react-feather';
+import {useDispatch} from 'react-redux';
+import { Bold, X, Trash2} from 'react-feather';
 import { RiQuestionMark } from 'react-icons/ri';
+import { toast } from 'react-toastify';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import {
   Button,
   ButtonGroup,
@@ -10,7 +13,8 @@ import {
   NavLink,
   Offcanvas,
   OffcanvasBody,
-  OffcanvasHeader
+  OffcanvasHeader,
+  Spinner
 } from 'reactstrap';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import websitePlugin from 'grapesjs-preset-webpage';
@@ -26,11 +30,13 @@ import StyleSidebar from './topNav/styles';
 import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
+import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction} from '../store/action'
 import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
 import { webBuilderPlugin } from './elements/webBuilderPlugin';
+import PublishModal from './topNav/publish/publishModal'
 import { useDispatch, useSelector } from 'react-redux';
 import { getWebElementsAction, createWebElementAction } from '../store/action';
 import { menu } from './util';
@@ -39,6 +45,14 @@ import * as htmlToImage from 'html-to-image';
 import AddElementModal from './topNav/import/AddElementModal';
 export default function Editor({
   customwidth,
+  page,
+  setPage,
+  isclear,
+  setIsClear,
+  ispreview,
+  ispublish,
+  setIsPreview,
+  setIsPublish,
   tab,
   setTab,
   open,
@@ -46,8 +60,11 @@ export default function Editor({
   rsidebarOpen,
   setRSidebarOpen,
   sidebarOpen,
-  setSidebarOpen
+  setSidebarOpen,
   device,
+  store,
+  sidebarOpen,
+  setSidebarOpen,
   sidebarData,
   setSidebarData,
   selectedCategory,
@@ -55,14 +72,25 @@ export default function Editor({
   openAddElementMdl,
   setOpenAddElementMdl,
 }) {
-  const dispatch = useDispatch();
-  const store = useSelector(state => state.formEditor);
+  
+  const dispatch=useDispatch();
   const [editor, setEditor] = useState(null);
+  const {id}=useParams();
+  const store = useSelector(state => state.formEditor);
   const [blockManager, setBlockManager] = useState(null);
+  const [isLoading, setIsLoading]=useState(false);
   const [selectedCmp, setSelectedCmp] = useState(null);
+  const [isPublishModal, setIsPublishModal]=useState(false);
+  const [publishUrl, setPublishUrl]=useState();
   const toggle = () => {
     setOpen(!open);
   };
+
+  const togglePublish=(_open)=>{
+    setIsPublishModal(_open);
+    setIsPublish(false);
+  }
+
   const handleSidebarOpen = (e) => {
     setSidebarData({
       ...sidebarData,
@@ -121,7 +149,7 @@ export default function Editor({
             id: 'desktop',
             name: 'Desktop',
             width: '1280px',
-            widthMedia: '1440px'
+            widthMedia: '1920px'
           },
           {
             id: 'tablet',
@@ -145,10 +173,11 @@ export default function Editor({
       },
     });
     gjsEditor.on('block:drag:start', function (model) {
+      setSidebarOpen(false);
       setSidebarData({
         ...sidebarData,
         isOpen: false,
-      })
+      });
     });
     gjsEditor.Commands.add('set-device-desktop', (editor) => {
       editor.setDevice('desktop');
@@ -159,39 +188,6 @@ export default function Editor({
     gjsEditor.Commands.add('set-device-mobile', (editor) => {
       editor.setDevice('mobilePortrait');
     });
-    setEditor(gjsEditor);
-  }, []);
-
-  useEffect(()=>{
-    if(customwidth && customwidth!=320 && customwidth!=768 && customwidth!=1280){
-      const device_name=(Math.random() + 1).toString();
-      const command_name= (Math.random() + 2).toString();
-      editor?.DeviceManager.add({
-        id: device_name,
-        name: device_name,
-        width: customwidth.toString()+'px'
-       });
-       editor.Commands.add(command_name, (editor) => {
-        editor?.setDevice(device_name);
-      });
-      editor?.runCommand(command_name);
-    }
-    else{
-      if(customwidth===320){
-        editor?.runCommand('set-device-mobile');
-      }
-      else if(customwidth===768){
-        editor?.runCommand('set-device-tablet');
-      }
-      else{
-        editor?.runCommand('set-device-desktop');
-      }
-    }
-  }, [customwidth])
-
-  editor?.on('component:selected', (cmp) => {
-    setSelectedCmp(cmp);
-  });
     gjsEditor.on('block:custom', props => {
       // The `props` will contain all the information you need in order to update your UI.
       // props.blocks (Array<Block>) - Array of all blocks
@@ -349,7 +345,7 @@ export default function Editor({
 
     // Add new toolbar
     const dc = gjsEditor.DomComponents;
-    const id = 'custom-id';
+    const _id = 'custom-id';
 
     const htmlLabel = `<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 24 24" id="save"><path d="m20.71 9.29-6-6a1 1 0 0 0-.32-.21A1.09 1.09 0 0 0 14 3H6a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-8a1 1 0 0 0-.29-.71ZM9 5h4v2H9Zm6 14H9v-3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1Zm4-1a1 1 0 0 1-1 1h-1v-3a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3v3H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6.41l4 4Z"></path></svg>`
     
@@ -362,9 +358,9 @@ export default function Editor({
               oldModel.prototype.initToolbar.apply(this);
               const toolbar = this.get('toolbar');
               
-              if (!toolbar.filter(tlb => tlb.id === id ).length) {
+              if (!toolbar.filter(tlb => tlb.id === _id ).length) {
                 toolbar.unshift({
-                  id,
+                  id:_id,
                   command: 'save-component',
                   label: htmlLabel
                 });
@@ -376,13 +372,59 @@ export default function Editor({
         });
       }
     });
-    
-    setEditor(gjsEditor)
+    setEditor(gjsEditor);
   }, []);
+
+  useEffect(()=>{
+    if(customwidth && customwidth!=320 && customwidth!=768 && customwidth!=1280){
+      const device_name=(Math.random() + 1).toString();
+      const command_name= (Math.random() + 2).toString();
+      editor?.DeviceManager.add({
+        id: device_name,
+        name: device_name,
+        width: customwidth.toString()+'px'
+       });
+       editor.Commands.add(command_name, (editor) => {
+        editor?.setDevice(device_name);
+      });
+      editor?.runCommand(command_name);
+    }
+    else{
+      if(customwidth===320){
+        editor?.runCommand('set-device-mobile');
+      }
+      else if(customwidth===768){
+        editor?.runCommand('set-device-tablet');
+      }
+      else{
+        editor?.runCommand('set-device-desktop');
+      }
+    }
+  }, [customwidth])
+
+  editor?.on('component:selected', (cmp) => {
+    dispatch(getWebsiteAction(id)).then(res=>{
+      if(res){
+        setPage(res[0]);
+      }
+    })
+  }, []);
+
+  useEffect(() =>{
+    if(isclear){
+      if(editor){
+        editor.Components.clear();
+      }
+      
+      setIsClear(false);
+    }
+  }, [isclear])
+
+
+
 
   useEffect(() => {
     if (editor) {
-      console.log('count================', store.webElements.length, store.webElements);
       store.webElements.map((el, idx) => {
         editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
           label: el.category[0].name,
@@ -413,6 +455,52 @@ export default function Editor({
       }
     }
   }, [device]);
+
+  useEffect(()=>{
+    if(editor){
+      const current_page=editor.Pages.getSelected();
+      const html = editor.getHtml({ current_page });
+      const css = editor.getCss({ current_page });
+      const payload={
+        page:page?._id,
+        html:html,
+        css:css,
+      };
+
+      if(ispreview){
+        dispatch(updatePageAction(id, payload)).then((res)=>{
+          if(res){
+            toast.success('Current page saved successfully');
+          }
+        });
+        setIsPreview(false);
+      }
+      if(ispublish){
+        dispatch(publishWebsiteAction(id, payload)).then((res)=>{
+          if(res){
+            setIsPublishModal(true);
+            setPublishUrl(`/website/${id}`);
+            toast.success('Website published successfully');
+            setIsPublish(false);
+          } 
+        });
+      }
+    };
+  }, [ispreview, ispublish]);
+
+  useEffect(()=>{
+    if(page){
+      setIsLoading(true);
+      dispatch(getPageAction(page._id)).then((res)=>{
+        if(res){
+          setIsLoading(false);
+          if(editor){
+            editor.setComponents(res);
+          };
+        }  
+      })
+    }
+  }, [page?._id])
 
   return (
     <div className="d-flex">
@@ -531,6 +619,10 @@ export default function Editor({
         </PerfectScrollbar>
       </div>
       <div className="w-100 border">
+        {isLoading ?      <div className="d-flex  justify-content-center mb-2 mt-2" style={{position:'absolute', top:"50%", left:"50%", zIndex:10}}>
+            <Spinner color="secondary">Loading...</Spinner>
+          </div>:<></>}
+
         <div id="editor"></div>
       </div>
       <div className="property-sidebar" style={{display:rsidebarOpen?'block':'none'}}>
@@ -554,18 +646,19 @@ export default function Editor({
                   <div id="selector-manager-container" />
                   <div id="style-manager-container" />
                 </div>
-              <div style={{display:tab==='Layers'?'block':'none'}}>
+              <div style={{display:tab='Layers'?'block':'none'}}>
                 <div id="layer-manager-container" />  
               </div>
               <div style={{display:tab==='Traits'?'block':'none'}}>
                 <div id="trait-manager-container" />
               </div>
               <div style={{display:tab==='Pages'?'block':'none'}}>
-                <PageSidebar editor={editor} setEditor={setEditor}/>
+                <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} page={page} setPage={setPage}/>
               </div>
         </PerfectScrollbar>
       </div>
       <ImportModal editor={editor} setEditor={setEditor} open={open} toggle={toggle} />
+      <PublishModal publishUrl={publishUrl} isOpen={isPublishModal} toggle={togglePublish}/>
       <AddElementModal editor={editor} setEditor={setEditor} openAddElementMdl={openAddElementMdl} setOpenAddElementMdl={setOpenAddElementMdl} />
     </div>
   );

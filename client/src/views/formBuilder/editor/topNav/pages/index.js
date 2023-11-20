@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Eye, Save, X, ChevronDown, MoreHorizontal, Plus, Trash, Delete } from 'react-feather';
+import { useDispatch } from 'react-redux';
+import { Eye, Edit,Save, X, ChevronDown, MoreHorizontal, Plus, Trash, Delete } from 'react-feather';
 import { CiTrash } from 'react-icons/ci';
-
+import {createPageAction, deletePageAction} from "../../../store/action"
 import { useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -24,43 +25,58 @@ import {
   UncontrolledDropdown,
   UncontrolledTooltip
 } from 'reactstrap';
+import EditMoal from './editModal';
+import { setFormReducer } from '../../../store/reducer';
 
-export default function Index({ editor, setEditor, setPageTab }) {
-  const [pages, setPages] = useState([]);
-  const [pagenum, setPageNum]=useState(1);
-  const [selectedPage, setSelectedPage] = useState();
+export default function Index({page, setPage, id, store, editor, setEditor, setPageTab }) {
+  const form=store.form;
+  const {formData}=form;
+  const [isOpen, setIsOpen]=useState(false);
+  const [selectedPage, setSelectedPage]=useState();
+  const dispatch=useDispatch();
   const addNewPage = () => {
-    if (pages) {
-      const nextIndex = pagenum + 1;
-      editor.Pages.add({
-        name: `New page ${nextIndex}`,
-        component: `<h1>Page content ${nextIndex}</h1>`
-      });
-      setPages([...editor.Pages.getAll()]);
-      setPageNum(nextIndex);
-      setEditor(editor);
-    }
+      const pageNum=parseInt(localStorage.getItem('pageNum'));
+      const name=`Page ${pageNum}`;
+      const path=`Page ${pageNum}`;
+      const payload={
+        id,
+        pageData:{
+          name,
+          path,
+          step:formData.length
+        }
+      };
+      dispatch(createPageAction(payload)).then((res)=>{
+        const formData=[...form.formData, res];
+        const _form={
+          ...form,
+          formData:formData
+        };
+        localStorage.setItem('pageNum', pageNum+1);
+        dispatch(setFormReducer(_form));
+      })
   };
-  const removePage = (page) => {
-    const page_id = page.getId();
-    editor.Pages.remove(page_id);
-    setPages([...editor.Pages.getAll()]);
-    setEditor(editor);
+  const removePage = (item) => {
+    dispatch(deletePageAction(item._id)).then((res)=>{
+      if(res){
+        const formData=form.formData.filter((_page)=>_page._id!=item._id);
+        const _form={
+          ...form,
+          formData:formData
+        };
+        dispatch(setFormReducer(_form));
+      }
+    })
   };
 
-  const selectPage = (page) => {
-    editor.Pages.select(page.getId());
-    setSelectedPage(page);
-  };
+  const rename =(item) =>{
+    setSelectedPage(item);
+    setIsOpen(true);
+  }
 
-  useEffect(() => {
-    const _pages = editor?.Pages.getAll();
-    if (_pages) {
-      setPageNum(_pages.length);
-      setPages([..._pages]);
-      setSelectedPage(_pages[0]);
-    }
-  }, [editor]);
+  const toggle=(_open) =>{
+    setIsOpen(_open)
+  }
 
   return (
     <div className="d-flex">
@@ -81,18 +97,23 @@ export default function Index({ editor, setEditor, setPageTab }) {
                 Add page
               </button>
             </div>
-            {pages &&
-              pages.map((page, index) => (
+            {form.formData &&
+              form.formData.map((item, index) => (
                 <div
-                  key={page.getId()}
+                  key={item?._id}
                   className="page-item d-flex my-1 justify-content-between"
                 >
-                  <div className="fs-6 fw-bolder text-black" onClick={() => selectPage(page)}>
-                    {page.getName() || 'Home page'}
+                  <div className="fs-6 fw-bolder text-black" onClick={(e) => setPage(item)}>
+                    {item?.name || 'Home page'}
                   </div>
-                  {selectedPage !== page && (
-                    <div onClick={() => removePage(page)}>
-                      <CiTrash size={20} color={'#174ae7'} />
+                  {page?._id !== item?._id && (
+                    <div className='d-flex'>
+                     <div className="px-1" onClick={() => rename(item)}>
+                      <Edit size={18} />
+                    </div>
+                     <div onClick={() => removePage(item)}>
+                        <CiTrash size={20} color={'#174ae7'} />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -100,6 +121,7 @@ export default function Index({ editor, setEditor, setPageTab }) {
           </div>
         </div>
       </PerfectScrollbar>
+      <EditMoal store={store} isOpen={isOpen} selectedPage={selectedPage} toggle={toggle}/>
     </div>
   );
 }

@@ -26,6 +26,105 @@ export const createFormAction = (payload) => async (dispatch) => {
     return data.data
   } catch (error) { }
 };
+
+export const createWebBuilderAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createWebBuilder(payload);
+    const res=data.data;
+    const {websiteData, formData}=data.data;
+    let _form_data=[];
+    _form_data.push(JSON.parse(JSON.stringify(formData)));
+    const form_data={
+      ...websiteData,
+      formData:_form_data
+    };
+    dispatch(setFormReducer(form_data));
+    if (data?.success === true) {
+      toast.success('Form created successfully');
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+    return form_data
+  } catch (error) { }
+};
+
+
+export const getWebsiteAction = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.getWebBuilder(id);
+    const {websiteData, formData}=data.data;
+    const form_data={
+      ...websiteData,
+      formData:formData
+    };
+    dispatch(setFormReducer(form_data));
+    if (data?.success === true) {
+      toast.success('Form created successfully');
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+    return formData
+  } catch (error) { }
+};
+
+export const createPageAction = (payload) => async (dispatch) => {
+  try {
+    const {data} = await api.createPage(payload);
+    if (data?.success === true) {
+      toast.success('Page created successfully');
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+    return data.data; 
+  } catch (error) { }
+};
+
+
+export const deletePageAction =(id) =>async(dispatch) =>{
+  try{
+    const {data} = await api.deletePage(id);
+    if (data?.success === true) {
+      toast.success('Page deleted successfully');
+      return data.data
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+  }
+  catch(error){
+
+  }
+}
+
+export const getPageAction =(id) =>async(dispatch) =>{
+  try{
+    const {data} = await api.getPage(id);
+    if(data?.success === true){
+      return data.data;
+    }
+    else{
+      toast.error('Something went wrong! please try again');
+    }
+  
+  }
+  catch(error){
+
+  }
+} 
+
+export const getPublishPageAction =(payload) =>async(dispatch) =>{
+  try{
+    const {data} = await api.getPublishPage(payload);
+    if(data?.success === true){
+      return data.data
+    }
+    else{
+      toast.error('Something went wrong! please try again');
+    }
+  }
+  catch(error){
+  }
+} 
+
 export const cloneFormAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.createForm(payload);
@@ -49,12 +148,55 @@ export const updateFormDataAction = (id, payload) => async (dispatch) => {
   } catch (error) { }
 };
 
+
+export const updatePageAction =(id, payload) =>async(dispatch) =>{
+  try{
+    const res=await api.updatePage(id, payload);
+    const {data}=res;
+    if(data?.success===true){
+      return data?.url;
+    }
+  }
+  catch(error){
+  }
+}
+
+export const updatePageNameAction =(id, payload) =>async(dispatch) =>{
+  try{
+    const res=await api.updatePageName(id, payload);
+    const {data}=res;
+    if(data?.success===true){
+      return true;
+    }
+  }
+  catch(error){
+
+  }
+}
+
+export const publishWebsiteAction =(id, payload) =>async(dispatch) =>{
+  try{
+    const res=await api.publishWebsite(id, payload);
+    const {data}=res;
+    if(data?.success===true){
+      return true;
+    }
+  }
+  catch(error){
+
+  }
+}
+
+
+
+
 export const updateFormAction = (id, payload) => async (dispatch) => {
   try {
     const { data } = await api.updateForm(id, payload);
     if (data) {
       toast.success('Form updated successfully');
       dispatch(setFormReducer(data.data));
+      return data
     }
   } catch (error) { }
 };
@@ -63,7 +205,7 @@ export const getFormDataAction = (id) => async (dispatch) => {
   try {
     const { data } = await api.getForm(id);
 
-    dispatch(setFormReducer(data.data));
+    // dispatch(setFormReducer(data.data));
 
     dispatch(setFormOrderElementsReducer(data.data?.orderElements || []))
     dispatch(setFormProductsReducer(data.data?.products || []))
@@ -90,10 +232,20 @@ export const getFormsAction = (payload) => async (dispatch) => {
   } catch (error) { }
 };
 
+//Get Website
+
+export const getWebBuildersAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.getWebBuilders(payload);
+    dispatch(setAllFormsReducer(data.data));
+    return data?.data;
+  } catch (error) { }
+};
+
+
 export const deleteFormAction = (id) => async (dispatch) => {
   try {
     const { data } = await api.deleteForm(id);
-
     dispatch(getFormsAction({ template: false, isDelete: false }));
     if (data?.success) {
       toast.success('Funnel deleted successfully');
@@ -183,11 +335,11 @@ export const updateFormEntryContactArrayAction = (id, payload) => async (dispatc
 };
 
 export const getFormsEntryAction = (id) => async (dispatch) => {
-  try {
-    const { data } = await api.getFormEntries(id);
-    console.log("form data", data)
-    dispatch(setFormContacts(data?.data));
-  } catch (error) { }
+  // try {
+  //   const { data } = await api.getFormEntries(id);
+  //   console.log("form data", data)
+  //   dispatch(setFormContacts(data?.data));
+  // } catch (error) { }
 };
 export const getFormEntryDetailsAction = (id) => async (dispatch) => {
   try {

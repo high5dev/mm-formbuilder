@@ -11,7 +11,6 @@ export default function CreateFormModal({ open, toggle, dispatch, store }) {
   const [form, setForm] = useState({
     name: '',
     memberType: 'leads',
-    smartList: '',
     subCategory: null,
     formType: 'leads',
     formData: [
@@ -20,7 +19,6 @@ export default function CreateFormModal({ open, toggle, dispatch, store }) {
     automateEntry: false,
     status: 'create'
   });
-
   const steps = [
     {
       id: 'design',
