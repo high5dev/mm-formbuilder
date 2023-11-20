@@ -52,6 +52,7 @@ export default function Editor({
   setRenameMdl,
   duplicateMdl,
   setDuplicateMdl,
+  customwidth,
   page,
   setPage,
   isclear,
@@ -66,9 +67,12 @@ export default function Editor({
   setOpen,
   rsidebarOpen,
   setRSidebarOpen,
+  sidebarOpen,
+  setSidebarOpen,
   device,
   store,
   sidebarOpen,
+  setSidebarOpen,
   sidebarData,
   setSidebarData,
   selectedCategory,
@@ -76,11 +80,13 @@ export default function Editor({
   openAddElementMdl,
   setOpenAddElementMdl,
 }) {
+
   const [openCreateForm, setOpenCreateForm] = useState();
   const {id}=useParams();
   const dispatch=useDispatch();
   const _store = useSelector(state => state.formEditor);
   const [editor, setEditor] = useState(null);
+  const store = useSelector(state => state.formEditor);
   const [blockManager, setBlockManager] = useState(null);
   const [isLoading, setIsLoading]=useState(false);
   const [selectedCmp, setSelectedCmp] = useState(null);
@@ -172,14 +178,8 @@ export default function Editor({
           {
             id: 'tablet',
             name: 'Tablet',
-            width: '770px',
+            width: '768px',
             widthMedia: '992px'
-          },
-          {
-            id: 'mobileLandscape',
-            name: 'Mobile landscape',
-            width: '568px',
-            widthMedia: '768px'
           },
           {
             id: 'mobilePortrait',
@@ -211,23 +211,33 @@ export default function Editor({
     gjsEditor.Commands.add('set-device-mobile', (editor) => {
       editor.setDevice('mobilePortrait');
     });
+    gjsEditor.on('block:custom', props => {
+      // The `props` will contain all the information you need in order to update your UI.
+      // props.blocks (Array<Block>) - Array of all blocks
+      // props.dragStart (Function<Block>) - A callback to trigger the start of block dragging.
+      // props.dragStop (Function<Block>) - A callback to trigger the stop of block dragging.
+      // props.container (HTMLElement) - The default element where you can append your UI
+
+      // Here you would put the logic to render/update your UI.
+      setBlockManager(props);
+    });
     gjsEditor.on('component:selected', (cmp) => {
       setSelectedCmp(cmp);
     });
-      gjsEditor.on('block:custom', props => {
-        // The `props` will contain all the information you need in order to update your UI.
-        // props.blocks (Array<Block>) - Array of all blocks
-        // props.dragStart (Function<Block>) - A callback to trigger the start of block dragging.
-        // props.dragStop (Function<Block>) - A callback to trigger the stop of block dragging.
-        // props.container (HTMLElement) - The default element where you can append your UI
-  
-        // Here you would put the logic to render/update your UI.
-        setBlockManager(props);
-      });
-  
-      gjsEditor.on('component:selected', (cmp) => {
-        setSelectedCmp(cmp);
-      });
+    gjsEditor.on('block:custom', props => {
+      // The `props` will contain all the information you need in order to update your UI.
+      // props.blocks (Array<Block>) - Array of all blocks
+      // props.dragStart (Function<Block>) - A callback to trigger the start of block dragging.
+      // props.dragStop (Function<Block>) - A callback to trigger the stop of block dragging.
+      // props.container (HTMLElement) - The default element where you can append your UI
+
+      // Here you would put the logic to render/update your UI.
+      setBlockManager(props);
+    });
+
+    gjsEditor.on('component:selected', (cmp) => {
+      setSelectedCmp(cmp);
+    });
   
       // Add custom commands
       gjsEditor.Commands.add('save-component', editor => {
@@ -368,7 +378,7 @@ export default function Editor({
           content: saveModalElement, // string | HTMLElement
         });
       });
-  
+
       // Add new toolbar
       const dc = gjsEditor.DomComponents;
       const new_toolbar_id = 'custom-id';
@@ -401,13 +411,63 @@ export default function Editor({
     setEditor(gjsEditor);
   }, []);
 
+
+  useEffect(()=>{
+    if(customwidth && customwidth!=320 && customwidth!=768 && customwidth!=1280){
+      const device_name=(Math.random() + 1).toString();
+      const command_name= (Math.random() + 2).toString();
+      editor?.DeviceManager.add({
+        id: device_name,
+        name: device_name,
+        width: customwidth.toString()+'px'
+       });
+       editor.Commands.add(command_name, (editor) => {
+        editor?.setDevice(device_name);
+      });
+      editor?.runCommand(command_name);
+    }
+    else{
+      if(customwidth===320){
+        editor?.runCommand('set-device-mobile');
+      }
+      else if(customwidth===768){
+        editor?.runCommand('set-device-tablet');
+      }
+      else{
+        editor?.runCommand('set-device-desktop');
+      }
+    }
+  }, [customwidth])
+
+  editor?.on('component:selected', (cmp) => {
+    dispatch(getWebsiteAction(id)).then(res=>{
+      if(res){
+        setPage(res[0]);
+      }
+    })
+  }, []);
+
   useEffect(() =>{
     if(isclear){
       if(editor){
         editor.Components.clear();
       }
-      
       setIsClear(false);
+    }
+  }, [isclear])
+
+  useEffect(() => {
+    if (editor) {
+      store.webElements.map((el, idx) => {
+        editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
+          label: el.category[0].name,
+          content: el.html,
+          media: el.imageUrl,
+          category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
+          menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+        });
+      });
+
     }
   }, [isclear])
 

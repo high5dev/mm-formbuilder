@@ -6,13 +6,47 @@
 }
 .gjs-mdl-dialog{
   max-width: 1200px;
-  width: 90%;
+  width: 80%;
 }
 
 .gjs-editor-cont{
   height: calc(100vh - 117px);
 }
 
+.gjs-field-replace-image{
+  border:none
+}
+.trait-image-url{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.gallery-image-list{
+  margin-top: 10px;
+  margin-left: 10px;
+  overflow-y: scroll;
+  max-height: 200px;
+}
+.gallery-view-footer{
+  margin-top: 20px;
+}
+.item-change-element{
+  display: flex;
+  justify-content: space-around;
+}
+.trait-image-btn{
+  width: 20px;
+  font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.select-image-item{
+  margin:2px
+}
+#select-btn,#cancel-btn{
+  min-width: 100px;
+}
 .navbar{
   max-height:110px;
   width: 100%;

@@ -17,6 +17,8 @@ export default function Index() {
   const [createMdl, setCreateMdl]=useState(false);
   const [renameMdl, setRenameMdl]=useState(false);
   const [duplicateMdl, setDuplicateMdl]=useState(false);
+  const [customwidth, setCustomWidth]=useState();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarData, setSidebarData] = useState({
     isOpen: false,
     menu: '',
@@ -43,6 +45,8 @@ export default function Index() {
             setRenameMdl={setRenameMdl}
             duplicateMdl={duplicateMdl}
             setDuplicateMdl={setDuplicateMdl}
+            customwidth={customwidth}
+            setCustomWidth={setCustomWidth}
             setIsClear={setIsClear}
             page={page}
             setPage={setPage}
@@ -56,8 +60,6 @@ export default function Index() {
             setOpen={setOpen}
             impStatus={impStatus}
             setImpStatus={setImpStatus}
-            device={device}
-            setDevice={setDevice}
             store={store}
             openAddElementMdl={openAddElementMdl}
             setOpenAddElementMdl={setOpenAddElementMdl}
@@ -78,6 +80,7 @@ export default function Index() {
               setRenameMdl={setRenameMdl}
               duplicateMdl={duplicateMdl}
               setDuplicateMdl={setDuplicateMdl}
+              customwidth={customwidth}
               isclear={isclear}
               setIsClear={setIsClear}
               page={page}
@@ -95,6 +98,8 @@ export default function Index() {
               impStatus={impStatus}
               stepId={stepId}
               store={store}
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
               device={device}
               sidebarData={sidebarData}
               setSidebarData={setSidebarData}

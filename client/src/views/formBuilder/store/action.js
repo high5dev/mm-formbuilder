@@ -323,6 +323,22 @@ export const getToImageLibraryAction = () => async (dispatch) => {
   } catch (error) { }
 };
 
+export const delImageAction =(id) =>async(dispatch) => {
+  try{
+    const {data}=await api.delImageFromLibrary(id);
+    dispatch(getToImageLibraryAction());
+    if (data?.success) {
+      toast.success('Contact deleted successfully');
+    } else {
+      toast.error('Something went wrong! Please try again!');
+    }
+
+  }
+  catch(error){
+  }
+}
+
+
 ///------------- ** save data action
 export const addFormEntryAction = (id, payload) => async (dispatch) => {
   try {
