@@ -44,6 +44,8 @@ import { BsPlusSquare } from 'react-icons/bs';
 var previewTimerId;
 
 export default function MainNav({
+  customwidth,
+  setCustomWidth,
   page,
   setPage,
   setIsClear,
@@ -60,13 +62,32 @@ export default function MainNav({
   openAddElementMdl,
   setOpenAddElementMdl
 }) {
+  const [width, setWidth]=useState(1280);
+  const [devicetype, setDeviceType]=useState('desktop');
   const form=store.form;
   const {formData}=form;
   const handleImport = (e) => {
     setOpen(!open);
   };
 
+  const onChange=(e) =>{
+    setWidth(e.target.value);
+  }
 
+  const handleKeyDown =(e) =>{
+    if(e.key==='Enter'){
+      if(width>1280){
+        setDeviceType('desktop');
+      }
+      if(width<=1280 && width>768){
+        setDeviceType('tablet');
+      }
+      if(width >=320 && width<768){
+        setDeviceType('mobile');
+      }
+      setCustomWidth(width)
+    }
+  }
   const handleClear=()=>{
     setIsClear(true);
   }
@@ -256,9 +277,22 @@ export default function MainNav({
           </UncontrolledDropdown>
         </div>
         <div className="devices-icons d-flex justify-content-around align-items-center">
-          <MdOutlineDesktopMac size={22} color={'black'} onClick={() => setDevice('desktop')} />
-          <MdOutlineTablet size={22} color={'black'} onClick={() => setDevice('tablet')} />
-          <BiMobile size={22} color={'black'} onClick={() => setDevice('mobile')} />
+          <MdOutlineDesktopMac size={22} color={devicetype ==='desktop' ? '#174ae7':'black'} onClick={() => {
+            setWidth(1280);
+            setCustomWidth(1280);
+            setDeviceType('desktop');
+            }} />
+          <MdOutlineTablet size={22} color={devicetype ==='tablet' ? '#174ae7':'black'} onClick={() => {         
+            setWidth(768);
+            setCustomWidth(768);
+            setDeviceType('tablet');
+          }
+            } />
+          <BiMobile size={22} color={devicetype ==='mobile' ? '#174ae7':'black'} onClick={() => {
+            setWidth(320);
+            setCustomWidth(320);
+            setDeviceType('mobile');
+          }} />
           <UncontrolledDropdown style={{ cursor: 'pointer' }}>
             <DropdownToggle tag="div" className="btn btn-sm hover-effect">
               <MoreHorizontal size={24} color={'black'} />
@@ -268,7 +302,7 @@ export default function MainNav({
         <div className="devices-size d-flex align-items-center">
           <span className="px-1 text-dark">w</span>
           <span>
-            <Input type="text" name="name" required />
+            <Input type="text" name="name" required value={width} onChange={onChange} onKeyDown={handleKeyDown}/>
           </span>
           <span className="px-1 text-dark">px</span>
         </div>
@@ -281,9 +315,9 @@ export default function MainNav({
               </UncontrolledTooltip>
             </span>
             <span className="menu-icon">
-              <MdOutlineFormatColorReset size={24} color={'black'} id="styles"/>
-              <UncontrolledTooltip placement="bottom" target="styles">
-                Site Styles
+              <MdOutlineFormatColorReset size={24} color={'black'} id="menu"/>
+              <UncontrolledTooltip placement="bottom" target="menu">
+                Format
               </UncontrolledTooltip>
             </span>
             <span className="menu-icon">

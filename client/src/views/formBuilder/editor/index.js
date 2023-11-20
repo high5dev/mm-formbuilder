@@ -14,6 +14,8 @@ export default function Index() {
   const [ispublish, setIsPublish]=useState(false);
   const [isclear, setIsClear] =useState(false);
   const [tab, setTab]=useState('');
+  const [customwidth, setCustomWidth]=useState();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarData, setSidebarData] = useState({
     isOpen: false,
     menu: '',
@@ -34,6 +36,8 @@ export default function Index() {
       <div className="editor-body">
         <div>
           <MainNav
+            customwidth={customwidth}
+            setCustomWidth={setCustomWidth}
             setIsClear={setIsClear}
             page={page}
             setPage={setPage}
@@ -47,8 +51,6 @@ export default function Index() {
             setOpen={setOpen}
             impStatus={impStatus}
             setImpStatus={setImpStatus}
-            device={device}
-            setDevice={setDevice}
             store={store}
             openAddElementMdl={openAddElementMdl}
             setOpenAddElementMdl={setOpenAddElementMdl}
@@ -63,6 +65,7 @@ export default function Index() {
           /> 
           <div className="editor-content">
             <Editor
+              customwidth={customwidth}
               isclear={isclear}
               setIsClear={setIsClear}
               page={page}
@@ -80,6 +83,8 @@ export default function Index() {
               impStatus={impStatus}
               stepId={stepId}
               store={store}
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
               device={device}
               sidebarData={sidebarData}
               setSidebarData={setSidebarData}
