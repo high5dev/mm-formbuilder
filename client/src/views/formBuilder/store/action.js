@@ -30,7 +30,6 @@ export const createFormAction = (payload) => async (dispatch) => {
 export const createWebBuilderAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.createWebBuilder(payload);
-    const res=data.data;
     const {websiteData, formData}=data.data;
     let _form_data=[];
     _form_data.push(JSON.parse(JSON.stringify(formData)));
@@ -59,13 +58,52 @@ export const getWebsiteAction = (id) => async (dispatch) => {
     };
     dispatch(setFormReducer(form_data));
     if (data?.success === true) {
-      toast.success('Form created successfully');
+      return formData
     } else {
       toast.error('Something went wrong! please try again');
     }
-    return formData
+    
   } catch (error) { }
 };
+
+export const renameWebsiteAction = (id, payload) => async(dispatch) =>{
+  try{
+    const {data} =await api.renameWebsite(id, payload);
+    if(data?.success === true) {
+      toast.success('Website renamed successfully');
+      return data.data
+    }
+    else{
+      toast.error('Something went wrong! please try again');
+    }
+  }
+  catch(error){
+  }
+}
+ 
+export const duplicateWebsiteAction = (payload) =>async(dispatch) =>{
+  try{
+    const {data} =await api.duplicateWebsite(payload);
+    const {websiteData, formData}=data.data;
+    let _form_data=[];
+    _form_data.push(JSON.parse(JSON.stringify(formData)));
+    const form_data={
+      ...websiteData,
+      formData:_form_data
+    };
+    dispatch(setFormReducer(form_data));
+    if(data?.success === true){
+      toast.success('Website duplicated successfully');
+      return form_data
+    }
+    else{
+      toast.error('Something went wrong! please try again');
+    }
+  }
+  catch(error){
+
+  }
+}
 
 export const createPageAction = (payload) => async (dispatch) => {
   try {

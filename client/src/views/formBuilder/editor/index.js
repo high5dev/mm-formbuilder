@@ -14,6 +14,9 @@ export default function Index() {
   const [ispublish, setIsPublish]=useState(false);
   const [isclear, setIsClear] =useState(false);
   const [tab, setTab]=useState('');
+  const [createMdl, setCreateMdl]=useState(false);
+  const [renameMdl, setRenameMdl]=useState(false);
+  const [duplicateMdl, setDuplicateMdl]=useState(false);
   const [sidebarData, setSidebarData] = useState({
     isOpen: false,
     menu: '',
@@ -34,6 +37,12 @@ export default function Index() {
       <div className="editor-body">
         <div>
           <MainNav
+            createMdl={createMdl}
+            setCreateMdl={setCreateMdl}
+            renameMdl ={renameMdl}
+            setRenameMdl={setRenameMdl}
+            duplicateMdl={duplicateMdl}
+            setDuplicateMdl={setDuplicateMdl}
             setIsClear={setIsClear}
             page={page}
             setPage={setPage}
@@ -63,6 +72,12 @@ export default function Index() {
           /> 
           <div className="editor-content">
             <Editor
+              createMdl={createMdl}
+              setCreateMdl={setCreateMdl}
+              renameMdl ={renameMdl}
+              setRenameMdl={setRenameMdl}
+              duplicateMdl={duplicateMdl}
+              setDuplicateMdl={setDuplicateMdl}
               isclear={isclear}
               setIsClear={setIsClear}
               page={page}

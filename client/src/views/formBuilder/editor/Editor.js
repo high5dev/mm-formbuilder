@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import { Bold, X, Trash2} from 'react-feather';
 import { RiQuestionMark } from 'react-icons/ri';
 import { toast } from 'react-toastify';
@@ -36,14 +36,22 @@ import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
 import { webBuilderPlugin } from './elements/webBuilderPlugin';
-import PublishModal from './topNav/publish/publishModal'
-import { useDispatch, useSelector } from 'react-redux';
+import PublishModal from './topNav/publish/publishModal';
 import { getWebElementsAction, createWebElementAction } from '../store/action';
 import { menu } from './util';
 import { getCategoriesByMenu, createWebElement } from '../store/api';
 import * as htmlToImage from 'html-to-image';
 import AddElementModal from './topNav/import/AddElementModal';
+import RenameModal from './topNav/rename/renameModal';
+import CreateFormModal from '../createForm/CreateFormModal';
+import DuplicateModal from './topNav/duplicate/duplicateModal';
 export default function Editor({
+  createMdl,
+  setCreateMdl,
+  renameMdl,
+  setRenameMdl,
+  duplicateMdl,
+  setDuplicateMdl,
   page,
   setPage,
   isclear,
@@ -61,11 +69,6 @@ export default function Editor({
   device,
   store,
   sidebarOpen,
-  setSidebarOpen
-}) {
-  
-  const dispatch=useDispatch();
-  const [editor, setEditor] = useState(null);
   sidebarData,
   setSidebarData,
   selectedCategory,
@@ -73,19 +76,28 @@ export default function Editor({
   openAddElementMdl,
   setOpenAddElementMdl,
 }) {
+  const [openCreateForm, setOpenCreateForm] = useState();
   const {id}=useParams();
-  const dispatch = useDispatch();
-  const store = useSelector(state => state.formEditor);
+  const dispatch=useDispatch();
+  const _store = useSelector(state => state.formEditor);
   const [editor, setEditor] = useState(null);
   const [blockManager, setBlockManager] = useState(null);
   const [isLoading, setIsLoading]=useState(false);
-
   const [selectedCmp, setSelectedCmp] = useState(null);
   const [isPublishModal, setIsPublishModal]=useState(false);
   const [publishUrl, setPublishUrl]=useState();
+  const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
   const toggle = () => {
     setOpen(!open);
   };
+
+  const _toggleRename =(_open) =>{
+    setRenameMdl(_open);
+  }
+
+  const _toggleDuplicate = (_open) =>{
+    setDuplicateMdl(_open);
+  }
 
   const togglePublish=(_open)=>{
     setIsPublishModal(_open);
@@ -104,6 +116,11 @@ export default function Editor({
   };
   useEffect(() => {
     dispatch(getWebElementsAction());
+    dispatch(getWebsiteAction(id)).then(res=>{
+      if(res){
+        setPage(res[0]);
+      }
+    })
     const gjsEditor = grapesjs.init({
       container: '#editor',
       height: window. innerHeight-117,
@@ -180,7 +197,6 @@ export default function Editor({
       },
     });
     gjsEditor.on('block:drag:start', function (model) {
-      setSidebarOpen(false);
       setSidebarData({
         ...sidebarData,
         isOpen: false,
@@ -195,11 +211,194 @@ export default function Editor({
     gjsEditor.Commands.add('set-device-mobile', (editor) => {
       editor.setDevice('mobilePortrait');
     });
-    dispatch(getWebsiteAction(id)).then(res=>{
-      if(res){
-        setPage(res[0]);
-      }
-    })
+    gjsEditor.on('component:selected', (cmp) => {
+      setSelectedCmp(cmp);
+    });
+      gjsEditor.on('block:custom', props => {
+        // The `props` will contain all the information you need in order to update your UI.
+        // props.blocks (Array<Block>) - Array of all blocks
+        // props.dragStart (Function<Block>) - A callback to trigger the start of block dragging.
+        // props.dragStop (Function<Block>) - A callback to trigger the stop of block dragging.
+        // props.container (HTMLElement) - The default element where you can append your UI
+  
+        // Here you would put the logic to render/update your UI.
+        setBlockManager(props);
+      });
+  
+      gjsEditor.on('component:selected', (cmp) => {
+        setSelectedCmp(cmp);
+      });
+  
+      // Add custom commands
+      gjsEditor.Commands.add('save-component', editor => {
+        const saveModalElement = document.createElement('div');
+        saveModalElement.className = "save-component-modal d-flex flex-column align-items-center";
+  
+        saveModalElement.innerHTML = `
+          <div class="d-flex w-100">
+            <div class="w-50 p-1">
+              <h5>Main menu</h5>
+              <select class="select-main-menu w-100">
+                ${
+                  menu.map((e, idx) => {
+                    if (idx !== 0)
+                    return (
+                      `<option class="main-menu-option" value=${e.id}>${e.name}</option>`
+                    );
+                  })
+                }
+              </select>
+            </div>
+            
+            <div class="w-50  p-1">
+              <h5>Sub menu</h5>
+              <select class="select-sub-menu w-100">
+                ${
+                  menu[1].subMenu.map((e, idx) => {
+                    return (
+                      `<option class="sub-menu-option" value=${e.id}>${e.name}</option>`
+                    );
+                  })
+                }
+              </select >
+            </div>
+          </div>
+          
+          <div  class="w-100 p-1">
+            <h5>Category</h5>
+            <input class="input-category w-100" type="text" placeholder="Insert category..."/>
+            <div class="category-options"></div>
+          </div>
+  
+          <button class="btn btn-primary mb-1 save-component-btn">Save</button>
+        `;
+  
+        const mainMenuDropDown = saveModalElement.querySelector('.select-main-menu');
+        const subMenuSelect = saveModalElement.querySelector('.select-sub-menu');
+        const categoryInput = saveModalElement.querySelector('.input-category');
+        const saveComponentBtn = saveModalElement.querySelector('.save-component-btn');
+        const categoryOptions = saveModalElement.querySelector('.category-options');
+  
+        let mainMenu = menu[0].id;
+        let subMenu = menu[0].subMenu?.id || '';
+        let category = '';
+        let existedCategories = [];
+        let tempCategories = [];
+  
+        getCategoriesByMenu({mainMenu, subMenu}).then((res) => {
+          existedCategories = res.data.data;
+        });
+  
+        mainMenuDropDown.addEventListener('change', (ev) => {
+          mainMenu = ev.target.value;
+          const submenuData = menu.find(e => e.id === ev.target.value).subMenu;      
+          subMenu = submenuData[0]?.id || '';
+  
+          getCategoriesByMenu({mainMenu, subMenu}).then((res) => {
+            existedCategories = res.data.data;
+          });
+  
+          const childrenLength = subMenuSelect.childNodes.length;
+          for (let i = 0 ; i < childrenLength; i++) {
+            subMenuSelect.removeChild(subMenuSelect.firstChild);
+          }
+  
+          submenuData.map(e => {
+            const newOption = document.createElement('option');
+            newOption.className = "sub-menu-option";
+            newOption.value = e.id;
+            newOption.innerText = e.name;
+            subMenuSelect.append(newOption);
+          })
+        });
+  
+        subMenuSelect.addEventListener('change', (ev) => {
+          subMenu = ev.target.value;
+          getCategoriesByMenu({mainMenu, subMenu}).then((res) => {
+            existedCategories = res.data.data;
+          });
+        });
+  
+        categoryInput.addEventListener('input', (ev) => {
+          category = ev.target.value;
+          tempCategories = [];
+          existedCategories.map((e) => {
+            if (e.name.includes(category)) tempCategories.push(e);
+          });
+  
+          const childrenLength = categoryOptions.childNodes.length;
+          for (let i = 0 ; i < childrenLength; i++) {
+            categoryOptions.removeChild(categoryOptions.firstChild);
+          }
+  
+          tempCategories.map(e => {
+            const newOption = document.createElement('option');
+            newOption.className = "category-option ps-1";
+            newOption.value = e.name;
+            newOption.innerText = e.name;
+            categoryOptions.append(newOption);
+          })
+        });
+  
+        saveComponentBtn.addEventListener('click', () => {
+          if (!mainMenu) {
+            alert('Please select main menu.');
+            return;
+          }
+  
+          if (!category) {
+            alert('Please input or select a category.');
+            return;
+          }
+  
+          const selectedCmp = editor.getSelected();
+          htmlToImage.toPng(selectedCmp.getEl()).then((dataUrl) => {
+            const html = selectedCmp.toHTML();
+            const css = editor.CodeManager.getCode(selectedCmp, 'css', { cssc: editor.CssComposer });
+  
+            dispatch(createWebElementAction({mainMenu, subMenu, category, html: `${html}<style>${css}</style>`, imageUrl: dataUrl})).then((res) => {
+              editor.Modal.close();
+            });
+          });
+          
+        });
+  
+        editor.Modal.open({
+          title: 'Save component', // string | HTMLElement
+          content: saveModalElement, // string | HTMLElement
+        });
+      });
+  
+      // Add new toolbar
+      const dc = gjsEditor.DomComponents;
+      const new_toolbar_id = 'custom-id';
+  
+      const htmlLabel = `<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 24 24" id="save"><path d="m20.71 9.29-6-6a1 1 0 0 0-.32-.21A1.09 1.09 0 0 0 14 3H6a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-8a1 1 0 0 0-.29-.71ZM9 5h4v2H9Zm6 14H9v-3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1Zm4-1a1 1 0 0 1-1 1h-1v-3a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3v3H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6.41l4 4Z"></path></svg>`
+      
+      dc.getTypes().forEach(elType => {
+        let {model:oldModel, view:oldView} = elType;
+        if (elType.id !== 'wrapper') {
+          dc.addType(elType.id, {
+            model: oldModel.extend({
+              initToolbar() {
+                oldModel.prototype.initToolbar.apply(this);
+                const toolbar = this.get('toolbar');
+                
+                if (!toolbar.filter(tlb => tlb.id === new_toolbar_id ).length) {
+                  toolbar.unshift({
+                    id: new_toolbar_id,
+                    command: 'save-component',
+                    label: htmlLabel
+                  });
+                  this.set('toolbar', toolbar);
+                }
+              }
+            }),
+            view: oldView
+          });
+        }
+      });
+    setEditor(gjsEditor);
   }, []);
 
   useEffect(() =>{
@@ -212,211 +411,9 @@ export default function Editor({
     }
   }, [isclear])
 
-  gjsEditor.on('component:selected', (cmp) => {
+  editor?.on('component:selected', (cmp) => {
     setSelectedCmp(cmp);
   });
-    gjsEditor.on('block:custom', props => {
-      // The `props` will contain all the information you need in order to update your UI.
-      // props.blocks (Array<Block>) - Array of all blocks
-      // props.dragStart (Function<Block>) - A callback to trigger the start of block dragging.
-      // props.dragStop (Function<Block>) - A callback to trigger the stop of block dragging.
-      // props.container (HTMLElement) - The default element where you can append your UI
-
-      // Here you would put the logic to render/update your UI.
-      setBlockManager(props);
-    });
-
-    gjsEditor.on('component:selected', (cmp) => {
-      setSelectedCmp(cmp);
-    });
-
-    // Add custom commands
-    gjsEditor.Commands.add('save-component', editor => {
-      const saveModalElement = document.createElement('div');
-      saveModalElement.className = "save-component-modal d-flex flex-column align-items-center";
-
-      saveModalElement.innerHTML = `
-        <div class="d-flex w-100">
-          <div class="w-50 p-1">
-            <h5>Main menu</h5>
-            <select class="select-main-menu w-100">
-              ${
-                menu.map((e, idx) => {
-                  if (idx !== 0)
-                  return (
-                    `<option class="main-menu-option" value=${e.id}>${e.name}</option>`
-                  );
-                })
-              }
-            </select>
-          </div>
-          
-          <div class="w-50  p-1">
-            <h5>Sub menu</h5>
-            <select class="select-sub-menu w-100">
-              ${
-                menu[1].subMenu.map((e, idx) => {
-                  return (
-                    `<option class="sub-menu-option" value=${e.id}>${e.name}</option>`
-                  );
-                })
-              }
-            </select >
-          </div>
-        </div>
-        
-        <div  class="w-100 p-1">
-          <h5>Category</h5>
-          <input class="input-category w-100" type="text" placeholder="Insert category..."/>
-          <div class="category-options"></div>
-        </div>
-
-        <button class="btn btn-primary mb-1 save-component-btn">Save</button>
-      `;
-
-      const mainMenuDropDown = saveModalElement.querySelector('.select-main-menu');
-      const subMenuSelect = saveModalElement.querySelector('.select-sub-menu');
-      const categoryInput = saveModalElement.querySelector('.input-category');
-      const saveComponentBtn = saveModalElement.querySelector('.save-component-btn');
-      const categoryOptions = saveModalElement.querySelector('.category-options');
-
-      let mainMenu = menu[0].id;
-      let subMenu = menu[0].subMenu?.id || '';
-      let category = '';
-      let existedCategories = [];
-      let tempCategories = [];
-
-      getCategoriesByMenu({mainMenu, subMenu}).then((res) => {
-        existedCategories = res.data.data;
-      });
-
-      mainMenuDropDown.addEventListener('change', (ev) => {
-        mainMenu = ev.target.value;
-        const submenuData = menu.find(e => e.id === ev.target.value).subMenu;      
-        subMenu = submenuData[0]?.id || '';
-
-        getCategoriesByMenu({mainMenu, subMenu}).then((res) => {
-          existedCategories = res.data.data;
-        });
-
-        const childrenLength = subMenuSelect.childNodes.length;
-        for (let i = 0 ; i < childrenLength; i++) {
-          subMenuSelect.removeChild(subMenuSelect.firstChild);
-        }
-
-        submenuData.map(e => {
-          const newOption = document.createElement('option');
-          newOption.className = "sub-menu-option";
-          newOption.value = e.id;
-          newOption.innerText = e.name;
-          subMenuSelect.append(newOption);
-        })
-      });
-
-      subMenuSelect.addEventListener('change', (ev) => {
-        subMenu = ev.target.value;
-        getCategoriesByMenu({mainMenu, subMenu}).then((res) => {
-          existedCategories = res.data.data;
-        });
-      });
-
-      categoryInput.addEventListener('input', (ev) => {
-        category = ev.target.value;
-        tempCategories = [];
-        existedCategories.map((e) => {
-          if (e.name.includes(category)) tempCategories.push(e);
-        });
-
-        const childrenLength = categoryOptions.childNodes.length;
-        for (let i = 0 ; i < childrenLength; i++) {
-          categoryOptions.removeChild(categoryOptions.firstChild);
-        }
-
-        tempCategories.map(e => {
-          const newOption = document.createElement('option');
-          newOption.className = "category-option ps-1";
-          newOption.value = e.name;
-          newOption.innerText = e.name;
-          categoryOptions.append(newOption);
-        })
-      });
-
-      saveComponentBtn.addEventListener('click', () => {
-        if (!mainMenu) {
-          alert('Please select main menu.');
-          return;
-        }
-
-        if (!category) {
-          alert('Please input or select a category.');
-          return;
-        }
-
-        const selectedCmp = editor.getSelected();
-        htmlToImage.toPng(selectedCmp.getEl()).then((dataUrl) => {
-          const html = selectedCmp.toHTML();
-          const css = editor.CodeManager.getCode(selectedCmp, 'css', { cssc: editor.CssComposer });
-
-          dispatch(createWebElementAction({mainMenu, subMenu, category, html: `${html}<style>${css}</style>`, imageUrl: dataUrl})).then((res) => {
-            editor.Modal.close();
-          });
-        });
-        
-      });
-
-      editor.Modal.open({
-        title: 'Save component', // string | HTMLElement
-        content: saveModalElement, // string | HTMLElement
-      });
-    });
-
-    // Add new toolbar
-    const dc = gjsEditor.DomComponents;
-    const id = 'custom-id';
-
-    const htmlLabel = `<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 24 24" id="save"><path d="m20.71 9.29-6-6a1 1 0 0 0-.32-.21A1.09 1.09 0 0 0 14 3H6a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-8a1 1 0 0 0-.29-.71ZM9 5h4v2H9Zm6 14H9v-3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1Zm4-1a1 1 0 0 1-1 1h-1v-3a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3v3H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6.41l4 4Z"></path></svg>`
-    
-    dc.getTypes().forEach(elType => {
-      let {model:oldModel, view:oldView} = elType;
-      if (elType.id !== 'wrapper') {
-        dc.addType(elType.id, {
-          model: oldModel.extend({
-            initToolbar() {
-              oldModel.prototype.initToolbar.apply(this);
-              const toolbar = this.get('toolbar');
-              
-              if (!toolbar.filter(tlb => tlb.id === id ).length) {
-                toolbar.unshift({
-                  id,
-                  command: 'save-component',
-                  label: htmlLabel
-                });
-                this.set('toolbar', toolbar);
-              }
-            }
-          }),
-          view: oldView
-        });
-      }
-    });
-    
-    setEditor(gjsEditor)
-  }, []);
-
-  useEffect(() => {
-    if (editor) {
-      store.webElements.map((el, idx) => {
-        editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
-          label: el.category[0].name,
-          content: el.html,
-          media: el.imageUrl,
-          category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
-          menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
-        });
-      });
-    }
-  }, [store.webElements, editor]);
-
   useEffect(() => {
     if (editor !== null) {
       switch (device) {
@@ -482,6 +479,19 @@ export default function Editor({
     }
   }, [page?._id])
 
+  useEffect(() => {
+    if (editor) {
+      store.webElements.map((el, idx) => {
+        editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
+          label: el.category[0].name,
+          content: el.html,
+          media: el.imageUrl,
+          category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
+          menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+        });
+      });
+    }
+  }, [store.webElements, editor]);
   return (
     <div className="d-flex">
       <div className="expanded-sidebar">
@@ -489,7 +499,7 @@ export default function Editor({
           options={{ suppressScrollX: true }}
           style={{ height: `calc(100vh - 120px)` }}
         >
-          <Collapse isOpen={sidebarData.isOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{height: '100%'}}>
+         <Collapse isOpen={sidebarData.isOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{height: '100%'}}>
             <div className="expanded-header">
               <span>{sidebarData.menu.name}</span>
               <div>
@@ -626,20 +636,23 @@ export default function Editor({
                   <div id="selector-manager-container" />
                   <div id="style-manager-container" />
                 </div>
-              <div style={{display:tab='Layers'?'block':'none'}}>
+              <div style={{display:tab==='Layers'?'block':'none'}}>
                 <div id="layer-manager-container" />  
               </div>
               <div style={{display:tab==='Traits'?'block':'none'}}>
                 <div id="trait-manager-container" />
               </div>
               <div style={{display:tab==='Pages'?'block':'none'}}>
-                <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} page={page} setPage={setPage}/>
+                <PageSidebar id={id} store={_store} editor={editor} setEditor={setEditor} page={page} setPage={setPage}/>
               </div>
         </PerfectScrollbar>
       </div>
       <ImportModal editor={editor} setEditor={setEditor} open={open} toggle={toggle} />
       <PublishModal publishUrl={publishUrl} isOpen={isPublishModal} toggle={togglePublish}/>
       <AddElementModal editor={editor} setEditor={setEditor} openAddElementMdl={openAddElementMdl} setOpenAddElementMdl={setOpenAddElementMdl} />
+      <RenameModal store={_store} isOpen={renameMdl} toggle={_toggleRename}/>
+      <CreateFormModal open={createMdl} store={store} dispatch={dispatch}/>
+      <DuplicateModal store={_store} isOpen={duplicateMdl} toggle={_toggleDuplicate}/>
     </div>
   );
 }

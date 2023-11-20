@@ -13,10 +13,18 @@ export const createWebBuilder=(payload) => {
   return API.post('/web-builder/create', payload)
 }
 
+export const duplicateWebsite =(payload) => {
+  return API.post('/web-builder/duplicate', payload)
+}
+
 //save
 export const updateForm = (id, payload) => {
   return API.put('/web-builder/edit/' + id, payload);
 };
+
+export const renameWebsite =(id, payload) => {
+  return API.put('/web-builder/rename/' + id, payload);
+}
 
 export const createPage=(payload) => {
   return API.post('/web-builder/create-page', payload);

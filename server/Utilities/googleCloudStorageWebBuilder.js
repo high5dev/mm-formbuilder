@@ -30,7 +30,6 @@ function googleCloudStorageWebBuilder() {
     configureBucketCors().catch(console.error);
     const pageDoc = bucket.file(`website-builder/${pageDirectory}/index.html`);
     const pageStream = pageDoc.createWriteStream({ resumable: false });
-
     return new Promise((resolve, reject) => {
       pageStream.on("error", (err) => {
         reject(err);
@@ -38,7 +37,6 @@ function googleCloudStorageWebBuilder() {
       });
       pageStream.on("finish", () => {
         const pageUrl = `https://storage.googleapis.com/${process.env.GCS_BUCKET}/${pageDoc.name}`;
-        console.log('pageUrl----------------------', pageUrl);
         resolve(pageUrl);
       })
       pageStream.end(pageData);
