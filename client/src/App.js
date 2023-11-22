@@ -62,9 +62,11 @@ const App = () => {
       '/watchVideo/',
       '/token/',
       '/fill',
-      '/digital-contracts/checkout/'
+      '/digital-contracts/checkout/',
+      '/website/'
     ];
-    if (!urlsNotInclude.some(function(v) { return window.location.href.indexOf(v) >= 0; })){
+    if (!urlsNotInclude.some(
+      function(v) { return window.location.href.indexOf(v) >= 0; })){
       dispatch(fetchUserApi()).then((res) => {
         if (res.error) {
           

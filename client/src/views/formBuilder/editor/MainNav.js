@@ -21,6 +21,10 @@ import { useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import '@src/assets/styles/web-builder.scss';
+import {useDispatch} from 'react-redux';
+import { setLinkUrlReducer } from '../store/reducer';
+import { updateFormDataAction } from '../store/action';
+import { BsPlusSquare } from 'react-icons/bs';
 import {
   Button,
   ButtonGroup,
@@ -38,20 +42,18 @@ import {
   UncontrolledDropdown,
   UncontrolledTooltip
 } from 'reactstrap';
-import { updateFormDataAction } from '../store/action';
-import { BsPlusSquare } from 'react-icons/bs';
-var previewTimerId;
 
 export default function MainNav({
-  createMdl,
-  setCreateMdl,
-  renameMdl,
-  setRenameMdl,
-  duplicateMdl,
-  setDuplicateMdl,
-  customwidth,
-  setCustomWidth,
-  page,
+createMdl,
+setCreateMdl,
+renameMdl,
+setRenameMdl,
+duplicateMdl,
+setDuplicateMdl,
+customwidth,
+setCustomWidth,
+ispreview, 
+page,
   setPage,
   setIsClear,
   setIsPreview,
@@ -67,11 +69,11 @@ export default function MainNav({
   openAddElementMdl,
   setOpenAddElementMdl
 }) {
+  const dispatch=useDispatch();
   const [width, setWidth]=useState(1280);
   const [devicetype, setDeviceType]=useState('desktop');
   const form=store.form;
   const {formData}=form;
-  console.log('formData==========>', formData);
   const handleImport = (e) => {
     setOpen(!open);
   };
@@ -107,12 +109,14 @@ export default function MainNav({
   };
   
   useEffect(()=>{
-    setPage(formData[0]);
+    if(formData){
+      setPage(formData[0]);
+    }
   }, [])
   
   return (
-    <div className="navbar">
-      <div className="up-navbar d-flex justify-content-between align-items-center">
+  <div className='navbar'>
+        <div className="up-navbar d-flex justify-content-between align-items-center">
         <div className="d-flex justify-content align-items-center">
           <div className="logo">
             <span className="title brand-text text-white">My Manager</span>
@@ -200,8 +204,17 @@ export default function MainNav({
         </div>
         <div className="additional-bar d-flex align-items-center justify-content-around">
           <div className="menu-item hover-effect text-white">Invite</div>
-          <span className="menu-item text-primary text-white" onClick={(e)=>setIsPreview(true)}>Preview</span>
-          <Button className="btn btn-primary" color="primary" onClick={(e)=>setIsPublish(true)}>
+          <span className="menu-item text-primary text-white" onClick={(e)=>{
+            setIsPreview(true);
+            dispatch(setLinkUrlReducer('preview'));
+            // localStorage.setItem("linkUrl", "preview");
+            }}>Preview</span>
+          <Button className="btn btn-primary" color="primary" onClick={(e)=>{
+            setIsPublish(true);
+            dispatch(setLinkUrlReducer('website'));
+            // localStorage.setItem('linkUrl', 'website');
+          }
+           }>
             Publish
           </Button>
         </div>
@@ -380,6 +393,6 @@ export default function MainNav({
           </div>
         </div>
       </div>
-    </div>
+  </div> 
   );
 }

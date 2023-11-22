@@ -16,6 +16,7 @@ export const formEditor = createSlice({
       status: '',
       isTemplate: false
     },
+    linkUrl:'website',
     formOrderElements:{},
     formSalesType:'',
     formProducts:[],
@@ -27,6 +28,9 @@ export const formEditor = createSlice({
     webElements: [],
   },
   reducers: {
+    setLinkUrlReducer:(state,action) =>{
+      state.linkUrl=action?.payload;
+    },
     setFormReducer: (state, action) => {
       state.form = action?.payload;
     },
@@ -93,6 +97,7 @@ export const formEditor = createSlice({
 });
 
 export const {
+  setLinkUrlReducer,
   setFormReducer,
   setToDefaultReducer,
   setAllFormsReducer,

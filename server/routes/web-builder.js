@@ -12,6 +12,7 @@ const {
   publishWebsite,
   updateAllPages,
   getPublishPage,
+  getPreviewPage,
   createPage,
   updatePage,
   updatePageName,
@@ -29,6 +30,7 @@ router.put("/edit/:id", isAuthenticated,  editWebsite);
 router.delete("/delete/:id", isAuthenticated, deleteWebsite);
 router.put('/rename/:id', isAuthenticated, renameWebsite);
 router.get("/publish-page/", getPublishPage);
+router.get("/preview-page/",  isAuthenticated, getPreviewPage);
 //page
 router.post("/create-page", isAuthenticated, createPage);
 router.put("/update/:id", isAuthenticated, updatePage);

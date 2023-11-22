@@ -39,6 +39,10 @@ export const getPublishPage = (payload) => {
   return API.get('/web-builder/publish-page/', {params:payload});
 };
 
+export const getPreviewPage = (payload) => {
+  return API.get('/web-builder/preview-page/', {params:payload});
+}
+
 export const updateFormData = (id, payload) => {
   return API.put('/form-builder/edit/' + id, payload);
 };
@@ -88,6 +92,7 @@ export const addLeads = (id, payload) => {
 export const addToImageLibrary = (payload) => {
   return API.post('/image-library/', payload);
 };
+
 export const getImageLibrary = (payload) => {
   return API.get('/image-library',{ params: { ...payload }});
 };
@@ -95,6 +100,7 @@ export const getImageLibrary = (payload) => {
 export const delImageFromLibrary =(id) =>{
   return API.delete('/image-library/' + id);
 }
+
 export const getFormsCount = () => {
   return API.get('/form-builder/get-user-forms-count');
 };
@@ -104,18 +110,23 @@ export const getFormsCount = () => {
 export const addFormEntry =(id,payload) =>{
     return API.post('/form-builder/details/' + id,payload);
 }
+
 export const updateFormEntry =(id,payload) =>{
     return API.put('/form-builder/details/' + id,payload);
 }
+
 export const updateFormEntryContactArray =(id,payload) =>{
     return API.put('/form-builder/update-contact/' + id,payload);
 }
+
 export const getFormEntries =(id) =>{
     return API.get('/form-builder/details/'+ id);
 }
+
 export const getFormEntriesById =(id) =>{
     return API.get('/form-builder/contact-details/'+ id);
 }
+
 export const deleteFormEntry =(id) =>{
     return API.delete('/form-builder/details/' + id);
 }
@@ -142,8 +153,7 @@ export async function updateFormCategory(payload) {
 }
 
 export async function deleteFormCategory(id) {
-  return API.delete(`/form-categories/${id}`);
-  
+  return API.delete(`/form-categories/${id}`); 
 }
 
 //send emails 

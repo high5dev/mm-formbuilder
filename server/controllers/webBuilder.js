@@ -46,10 +46,11 @@ exports.createWebsite = asyncHandler(async (req, res) => {
       };
       const websiteData = await WebBuilder.create(webData);
       const {name, html, css, step, path}=formData[0];
+      const page_path="/"+websiteData._id+"/"+name;
       const pageData={
         name,
         step,
-        path,
+        path:page_path,
         websiteId: websiteData._id,
         userId: mongoose.Types.ObjectId(req.user._id)
       };
@@ -57,7 +58,6 @@ exports.createWebsite = asyncHandler(async (req, res) => {
       console.log('newPage', newPage);
       const blankPageData = "<body></body><style></style>"
       await googleCloudStorageWebBuilder.createAndUpdatePage(`${websiteData._id}/${newPage._id}`, blankPageData);
-      console.log('********************')
       return res.send({
         success: true,
         message: "Website created successfully",
@@ -392,11 +392,10 @@ exports.publishWebsite = asyncHandler(async (req, res) => {
   const { html, css, page} = req.body;
   try {
     const _page=await WebPage.findOne({_id: page});
-    const data = await WebBuilder.findOne({_id: id});
-    const result=await WebBuilder.findOneAndUpdate({_id: id}, {isPublish:true}, {new: true});
+    const data=await WebBuilder.findOneAndUpdate({_id: id}, {isPublish:true}, {new: true});
     const url=await googleCloudStorageWebBuilder.createAndUpdatePage(`${data._id}/${_page._id}`, `${html} <style>${css}</style>`);
-    if(result){
-      return res.status(200).json({ success: true, message: `Success`});
+    if(data){
+      return res.status(200).json({ success: true, message: `Success`, data});
     }
   } catch (err) {
     res.send({ msg: "error" });
@@ -448,6 +447,21 @@ exports.getPublishPage = asyncHandler(async (req, res) => {
     const data = await WebBuilder.findOne({_id: id});
     const page=await WebPage.findOne({name:pageName, websiteId:mongoose.Types.ObjectId(id)});
     if(data && data.isPublish){
+      const result=await googleCloudStorageWebBuilder.readPage(`${data._id}/${page._id}`);
+      return res.status(200).json({ success: true, data:result });
+    }
+    return res.status(404).json({ success: false, message: `Page not found` });
+  } catch (err) {
+    res.send({ msg: "error" });
+  }
+});
+
+exports.getPreviewPage = asyncHandler(async (req, res) => {
+  let {id, pageName} = req.query;
+  try {
+    const data = await WebBuilder.findOne({_id: id});
+    const page=await WebPage.findOne({name:pageName, websiteId:mongoose.Types.ObjectId(id)});
+    if(data){
       const result=await googleCloudStorageWebBuilder.readPage(`${data._id}/${page._id}`);
       return res.status(200).json({ success: true, data:result });
     }

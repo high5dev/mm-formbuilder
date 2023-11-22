@@ -33,7 +33,6 @@ export default function Index() {
     };
   });
 
-
   return (
     <>
       <div className="editor-body">
@@ -50,6 +49,7 @@ export default function Index() {
             setIsClear={setIsClear}
             page={page}
             setPage={setPage}
+            ispreview={ispreview}
             setIsPreview={setIsPreview}
             setIsPublish={setIsPublish}
             tab={tab}
