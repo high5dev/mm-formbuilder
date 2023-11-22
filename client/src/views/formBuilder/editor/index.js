@@ -12,6 +12,7 @@ export default function Index() {
   const [device, setDevice] = useState('desktop');
   const [ispreview, setIsPreview]=useState(false);
   const [ispublish, setIsPublish]=useState(false);
+  const [isinvite, setIsInvite]=useState(false);
   const [isclear, setIsClear] =useState(false);
   const [tab, setTab]=useState('');
   const [createMdl, setCreateMdl]=useState(false);
@@ -38,6 +39,8 @@ export default function Index() {
       <div className="editor-body">
         <div>
           <MainNav
+            isinvite ={isinvite}
+            setIsInvite={setIsInvite}
             createMdl={createMdl}
             setCreateMdl={setCreateMdl}
             renameMdl ={renameMdl}
@@ -74,6 +77,8 @@ export default function Index() {
           /> 
           <div className="editor-content">
             <Editor
+              isinvite={isinvite}
+              setIsInvite={setIsInvite}
               createMdl={createMdl}
               setCreateMdl={setCreateMdl}
               renameMdl ={renameMdl}

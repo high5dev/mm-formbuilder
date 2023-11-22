@@ -257,6 +257,16 @@
   }
 }
 
+.role-item{
+  margin-bottom: 10px;
+  .rolename{
+    margin-left: 5px;
+  }
+  .role-description{
+    padding-left: 20px;
+  }
+}
+
 #blocks{
   height: 100%;
   .gjs-blocks-c{
