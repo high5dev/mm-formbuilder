@@ -37,7 +37,7 @@ export default function Index({page, setPage, id, store, editor, setEditor, setP
   const addNewPage = () => {
       const pageNum=parseInt(localStorage.getItem('pageNum'));
       const name=`Page ${pageNum}`;
-      const path=`Page ${pageNum}`;
+      const path='/'+form?._id+'/'+name;
       const payload={
         id,
         pageData:{
@@ -106,7 +106,7 @@ export default function Index({page, setPage, id, store, editor, setEditor, setP
                   <div className="fs-6 fw-bolder text-black" onClick={(e) => setPage(item)}>
                     {item?.name || 'Home page'}
                   </div>
-                  {page?._id !== item?._id && (
+                  {item?.name!='Home' &&(
                     <div className='d-flex'>
                      <div className="px-1" onClick={() => rename(item)}>
                       <Edit size={18} />

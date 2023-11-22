@@ -186,7 +186,7 @@ export const webBuilderPlugin = (editor) => {
       });
       return newLinkElement;
     }
-
+  });
   editor.DomComponents.addType('iframe-element', iframe);
   editor.DomComponents.addType('social-bar', socialBar);
 

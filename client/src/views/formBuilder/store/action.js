@@ -1,4 +1,5 @@
 import {
+  setLinkUrlReducer,
   setAllFormsReducer,
   setFormContacts,
   setFormReducer,
@@ -46,7 +47,6 @@ export const createWebBuilderAction = (payload) => async (dispatch) => {
     return form_data
   } catch (error) { }
 };
-
 
 export const getWebsiteAction = (id) => async (dispatch) => {
   try {
@@ -117,7 +117,6 @@ export const createPageAction = (payload) => async (dispatch) => {
   } catch (error) { }
 };
 
-
 export const deletePageAction =(id) =>async(dispatch) =>{
   try{
     const {data} = await api.deletePage(id);
@@ -152,6 +151,21 @@ export const getPageAction =(id) =>async(dispatch) =>{
 export const getPublishPageAction =(payload) =>async(dispatch) =>{
   try{
     const {data} = await api.getPublishPage(payload);
+    console.log('data.data', data.data);
+    if(data?.success === true){
+      return data.data
+    }
+    else{
+      toast.error('Something went wrong! please try again');
+    }
+  }
+  catch(error){
+  }
+} 
+
+export const getPreviewPageAction =(payload) =>async(dispatch) =>{
+  try{
+    const {data} = await api.getPreviewPage(payload);
     if(data?.success === true){
       return data.data
     }
@@ -217,16 +231,13 @@ export const publishWebsiteAction =(id, payload) =>async(dispatch) =>{
     const res=await api.publishWebsite(id, payload);
     const {data}=res;
     if(data?.success===true){
-      return true;
+      return data.data;
     }
   }
   catch(error){
 
   }
 }
-
-
-
 
 export const updateFormAction = (id, payload) => async (dispatch) => {
   try {

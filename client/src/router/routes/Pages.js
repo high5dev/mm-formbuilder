@@ -21,7 +21,9 @@ const PagesRoutes = [
     path: '/website/:id',
     component: lazy(() => import('../../views/website')),
     layout: 'BlankLayout',
-    exact: true
+    meta: {
+      publicRoute: true
+    }
   },
   {
     path: '/website/:id/:pageName',
@@ -30,6 +32,16 @@ const PagesRoutes = [
     meta: {
       publicRoute: true
     }
+  },
+  {
+    path: '/preview/:id',
+    component: lazy(() => import('../../views/website')),
+    layout: 'BlankLayout',
+  },
+  {
+    path: '/preview/:id/:pageName',
+    component: lazy(() => import('../../views/website')),
+    layout: 'BlankLayout',
   },
   {
     path: '/login/:contactTypeId/:assignerId',
