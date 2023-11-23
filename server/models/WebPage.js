@@ -30,6 +30,9 @@ const WebPageSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    seoDetails: {
+      type: Object,
+    },
     isDelete: {
       type: Boolean,
       default: false,
