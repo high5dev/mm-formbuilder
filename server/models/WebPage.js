@@ -30,6 +30,11 @@ const WebPageSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    popups: [
+      {
+        type: Object
+      }
+    ],
     isDelete: {
       type: Boolean,
       default: false,

@@ -407,7 +407,7 @@ exports.updatePageName = asyncHandler(async (req, res) => {
   try {
     const Obj=req.body;
     const _page=await WebPage.findOneAndUpdate({_id: id}, Obj);
-    if(_page){
+        if(_page){
       return res.status(200).json({ success: true, message: `Success`});
     }
     return res.status(404).json({ success: false, message: `Page not found` });
@@ -448,7 +448,7 @@ exports.getPublishPage = asyncHandler(async (req, res) => {
     const page=await WebPage.findOne({name:pageName, websiteId:mongoose.Types.ObjectId(id)});
     if(data && data.isPublish){
       const result=await googleCloudStorageWebBuilder.readPage(`${data._id}/${page._id}`);
-      return res.status(200).json({ success: true, data:result });
+      return res.status(200).json({ success: true, data:result, pageInfo: page });
     }
     return res.status(404).json({ success: false, message: `Page not found` });
   } catch (err) {
@@ -463,7 +463,7 @@ exports.getPreviewPage = asyncHandler(async (req, res) => {
     const page=await WebPage.findOne({name:pageName, websiteId:mongoose.Types.ObjectId(id)});
     if(data){
       const result=await googleCloudStorageWebBuilder.readPage(`${data._id}/${page._id}`);
-      return res.status(200).json({ success: true, data:result });
+      return res.status(200).json({ success: true, data:result, pageInfo: page });
     }
     return res.status(404).json({ success: false, message: `Page not found` });
   } catch (err) {

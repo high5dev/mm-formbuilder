@@ -31,4 +31,12 @@ export const blocks = [
     media: `<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="m13 20h7v-16h-16v7h7c1.1045695 0 2 .8954305 2 2zm-2 0v-7h-7v7zm-7-18h16c1.1045695 0 2 .8954305 2 2v16c0 1.1045695-.8954305 2-2 2h-16c-1.1045695 0-2-.8954305-2-2v-16c0-1.1045695.8954305-2 2-2z" fill-rule="evenodd"/></svg>`,
     category: 'Basic',
   },
+  {
+    id: 'popup',
+    label: 'Pop up',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'popup' },
+    media: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="pop-up"><path d="M21,2H7A1,1,0,0,0,6,3V6H3A1,1,0,0,0,2,7V21a1,1,0,0,0,1,1H17a1,1,0,0,0,1-1V18h3a1,1,0,0,0,1-1V3A1,1,0,0,0,21,2ZM16,20H4V8H6v9a1,1,0,0,0,1,1h9Zm4-4H8V4H20ZM11,7a1,1,0,0,1,1-1h5a1,1,0,0,1,1,1v5a1,1,0,0,1-2,0V8H12A1,1,0,0,1,11,7Z" data-name="57 Pop Up"></path></svg>`,
+    category: 'Basic',
+  },
 ];
