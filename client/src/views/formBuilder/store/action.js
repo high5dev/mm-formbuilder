@@ -153,7 +153,7 @@ export const getPublishPageAction =(payload) =>async(dispatch) =>{
     const {data} = await api.getPublishPage(payload);
     console.log('data.data', data.data);
     if(data?.success === true){
-      return data.data
+      return data
     }
     else{
       toast.error('Something went wrong! please try again');
@@ -167,7 +167,7 @@ export const getPreviewPageAction =(payload) =>async(dispatch) =>{
   try{
     const {data} = await api.getPreviewPage(payload);
     if(data?.success === true){
-      return data.data
+      return data
     }
     else{
       toast.error('Something went wrong! please try again');
