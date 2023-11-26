@@ -44,16 +44,18 @@ import {
 } from 'reactstrap';
 
 export default function MainNav({
-createMdl,
-setCreateMdl,
-renameMdl,
-setRenameMdl,
-duplicateMdl,
-setDuplicateMdl,
-customwidth,
-setCustomWidth,
-ispreview, 
-page,
+  createMdl,
+  setCreateMdl,
+  renameMdl,
+  setRenameMdl,
+  duplicateMdl,
+  setDuplicateMdl,
+  customwidth,
+  setCustomWidth,
+  ispreview, 
+  isinvite,
+  setIsInvite,
+  page,
   setPage,
   setIsClear,
   setIsPreview,
@@ -203,7 +205,7 @@ page,
           </div>
         </div>
         <div className="additional-bar d-flex align-items-center justify-content-around">
-          <div className="menu-item hover-effect text-white">Invite</div>
+          <div className="menu-item hover-effect text-white" onClick={(e)=>setIsInvite(true)}>Invite</div>
           <span className="menu-item text-primary text-white" onClick={(e)=>{
             setIsPreview(true);
             dispatch(setLinkUrlReducer('preview'));

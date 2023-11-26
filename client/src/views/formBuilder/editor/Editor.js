@@ -45,8 +45,10 @@ import AddElementModal from './topNav/import/AddElementModal';
 import RenameModal from './topNav/rename/renameModal';
 import CreateFormModal from '../createForm/CreateFormModal';
 import DuplicateModal from './topNav/duplicate/duplicateModal';
-
+import InvitationModal from './topNav/invite/invitationModal';
 export default function Editor({
+  isinvite,
+  setIsInvite,
   createMdl,
   setCreateMdl,
   renameMdl,
@@ -381,7 +383,7 @@ export default function Editor({
           content: saveModalElement, // string | HTMLElement
         });
       });
-
+  
       // Add new toolbar
       const dc = gjsEditor.DomComponents;
       const new_toolbar_id = 'custom-id';
@@ -890,165 +892,166 @@ export default function Editor({
   }, [store.webElements, editor]);
   return (
     <div className="d-flex">
-    <div className="expanded-sidebar">
+      <div className="expanded-sidebar">
+        <PerfectScrollbar
+          options={{ suppressScrollX: true }}
+          style={{ height: `calc(100vh - 120px)` }}
+        >
+         <Collapse isOpen={sidebarData.isOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{height: '100%'}}>
+            <div className="expanded-header">
+              <span>{sidebarData.menu.name}</span>
+              <div>
+                <span className="header-icon">
+                  <RiQuestionMark size={16} />
+                </span>
+                <span className="header-icon" onClick={handleSidebarOpen}>
+                  <X size={16} />
+                </span>
+              </div>
+            </div>
+            <div className="expanded-content">
+              <div id="blocks">
+                {
+                  sidebarData.menu.id === 'quick-add' ? (
+                    <div className="quick-add">
+                      {editor?.BlockManager.blocks.filter(e => e.get('category') === 'Basic').map((block) => (
+                        <div
+                          key={block.getId()}
+                          draggable
+                          className='d-flex flex-column align-items-center border border-secondary rounded cursor-pointer py-2 px-1 transition-colors mt-1 mb-1'
+                          onDragStart={(ev) => {
+                            ev.stopPropagation();
+                            blockManager.dragStart(block, ev.nativeEvent);
+                          }}
+                          onDragEnd={(ev) => {
+                            ev.stopPropagation();
+                            blockManager.dragStop(false);
+                          }}
+                        >
+                          <div
+                            style={{width: 30, height: 30}}
+                            dangerouslySetInnerHTML={{ __html: block.getMedia() }}
+                          />
+                          <div
+                            className="text-sm text-center w-full mt-1"
+                            title={block.getLabel()}
+                          >
+                            {block.getLabel()}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className='submenu-and-element d-flex'>
+                      <div className="submenu-list">
+                        {
+                          sidebarData?.menu?.subMenu?.map(sub => {
+                            const categories = [];
+                            const tempBlocks = [];
+                            editor?.BlockManager.blocks.map((e) => {
+                              if (e.get('menu') === `${sidebarData.menu.id}-${sub.id}` && categories.findIndex(c => c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`) === -1) {
+                                categories.push(`${sidebarData.menu.id}-${sub.id}-${e.get('label')}`);
+                                tempBlocks.push(e);
+                              }
+                            });
+                            
+                            const returnComponent = <>
+                              <h5 className='submenu-item'>{sub.name}</h5>
+                              {
+                                tempBlocks.map(b => {
+                                  return (
+                                    <div
+                                      className={selectedCategory === `${sidebarData.menu.id}-${sub.id}-${b.get('label')}` ? 'selected-submenu-category' : 'submenu-category'}
+                                      onClick={() => {setSelectedCategory(`${sidebarData.menu.id}-${sub.id}-${b.get('label')}`)}}
+                                      >
+                                      {b.get('label')}
+                                    </div>
+                                  );
+                                })
+                              }
+                            </>
+                            return returnComponent;
+                          })
+                        }
+                      </div>
+                      <div className="element-container">
+                        {
+                          blockManager?.blocks?.filter(e => e.get('category').id === selectedCategory).map(b => {
+                            return (
+                              <div className="element">
+                                <img width="280" src={b.get('media')} />
+                                <div
+                                  draggable
+                                  onDragStart={(e) => {
+                                    e.stopPropagation();
+                                    blockManager.dragStart(b, e.nativeEvent);
+                                  }}
+                                  onDragEnd={(e) => {
+                                    e.stopPropagation();
+                                    blockManager.dragStop(false);
+                                  }}
+                                >
+                                </div>
+                              </div>);
+                          })
+                        }
+                      </div>
+                    </div>
+                  )
+                }
+                
+                
+              </div>
+            </div>
+          </Collapse>
+        </PerfectScrollbar>
+      </div>
+      <div className="w-100 border">
+        {isLoading ?      <div className="d-flex  justify-content-center mb-2 mt-2" style={{position:'absolute', top:"50%", left:"50%", zIndex:10}}>
+            <Spinner color="secondary">Loading...</Spinner>
+          </div>:<></>}
+
+        <div id="editor"></div>
+      </div>
+      <div className="property-sidebar" style={{display:rsidebarOpen?'block':'none'}}>
       <PerfectScrollbar
+        className="scrollable-content"
         options={{ suppressScrollX: true }}
         style={{ height: `calc(100vh - 120px)` }}
       >
-       <Collapse isOpen={sidebarData.isOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{height: '100%'}}>
-          <div className="expanded-header">
-            <span>{sidebarData.menu.name}</span>
-            <div>
-              <span className="header-icon">
-                <RiQuestionMark size={16} />
-              </span>
-              <span className="header-icon" onClick={handleSidebarOpen}>
-                <X size={16} />
-              </span>
-            </div>
+            <div className="sidebar-header px-1">
+            <span className="px-1 fs-5 fw-bolder text-black">{tab}</span>
+            <span>
+              <X
+                size={20}
+                onClick={(e) => {
+                  handleRSideBarOpen(e);
+                }}
+              />
+            </span>
           </div>
-          <div className="expanded-content">
-            <div id="blocks">
-              {
-                sidebarData.menu.id === 'quick-add' ? (
-                  <div className="quick-add">
-                    {editor?.BlockManager.blocks.filter(e => e.get('category') === 'Basic').map((block) => (
-                      <div
-                        key={block.getId()}
-                        draggable
-                        className='d-flex flex-column align-items-center border border-secondary rounded cursor-pointer py-2 px-1 transition-colors mt-1 mb-1'
-                        onDragStart={(ev) => {
-                          ev.stopPropagation();
-                          blockManager.dragStart(block, ev.nativeEvent);
-                        }}
-                        onDragEnd={(ev) => {
-                          ev.stopPropagation();
-                          blockManager.dragStop(false);
-                        }}
-                      >
-                        <div
-                          style={{width: 30, height: 30}}
-                          dangerouslySetInnerHTML={{ __html: block.getMedia() }}
-                        />
-                        <div
-                          className="text-sm text-center w-full mt-1"
-                          title={block.getLabel()}
-                        >
-                          {block.getLabel()}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className='submenu-and-element d-flex'>
-                    <div className="submenu-list">
-                      {
-                        sidebarData?.menu?.subMenu?.map(sub => {
-                          const categories = [];
-                          const tempBlocks = [];
-                          editor?.BlockManager.blocks.map((e) => {
-                            if (e.get('menu') === `${sidebarData.menu.id}-${sub.id}` && categories.findIndex(c => c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`) === -1) {
-                              categories.push(`${sidebarData.menu.id}-${sub.id}-${e.get('label')}`);
-                              tempBlocks.push(e);
-                            }
-                          });
-                          
-                          const returnComponent = <>
-                            <h5 className='submenu-item'>{sub.name}</h5>
-                            {
-                              tempBlocks.map(b => {
-                                return (
-                                  <div
-                                    className={selectedCategory === `${sidebarData.menu.id}-${sub.id}-${b.get('label')}` ? 'selected-submenu-category' : 'submenu-category'}
-                                    onClick={() => {setSelectedCategory(`${sidebarData.menu.id}-${sub.id}-${b.get('label')}`)}}
-                                    >
-                                    {b.get('label')}
-                                  </div>
-                                );
-                              })
-                            }
-                          </>
-                          return returnComponent;
-                        })
-                      }
-                    </div>
-                    <div className="element-container">
-                      {
-                        blockManager?.blocks?.filter(e => e.get('category').id === selectedCategory).map(b => {
-                          return (
-                            <div className="element">
-                              <img width="280" src={b.get('media')} />
-                              <div
-                                draggable
-                                onDragStart={(e) => {
-                                  e.stopPropagation();
-                                  blockManager.dragStart(b, e.nativeEvent);
-                                }}
-                                onDragEnd={(e) => {
-                                  e.stopPropagation();
-                                  blockManager.dragStop(false);
-                                }}
-                              >
-                              </div>
-                            </div>);
-                        })
-                      }
-                    </div>
-                  </div>
-                )
-              }
-              
-              
-            </div>
-          </div>
-        </Collapse>
-      </PerfectScrollbar>
-    </div>
-    <div className="w-100 border">
-      {isLoading ?      <div className="d-flex  justify-content-center mb-2 mt-2" style={{position:'absolute', top:"50%", left:"50%", zIndex:10}}>
-          <Spinner color="secondary">Loading...</Spinner>
-        </div>:<></>}
-
-      <div id="editor"></div>
-    </div>
-    <div className="property-sidebar" style={{display:rsidebarOpen?'block':'none'}}>
-    <PerfectScrollbar
-      className="scrollable-content"
-      options={{ suppressScrollX: true }}
-      style={{ height: `calc(100vh - 120px)` }}
-    >
-          <div className="sidebar-header px-1">
-          <span className="px-1 fs-5 fw-bolder text-black">{tab}</span>
-          <span>
-            <X
-              size={20}
-              onClick={(e) => {
-                handleRSideBarOpen(e);
-              }}
-            />
-          </span>
-        </div>
-            <div style={{display:tab==='Styles'?'block':'none'}}>
-                <div id="selector-manager-container" />
-                <div id="style-manager-container" />
+              <div style={{display:tab==='Styles'?'block':'none'}}>
+                  <div id="selector-manager-container" />
+                  <div id="style-manager-container" />
+                </div>
+              <div style={{display:tab==='Layers'?'block':'none'}}>
+                <div id="layer-manager-container" />  
               </div>
-            <div style={{display:tab==='Layers'?'block':'none'}}>
-              <div id="layer-manager-container" />  
-            </div>
-            <div style={{display:tab==='Traits'?'block':'none'}}>
-              <div id="trait-manager-container" />
-            </div>
-            <div style={{display:tab==='Pages'?'block':'none'}}>
-              <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} page={page} setPage={setPage}/>
-            </div>
-      </PerfectScrollbar>
+              <div style={{display:tab==='Traits'?'block':'none'}}>
+                <div id="trait-manager-container" />
+              </div>
+              <div style={{display:tab==='Pages'?'block':'none'}}>
+                <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} page={page} setPage={setPage}/>
+              </div>
+        </PerfectScrollbar>
+      </div>
+      <ImportModal editor={editor} setEditor={setEditor} open={open} toggle={toggle} />
+      <PublishModal publishUrl={publishUrl} isOpen={isPublishModal} toggle={togglePublish}/>
+      <AddElementModal editor={editor} setEditor={setEditor} openAddElementMdl={openAddElementMdl} setOpenAddElementMdl={setOpenAddElementMdl} />
+      <RenameModal store={store} isOpen={renameMdl} toggle={_toggleRename}/>
+      <CreateFormModal open={createMdl} store={store} dispatch={dispatch}/>
+      <DuplicateModal store={store} isOpen={duplicateMdl} toggle={_toggleDuplicate}/>
+      <InvitationModal store={store} isOpen={isinvite} toggle={setIsInvite}/>
     </div>
-    <ImportModal editor={editor} setEditor={setEditor} open={open} toggle={toggle} />
-    <PublishModal publishUrl={publishUrl} isOpen={isPublishModal} toggle={togglePublish}/>
-    <AddElementModal editor={editor} setEditor={setEditor} openAddElementMdl={openAddElementMdl} setOpenAddElementMdl={setOpenAddElementMdl} />
-    <RenameModal store={store} isOpen={renameMdl} toggle={_toggleRename}/>
-    <CreateFormModal open={createMdl} store={store} dispatch={dispatch}/>
-    <DuplicateModal store={store} isOpen={duplicateMdl} toggle={_toggleDuplicate}/>
-  </div>
   );
 }

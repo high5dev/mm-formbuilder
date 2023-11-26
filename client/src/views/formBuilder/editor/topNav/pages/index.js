@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Eye, Edit,Save, X, ChevronDown, MoreHorizontal, Plus, Trash, Delete } from 'react-feather';
+import { Eye, Edit,Save, X, ChevronDown, MoreHorizontal, Plus, Trash, Delete, MoreVertical, Trash2 } from 'react-feather';
 import { CiTrash } from 'react-icons/ci';
 import {createPageAction, deletePageAction} from "../../../store/action"
 import { useSelector } from 'react-redux';
@@ -27,13 +27,17 @@ import {
 } from 'reactstrap';
 import EditMoal from './editModal';
 import { setFormReducer } from '../../../store/reducer';
+import { RiSeoLine } from 'react-icons/ri';
+import SeoModal from './SeoModal';
 
-export default function Index({page, setPage, id, store, editor, setEditor, setPageTab }) {
+export default function Index({ page, setPage, id, store, editor, setEditor, setPageTab }) {
+
   const form=store.form;
   const {formData}=form;
   const [isOpen, setIsOpen]=useState(false);
   const [selectedPage, setSelectedPage]=useState();
   const dispatch=useDispatch();
+  const [seoModalData, setSeoModalData] = useState({isOpen: false, data: null});
   const addNewPage = () => {
       const pageNum=parseInt(localStorage.getItem('pageNum'));
       const name=`Page ${pageNum}`;
@@ -106,20 +110,51 @@ export default function Index({page, setPage, id, store, editor, setEditor, setP
                   <div className="fs-6 fw-bolder text-black" onClick={(e) => setPage(item)}>
                     {item?.name || 'Home page'}
                   </div>
-                  {item?.name!='Home' &&(
-                    <div className='d-flex'>
-                     <div className="px-1" onClick={() => rename(item)}>
-                      <Edit size={18} />
-                    </div>
-                     <div onClick={() => removePage(item)}>
-                        <CiTrash size={20} color={'#174ae7'} />
-                      </div>
-                    </div>
-                  )}
+                  
+                  <div>
+                    <UncontrolledDropdown>
+                      <DropdownToggle tag='span' onClick={() => {setSelectedPage(item)}}>
+                        <MoreVertical size={20} color={"#333"} />
+                      </DropdownToggle>
+                      <DropdownMenu end>
+                        <DropdownItem className='d-flex w-100 align-items-center' onClick={(e) => {
+                          e.preventDefault();
+                          setSeoModalData({
+                            ...seoModalData,
+                            isOpen: true,
+                            data: item,
+                          })
+                        }}>
+                          <RiSeoLine size={17} className='me-1' />
+                          <span>SEO</span>
+                        </DropdownItem>
+                        
+                        {page?._id !== item?._id && (
+                          <>
+                            <DropdownItem className='d-flex w-100 align-items-center' onClick={(e) => {
+                              e.preventDefault();
+                              rename(item);
+                            }}>
+                              <Edit size={18} className='me-1' />
+                              <span>Edit</span>
+                            </DropdownItem>
+                            <DropdownItem className='d-flex w-100 align-items-center' onClick={(e) => {
+                                e.preventDefault();
+                                removePage(page)
+                              }}>
+                              <Trash2 size={17} className='me-1' />
+                              <span>Delete</span>
+                            </DropdownItem>
+                          </>
+                        )}
+                      </DropdownMenu>
+                    </UncontrolledDropdown>
+                  </div>
                 </div>
               ))}
           </div>
         </div>
+        <SeoModal editor={editor} setEditor={setEditor} seoModalData={seoModalData} setSeoModalData={setSeoModalData} selectedPage={selectedPage} />
       </PerfectScrollbar>
       <EditMoal store={store} isOpen={isOpen} selectedPage={selectedPage} toggle={toggle}/>
     </div>

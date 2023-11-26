@@ -7,6 +7,7 @@ import { AbilityContext } from '../../../utility/context/Can';
 import '../../../assets/styles/Status.scss';
 import { AiOutlineAudit } from 'react-icons/ai';
 import CreateFormModal from '../createForm/CreateFormModal';
+import { getUserData } from '../../../auth/utils';
 
 export default function Sidebar({
   active,
@@ -24,6 +25,8 @@ export default function Sidebar({
   const [openCreateForm, setOpenCreateForm] = useState(false);
 
   const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
+
+  const user=getUserData();
 
   return (
     <div className="sidebar h-100 border-end" style={{ minWidth: isMobileView ? '' : '260px' }}>
@@ -44,6 +47,11 @@ export default function Sidebar({
               )}
               CREATE NEW
             </Button>
+            {user?.userType === 'super-admin' && (
+              <Button className='w-100 mt-2' color="primary">
+                MANAGE ROlES
+              </Button>
+            )}
           </div>
           <ListGroup
             className="sidebar-menu-list formsnfunnels-tour-2"
