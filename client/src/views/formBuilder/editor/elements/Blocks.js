@@ -32,6 +32,14 @@ export const blocks = [
     category: 'Basic',
   },
   {
+    id: 'popup',
+    label: 'Pop up',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'popup' },
+    media: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="pop-up"><path d="M21,2H7A1,1,0,0,0,6,3V6H3A1,1,0,0,0,2,7V21a1,1,0,0,0,1,1H17a1,1,0,0,0,1-1V18h3a1,1,0,0,0,1-1V3A1,1,0,0,0,21,2ZM16,20H4V8H6v9a1,1,0,0,0,1,1h9Zm4-4H8V4H20ZM11,7a1,1,0,0,1,1-1h5a1,1,0,0,1,1,1v5a1,1,0,0,1-2,0V8H12A1,1,0,0,1,11,7Z" data-name="57 Pop Up"></path></svg>`,
+    category: 'Basic',
+  },
+  {
     id: 'count-down',
     label: 'Count Down',
     attributes: { class: 'fa fa-text' },
