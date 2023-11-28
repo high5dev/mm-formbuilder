@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import { Bold, X, Trash2} from 'react-feather';
+import { Bold, X, Trash2, Delete} from 'react-feather';
 import { RiQuestionMark } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import { Link, useHistory, useParams } from 'react-router-dom';
@@ -30,7 +30,7 @@ import StyleSidebar from './topNav/styles';
 import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
-import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction} from '../store/action'
+import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, updatePageNameAction} from '../store/action'
 import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
@@ -124,7 +124,7 @@ export default function Editor({
   useEffect(() =>{
     let interval;
       if(editor && !form.isPublish){
-         interval=setInterval(() =>{
+        interval=setInterval(() =>{
           const current_page=editor.Pages.getSelected();
           const html = editor.getHtml({ current_page });
           const css = editor.getCss({ current_page });
@@ -134,8 +134,8 @@ export default function Editor({
             css:css,
           };
           dispatch(updatePageAction(id, payload));
-         }, 2000);
-         return () => clearInterval(interval);
+        }, 2000);
+        return () => clearInterval(interval);
       }
   }, [editor?.getHtml(editor?.Pages.getSelected()), editor?.getCss(editor?.Pages.getSelected()), form, page])
 
@@ -243,20 +243,6 @@ export default function Editor({
     gjsEditor.on('component:selected', (cmp) => {
       setSelectedCmp(cmp);
     });
-      gjsEditor.on('block:custom', props => {
-        // The `props` will contain all the information you need in order to update your UI.
-        // props.blocks (Array<Block>) - Array of all blocks
-        // props.dragStart (Function<Block>) - A callback to trigger the start of block dragging.
-        // props.dragStop (Function<Block>) - A callback to trigger the stop of block dragging.
-        // props.container (HTMLElement) - The default element where you can append your UI
-  
-        // Here you would put the logic to render/update your UI.
-        setBlockManager(props);
-      });
-  
-      gjsEditor.on('component:selected', (cmp) => {
-        setSelectedCmp(cmp);
-      });
   
       // Add custom commands
       gjsEditor.Commands.add('save-component', editor => {
@@ -427,8 +413,345 @@ export default function Editor({
           });
         }
       });
+
+      gjsEditor.TraitManager.addType('popup', {
+        noLabel: true,
+        // Expects as return a simple HTML string or an HTML element
+        createInput({trait, component}) {
+          const rule = component.props().popup_rule;
+          let newRule = {...rule};
+          let selectedDays = {};
+          const traitName = trait.get('name');
+          const el = document.createElement('div');
+          el.className = 'trait-popup m-1';
+          el.innerHTML = `
+            <h6>Popup Rule</h6>
+            <div class="d-flex align-items-center rule-section">
+              <label class="form-check-label me-1">Is Timer Button</label>
+              <div class="form-check form-switch">
+                <input class="form-check-input is-timer-switch" type="checkbox" role="switch" ${rule.isTimer ? 'checked' : ''}>
+              </div>
+            </div>
+            <div class="popup-timer-rule" style="display: ${rule.isTimer ? 'block' : 'none'}">
+              <div class="d-flex align-items-center rule-section">
+                <label class="form-check-label me-1">First visit / Is Repeat</label>
+                <div class="form-check form-switch">
+                  <input class="form-check-input is-repeat-switch" type="checkbox" role="switch" ${rule.isRepeat ? 'checked' : ''}>
+                </div>
+              </div>
+              <div class="popup-repeat-rule" style="display: ${rule.isRepeat ? 'block' : 'none'}">
+                <div class="d-flex align-items-center rule-section">
+                  <label class="form-check-label">Cycle</label>
+                  <select class="form-select ms-1 trait-cycle-select" aria-label="Default select example">
+                    <option value="day">Daily</option>
+                    <option value="week">Weekly</option>
+                    <option value="month">Monthly</option>
+                  </select>
+                </div>
+                <div class="week-days">
+                  <div class="form-check d-flex align-items-center">
+                    <input class="form-check-input popup-rule-day-checkbox day-input-mon" type="checkbox" value="mon" style="height: 20px; width: 20px; border: 1px solid" id="monCheck">
+                    <label class="form-check-label" for="monCheck">
+                      Mon
+                    </label>
+                  </div>
+                  <div class="form-check d-flex align-items-center">
+                    <input class="form-check-input popup-rule-day-checkbox day-input-tue" type="checkbox" style="height: 20px; width: 20px; border: 1px solid" value="" id="tueCheck">
+                    <label class="form-check-label" for="tueCheck">
+                      Tue
+                    </label>
+                  </div>
+                  <div class="form-check d-flex align-items-center">
+                    <input class="form-check-input popup-rule-day-checkbox day-input-wed" type="checkbox" value=""  style="height: 20px; width: 20px; border: 1px solid" id="wedCheck">
+                    <label class="form-check-label" for="wedCheck">
+                      Wed
+                    </label>
+                  </div>
+                  <div class="form-check d-flex align-items-center">
+                    <input class="form-check-input popup-rule-day-checkbox day-input-thu" type="checkbox" value="" style="height: 20px; width: 20px; border: 1px solid" id="thuCheck">
+                    <label class="form-check-label" for="thuCheck">
+                      Thu
+                    </label>
+                  </div>
+                  <div class="form-check d-flex align-items-center">
+                    <input class="form-check-input popup-rule-day-checkbox day-input-fri" type="checkbox" value="" style="height: 20px; width: 20px; border: 1px solid" id="friCheck">
+                    <label class="form-check-label" for="friCheck">
+                      Fri
+                    </label>
+                  </div>
+                  <div class="form-check d-flex align-items-center">
+                    <input class="form-check-input popup-rule-day-checkbox day-input-sat" type="checkbox" value="" style="height: 20px; width: 20px; border: 1px solid" id="satCheck">
+                    <label class="form-check-label" for="satCheck">
+                      Sat
+                    </label>
+                  </div>
+                  <div class="form-check d-flex align-items-center">
+                    <input class="form-check-input popup-rule-day-checkbox day-input-sun" type="checkbox" value="" style="height: 20px; width: 20px; border: 1px solid" id="sunCheck">
+                    <label class="form-check-label" for="sunCheck">
+                      Sun
+                    </label>
+                  </div>
+                </div>
+
+                <div class="monthly-day">
+                  <div class="d-flex align-items-center">
+                    <label class="ms-1 me-1 form-check-label">Date</label>
+                    <input class="monthly-day-input" type="text" placeholder="Input date">
+                  </div>
+                </div>
+                
+                <label class="form-check-label me-1 rule-section">Event Details</label>
+                <div class="d-flex align-items-center rule-sub-section">
+                  <label class="form-check-label me-1">All Day</label>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input is-all-day" type="checkbox" role="switch" ${rule.eventDetails.isAllDay ? 'checked' : ''}>
+                  </div>
+                </div>
+                <div class="no-all-day-rule" style="display: ${rule.eventDetails.isAllDay ? 'none' : 'block'}">
+                  <div class="d-flex w-100 rule-sub-section">
+                    <div class="w-50 trait-popup-start-time">
+                      <label class="form-check-label">Start Time</label>
+                      <input class="trait-start-time-input" type="text" value=${rule.eventDetails.startTime || ''} placeholder="09:00:00">
+                    </div>
+                    <div class="w-50 trait-popup-end-time">
+                      <label class="form-check-label me-1">End Time</label>
+                      <input class="trait-end-time-input" type="text"  value=${rule.eventDetails.endTime || ''} placeholder="17:00:00">
+                    </div>
+                  </div>
+                  
+                  <div class="rule-sub-section">
+                    <label class="form-check-label me-1">Time Zone</label>
+                    <select class="form-select trait-time-zone-select" aria-label="Default select example">
+                      <option value="volvo">UTC</option>
+                      <option value="saab">UTC+1</option>
+                      <option value="opel">UTC+2</option>
+                      <option value="audi">UTC+3</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="rule-section">
+                  <label class="form-check-label me-1">End Date</label>
+                  <input class="trait-end-date-input" type="text" value=${rule.endDate || 'none'} placeholder="5/24/2023">
+                </div>
+              </div>
+            </div>
+            <div class="popup-no-timer-rule">
+            
+            </div>
+            <button class="btn btn-primary mb-1 mr-1 save-trait-btn">Save</button>
+          `;
+
+          const isTimerEl = el.querySelector('.is-timer-switch');
+          const timerRuleEl = el.querySelector('.popup-timer-rule');
+          const noTimerRuleEl = el.querySelector('.popup-no-timer-rule');
+          const isRepeatEl = el.querySelector('.is-repeat-switch');
+          const repeatRuleEl = el.querySelector('.popup-repeat-rule');
+          const cycleEl = el.querySelector('.trait-cycle-select');
+          const isAllDayEl = el.querySelector('.is-all-day');
+          const noAllDayRuleEl = el.querySelector('.no-all-day-rule');
+          const weekDaysEl = el.querySelector('.week-days');
+          const monthlyDayEl = el.querySelector('.monthly-day');
+          const startTimeEl = el.querySelector('.trait-start-time-input');
+          const endTimeEl = el.querySelector('.trait-end-time-input');
+          const endDateEl = el.querySelector('.trait-end-date-input');
+          const timeZoneEl = el.querySelector('.trait-time-zone-select');
+          const dayMonEl = el.querySelector('.day-input-mon');
+          const dayTueEl = el.querySelector('.day-input-tue');
+          const dayWedEl = el.querySelector('.day-input-wed');
+          const dayThuEl = el.querySelector('.day-input-thu');
+          const dayFriEl = el.querySelector('.day-input-fri');
+          const daySatEl = el.querySelector('.day-input-sat');
+          const daySunEl = el.querySelector('.day-input-sun');
+          const dateOfMonth = el.querySelector('.monthly-day-input');
+          const saveTraitBtn = el.querySelector('.save-trait-btn');
+
+          if (rule.cycle === 'week') {
+            weekDaysEl.style.display = "flex";
+            weekDaysEl.style['flex-wrap'] = "wrap";
+          } else {
+            weekDaysEl.style.display = "none";
+          }
+
+          if (rule.cycle === 'month') {
+            monthlyDayEl.style.display = "block";
+          } else {
+            monthlyDayEl.style.display = "none";
+          }
+
+          isTimerEl.addEventListener('change', ev => {
+            if (ev.target.checked) {
+              timerRuleEl.style.display = "block";
+              noTimerRuleEl.style.display = "none";
+            } else {
+              timerRuleEl.style.display = "none";
+              noTimerRuleEl.style.display = "block";
+            }
+            newRule = {...newRule, isTimer: ev.target.checked};
+          });
+
+          isRepeatEl.addEventListener('change', ev => {
+            if (ev.target.checked) {
+              repeatRuleEl.style.display = "block";
+            } else {
+              repeatRuleEl.style.display = "none";
+            }
+            newRule = {...newRule, isRepeat: ev.target.checked};
+          });
+
+          cycleEl.addEventListener('change', ev => {
+            if (ev.target.value === 'week') {
+              weekDaysEl.style.display = "flex";
+              weekDaysEl.style['flex-wrap'] = "wrap";
+            } else {
+              weekDaysEl.style.display = "none";
+            }
+
+            if (ev.target.value === 'month') {
+              monthlyDayEl.style.display = "block";
+            } else {
+              monthlyDayEl.style.display = "none";
+            }
+            newRule = {...newRule, cycle: ev.target.value};
+          });
+
+          isAllDayEl.addEventListener('change', ev => {
+            if (ev.target.checked) {
+              noAllDayRuleEl.style.display = "none";
+            } else {
+              noAllDayRuleEl.style.display = "block";
+            }
+            newRule = {...newRule, eventDetails: {...newRule.eventDetails, isAllDay: ev.target.checked}};
+          });
+
+          startTimeEl.addEventListener('change', ev => {
+            newRule = {...newRule, eventDetails: {...newRule.eventDetails, startTime: ev.target.value}};
+          });
+
+          endTimeEl.addEventListener('change', ev => {
+            newRule = {...newRule, eventDetails: {...newRule.eventDetails, endTime: ev.target.value}};
+          });
+
+          endDateEl.addEventListener('change', ev => {
+            newRule = {...newRule, endDate: ev.target.value};
+          });
+
+          timeZoneEl.addEventListener('change', ev => {
+            newRule = {...newRule, eventDetails: {...newRule.eventDetails, timeZone: ev.target.value}};
+          });
+
+          dayMonEl.addEventListener('change', ev => {
+            if (ev.target.checked) {
+              selectedDays = {...selectedDays, mon: true};
+            } else {
+              selectedDays = {...selectedDays, mon: false};
+            }
+            newRule = {...newRule, eventDetails: {...newRule.eventDetails, availableDays: selectedDays}};
+          });
+
+          dayTueEl.addEventListener('change', ev => {
+            if (ev.target.checked) {
+              selectedDays = {...selectedDays, tue: true};
+            } else {
+              selectedDays = {...selectedDays, tue: false};
+            }
+            newRule = {...newRule, eventDetails: {...newRule.eventDetails, availableDays: selectedDays}};
+          });
+
+          dayWedEl.addEventListener('change', ev => {
+            if (ev.target.checked) {
+              selectedDays = {...selectedDays, wed: true};
+            } else {
+              selectedDays = {...selectedDays, wed: false};
+            }
+            newRule = {...newRule, eventDetails: {...newRule.eventDetails, availableDays: selectedDays}};
+          });
+
+          dayThuEl.addEventListener('change', ev => {
+            if (ev.target.checked) {
+              selectedDays = {...selectedDays, thu: true};
+            } else {
+              selectedDays = {...selectedDays, thu: false};
+            }
+            newRule = {...newRule, eventDetails: {...newRule.eventDetails, availableDays: selectedDays}};
+          });
+
+          dayFriEl.addEventListener('change', ev => {
+            if (ev.target.checked) {
+              selectedDays = {...selectedDays, fri: true};
+            } else {
+              selectedDays = {...selectedDays, fri: false};
+            }
+            newRule = {...newRule, eventDetails: {...newRule.eventDetails, availableDays: selectedDays}};
+          });
+
+          daySatEl.addEventListener('change', ev => {
+            if (ev.target.checked) {
+              selectedDays = {...selectedDays, sat: true};
+            } else {
+              selectedDays = {...selectedDays, sat: false};
+            }
+            newRule = {...newRule, eventDetails: {...newRule.eventDetails, availableDays: selectedDays}};
+          });
+
+          daySunEl.addEventListener('change', ev => {
+            if (ev.target.checked) {
+              selectedDays = {...selectedDays, sun: true};
+            } else {
+              selectedDays = {...selectedDays, sun: false};
+            }
+            newRule = {...newRule, eventDetails: {...newRule.eventDetails, availableDays: selectedDays}};
+          });
+
+          dateOfMonth.addEventListener('change', ev => {
+            newRule = {...newRule, eventDetails: {...newRule.eventDetails, dateOfMonth: ev.target.value}};
+          });
+
+          saveTraitBtn.addEventListener('click', ev => {
+            component.set(traitName, newRule);
+          });
+
+          return el;
+        },
+      
+        onEvent({ elInput, component, event }) {
+          if (event.target.name) {}
+        },
+      
+        onUpdate({ elInput, component }) {
+        },
+      });
     setEditor(gjsEditor);
   }, []);
+
+  editor?.on('component:update:popup_rule', (cmp) => {
+    const popupElement = cmp.getEl();
+    const popupWrapperId = popupElement.querySelector('.modal-wrapper').id;
+    const popupTriggerId = popupElement.querySelector('.modal-open-button').id;
+    const updatedPopupRule = cmp.get('popup_rule');
+    // if (updatedPopupRule.isTimer) {
+    //   popupElement.querySelector('.modal-open-button').style.display = "none";
+    // } else {
+    //   popupElement.querySelector('.modal-open-button').style.display = "block";
+    // }
+    let popups = [];
+    // if (page?.popups?.length > 0) {
+    //   const popIndex = page.popups.findIndex(e => e.wrapperId === popupWrapperId);
+    //   if (popIndex === -1) {
+    //     popups = [...page.popups, {...updatedPopupRule, wrapperId: popupWrapperId, triggerId: popupTriggerId}];
+    //   } else {
+    //     popups = [...page.popups];
+    //     popups.splice(popIndex, 1, {...updatedPopupRule, wrapperId: popupWrapperId, triggerId: popupTriggerId});
+    //   }
+    // } else {
+      popups.push({...updatedPopupRule, wrapperId: popupWrapperId, triggerId: popupTriggerId});
+    // }
+    dispatch(updatePageNameAction(page?._id, {popups})).then((res) => {
+      if (res) {
+        dispatch(getWebsiteAction(id));
+      }
+    });
+  });
 
   useEffect(()=>{
     if(customwidth && customwidth!=320 && customwidth!=768 && customwidth!=1280){
@@ -456,14 +779,6 @@ export default function Editor({
       }
     }
   }, [customwidth])
-
-  editor?.on('component:selected', (cmp) => {
-    dispatch(getWebsiteAction(id)).then(res=>{
-      if(res){
-        setPage(res[0]);
-      }
-    })
-  }, []);
 
   useEffect(() =>{
     if(isclear){

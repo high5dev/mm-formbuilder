@@ -9,6 +9,7 @@ import { customSectors, customProperties } from "./CustomStyles";
 import * as api from  '../../store/api'
 import socialBar from "./socialBar/socialBar";
 import socialLink from "./traits/socialLink";
+import popup from "./popup/popup";
 
 const testImageUrls = [
   'https://i.ibb.co/ZWnZPqr/tiktok.png',
@@ -26,6 +27,7 @@ export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('repeater', repeater);
   editor.DomComponents.addType('gallery-item', galleryItem);
   editor.DomComponents.addType('gallery', gallery);
+  editor.DomComponents.addType('popup', popup);
   editor.TraitManager.addType('image-url', {
     createInput({trait, component}){
       let image_url="https://storage.googleapis.com/mymember-storage/my-manager/a4fbe6f0-192e-4c2a-bf03-7db291aafbd2-@fabbiyedev.png";
@@ -462,8 +464,12 @@ export const webBuilderPlugin = (editor) => {
   //   }
   // });
 
-  editor.on(`canvas:drop`, (a, b) => {
-    console.log('aaaaaaaaaaaaa------------', a, b)
+  // editor.on(`canvas:drop`, (a, b) => {
+  //   console.log('aaaaaaaaaaaaa------------', a, b)
+  // });
+
+  editor.on(`block:drag:stop`, (component, block) => {
+    console.log('drag stop-----------------------', component);
   });
 
   editor.on(`component:update:numOfItems`, (model) => {
