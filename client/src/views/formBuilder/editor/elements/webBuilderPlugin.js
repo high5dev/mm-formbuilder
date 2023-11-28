@@ -9,6 +9,7 @@ import { customSectors, customProperties } from "./CustomStyles";
 import * as api from  '../../store/api'
 import socialBar from "./socialBar/socialBar";
 import socialLink from "./traits/socialLink";
+import countDown from "./countdown/countdown";
 
 const testImageUrls = [
   'https://i.ibb.co/ZWnZPqr/tiktok.png',
@@ -26,6 +27,7 @@ export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('repeater', repeater);
   editor.DomComponents.addType('gallery-item', galleryItem);
   editor.DomComponents.addType('gallery', gallery);
+  editor.DomComponents.addType('count-down', countDown);
   editor.TraitManager.addType('image-url', {
     createInput({trait, component}){
       let image_url="https://storage.googleapis.com/mymember-storage/my-manager/a4fbe6f0-192e-4c2a-bf03-7db291aafbd2-@fabbiyedev.png";
@@ -420,6 +422,125 @@ export const webBuilderPlugin = (editor) => {
           });
         })
       });      
+    },
+  });
+
+  editor.TraitManager.addType('date', {
+    noLabel: true,
+    // Expects as return a simple HTML string or an HTML element
+    createInput({trait, component}) {
+      const dateTrait = component.props().date;
+      const dateStr = dateTrait.split('T')[0];
+      const timeStr = dateTrait.split('T')[1];
+      const traitName = trait.get('name');
+      const traitLabel = trait.get('label');
+      let year = dateStr.split('-')[0];;
+      let month = dateStr.split('-')[1];;
+      let date = dateStr.split('-')[2];
+      let hour = timeStr.split(':')[0];
+      let min = timeStr.split(':')[1];
+      let sec = timeStr.split(':')[2];
+      
+      const el = document.createElement('div');
+      el.className = 'trait-date';
+      el.innerHTML = `<h6>${traitLabel}</h6>`;
+  
+      const dateElement = document.createElement('div');
+      dateElement.className = 'trait-date-date';
+      dateElement.innerHTML = `
+        &nbsp; Date &nbsp;
+        <div><input type="number" class="trait-date-input-year" value=${year} placeholder="year" /></div>
+        -
+        <div><input type="number" class="trait-date-input-month" value=${month} placeholder="month" /></div>
+        -
+        <div><input type="number" class="trait-date-input-date" value=${date} placeholder="date" /></div>
+      `;
+      const timeElement = document.createElement('div');
+      timeElement.className = 'trait-date-time';
+      timeElement.innerHTML = `
+        &nbsp; Time &nbsp;
+        <div><input type="number" class="trait-date-input-hour" value=${hour} placeholder="hour" /></div>
+        :
+        <div><input type="number" class="trait-date-input-min" value=${min} placeholder="minute" /></div>
+        :
+        <div><input type="number" class="trait-date-input-sec" value=${sec} placeholder="second" /></div>
+      `;
+  
+      el.appendChild(dateElement);
+      el.appendChild(timeElement);
+  
+      // Let's make our content interactive
+      const yearEl = el.querySelector('.trait-date-input-year');
+      const monthEl = el.querySelector('.trait-date-input-month');
+      const dateEl = el.querySelector('.trait-date-input-date');
+      const hourEl = el.querySelector('.trait-date-input-hour');
+      const minEl = el.querySelector('.trait-date-input-min');
+      const secEl = el.querySelector('.trait-date-input-sec');
+
+      yearEl.addEventListener('change', ev => {
+        year = ev.target.value;
+        component.set(traitName, `${('0000' + year.toString()).slice(-4)}-${('00' + month.toString()).slice(-2)}-${('00' + date.toString()).slice(-2)}T${('00' + hour.toString()).slice(-2)}:${('00' + min.toString()).slice(-2)}:${('00' + sec.toString()).slice(-2)}`);
+      })
+
+      monthEl.addEventListener('change', ev => {
+        month = ev.target.value;
+        if (parseInt(month, 10) > 12) month = '12';
+        if (parseInt(month, 10) < 1) month = '01';
+        component.set(traitName, `${('0000' + year.toString()).slice(-4)}-${('00' + month.toString()).slice(-2)}-${('00' + date.toString()).slice(-2)}T${('00' + hour.toString()).slice(-2)}:${('00' + min.toString()).slice(-2)}:${('00' + sec.toString()).slice(-2)}`);
+      })
+
+      dateEl.addEventListener('change', ev => {
+        date = ev.target.value;
+        if (parseInt(date, 10) > 31) date = '31';
+        if (parseInt(date, 10) < 1) date = '01';
+        component.set(traitName, `${('0000' + year.toString()).slice(-4)}-${('00' + month.toString()).slice(-2)}-${('00' + date.toString()).slice(-2)}T${('00' + hour.toString()).slice(-2)}:${('00' + min.toString()).slice(-2)}:${('00' + sec.toString()).slice(-2)}`);
+      })
+
+      hourEl.addEventListener('change', ev => {
+        hour = ev.target.value;
+        if (parseInt(hour, 10) > 23) hour = '23';
+        if (parseInt(hour, 10) < 0) hour = '00';
+        component.set(traitName, `${('0000' + year.toString()).slice(-4)}-${('00' + month.toString()).slice(-2)}-${('00' + date.toString()).slice(-2)}T${('00' + hour.toString()).slice(-2)}:${('00' + min.toString()).slice(-2)}:${('00' + sec.toString()).slice(-2)}`);
+      })
+
+      minEl.addEventListener('change', ev => {
+        min = ev.target.value;
+        if (parseInt(min, 10) > 59) min = '59';
+        if (parseInt(min, 10) < 0) min = '00';
+        component.set(traitName, `${('0000' + year.toString()).slice(-4)}-${('00' + month.toString()).slice(-2)}-${('00' + date.toString()).slice(-2)}T${('00' + hour.toString()).slice(-2)}:${('00' + min.toString()).slice(-2)}:${('00' + sec.toString()).slice(-2)}`);
+      })
+
+      secEl.addEventListener('change', ev => {
+        sec = ev.target.value;
+        if (parseInt(sec, 10) > 59) sec = '59';
+        if (parseInt(sec, 10) < 0) sec = '00';
+        component.set(traitName, `${('0000' + year.toString()).slice(-4)}-${('00' + month.toString()).slice(-2)}-${('00' + date.toString()).slice(-2)}T${('00' + hour.toString()).slice(-2)}:${('00' + min.toString()).slice(-2)}:${('00' + sec.toString()).slice(-2)}`);
+      })
+  
+      return el;
+    },
+    onUpdate({ elInput, component }) {
+      const dateTrait = component.props().date;
+      const dateStr = dateTrait.split('T')[0];
+      const timeStr = dateTrait.split('T')[1];
+      let year = dateStr.split('-')[0];;
+      let month = dateStr.split('-')[1];;
+      let date = dateStr.split('-')[2];
+      let hour = timeStr.split(':')[0];
+      let min = timeStr.split(':')[1];
+      let sec = timeStr.split(':')[2];
+      const yearEl = elInput.querySelector('.trait-date-input-year');
+      const monthEl = elInput.querySelector('.trait-date-input-month');
+      const dateEl = elInput.querySelector('.trait-date-input-date');
+      const hourEl = elInput.querySelector('.trait-date-input-hour');
+      const minEl = elInput.querySelector('.trait-date-input-min');
+      const secEl = elInput.querySelector('.trait-date-input-sec');
+      yearEl.value = year;
+      monthEl.value = month;
+      dateEl.value = date;
+      hourEl.value = hour;
+      minEl.value = min;
+      secEl.value = sec;
     },
   });
 

@@ -31,4 +31,12 @@ export const blocks = [
     media: `<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="m13 20h7v-16h-16v7h7c1.1045695 0 2 .8954305 2 2zm-2 0v-7h-7v7zm-7-18h16c1.1045695 0 2 .8954305 2 2v16c0 1.1045695-.8954305 2-2 2h-16c-1.1045695 0-2-.8954305-2-2v-16c0-1.1045695.8954305-2 2-2z" fill-rule="evenodd"/></svg>`,
     category: 'Basic',
   },
+  {
+    id: 'count-down',
+    label: 'Count Down',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'count-down' },
+    media: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" id="countdown-timer"><g data-name="Layer 10"><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.91 7.81h0a8.7 8.7 0 00-1.51-.87M25.83 18.59a9.87 9.87 0 01-.59 1.63M16.17 26a10 10 0 010-20M21.91 24.19h0a8.7 8.7 0 01-1.51.87M25.83 13.41a9.87 9.87 0 00-.59-1.63h0"></path><polyline fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="19 18.83 16.17 16 16.17 12"></polyline></g></svg>`,
+    category: 'Basic',
+  },
 ];
