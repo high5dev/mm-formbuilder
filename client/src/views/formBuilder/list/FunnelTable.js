@@ -208,14 +208,14 @@ export default function FunnelTable({
       name: 'Name',
       sortable: 'true',
       selector: (row) => row.name,
-      cell: (row) => <span onClick={() => handleEdit(row)}>{row.name}</span>
+      cell: (row) => <span onClick={() => handleDetails(row)}>{row.name}</span>
     },
     {
       name: 'Type',
       sortable: 'true',
       selector: (row) => row.formType,
       cell: (row) => (
-        <span onClick={() => handleEdit(row)}>
+        <span onClick={() => handleDetails(row)}>
           <Badge color={getTextColor(row?.formType)} style={{ paddingTop: '6px' }} className="me-1">
             {row?.formType}
           </Badge>
@@ -227,7 +227,7 @@ export default function FunnelTable({
       sortable: 'true',
       selector: (row) => row.updatedAt,
       cell: (row) => (
-        <span onClick={() => handleEdit(row)}>
+        <span onClick={() => handleDetails(row)}>
           <Badge color="light-primary" style={{ paddingTop: '6px' }}>
             {moment(row?.updatedAt)?.format("MM/DD/yyyy")}
           </Badge>
@@ -275,7 +275,7 @@ export default function FunnelTable({
                 </DropdownToggle>
                 <DropdownMenu container="body">
                   {ability.can('update', 'business/formsFunnels') ? (
-                    <DropdownItem tag="span" className="w-100" onClick={() => handleDetails(row)}>
+                    <DropdownItem tag="span" className="w-100" onClick={() => handleEdit(row)}>
                       <Edit size={14} className="me-50" />
                       <span className="align-middle">Edit</span>
                     </DropdownItem>
@@ -351,7 +351,7 @@ export default function FunnelTable({
                       </div>
                       <div className="d-flex">
                         {ability.can('update', 'business/formsFunnels') ? (
-                          <div tag="span" className="w-100" onClick={() => handleDetails(item)}>
+                          <div tag="span" className="w-100" onClick={() => handleEdit(item)}>
                             <Edit size={14} className="me-50" />
                           </div>
                         ) : (
@@ -381,13 +381,13 @@ export default function FunnelTable({
 
                     <div className="d-flex ">
                       <h6 className="text-secondary">Type</h6>
-                      <div style={{ marginLeft: '10px' }} onClick={() => handleEdit(item)}>
+                      <div style={{ marginLeft: '10px' }} onClick={() => handleDetails(item)}>
                         {item.formType}
                       </div>
                     </div>
                     <div className="d-flex ">
                       <h6 className="text-secondary">Last Updated</h6>
-                      <div style={{ marginLeft: '10px' }} onClick={() => handleEdit(item)}>
+                      <div style={{ marginLeft: '10px' }} onClick={() => handleDetails(item)}>
                         {moment(item.updatedAt).format("MM/DD/yyyy")}
                       </div>
                     </div>
@@ -474,7 +474,7 @@ export default function FunnelTable({
                   style={{ cursor: 'pointer' }}
                   sortIcon={<ChevronDown size={14} />}
                   columns={columns}
-                  onRowClicked={handleEdit}
+                  onRowClicked={handleDetails}
                   pointerOnHover="cursor"
                   paginationComponent={CustomPagination}
                 />
@@ -566,7 +566,7 @@ export default function FunnelTable({
                                     <Button
                                       color="success"
                                       className="text-capitalize"
-                                      onClick={() => handleDetails(item)}
+                                      onClick={() => handleEdit(item)}
                                     >
                                       <FaEdit size={18} />
                                       &nbsp;&nbsp; Edit
