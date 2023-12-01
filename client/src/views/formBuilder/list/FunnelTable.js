@@ -89,8 +89,11 @@ export default function FunnelTable({
 
   // ** FUNCTIONS
 
-  const handleDetails = (row) => {
+  const handleEdit = (row) => {
     history.push(`/pages/editor/${row._id}`);
+  };
+  const handleDetails = (row) => {
+    history.push('/form-funnel/form-setting/' + row._id);
   };
   useEffect(() => {
     if (tableData && tableData?.length > 0 && rowsPerPage) {
@@ -205,14 +208,14 @@ export default function FunnelTable({
       name: 'Name',
       sortable: 'true',
       selector: (row) => row.name,
-      cell: (row) => <span onClick={() => handleDetails(row)}>{row.name}</span>
+      cell: (row) => <span onClick={() => handleEdit(row)}>{row.name}</span>
     },
     {
       name: 'Type',
       sortable: 'true',
       selector: (row) => row.formType,
       cell: (row) => (
-        <span onClick={() => handleDetails(row)}>
+        <span onClick={() => handleEdit(row)}>
           <Badge color={getTextColor(row?.formType)} style={{ paddingTop: '6px' }} className="me-1">
             {row?.formType}
           </Badge>
@@ -224,7 +227,7 @@ export default function FunnelTable({
       sortable: 'true',
       selector: (row) => row.updatedAt,
       cell: (row) => (
-        <span onClick={() => handleDetails(row)}>
+        <span onClick={() => handleEdit(row)}>
           <Badge color="light-primary" style={{ paddingTop: '6px' }}>
             {moment(row?.updatedAt)?.format("MM/DD/yyyy")}
           </Badge>
@@ -266,11 +269,11 @@ export default function FunnelTable({
         <>
           {row.userId === user.id ? (
             <div className="column-action">
-              <UncontrolledDropdown>
+              <UncontrolledDropdown >
                 <DropdownToggle tag="div" className="btn btn-sm">
                   <MoreVertical size={14} className="cursor-pointer" />
                 </DropdownToggle>
-                <DropdownMenu>
+                <DropdownMenu container="body">
                   {ability.can('update', 'business/formsFunnels') ? (
                     <DropdownItem tag="span" className="w-100" onClick={() => handleDetails(row)}>
                       <Edit size={14} className="me-50" />
@@ -378,13 +381,13 @@ export default function FunnelTable({
 
                     <div className="d-flex ">
                       <h6 className="text-secondary">Type</h6>
-                      <div style={{ marginLeft: '10px' }} onClick={() => handleDetails(item)}>
+                      <div style={{ marginLeft: '10px' }} onClick={() => handleEdit(item)}>
                         {item.formType}
                       </div>
                     </div>
                     <div className="d-flex ">
                       <h6 className="text-secondary">Last Updated</h6>
-                      <div style={{ marginLeft: '10px' }} onClick={() => handleDetails(item)}>
+                      <div style={{ marginLeft: '10px' }} onClick={() => handleEdit(item)}>
                         {moment(item.updatedAt).format("MM/DD/yyyy")}
                       </div>
                     </div>
@@ -471,7 +474,7 @@ export default function FunnelTable({
                   style={{ cursor: 'pointer' }}
                   sortIcon={<ChevronDown size={14} />}
                   columns={columns}
-                  onRowClicked={handleDetails}
+                  onRowClicked={handleEdit}
                   pointerOnHover="cursor"
                   paginationComponent={CustomPagination}
                 />
