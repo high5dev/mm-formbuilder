@@ -89,8 +89,11 @@ export default function FunnelTable({
 
   // ** FUNCTIONS
 
-  const handleDetails = (row) => {
+  const handleEdit = (row) => {
     history.push(`/pages/editor/${row._id}`);
+  };
+  const handleDetails = (row) => {
+    history.push('/form-funnel/form-setting/' + row._id);
   };
   useEffect(() => {
     if (tableData && tableData?.length > 0 && rowsPerPage) {
@@ -266,13 +269,13 @@ export default function FunnelTable({
         <>
           {row.userId === user.id ? (
             <div className="column-action">
-              <UncontrolledDropdown>
+              <UncontrolledDropdown >
                 <DropdownToggle tag="div" className="btn btn-sm">
                   <MoreVertical size={14} className="cursor-pointer" />
                 </DropdownToggle>
-                <DropdownMenu>
+                <DropdownMenu container="body">
                   {ability.can('update', 'business/formsFunnels') ? (
-                    <DropdownItem tag="span" className="w-100" onClick={() => handleDetails(row)}>
+                    <DropdownItem tag="span" className="w-100" onClick={() => handleEdit(row)}>
                       <Edit size={14} className="me-50" />
                       <span className="align-middle">Edit</span>
                     </DropdownItem>
@@ -348,7 +351,7 @@ export default function FunnelTable({
                       </div>
                       <div className="d-flex">
                         {ability.can('update', 'business/formsFunnels') ? (
-                          <div tag="span" className="w-100" onClick={() => handleDetails(item)}>
+                          <div tag="span" className="w-100" onClick={() => handleEdit(item)}>
                             <Edit size={14} className="me-50" />
                           </div>
                         ) : (
@@ -563,7 +566,7 @@ export default function FunnelTable({
                                     <Button
                                       color="success"
                                       className="text-capitalize"
-                                      onClick={() => handleDetails(item)}
+                                      onClick={() => handleEdit(item)}
                                     >
                                       <FaEdit size={18} />
                                       &nbsp;&nbsp; Edit
