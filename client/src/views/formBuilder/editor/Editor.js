@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import { Bold, X, Trash2, Delete} from 'react-feather';
+import { useDispatch, useSelector } from 'react-redux';
+import { Bold, X, Trash2, Delete } from 'react-feather';
 import { RiQuestionMark } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import { Link, useHistory, useParams } from 'react-router-dom';
@@ -30,7 +30,7 @@ import StyleSidebar from './topNav/styles';
 import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
-import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, updatePageNameAction} from '../store/action'
+import { getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, updatePageNameAction } from '../store/action'
 import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
@@ -81,31 +81,31 @@ export default function Editor({
 }) {
 
   const [openCreateForm, setOpenCreateForm] = useState();
-  const {id}=useParams();
-  const form=store.form;
-  const dispatch=useDispatch();
-  const history=useHistory();
+  const { id } = useParams();
+  const form = store.form;
+  const dispatch = useDispatch();
+  const history = useHistory();
   const [editor, setEditor] = useState(null);
   const [blockManager, setBlockManager] = useState(null);
-  const [isLoading, setIsLoading]=useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedCmp, setSelectedCmp] = useState(null);
   const [isRunning, setIsRunning] = useState(true);
-  const [isPublishModal, setIsPublishModal]=useState(false);
-  const [publishUrl, setPublishUrl]=useState();
+  const [isPublishModal, setIsPublishModal] = useState(false);
+  const [publishUrl, setPublishUrl] = useState();
   const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
   const toggle = () => {
     setOpen(!open);
   };
 
-  const _toggleRename =(_open) =>{
+  const _toggleRename = (_open) => {
     setRenameMdl(_open);
   }
 
-  const _toggleDuplicate = (_open) =>{
+  const _toggleDuplicate = (_open) => {
     setDuplicateMdl(_open);
   }
 
-  const togglePublish=(_open)=>{
+  const togglePublish = (_open) => {
     setIsPublishModal(_open);
     setIsPublish(false);
   }
@@ -116,40 +116,40 @@ export default function Editor({
       isOpen: false,
     })
   };
-  
+
   const handleRSideBarOpen = (e) => {
     setRSidebarOpen(false);
   };
 
-  useEffect(() =>{
+  useEffect(() => {
     let interval;
-      if(editor && !form.isPublish){
-        interval=setInterval(() =>{
-          const current_page=editor.Pages.getSelected();
-          const html = editor.getHtml({ current_page });
-          const css = editor.getCss({ current_page });
-          const payload={
-            page:page?._id,
-            html:html,
-            css:css,
-          };
-          dispatch(updatePageAction(id, payload));
-        }, 2000);
-        return () => clearInterval(interval);
-      }
+    if (editor && !form.isPublish) {
+      interval = setInterval(() => {
+        const current_page = editor.Pages.getSelected();
+        const html = editor.getHtml({ current_page });
+        const css = editor.getCss({ current_page });
+        const payload = {
+          page: page?._id,
+          html: html,
+          css: css,
+        };
+        dispatch(updatePageAction(id, payload));
+      }, 2000);
+      return () => clearInterval(interval);
+    }
   }, [editor?.getHtml(editor?.Pages.getSelected()), editor?.getCss(editor?.Pages.getSelected()), form, page])
 
   useEffect(() => {
     dispatch(getWebElementsAction());
-    dispatch(getWebsiteAction(id)).then(res=>{
-      if(res){
+    dispatch(getWebsiteAction(id)).then(res => {
+      if (res) {
         setPage(res[0]);
       }
     })
     const gjsEditor = grapesjs.init({
       container: '#editor',
-      height: window. innerHeight-117,
-      plugins: [basicBlockPlugin,(editor) => webBuilderPlugin(editor), websitePlugin],
+      height: window.innerHeight - 117,
+      plugins: [basicBlockPlugin, (editor) => webBuilderPlugin(editor), websitePlugin],
 
       richTextEditor: {
         actions: []
@@ -158,20 +158,20 @@ export default function Editor({
         custom: true,
         // appendTo: '#blocks'
       },
-      styleManager:{
+      styleManager: {
         appendTo: document.querySelector('#style-manager-container'),
       },
-      selectorManager:{
-        appendTo:document.querySelector('#selector-manager-container'),
+      selectorManager: {
+        appendTo: document.querySelector('#selector-manager-container'),
       },
-      layerManager:{
+      layerManager: {
         appendTo: document.querySelector('#layer-manager-container'),
       },
-      traitManager:{
+      traitManager: {
         appendTo: document.querySelector('#trait-manager-container'),
       },
       pageManager: true,
-      pageManager:{
+      pageManager: {
         appendTo: document.querySelector('#page-manager-container'),
       },
       storageManager: {
@@ -184,7 +184,7 @@ export default function Editor({
         storeHtml: true,
         storeCss: true,
         autorender: false
-    },
+      },
       deviceManager: {
         default: 'desktop',
         devices: [
@@ -243,38 +243,36 @@ export default function Editor({
     gjsEditor.on('component:selected', (cmp) => {
       setSelectedCmp(cmp);
     });
-  
-      // Add custom commands
-      gjsEditor.Commands.add('save-component', editor => {
-        const saveModalElement = document.createElement('div');
-        saveModalElement.className = "save-component-modal d-flex flex-column align-items-center";
-  
-        saveModalElement.innerHTML = `
+
+    // Add custom commands
+    gjsEditor.Commands.add('save-component', editor => {
+      const saveModalElement = document.createElement('div');
+      saveModalElement.className = "save-component-modal d-flex flex-column align-items-center";
+
+      saveModalElement.innerHTML = `
           <div class="d-flex w-100">
             <div class="w-50 p-1">
               <h5>Main menu</h5>
               <select class="select-main-menu w-100">
-                ${
-                  menu.map((e, idx) => {
-                    if (idx !== 0)
-                    return (
-                      `<option class="main-menu-option" value=${e.id}>${e.name}</option>`
-                    );
-                  })
-                }
+                ${menu.map((e, idx) => {
+        if (idx !== 0)
+          return (
+            `<option class="main-menu-option" value=${e.id}>${e.name}</option>`
+          );
+      })
+        }
               </select>
             </div>
             
             <div class="w-50  p-1">
               <h5>Sub menu</h5>
               <select class="select-sub-menu w-100">
-                ${
-                  menu[1].subMenu.map((e, idx) => {
-                    return (
-                      `<option class="sub-menu-option" value=${e.id}>${e.name}</option>`
-                    );
-                  })
-                }
+                ${menu[1].subMenu.map((e, idx) => {
+          return (
+            `<option class="sub-menu-option" value=${e.id}>${e.name}</option>`
+          );
+        })
+        }
               </select >
             </div>
           </div>
@@ -287,144 +285,144 @@ export default function Editor({
   
           <button class="btn btn-primary mb-1 save-component-btn">Save</button>
         `;
-  
-        const mainMenuDropDown = saveModalElement.querySelector('.select-main-menu');
-        const subMenuSelect = saveModalElement.querySelector('.select-sub-menu');
-        const categoryInput = saveModalElement.querySelector('.input-category');
-        const saveComponentBtn = saveModalElement.querySelector('.save-component-btn');
-        const categoryOptions = saveModalElement.querySelector('.category-options');
-  
-        let mainMenu = menu[0].id;
-        let subMenu = menu[0].subMenu?.id || '';
-        let category = '';
-        let existedCategories = [];
-        let tempCategories = [];
-  
-        getCategoriesByMenu({mainMenu, subMenu}).then((res) => {
-          existedCategories = res.data.data;
-        });
-  
-        mainMenuDropDown.addEventListener('change', (ev) => {
-          mainMenu = ev.target.value;
-          const submenuData = menu.find(e => e.id === ev.target.value).subMenu;      
-          subMenu = submenuData[0]?.id || '';
-  
-          getCategoriesByMenu({mainMenu, subMenu}).then((res) => {
-            existedCategories = res.data.data;
-          });
-  
-          const childrenLength = subMenuSelect.childNodes.length;
-          for (let i = 0 ; i < childrenLength; i++) {
-            subMenuSelect.removeChild(subMenuSelect.firstChild);
-          }
-  
-          submenuData.map(e => {
-            const newOption = document.createElement('option');
-            newOption.className = "sub-menu-option";
-            newOption.value = e.id;
-            newOption.innerText = e.name;
-            subMenuSelect.append(newOption);
-          })
-        });
-  
-        subMenuSelect.addEventListener('change', (ev) => {
-          subMenu = ev.target.value;
-          getCategoriesByMenu({mainMenu, subMenu}).then((res) => {
-            existedCategories = res.data.data;
-          });
-        });
-  
-        categoryInput.addEventListener('input', (ev) => {
-          category = ev.target.value;
-          tempCategories = [];
-          existedCategories.map((e) => {
-            if (e.name.includes(category)) tempCategories.push(e);
-          });
-  
-          const childrenLength = categoryOptions.childNodes.length;
-          for (let i = 0 ; i < childrenLength; i++) {
-            categoryOptions.removeChild(categoryOptions.firstChild);
-          }
-  
-          tempCategories.map(e => {
-            const newOption = document.createElement('option');
-            newOption.className = "category-option ps-1";
-            newOption.value = e.name;
-            newOption.innerText = e.name;
-            categoryOptions.append(newOption);
-          })
-        });
-  
-        saveComponentBtn.addEventListener('click', () => {
-          if (!mainMenu) {
-            alert('Please select main menu.');
-            return;
-          }
-  
-          if (!category) {
-            alert('Please input or select a category.');
-            return;
-          }
-  
-          const selectedCmp = editor.getSelected();
-          htmlToImage.toPng(selectedCmp.getEl()).then((dataUrl) => {
-            const html = selectedCmp.toHTML();
-            const css = editor.CodeManager.getCode(selectedCmp, 'css', { cssc: editor.CssComposer });
-  
-            dispatch(createWebElementAction({mainMenu, subMenu, category, html: `${html}<style>${css}</style>`, imageUrl: dataUrl})).then((res) => {
-              editor.Modal.close();
-            });
-          });
-          
-        });
-  
-        editor.Modal.open({
-          title: 'Save component', // string | HTMLElement
-          content: saveModalElement, // string | HTMLElement
-        });
-      });
-  
-      // Add new toolbar
-      const dc = gjsEditor.DomComponents;
-      const new_toolbar_id = 'custom-id';
-  
-      const htmlLabel = `<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 24 24" id="save"><path d="m20.71 9.29-6-6a1 1 0 0 0-.32-.21A1.09 1.09 0 0 0 14 3H6a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-8a1 1 0 0 0-.29-.71ZM9 5h4v2H9Zm6 14H9v-3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1Zm4-1a1 1 0 0 1-1 1h-1v-3a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3v3H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6.41l4 4Z"></path></svg>`
-      
-      dc.getTypes().forEach(elType => {
-        let {model:oldModel, view:oldView} = elType;
-        if (elType.id !== 'wrapper') {
-          dc.addType(elType.id, {
-            model: oldModel.extend({
-              initToolbar() {
-                oldModel.prototype.initToolbar.apply(this);
-                const toolbar = this.get('toolbar');
-                
-                if (!toolbar.filter(tlb => tlb.id === new_toolbar_id ).length) {
-                  toolbar.unshift({
-                    id: new_toolbar_id,
-                    command: 'save-component',
-                    label: htmlLabel
-                  });
-                  this.set('toolbar', toolbar);
-                }
-              }
-            }),
-            view: oldView
-          });
-        }
+
+      const mainMenuDropDown = saveModalElement.querySelector('.select-main-menu');
+      const subMenuSelect = saveModalElement.querySelector('.select-sub-menu');
+      const categoryInput = saveModalElement.querySelector('.input-category');
+      const saveComponentBtn = saveModalElement.querySelector('.save-component-btn');
+      const categoryOptions = saveModalElement.querySelector('.category-options');
+
+      let mainMenu = menu[0].id;
+      let subMenu = menu[0].subMenu?.id || '';
+      let category = '';
+      let existedCategories = [];
+      let tempCategories = [];
+
+      getCategoriesByMenu({ mainMenu, subMenu }).then((res) => {
+        existedCategories = res.data.data;
       });
 
-      gjsEditor.TraitManager.addType('popup', {
-        noLabel: true,
-        // Expects as return a simple HTML string or an HTML element
-        createInput({trait, component}) {
-          const rule = component.props().popup_rule;
-          let newRule = {...rule};
-          let selectedDays = {};
-          const traitName = trait.get('name');
-          const el = document.createElement('div');
-          el.className = 'trait-popup m-1';
-          el.innerHTML = `
+      mainMenuDropDown.addEventListener('change', (ev) => {
+        mainMenu = ev.target.value;
+        const submenuData = menu.find(e => e.id === ev.target.value).subMenu;
+        subMenu = submenuData[0]?.id || '';
+
+        getCategoriesByMenu({ mainMenu, subMenu }).then((res) => {
+          existedCategories = res.data.data;
+        });
+
+        const childrenLength = subMenuSelect.childNodes.length;
+        for (let i = 0; i < childrenLength; i++) {
+          subMenuSelect.removeChild(subMenuSelect.firstChild);
+        }
+
+        submenuData.map(e => {
+          const newOption = document.createElement('option');
+          newOption.className = "sub-menu-option";
+          newOption.value = e.id;
+          newOption.innerText = e.name;
+          subMenuSelect.append(newOption);
+        })
+      });
+
+      subMenuSelect.addEventListener('change', (ev) => {
+        subMenu = ev.target.value;
+        getCategoriesByMenu({ mainMenu, subMenu }).then((res) => {
+          existedCategories = res.data.data;
+        });
+      });
+
+      categoryInput.addEventListener('input', (ev) => {
+        category = ev.target.value;
+        tempCategories = [];
+        existedCategories.map((e) => {
+          if (e.name.includes(category)) tempCategories.push(e);
+        });
+
+        const childrenLength = categoryOptions.childNodes.length;
+        for (let i = 0; i < childrenLength; i++) {
+          categoryOptions.removeChild(categoryOptions.firstChild);
+        }
+
+        tempCategories.map(e => {
+          const newOption = document.createElement('option');
+          newOption.className = "category-option ps-1";
+          newOption.value = e.name;
+          newOption.innerText = e.name;
+          categoryOptions.append(newOption);
+        })
+      });
+
+      saveComponentBtn.addEventListener('click', () => {
+        if (!mainMenu) {
+          alert('Please select main menu.');
+          return;
+        }
+
+        if (!category) {
+          alert('Please input or select a category.');
+          return;
+        }
+
+        const selectedCmp = editor.getSelected();
+        htmlToImage.toPng(selectedCmp.getEl()).then((dataUrl) => {
+          const html = selectedCmp.toHTML();
+          const css = editor.CodeManager.getCode(selectedCmp, 'css', { cssc: editor.CssComposer });
+
+          dispatch(createWebElementAction({ mainMenu, subMenu, category, html: `${html}<style>${css}</style>`, imageUrl: dataUrl })).then((res) => {
+            editor.Modal.close();
+          });
+        });
+
+      });
+
+      editor.Modal.open({
+        title: 'Save component', // string | HTMLElement
+        content: saveModalElement, // string | HTMLElement
+      });
+    });
+
+    // Add new toolbar
+    const dc = gjsEditor.DomComponents;
+    const new_toolbar_id = 'custom-id';
+
+    const htmlLabel = `<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 24 24" id="save"><path d="m20.71 9.29-6-6a1 1 0 0 0-.32-.21A1.09 1.09 0 0 0 14 3H6a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-8a1 1 0 0 0-.29-.71ZM9 5h4v2H9Zm6 14H9v-3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1Zm4-1a1 1 0 0 1-1 1h-1v-3a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3v3H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6.41l4 4Z"></path></svg>`
+
+    dc.getTypes().forEach(elType => {
+      let { model: oldModel, view: oldView } = elType;
+      if (elType.id !== 'wrapper') {
+        dc.addType(elType.id, {
+          model: oldModel.extend({
+            initToolbar() {
+              oldModel.prototype.initToolbar.apply(this);
+              const toolbar = this.get('toolbar');
+
+              if (!toolbar.filter(tlb => tlb.id === new_toolbar_id).length) {
+                toolbar.unshift({
+                  id: new_toolbar_id,
+                  command: 'save-component',
+                  label: htmlLabel
+                });
+                this.set('toolbar', toolbar);
+              }
+            }
+          }),
+          view: oldView
+        });
+      }
+    });
+
+    gjsEditor.TraitManager.addType('popup', {
+      noLabel: true,
+      // Expects as return a simple HTML string or an HTML element
+      createInput({ trait, component }) {
+        const rule = component.props().popup_rule;
+        let newRule = { ...rule };
+        let selectedDays = {};
+        const traitName = trait.get('name');
+        const el = document.createElement('div');
+        el.className = 'trait-popup m-1';
+        el.innerHTML = `
             <h6>Popup Rule</h6>
             <div class="d-flex align-items-center rule-section">
               <label class="form-check-label me-1">Is Timer Button</label>
@@ -542,185 +540,185 @@ export default function Editor({
             <button class="btn btn-primary mb-1 mr-1 save-trait-btn">Save</button>
           `;
 
-          const isTimerEl = el.querySelector('.is-timer-switch');
-          const timerRuleEl = el.querySelector('.popup-timer-rule');
-          const noTimerRuleEl = el.querySelector('.popup-no-timer-rule');
-          const isRepeatEl = el.querySelector('.is-repeat-switch');
-          const repeatRuleEl = el.querySelector('.popup-repeat-rule');
-          const cycleEl = el.querySelector('.trait-cycle-select');
-          const isAllDayEl = el.querySelector('.is-all-day');
-          const noAllDayRuleEl = el.querySelector('.no-all-day-rule');
-          const weekDaysEl = el.querySelector('.week-days');
-          const monthlyDayEl = el.querySelector('.monthly-day');
-          const startTimeEl = el.querySelector('.trait-start-time-input');
-          const endTimeEl = el.querySelector('.trait-end-time-input');
-          const endDateEl = el.querySelector('.trait-end-date-input');
-          const timeZoneEl = el.querySelector('.trait-time-zone-select');
-          const dayMonEl = el.querySelector('.day-input-mon');
-          const dayTueEl = el.querySelector('.day-input-tue');
-          const dayWedEl = el.querySelector('.day-input-wed');
-          const dayThuEl = el.querySelector('.day-input-thu');
-          const dayFriEl = el.querySelector('.day-input-fri');
-          const daySatEl = el.querySelector('.day-input-sat');
-          const daySunEl = el.querySelector('.day-input-sun');
-          const dateOfMonth = el.querySelector('.monthly-day-input');
-          const saveTraitBtn = el.querySelector('.save-trait-btn');
+        const isTimerEl = el.querySelector('.is-timer-switch');
+        const timerRuleEl = el.querySelector('.popup-timer-rule');
+        const noTimerRuleEl = el.querySelector('.popup-no-timer-rule');
+        const isRepeatEl = el.querySelector('.is-repeat-switch');
+        const repeatRuleEl = el.querySelector('.popup-repeat-rule');
+        const cycleEl = el.querySelector('.trait-cycle-select');
+        const isAllDayEl = el.querySelector('.is-all-day');
+        const noAllDayRuleEl = el.querySelector('.no-all-day-rule');
+        const weekDaysEl = el.querySelector('.week-days');
+        const monthlyDayEl = el.querySelector('.monthly-day');
+        const startTimeEl = el.querySelector('.trait-start-time-input');
+        const endTimeEl = el.querySelector('.trait-end-time-input');
+        const endDateEl = el.querySelector('.trait-end-date-input');
+        const timeZoneEl = el.querySelector('.trait-time-zone-select');
+        const dayMonEl = el.querySelector('.day-input-mon');
+        const dayTueEl = el.querySelector('.day-input-tue');
+        const dayWedEl = el.querySelector('.day-input-wed');
+        const dayThuEl = el.querySelector('.day-input-thu');
+        const dayFriEl = el.querySelector('.day-input-fri');
+        const daySatEl = el.querySelector('.day-input-sat');
+        const daySunEl = el.querySelector('.day-input-sun');
+        const dateOfMonth = el.querySelector('.monthly-day-input');
+        const saveTraitBtn = el.querySelector('.save-trait-btn');
 
-          if (rule.cycle === 'week') {
+        if (rule.cycle === 'week') {
+          weekDaysEl.style.display = "flex";
+          weekDaysEl.style['flex-wrap'] = "wrap";
+        } else {
+          weekDaysEl.style.display = "none";
+        }
+
+        if (rule.cycle === 'month') {
+          monthlyDayEl.style.display = "block";
+        } else {
+          monthlyDayEl.style.display = "none";
+        }
+
+        isTimerEl.addEventListener('change', ev => {
+          if (ev.target.checked) {
+            timerRuleEl.style.display = "block";
+            noTimerRuleEl.style.display = "none";
+          } else {
+            timerRuleEl.style.display = "none";
+            noTimerRuleEl.style.display = "block";
+          }
+          newRule = { ...newRule, isTimer: ev.target.checked };
+        });
+
+        isRepeatEl.addEventListener('change', ev => {
+          if (ev.target.checked) {
+            repeatRuleEl.style.display = "block";
+          } else {
+            repeatRuleEl.style.display = "none";
+          }
+          newRule = { ...newRule, isRepeat: ev.target.checked };
+        });
+
+        cycleEl.addEventListener('change', ev => {
+          if (ev.target.value === 'week') {
             weekDaysEl.style.display = "flex";
             weekDaysEl.style['flex-wrap'] = "wrap";
           } else {
             weekDaysEl.style.display = "none";
           }
 
-          if (rule.cycle === 'month') {
+          if (ev.target.value === 'month') {
             monthlyDayEl.style.display = "block";
           } else {
             monthlyDayEl.style.display = "none";
           }
+          newRule = { ...newRule, cycle: ev.target.value };
+        });
 
-          isTimerEl.addEventListener('change', ev => {
-            if (ev.target.checked) {
-              timerRuleEl.style.display = "block";
-              noTimerRuleEl.style.display = "none";
-            } else {
-              timerRuleEl.style.display = "none";
-              noTimerRuleEl.style.display = "block";
-            }
-            newRule = {...newRule, isTimer: ev.target.checked};
-          });
+        isAllDayEl.addEventListener('change', ev => {
+          if (ev.target.checked) {
+            noAllDayRuleEl.style.display = "none";
+          } else {
+            noAllDayRuleEl.style.display = "block";
+          }
+          newRule = { ...newRule, eventDetails: { ...newRule.eventDetails, isAllDay: ev.target.checked } };
+        });
 
-          isRepeatEl.addEventListener('change', ev => {
-            if (ev.target.checked) {
-              repeatRuleEl.style.display = "block";
-            } else {
-              repeatRuleEl.style.display = "none";
-            }
-            newRule = {...newRule, isRepeat: ev.target.checked};
-          });
+        startTimeEl.addEventListener('change', ev => {
+          newRule = { ...newRule, eventDetails: { ...newRule.eventDetails, startTime: ev.target.value } };
+        });
 
-          cycleEl.addEventListener('change', ev => {
-            if (ev.target.value === 'week') {
-              weekDaysEl.style.display = "flex";
-              weekDaysEl.style['flex-wrap'] = "wrap";
-            } else {
-              weekDaysEl.style.display = "none";
-            }
+        endTimeEl.addEventListener('change', ev => {
+          newRule = { ...newRule, eventDetails: { ...newRule.eventDetails, endTime: ev.target.value } };
+        });
 
-            if (ev.target.value === 'month') {
-              monthlyDayEl.style.display = "block";
-            } else {
-              monthlyDayEl.style.display = "none";
-            }
-            newRule = {...newRule, cycle: ev.target.value};
-          });
+        endDateEl.addEventListener('change', ev => {
+          newRule = { ...newRule, endDate: ev.target.value };
+        });
 
-          isAllDayEl.addEventListener('change', ev => {
-            if (ev.target.checked) {
-              noAllDayRuleEl.style.display = "none";
-            } else {
-              noAllDayRuleEl.style.display = "block";
-            }
-            newRule = {...newRule, eventDetails: {...newRule.eventDetails, isAllDay: ev.target.checked}};
-          });
+        timeZoneEl.addEventListener('change', ev => {
+          newRule = { ...newRule, eventDetails: { ...newRule.eventDetails, timeZone: ev.target.value } };
+        });
 
-          startTimeEl.addEventListener('change', ev => {
-            newRule = {...newRule, eventDetails: {...newRule.eventDetails, startTime: ev.target.value}};
-          });
+        dayMonEl.addEventListener('change', ev => {
+          if (ev.target.checked) {
+            selectedDays = { ...selectedDays, mon: true };
+          } else {
+            selectedDays = { ...selectedDays, mon: false };
+          }
+          newRule = { ...newRule, eventDetails: { ...newRule.eventDetails, availableDays: selectedDays } };
+        });
 
-          endTimeEl.addEventListener('change', ev => {
-            newRule = {...newRule, eventDetails: {...newRule.eventDetails, endTime: ev.target.value}};
-          });
+        dayTueEl.addEventListener('change', ev => {
+          if (ev.target.checked) {
+            selectedDays = { ...selectedDays, tue: true };
+          } else {
+            selectedDays = { ...selectedDays, tue: false };
+          }
+          newRule = { ...newRule, eventDetails: { ...newRule.eventDetails, availableDays: selectedDays } };
+        });
 
-          endDateEl.addEventListener('change', ev => {
-            newRule = {...newRule, endDate: ev.target.value};
-          });
+        dayWedEl.addEventListener('change', ev => {
+          if (ev.target.checked) {
+            selectedDays = { ...selectedDays, wed: true };
+          } else {
+            selectedDays = { ...selectedDays, wed: false };
+          }
+          newRule = { ...newRule, eventDetails: { ...newRule.eventDetails, availableDays: selectedDays } };
+        });
 
-          timeZoneEl.addEventListener('change', ev => {
-            newRule = {...newRule, eventDetails: {...newRule.eventDetails, timeZone: ev.target.value}};
-          });
+        dayThuEl.addEventListener('change', ev => {
+          if (ev.target.checked) {
+            selectedDays = { ...selectedDays, thu: true };
+          } else {
+            selectedDays = { ...selectedDays, thu: false };
+          }
+          newRule = { ...newRule, eventDetails: { ...newRule.eventDetails, availableDays: selectedDays } };
+        });
 
-          dayMonEl.addEventListener('change', ev => {
-            if (ev.target.checked) {
-              selectedDays = {...selectedDays, mon: true};
-            } else {
-              selectedDays = {...selectedDays, mon: false};
-            }
-            newRule = {...newRule, eventDetails: {...newRule.eventDetails, availableDays: selectedDays}};
-          });
+        dayFriEl.addEventListener('change', ev => {
+          if (ev.target.checked) {
+            selectedDays = { ...selectedDays, fri: true };
+          } else {
+            selectedDays = { ...selectedDays, fri: false };
+          }
+          newRule = { ...newRule, eventDetails: { ...newRule.eventDetails, availableDays: selectedDays } };
+        });
 
-          dayTueEl.addEventListener('change', ev => {
-            if (ev.target.checked) {
-              selectedDays = {...selectedDays, tue: true};
-            } else {
-              selectedDays = {...selectedDays, tue: false};
-            }
-            newRule = {...newRule, eventDetails: {...newRule.eventDetails, availableDays: selectedDays}};
-          });
+        daySatEl.addEventListener('change', ev => {
+          if (ev.target.checked) {
+            selectedDays = { ...selectedDays, sat: true };
+          } else {
+            selectedDays = { ...selectedDays, sat: false };
+          }
+          newRule = { ...newRule, eventDetails: { ...newRule.eventDetails, availableDays: selectedDays } };
+        });
 
-          dayWedEl.addEventListener('change', ev => {
-            if (ev.target.checked) {
-              selectedDays = {...selectedDays, wed: true};
-            } else {
-              selectedDays = {...selectedDays, wed: false};
-            }
-            newRule = {...newRule, eventDetails: {...newRule.eventDetails, availableDays: selectedDays}};
-          });
+        daySunEl.addEventListener('change', ev => {
+          if (ev.target.checked) {
+            selectedDays = { ...selectedDays, sun: true };
+          } else {
+            selectedDays = { ...selectedDays, sun: false };
+          }
+          newRule = { ...newRule, eventDetails: { ...newRule.eventDetails, availableDays: selectedDays } };
+        });
 
-          dayThuEl.addEventListener('change', ev => {
-            if (ev.target.checked) {
-              selectedDays = {...selectedDays, thu: true};
-            } else {
-              selectedDays = {...selectedDays, thu: false};
-            }
-            newRule = {...newRule, eventDetails: {...newRule.eventDetails, availableDays: selectedDays}};
-          });
+        dateOfMonth.addEventListener('change', ev => {
+          newRule = { ...newRule, eventDetails: { ...newRule.eventDetails, dateOfMonth: ev.target.value } };
+        });
 
-          dayFriEl.addEventListener('change', ev => {
-            if (ev.target.checked) {
-              selectedDays = {...selectedDays, fri: true};
-            } else {
-              selectedDays = {...selectedDays, fri: false};
-            }
-            newRule = {...newRule, eventDetails: {...newRule.eventDetails, availableDays: selectedDays}};
-          });
+        saveTraitBtn.addEventListener('click', ev => {
+          component.set(traitName, newRule);
+        });
 
-          daySatEl.addEventListener('change', ev => {
-            if (ev.target.checked) {
-              selectedDays = {...selectedDays, sat: true};
-            } else {
-              selectedDays = {...selectedDays, sat: false};
-            }
-            newRule = {...newRule, eventDetails: {...newRule.eventDetails, availableDays: selectedDays}};
-          });
+        return el;
+      },
 
-          daySunEl.addEventListener('change', ev => {
-            if (ev.target.checked) {
-              selectedDays = {...selectedDays, sun: true};
-            } else {
-              selectedDays = {...selectedDays, sun: false};
-            }
-            newRule = {...newRule, eventDetails: {...newRule.eventDetails, availableDays: selectedDays}};
-          });
+      onEvent({ elInput, component, event }) {
+        if (event.target.name) { }
+      },
 
-          dateOfMonth.addEventListener('change', ev => {
-            newRule = {...newRule, eventDetails: {...newRule.eventDetails, dateOfMonth: ev.target.value}};
-          });
-
-          saveTraitBtn.addEventListener('click', ev => {
-            component.set(traitName, newRule);
-          });
-
-          return el;
-        },
-      
-        onEvent({ elInput, component, event }) {
-          if (event.target.name) {}
-        },
-      
-        onUpdate({ elInput, component }) {
-        },
-      });
+      onUpdate({ elInput, component }) {
+      },
+    });
     setEditor(gjsEditor);
   }, []);
 
@@ -744,45 +742,45 @@ export default function Editor({
     //     popups.splice(popIndex, 1, {...updatedPopupRule, wrapperId: popupWrapperId, triggerId: popupTriggerId});
     //   }
     // } else {
-      popups.push({...updatedPopupRule, wrapperId: popupWrapperId, triggerId: popupTriggerId});
+    popups.push({ ...updatedPopupRule, wrapperId: popupWrapperId, triggerId: popupTriggerId });
     // }
-    dispatch(updatePageNameAction(page?._id, {popups})).then((res) => {
+    dispatch(updatePageNameAction(page?._id, { popups })).then((res) => {
       if (res) {
         dispatch(getWebsiteAction(id));
       }
     });
   });
 
-  useEffect(()=>{
-    if(customwidth && customwidth!=320 && customwidth!=768 && customwidth!=1280){
-      const device_name=(Math.random() + 1).toString();
-      const command_name= (Math.random() + 2).toString();
+  useEffect(() => {
+    if (customwidth && customwidth != 320 && customwidth != 768 && customwidth != 1280) {
+      const device_name = (Math.random() + 1).toString();
+      const command_name = (Math.random() + 2).toString();
       editor?.DeviceManager.add({
         id: device_name,
         name: device_name,
-        width: customwidth.toString()+'px'
-       });
-       editor.Commands.add(command_name, (editor) => {
+        width: customwidth.toString() + 'px'
+      });
+      editor.Commands.add(command_name, (editor) => {
         editor?.setDevice(device_name);
       });
       editor?.runCommand(command_name);
     }
-    else{
-      if(customwidth===320){
+    else {
+      if (customwidth === 320) {
         editor?.runCommand('set-device-mobile');
       }
-      else if(customwidth===768){
+      else if (customwidth === 768) {
         editor?.runCommand('set-device-tablet');
       }
-      else{
+      else {
         editor?.runCommand('set-device-desktop');
       }
     }
   }, [customwidth])
 
-  useEffect(() =>{
-    if(isclear){
-      if(editor){
+  useEffect(() => {
+    if (isclear) {
+      if (editor) {
         editor.Components.clear();
       }
       setIsClear(false);
@@ -805,10 +803,10 @@ export default function Editor({
   }, [isclear])
 
   editor?.on('component:selected', (cmp) => {
-    if(cmp){
+    if (cmp) {
       setSelectedCmp(cmp);
     }
-    
+
   });
   useEffect(() => {
     if (editor !== null) {
@@ -829,50 +827,50 @@ export default function Editor({
     }
   }, [device]);
 
-  useEffect(()=>{
-    if(editor){
-      const current_page=editor.Pages.getSelected();
+  useEffect(() => {
+    if (editor) {
+      const current_page = editor.Pages.getSelected();
       const html = editor.getHtml({ current_page });
       const css = editor.getCss({ current_page });
-      const payload={
-        page:page?._id,
-        html:html,
-        css:css,
+      const payload = {
+        page: page?._id,
+        html: html,
+        css: css,
       };
 
-      if(ispreview){
-        dispatch(updatePageAction(id, payload)).then((res)=>{
-          if(res){
+      if (ispreview) {
+        dispatch(updatePageAction(id, payload)).then((res) => {
+          if (res) {
             history.push(`/preview/${id}/${page?.name}`);
             setIsPreview(false);
           }
         });
       }
-      if(ispublish){
-        dispatch(publishWebsiteAction(id, payload)).then((res)=>{
-          if(res){
-            const _form={...form, ...res};
+      if (ispublish) {
+        dispatch(publishWebsiteAction(id, payload)).then((res) => {
+          if (res) {
+            const _form = { ...form, ...res };
             dispatch(setFormReducer(_form));
             setIsPublishModal(true);
             setPublishUrl(`/website/${id}`);
             toast.success('Website published successfully');
             setIsPublish(false);
-          } 
+          }
         });
       }
     };
   }, [ispreview, ispublish]);
 
-  useEffect(()=>{
-    if(page){
+  useEffect(() => {
+    if (page) {
       setIsLoading(true);
-      dispatch(getPageAction(page._id)).then((res)=>{
-        if(res){
+      dispatch(getPageAction(page._id)).then((res) => {
+        if (res) {
           setIsLoading(false);
-          if(editor){
+          if (editor) {
             editor.setComponents(res);
           };
-        }  
+        }
       })
     }
   }, [page?._id])
@@ -897,7 +895,7 @@ export default function Editor({
           options={{ suppressScrollX: true }}
           style={{ height: `calc(100vh - 120px)` }}
         >
-         <Collapse isOpen={sidebarData.isOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{height: '100%'}}>
+          <Collapse isOpen={sidebarData.isOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{ height: '100%' }}>
             <div className="expanded-header">
               <span>{sidebarData.menu.name}</span>
               <div>
@@ -929,7 +927,7 @@ export default function Editor({
                           }}
                         >
                           <div
-                            style={{width: 30, height: 30}}
+                            style={{ width: 30, height: 30 }}
                             dangerouslySetInnerHTML={{ __html: block.getMedia() }}
                           />
                           <div
@@ -942,84 +940,121 @@ export default function Editor({
                       ))}
                     </div>
                   ) : (
-                    <div className='submenu-and-element d-flex'>
-                      <div className="submenu-list">
-                        {
-                          sidebarData?.menu?.subMenu?.map(sub => {
-                            const categories = [];
-                            const tempBlocks = [];
-                            editor?.BlockManager.blocks.map((e) => {
-                              if (e.get('menu') === `${sidebarData.menu.id}-${sub.id}` && categories.findIndex(c => c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`) === -1) {
-                                categories.push(`${sidebarData.menu.id}-${sub.id}-${e.get('label')}`);
-                                tempBlocks.push(e);
-                              }
-                            });
-                            
-                            const returnComponent = <>
-                              <h5 className='submenu-item'>{sub.name}</h5>
-                              {
-                                tempBlocks.map(b => {
-                                  return (
-                                    <div
-                                      className={selectedCategory === `${sidebarData.menu.id}-${sub.id}-${b.get('label')}` ? 'selected-submenu-category' : 'submenu-category'}
-                                      onClick={() => {setSelectedCategory(`${sidebarData.menu.id}-${sub.id}-${b.get('label')}`)}}
-                                      >
-                                      {b.get('label')}
-                                    </div>
-                                  );
-                                })
-                              }
-                            </>
-                            return returnComponent;
-                          })
-                        }
-                      </div>
-                      <div className="element-container">
-                        {
-                          blockManager?.blocks?.filter(e => e.get('category').id === selectedCategory).map(b => {
-                            return (
-                              <div className="element">
-                                <img width="280" src={b.get('media')} />
-                                <div
-                                  draggable
-                                  onDragStart={(e) => {
-                                    e.stopPropagation();
-                                    blockManager.dragStart(b, e.nativeEvent);
-                                  }}
-                                  onDragEnd={(e) => {
-                                    e.stopPropagation();
-                                    blockManager.dragStop(false);
-                                  }}
-                                >
+                    sidebarData.menu.id === 'store' ? (
+                      <div className="store-add">
+                        {editor?.BlockManager.blocks.filter(e => e.get('category') === 'Store').map((block) => (
+                          <div
+                            key={block.getId()}
+                            draggable
+                            className='store-item cursor-pointer'
+                            onDragStart={(ev) => {
+                              ev.stopPropagation();
+                              blockManager.dragStart(block, ev.nativeEvent);
+                            }}
+                            onDragEnd={(ev) => {
+                              ev.stopPropagation();
+                              blockManager.dragStop(false);
+                            }}
+                          >
+                            {/* <div
+                              style={{ width: 30, height: 30 }}
+                              dangerouslySetInnerHTML={{ __html: block.getMedia() }}
+                            /> */}
+                            <div
+                              className="text-sm w-full mt-1"
+                              title={block.getLabel()}
+                            >
+                              {block.getLabel()}
+                              <span class="info-icon-tooltip">
+                                <svg width="18" height="18" preserveAspectRatio="xMidYMid" viewBox="1.5 1.5 18 18" class="symbol symbol-infoIcon"><g id="infoIconSvg"><circle cx="10.5" cy="10.5" r="8" fill="transparent"></circle><path id="path-1" fill-rule="evenodd" d="M10.5 19.5a9 9 0 01-9-9 9 9 0 019-9 9 9 0 019 9 9 9 0 01-9 9zm-8-9c0 4.411 3.589 8 8 8s8-3.589 8-8-3.589-8-8-8-8 3.589-8 8zm10 5h-4l1-2v-3h-1l1-2h2v5l1 2zm-3-10h2v2h-2v-2z"></path></g></svg>
+                                <div className='tooltip-content'>
+                                  <div className='tooltip-title'>{block.getLabel()}</div>
+                                  <div className='tooltip-text'>{block.getContent().text}</div>
                                 </div>
-                              </div>);
-                          })
-                        }
+                              </span>
+                            </div>
+                            <img src={`/assets/images/elements/${block.getMedia()}.png`} style={{ marginLeft: "14px", marginRight: "14px" }} />
+                          </div>
+                        ))}
                       </div>
-                    </div>
+                    ) : (
+                      <div className='submenu-and-element d-flex'>
+                        <div className="submenu-list">
+                          {
+                            sidebarData?.menu?.subMenu?.map(sub => {
+                              const categories = [];
+                              const tempBlocks = [];
+                              editor?.BlockManager.blocks.map((e) => {
+                                if (e.get('menu') === `${sidebarData.menu.id}-${sub.id}` && categories.findIndex(c => c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`) === -1) {
+                                  categories.push(`${sidebarData.menu.id}-${sub.id}-${e.get('label')}`);
+                                  tempBlocks.push(e);
+                                }
+                              });
+
+                              const returnComponent = <>
+                                <h5 className='submenu-item'>{sub.name}</h5>
+                                {
+                                  tempBlocks.map(b => {
+                                    return (
+                                      <div
+                                        className={selectedCategory === `${sidebarData.menu.id}-${sub.id}-${b.get('label')}` ? 'selected-submenu-category' : 'submenu-category'}
+                                        onClick={() => { setSelectedCategory(`${sidebarData.menu.id}-${sub.id}-${b.get('label')}`) }}
+                                      >
+                                        {b.get('label')}
+                                      </div>
+                                    );
+                                  })
+                                }
+                              </>
+                              return returnComponent;
+                            })
+                          }
+                        </div>
+                        <div className="element-container">
+                          {
+                            blockManager?.blocks?.filter(e => e.get('category').id === selectedCategory).map(b => {
+                              return (
+                                <div className="element">
+                                  <img width="280" src={b.get('media')} />
+                                  <div
+                                    draggable
+                                    onDragStart={(e) => {
+                                      e.stopPropagation();
+                                      blockManager.dragStart(b, e.nativeEvent);
+                                    }}
+                                    onDragEnd={(e) => {
+                                      e.stopPropagation();
+                                      blockManager.dragStop(false);
+                                    }}
+                                  >
+                                  </div>
+                                </div>);
+                            })
+                          }
+                        </div>
+                      </div>
+                    )
                   )
                 }
-                
-                
               </div>
             </div>
           </Collapse>
         </PerfectScrollbar>
       </div>
       <div className="w-100 border">
-        {isLoading ?      <div className="d-flex  justify-content-center mb-2 mt-2" style={{position:'absolute', top:"50%", left:"50%", zIndex:10}}>
-            <Spinner color="secondary">Loading...</Spinner>
-          </div>:<></>}
+        {isLoading ? <div className="d-flex  justify-content-center mb-2 mt-2" style={{ position: 'absolute', top: "50%", left: "50%", zIndex: 10 }}>
+          <Spinner color="secondary">Loading...</Spinner>
+        </div> : <></>}
 
         <div id="editor"></div>
       </div>
-      <div className="property-sidebar" style={{display:rsidebarOpen?'block':'none'}}>
-      <PerfectScrollbar
-        className="scrollable-content"
-        options={{ suppressScrollX: true }}
-        style={{ height: `calc(100vh - 120px)` }}
-      >
-            <div className="sidebar-header px-1">
+      <div className="property-sidebar" style={{ display: rsidebarOpen ? 'block' : 'none' }}>
+        <PerfectScrollbar
+          className="scrollable-content"
+          options={{ suppressScrollX: true }}
+          style={{ height: `calc(100vh - 120px)` }}
+        >
+          <div className="sidebar-header px-1">
             <span className="px-1 fs-5 fw-bolder text-black">{tab}</span>
             <span>
               <X
@@ -1030,28 +1065,28 @@ export default function Editor({
               />
             </span>
           </div>
-              <div style={{display:tab==='Styles'?'block':'none'}}>
-                  <div id="selector-manager-container" />
-                  <div id="style-manager-container" />
-                </div>
-              <div style={{display:tab==='Layers'?'block':'none'}}>
-                <div id="layer-manager-container" />  
-              </div>
-              <div style={{display:tab==='Traits'?'block':'none'}}>
-                <div id="trait-manager-container" />
-              </div>
-              <div style={{display:tab==='Pages'?'block':'none'}}>
-                <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} page={page} setPage={setPage}/>
-              </div>
+          <div style={{ display: tab === 'Styles' ? 'block' : 'none' }}>
+            <div id="selector-manager-container" />
+            <div id="style-manager-container" />
+          </div>
+          <div style={{ display: tab === 'Layers' ? 'block' : 'none' }}>
+            <div id="layer-manager-container" />
+          </div>
+          <div style={{ display: tab === 'Traits' ? 'block' : 'none' }}>
+            <div id="trait-manager-container" />
+          </div>
+          <div style={{ display: tab === 'Pages' ? 'block' : 'none' }}>
+            <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} page={page} setPage={setPage} />
+          </div>
         </PerfectScrollbar>
       </div>
       <ImportModal editor={editor} setEditor={setEditor} open={open} toggle={toggle} />
-      <PublishModal publishUrl={publishUrl} isOpen={isPublishModal} toggle={togglePublish}/>
+      <PublishModal publishUrl={publishUrl} isOpen={isPublishModal} toggle={togglePublish} />
       <AddElementModal editor={editor} setEditor={setEditor} openAddElementMdl={openAddElementMdl} setOpenAddElementMdl={setOpenAddElementMdl} />
-      <RenameModal store={store} isOpen={renameMdl} toggle={_toggleRename}/>
-      <CreateFormModal open={createMdl} store={store} dispatch={dispatch}/>
-      <DuplicateModal store={store} isOpen={duplicateMdl} toggle={_toggleDuplicate}/>
-      <InvitationModal store={store} isOpen={isinvite} toggle={setIsInvite}/>
+      <RenameModal store={store} isOpen={renameMdl} toggle={_toggleRename} />
+      <CreateFormModal open={createMdl} store={store} dispatch={dispatch} />
+      <DuplicateModal store={store} isOpen={duplicateMdl} toggle={_toggleDuplicate} />
+      <InvitationModal store={store} isOpen={isinvite} toggle={setIsInvite} />
     </div>
   );
 }

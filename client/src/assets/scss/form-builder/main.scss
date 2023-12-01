@@ -1,6 +1,7 @@
 // // This is style to overwrite grapesjs default styles
 // // Please DO NOT import it anywhere else
 @import '../../../@core//scss//base/bootstrap-extended/variables';
+
 .gjs-cv-canvas {
   /* remove the right gap */
   width: 100%;
@@ -10,19 +11,21 @@
   top: 0;
   overflow-x: hidden;
 }
-.gjs-one-bg{
+
+.gjs-one-bg {
   background-color: white;
 }
+
 .gjs-title {
   display: none;
 }
+
 .gjs-two-color,
 .gjs-input-holder input,
 .gjs-clm-tags-field,
 .gjs-select,
-.gjs-layer-vis
-{
-  color:$gray-700
+.gjs-layer-vis {
+  color: $gray-700
 }
 
 .gjs-clm-tags-c,
@@ -34,60 +37,68 @@
 .gjs-clm-sels-info,
 #gjs-clm-add-tag,
 .gjs-layer-count,
-.gjs-layer-move
-{
-  color:$gray-700;
+.gjs-layer-move {
+  color: $gray-700;
   font-family: Arial, Helvetica, sans-serif;
 }
-.gjs-clm-sel{
+
+.gjs-clm-sel {
   font-size: 12px;
-  .gjs-clm-sel-id{
+
+  .gjs-clm-sel-id {
     opacity: 1;
   }
 }
 
-#gjs-clm-tag-label{
+#gjs-clm-tag-label {
   color: white;
 }
+
 .gjs-layer-name,
-.gjs-sm-sector-label{
+.gjs-sm-sector-label {
   font-weight: 900;
 }
-.gjs-field{
+
+.gjs-field {
   background-color: white;
   border: 1px solid $gray-200;
-  color:$gray-700;
-
-}
-.gjs-input-holder > input[type='text'],
-#gjs-sm-input-holder > select{
-  color:$gray-700;
+  color: $gray-700;
 
 }
 
-.gjs-sm-label{
-  color:$gray-700;
+.gjs-input-holder>input[type='text'],
+#gjs-sm-input-holder>select {
+  color: $gray-700;
+
+}
+
+.gjs-sm-label {
+  color: $gray-700;
   font-weight: 900;
 
 }
-.gjs-sm-sector{
+
+.gjs-sm-sector {
+
   .gjs-sm-sector-title,
-  .gjs-radio-item{
-    color:$gray-700;
+  .gjs-radio-item {
+    color: $gray-700;
   }
 }
+
 .gjs-layer-title {
   background-color: white;
   color: $gray-700;
   font-size: 12px;
-  padding:5px
+  padding: 5px
 }
 
-.gjs-trt-traits{
+.gjs-trt-traits {
   color: $gray-700;
   padding-top: 15px;
 }
-.gjs-label-wrp{
+
+.gjs-label-wrp {
   color: $gray-700;
 }
 
@@ -99,14 +110,17 @@
   width: fit-content;
   padding-left: 3px;
 }
+
 .gjs-blocks-cs {
   width: 100%;
   color: $gray-700;
 }
+
 .gjs-blocks-c {
   justify-content: start !important;
   flex-wrap: nowrap !important;
 }
+
 .gjs-block {
   border: none;
   display: inline-flex;
@@ -121,28 +135,35 @@
   flex-direction: row;
   padding: 5px;
 }
+
 .gjs-caret-icon {
   display: none;
 }
+
 .gjs-block__media {
   display: inline-block !important;
   width: 25px;
   height: 25px;
   margin: 0;
 }
-.gjs-clm-tags #gjs-clm-new{
+
+.gjs-clm-tags #gjs-clm-new {
   color: $gray-700;
   font-weight: 900;
 }
+
 #blocks {
   width: 100%;
 }
+
 .add-more-element {
   cursor: pointer;
 }
+
 .add-new-element {
   cursor: pointer;
 }
+
 .add-new-column {
   cursor: pointer;
 }
@@ -150,6 +171,7 @@
 .backdrop {
   background-color: #06103371;
 }
+
 //-------------------------------------- FROM MY MEMBER -------------------------------------
 // .main_appbar {
 //   margin: 0;
@@ -364,6 +386,7 @@ $layout-padding: 18px;
   .action-icon {
     color: white;
   }
+
   .check-icon {
     display: flex;
   }
@@ -439,10 +462,12 @@ $layout-padding: 18px;
     outline: none;
     //outline-color: gray;
   }
+
   .gjs-badge {
     background: transparent;
   }
 }
+
 .gjs-editor-cont.Body-selected {
   .gjs-toolbar {
     display: none;
@@ -475,6 +500,7 @@ $layout-padding: 18px;
     outline: none;
     //outline-color: gray
   }
+
   .gjs-badge {
     display: none !important;
   }
@@ -487,6 +513,7 @@ $layout-padding: 18px;
 .gjs-rte-toolbar {
   background-color: #061033;
 }
+
 .gjs-rte-actionbar {
   color: #f1efef !important;
 }
@@ -525,6 +552,7 @@ $layout-padding: 18px;
 
 .Layout-Drag,
 .Layout-selected {
+
   .gjs-placeholder.horizontal,
   .gjs-com-placeholder.horizontal,
   .gjs-placeholder.horizontal {
@@ -550,6 +578,7 @@ $layout-padding: 18px;
 
 .Column-Drag,
 .Column-selected {
+
   .gjs-placeholder.horizontal,
   .gjs-com-placeholder.horizontal,
   .gjs-placeholder.horizontal {
@@ -595,32 +624,97 @@ $layout-padding: 18px;
 .mini-calender .fc-view-harness-active {
   min-height: 400px !important;
 }
+
 .mini-calender .fc-scrollgrid-liquid {
   border: 1px solid #ddd !important;
 }
+
 .mini-calender .fc-scrollgrid-sync-table {
   width: 440px !important;
   height: 400px !important;
 }
+
 .mini-calender .fc-header-toolbar {
   margin-bottom: 0.5em;
   font-size: 12px !important;
-} 
+}
 
-.image-library{
+.image-library {
   height: 500px;
   overflow: scroll;
   overflow-x: hidden;
 }
 
-.image-library::-webkit-scrollbar
-{
-	width: 6px;
-	background-color: #F5F5F5;
+.image-library::-webkit-scrollbar {
+  width: 6px;
+  background-color: #F5F5F5;
 }
 
-.image-library::-webkit-scrollbar-thumb
-{
-	background-color: #949494;
+.image-library::-webkit-scrollbar-thumb {
+  background-color: #949494;
 }
 
+.store-add {
+  .store-item {
+    >.text-sm {
+      display: flex;
+      justify-content: space-between;
+      margin-left: 24px;
+      margin-right: 24px;
+
+      .info-icon-tooltip {
+        display: none;
+        position: relative;
+
+        svg {
+          fill: #868aa5;
+        }
+
+        .tooltip-content {
+          display: none;
+        }
+      }
+    }
+
+    &:hover {
+      .info-icon-tooltip {
+        display: block;
+
+        svg {
+          fill: #868aa5;
+        }
+
+        &:hover {
+
+          svg {
+            fill: #000;
+          }
+
+          .tooltip-content {
+            display: block;
+            position: absolute;
+            max-width: 240px;
+            z-index: 5999;
+            border-radius: 4px;
+            box-shadow: 0 0 12px 0 rgba(19, 23, 32, 0.2);
+            background-color: #fff;
+            padding: 16px;
+            left: -260px;
+            top: -200%;
+
+            .tooltip-title {
+              font-size: 14px;
+              color: rgb(19, 23, 32);
+            }
+
+            .tooltip-text {
+              font-size: 12px;
+              color: rgb(66, 69, 76);
+              margin-top: 15px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
