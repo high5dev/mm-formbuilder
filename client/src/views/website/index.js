@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import {Input} from 'reactstrap'
 import { Modal } from 'reactstrap';
-import {getPreviewPageAction, getPublishPageAction} from "../formBuilder/store/action";
+import {getPreviewPageAction, getPublishPageAction, getPreviewBlogPageAction, getPublishBlogPageAction} from "../formBuilder/store/action";
 import renderHTML from 'react-render-html';
 import { BiMobile } from 'react-icons/bi';
 import {
@@ -26,7 +26,7 @@ const days = [
 import { Helmet } from 'react-helmet';
 
 export default function Index() {
-  const {id, pageName}=useParams();
+  const {id, pageName, blogId}=useParams();
   const history=useHistory();
   const [pageContent, setPageContent]=useState();
   const [popupData, setPopupData] = useState([]);
@@ -36,28 +36,66 @@ export default function Index() {
   const store=useSelector((state) => state.formEditor);
   useEffect(()=>{
     let name;
-    if(pageName){
-      name=pageName;
-    }
-    else{
-      name="Home";  
-    };
-    const payload={id, pageName:name};
-    const linkUrl=store.linkUrl;
-    if(!linkUrl || linkUrl === 'website'){
-      dispatch(getPublishPageAction(payload)).then((res)=>{
-          setPageContent(res.data);
-          setPopupData(res.pageInfo.popups || []);
-          setPageInfo(res.pageInfo);
-      })
-    }
-    if(linkUrl === 'preview'){
-      dispatch(getPreviewPageAction(payload)).then((res)=>{
-          setPageContent(res.data);
-          setPopupData(res.pageInfo.popups || []);
-          setPageInfo(res.pageInfo);
-      })
-    };
+      if(pageName){
+        name=pageName;
+      }
+      else{
+        name="Home";  
+      };
+      const payload={id, pageName:name};
+      const linkUrl=store.linkUrl;
+      if(!linkUrl || linkUrl === 'website'){
+        if(blogId){
+          const payload={id, blogId};
+          dispatch(getPublishBlogPageAction(payload)).then((res)=>{
+            setPageContent(res);
+          });
+        }
+        else{
+          dispatch(getPublishPageAction(payload)).then((res)=>{
+            const parser = new DOMParser();
+            let htmlCmp = parser.parseFromString(res, 'text/html');
+            let linkElements=htmlCmp.getElementsByTagName('a');
+            for(let i=0; i<linkElements.length; i++){
+              let link_href=linkElements[i].getAttribute('href');
+              if(!link_href.includes('https') || !link_href.includes('http') ||!link_href.includes('preview') || !link_href.includes('website')){
+                link_href='/website'+link_href;
+              }
+              linkElements[i].setAttribute('href', link_href);
+            };
+            var tmp = document.createElement("div");
+            tmp.append(htmlCmp.body)
+            setPageContent(tmp.innerHTML);
+          });
+        }
+      }
+      if(linkUrl === 'preview'){
+        if(blogId){
+          console.log('blogId', blogId)
+          const payload={id, blogId};
+          dispatch(getPreviewBlogPageAction(payload)).then((res) =>{
+            setPageContent(res);
+          })
+        }
+        else{
+          dispatch(getPreviewPageAction(payload)).then((res)=>{
+            const parser = new DOMParser();
+            let htmlCmp = parser.parseFromString(res, 'text/html');
+            let linkElements=htmlCmp.getElementsByTagName('a');
+            for(let i=0; i<linkElements.length; i++){
+              let link_href=linkElements[i].getAttribute('href');
+              if(!link_href.includes('https') || !link_href.includes('http') ||!link_href.includes('preview') || !link_href.includes('website')){
+                link_href='/preview'+link_href;
+              }
+              linkElements[i].setAttribute('href', link_href )
+            };
+            var tmp = document.createElement("div");
+            tmp.append(htmlCmp.body)
+            setPageContent(tmp.innerHTML); 
+          })
+        }
+      };
+
   }, []);
 
   useEffect(() =>{

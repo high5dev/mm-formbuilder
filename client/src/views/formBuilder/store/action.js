@@ -8,7 +8,8 @@ import {
   setFormCategoriesReducer,
   setFormOrderElementsReducer,
   setFormProductsReducer,
-  setWebElementsReducer
+  setWebElementsReducer,
+  setWebBlogsReducer
 } from './reducer';
 import * as api from './api';
 import { toast } from 'react-toastify';
@@ -153,7 +154,7 @@ export const getPublishPageAction =(payload) =>async(dispatch) =>{
     const {data} = await api.getPublishPage(payload);
     console.log('data.data', data.data);
     if(data?.success === true){
-      return data
+      return data.data
     }
     else{
       toast.error('Something went wrong! please try again');
@@ -163,11 +164,39 @@ export const getPublishPageAction =(payload) =>async(dispatch) =>{
   }
 } 
 
+export const getPreviewBlogPageAction =(payload) =>async(dispatch) =>{
+  try{
+    const {data} = await api.getPreviewBlogPage(payload);
+    if(data?.success === true){
+      return data.data
+    }
+    else{
+      toast.error('Something went wrong! please try again');
+    }
+  }
+  catch(error){
+  }
+}
+
+export const getPublishBlogPageAction =(payload) =>async(dispatch) =>{
+  try{
+    const {data} = await api.getPublishBlogPage(payload);
+    if(data?.success === true){
+      return data.data
+    }
+    else{
+      toast.error('Something went wrong! please try again');
+    }
+  }
+  catch(error){
+  }
+}
+
 export const getPreviewPageAction =(payload) =>async(dispatch) =>{
   try{
     const {data} = await api.getPreviewPage(payload);
     if(data?.success === true){
-      return data
+      return data.data
     }
     else{
       toast.error('Something went wrong! please try again');
@@ -315,6 +344,66 @@ export const addLeadAction = (id, payload) => async (dispatch) => {
     // }
   } catch (error) { }
 };
+
+
+//blog actions
+
+export const getBlogsAction= () =>async(dispatch) =>{
+  try{
+    const {data} = await api.getWebBlogs();
+    if(data){
+      dispatch(setWebBlogsReducer(data.data));
+      return data.data;
+    }
+  }
+  catch(error)
+  { 
+  } 
+}
+
+export const createBlogAction =(payload) =>async (dispatch) => {
+ try{
+   const {data}= await api.createBlog(payload);
+   if (data?.success) {
+    toast.success('Blog created successfully!');
+    return data.data;
+  } else {
+    toast.error('Something went wrong! Please try again!');
+  }
+ }
+ catch(error){
+
+ }
+}
+
+export const deleteBlogAction =(id) =>async (dispatch) =>{
+  try {
+    const { data } = await api.deleteBlog(id);;
+    if (data?.success) {
+      toast.success('Blog deleted successfully');
+      return id;
+    } else {
+      toast.error('Something went wrong! Please try again!');
+    }
+  } catch (error) { }
+}
+
+export const updateBlogAction= (id, payload) =>async(dispatch) =>{
+  try{
+    const {data} =await api.updateBlog(id, payload);
+    if(data?.success){
+      toast.success('Blog updated successfully');
+      return data.data;
+    }
+    else{
+      toast.error('Something went wrong! Please try again!');
+    }
+  }
+  catch(error){
+
+  }
+}
+
 
 export const addToImageLibraryAction = (payload) => async (dispatch) => {
   try {

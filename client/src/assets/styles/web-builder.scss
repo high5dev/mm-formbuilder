@@ -257,16 +257,6 @@
   }
 }
 
-.role-item{
-  margin-bottom: 10px;
-  .rolename{
-    margin-left: 5px;
-  }
-  .role-description{
-    padding-left: 20px;
-  }
-}
-
 #blocks{
   height: 100%;
   .gjs-blocks-c{
@@ -308,14 +298,18 @@
   }
   .submenu-list {
     min-width: 150px;
-    height: 100%;
     padding-top: 10px;
     .submenu-item {
+      padding:5px;
       color: black;
-      font-weight: bold;
-      margin-top: 8px;
-      margin-bottom: 7px;
+      font-weight:600;
+      margin-top: 10px;
+      margin-bottom: 10px;
       margin-left: 15px;
+      &:hover{
+        cursor: pointer;
+        background-color: lightgray;
+      }
     }
     .submenu-category {
       color: black;
@@ -496,35 +490,6 @@
   margin-bottom: 5px;
 }
 
-.trait-cycle-select, .trait-start-time-input, .trait-end-time-input, .trait-time-zone-select, .trait-end-date-input, .popup-page-select, .monthly-day-input {
-  border: 1px solid grey !important;
-  border-radius: 3px;
-  margin-bottom: 3px;
-  font-size: 12px;
-}
 
-.trait-popup-start-time {
-  margin-right: 5px;
-}
 
-.trait-popup-end-time {
-  margin-left: 5px;
-}
 
-.rule-section {
-  margin-top: 10px;
-  font-size: 13px;
-  font-weight: bold ;
-}
-
-.rule-sub-section {
-  margin-top: 2px;
-  margin-bottom: 2px;
-  font-size: 12px;
-}
-
-.popup-rule-day-checkbox, .form-check {
-  margin-right: 10px;
-  margin-top: 2px;
-  margin-bottom: 2px;
-}
