@@ -39,4 +39,12 @@ export const blocks = [
     media: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="pop-up"><path d="M21,2H7A1,1,0,0,0,6,3V6H3A1,1,0,0,0,2,7V21a1,1,0,0,0,1,1H17a1,1,0,0,0,1-1V18h3a1,1,0,0,0,1-1V3A1,1,0,0,0,21,2ZM16,20H4V8H6v9a1,1,0,0,0,1,1h9Zm4-4H8V4H20ZM11,7a1,1,0,0,1,1-1h5a1,1,0,0,1,1,1v5a1,1,0,0,1-2,0V8H12A1,1,0,0,1,11,7Z" data-name="57 Pop Up"></path></svg>`,
     category: 'Basic',
   },
+  {
+    id: 'count-down',
+    label: 'Count Down',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'count-down' },
+    media: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" id="countdown-timer"><g data-name="Layer 10"><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.91 7.81h0a8.7 8.7 0 00-1.51-.87M25.83 18.59a9.87 9.87 0 01-.59 1.63M16.17 26a10 10 0 010-20M21.91 24.19h0a8.7 8.7 0 01-1.51.87M25.83 13.41a9.87 9.87 0 00-.59-1.63h0"></path><polyline fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="19 18.83 16.17 16 16.17 12"></polyline></g></svg>`,
+    category: 'Basic',
+  },
 ];
