@@ -9,10 +9,22 @@ import { customSectors, customProperties } from "./CustomStyles";
 import * as api from '../../store/api'
 import socialBar from "./socialBar/socialBar";
 import socialLink from "./traits/socialLink";
+import postLarge from "../elements/blog/postlarge/postlarge";
+import postCard from "../elements/blog/postcard/postcard";
+import postSidebar from "../elements/blog/postsidebar/postsidebar";
+import recentPost from "../elements/blog/recentpost/recentpost";
+import categoryMenu from "../elements/blog/categorymenu/categorymenu";
+import archiveMenu from "../elements/blog/archive/archive";
+import yellowButton from "../elements/blog/rss/yellowButton";
+import blackButton from "./blog/rss/blackButton";
+import grayButton from "../elements/blog/rss/grayButton";
+import blackoutlineButton from "./blog/rss/blackoutlineButton";
+import grayoutlineButton from "../elements/blog/rss/grayoutlineButton";
 import countDown from "./countdown/countdown";
 import popup from "./popup/popup";
 import gridproductgallery from "./gridproductgallery/gridproductgallery";
 import productItem from "./gridproductgallery/productItem";
+
 
 const testImageUrls = [
   'https://i.ibb.co/ZWnZPqr/tiktok.png',
@@ -30,6 +42,17 @@ export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('repeater', repeater);
   editor.DomComponents.addType('gallery-item', galleryItem);
   editor.DomComponents.addType('gallery', gallery);
+  editor.DomComponents.addType('post-list-large', postLarge);
+  editor.DomComponents.addType('post-card-large', postCard);
+  editor.DomComponents.addType('post-list-sidebar', postSidebar);
+  editor.DomComponents.addType('recent-post', recentPost);
+  editor.DomComponents.addType('category-menu', categoryMenu);
+  editor.DomComponents.addType('archive-menu', archiveMenu);
+  editor.DomComponents.addType('rss-yellow-button', yellowButton);
+  editor.DomComponents.addType('rss-black-button', blackButton);
+  editor.DomComponents.addType('rss-gray-button', grayButton);
+  editor.DomComponents.addType('rss-outline-black-button', blackoutlineButton);
+  editor.DomComponents.addType('rss-outline-gray-button', grayoutlineButton);
   editor.DomComponents.addType('count-down', countDown);
   editor.DomComponents.addType('popup', popup);
   editor.TraitManager.addType('image-url', {
@@ -586,13 +609,7 @@ export const webBuilderPlugin = (editor) => {
   //   }
   // });
 
-  // editor.on(`canvas:drop`, (a, b) => {
-  //   console.log('aaaaaaaaaaaaa------------', a, b)
-  // });
 
-  editor.on(`block:drag:stop`, (component, block) => {
-    console.log('drag stop-----------------------', component);
-  });
 
   editor.on(`component:update:numOfItems`, (model) => {
     if (model.get('type') === 'repeater') {

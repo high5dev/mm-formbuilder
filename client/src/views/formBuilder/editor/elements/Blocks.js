@@ -32,15 +32,94 @@ export const blocks = [
     category: 'Basic',
   },
   {
-    id: 'popup',
-    label: 'Pop up',
+    id: 'post-list-large',
+    label: 'Post List(Large)',
     attributes: { class: 'fa fa-text' },
-    content: { type: 'popup' },
-    media: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="pop-up"><path d="M21,2H7A1,1,0,0,0,6,3V6H3A1,1,0,0,0,2,7V21a1,1,0,0,0,1,1H17a1,1,0,0,0,1-1V18h3a1,1,0,0,0,1-1V3A1,1,0,0,0,21,2ZM16,20H4V8H6v9a1,1,0,0,0,1,1h9Zm4-4H8V4H20ZM11,7a1,1,0,0,1,1-1h5a1,1,0,0,1,1,1v5a1,1,0,0,1-2,0V8H12A1,1,0,0,1,11,7Z" data-name="57 Pop Up"></path></svg>`,
-    category: 'Basic',
+    content: { type: 'post-list-large' },
+    media: `https://i.ibb.co/6br0NxL/1.png`,
+    category: 'blog'
   },
   {
-    id: 'count-down',
+    id: 'post-card-large',
+    label: 'Post List(Large)',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'post-card-large' },
+    media: `https://i.ibb.co/j34rmMk/3.png`,
+    category: 'blog'
+  },
+  {
+    id: 'post-list-sidebar',
+    label: 'Post List(Sidebar)',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'post-list-sidebar' },
+    media: `https://i.ibb.co/TTs2tXk/2.png`,
+    category: 'blog'
+  },
+  {
+    id: 'recent-post',
+    label: 'Recent Posts',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'recent-post' },
+    media: `https://i.ibb.co/j34rmMk/3.png`,
+    category: 'blog'
+  },
+  {
+    id: 'category-menu',
+    label: 'Category Menu',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'category-menu' },
+    media: `https://i.ibb.co/hBk6hBb/4.png`,
+    category: 'blog'
+  },
+  {
+    id: 'archive',
+    label: 'Archive',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'archive-menu' },
+    media: `https://i.ibb.co/HG7zbgb/5.png`,
+    category: 'blog'
+  },
+  {
+    id: 'rss button yellow',
+    label: 'RSS Button',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'rss-yellow-button' },
+    media: `https://i.ibb.co/CBwqT6V/rss.png`,
+    category: 'blog'
+  },
+  {
+    id: 'rss button black',
+    label: 'RSS Button',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'rss-black-button' },
+    media: `https://i.ibb.co/jH2JzG3/rss-1.png`,
+    category: 'blog'
+  },
+  {
+    id: 'rss button gray',
+    label: 'RSS Button',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'rss-gray-button' },
+    media: `https://i.ibb.co/VBQS6m8/rss-2.png`,
+    category: 'blog'
+  },
+  {
+    id: 'rss button outline black',
+    label: 'RSS Button',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'rss-outline-black-button' },
+    media: `https://i.ibb.co/z7Nh9Cx/rss-3.png`,
+    category: 'blog'
+  },
+  {
+    id: 'rss button outline gray',
+    label: 'RSS Button',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'rss-outline-gray-button' },
+    media: `https://i.ibb.co/JQqFgcX/rss-4.png`,
+    category: 'blog'
+  },
+ {id: 'count-down',
     label: 'Count Down',
     attributes: { class: 'fa fa-text' },
     content: { type: 'count-down' },

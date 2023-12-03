@@ -170,10 +170,13 @@ const SocialProofDisplayUrl = require("../SocialProofDisplayUrl");
 // //employeeActivityLog
 // const EmployeeActivityLog = require("../EmployeeActivityLog");
 
+const WebBlog = require("../WebBlog");
 const WebBuilder = require("../WebBuilder");
 const WebPage = require("../WebPage");
 const WebBuilderElement = require("../WebBuilderElement");
 const WebBuilderElementCategory = require("../WebElementCategory");
+const WebSiteCollection = require("../WebSiteCollection");
+const WebSiteDataSet = require("../WebSiteDataSet");
 
 const models = {
   Authenticate,
@@ -333,10 +336,13 @@ const models = {
   // TournamentEvent,
   // Division,
   // Tournament,
+  WebBlog,
   WebBuilder,
   WebPage,
   WebBuilderElement,
   WebBuilderElementCategory,
+  WebSiteCollection,
+  WebSiteDataSet,
 };
 
 module.exports = models;

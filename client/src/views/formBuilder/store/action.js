@@ -8,7 +8,10 @@ import {
   setFormCategoriesReducer,
   setFormOrderElementsReducer,
   setFormProductsReducer,
-  setWebElementsReducer
+  setWebElementsReducer,
+  setWebCollectionsReducer,
+  setWebDatasetsReducer,
+  setWebBlogsReducer
 } from './reducer';
 import * as api from './api';
 import { toast } from 'react-toastify';
@@ -153,7 +156,7 @@ export const getPublishPageAction =(payload) =>async(dispatch) =>{
     const {data} = await api.getPublishPage(payload);
     console.log('data.data', data.data);
     if(data?.success === true){
-      return data
+      return data.data
     }
     else{
       toast.error('Something went wrong! please try again');
@@ -163,11 +166,39 @@ export const getPublishPageAction =(payload) =>async(dispatch) =>{
   }
 } 
 
+export const getPreviewBlogPageAction =(payload) =>async(dispatch) =>{
+  try{
+    const {data} = await api.getPreviewBlogPage(payload);
+    if(data?.success === true){
+      return data.data
+    }
+    else{
+      toast.error('Something went wrong! please try again');
+    }
+  }
+  catch(error){
+  }
+}
+
+export const getPublishBlogPageAction =(payload) =>async(dispatch) =>{
+  try{
+    const {data} = await api.getPublishBlogPage(payload);
+    if(data?.success === true){
+      return data.data
+    }
+    else{
+      toast.error('Something went wrong! please try again');
+    }
+  }
+  catch(error){
+  }
+}
+
 export const getPreviewPageAction =(payload) =>async(dispatch) =>{
   try{
     const {data} = await api.getPreviewPage(payload);
     if(data?.success === true){
-      return data
+      return data.data
     }
     else{
       toast.error('Something went wrong! please try again');
@@ -315,6 +346,66 @@ export const addLeadAction = (id, payload) => async (dispatch) => {
     // }
   } catch (error) { }
 };
+
+
+//blog actions
+
+export const getBlogsAction= () =>async(dispatch) =>{
+  try{
+    const {data} = await api.getWebBlogs();
+    if(data){
+      dispatch(setWebBlogsReducer(data.data));
+      return data.data;
+    }
+  }
+  catch(error)
+  { 
+  } 
+}
+
+export const createBlogAction =(payload) =>async (dispatch) => {
+ try{
+   const {data}= await api.createBlog(payload);
+   if (data?.success) {
+    toast.success('Blog created successfully!');
+    return data.data;
+  } else {
+    toast.error('Something went wrong! Please try again!');
+  }
+ }
+ catch(error){
+
+ }
+}
+
+export const deleteBlogAction =(id) =>async (dispatch) =>{
+  try {
+    const { data } = await api.deleteBlog(id);;
+    if (data?.success) {
+      toast.success('Blog deleted successfully');
+      return id;
+    } else {
+      toast.error('Something went wrong! Please try again!');
+    }
+  } catch (error) { }
+}
+
+export const updateBlogAction= (id, payload) =>async(dispatch) =>{
+  try{
+    const {data} =await api.updateBlog(id, payload);
+    if(data?.success){
+      toast.success('Blog updated successfully');
+      return data.data;
+    }
+    else{
+      toast.error('Something went wrong! Please try again!');
+    }
+  }
+  catch(error){
+
+  }
+}
+
 
 export const addToImageLibraryAction = (payload) => async (dispatch) => {
   try {
@@ -486,6 +577,57 @@ export const createWebElementAction = (payload) => async (dispatch) => {
     const { data } = await api.createWebElement(payload);
     if (data.success)
       dispatch(getWebElementsAction(data.data));
+    return data;
+  } catch (error) { }
+};
+
+export const getWebCollectionsAction = (websiteId) => async (dispatch) => {
+  try {
+    const { data } = await api.getWebCollection(websiteId);
+    dispatch(setWebCollectionsReducer(data.data));
+    return data;
+  } catch (error) { }
+};
+
+export const createWebCollectionAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createWebCollection(payload);
+    if (data.success)
+      dispatch(getWebCollectionsAction(data.data.websiteId));
+    return data;
+  } catch (error) { }
+};
+
+export const updateWebCollectionAction = (id, payload) => async (dispatch) => {
+  try {
+    const { data } = await api.updateWebCollection(id, payload);
+    if (data.success)
+      dispatch(getWebCollectionsAction(data.data.websiteId));
+    return data;
+  } catch (error) { }
+};
+
+export const getWebDatasetsAction = (collectionId) => async (dispatch) => {
+  try {
+    const { data } = await api.getWebDataset(collectionId);
+    dispatch(setWebDatasetsReducer(data.data));
+    return data;
+  } catch (error) { }
+};
+
+export const getWebsiteAllDatasetsAction = (websiteId) => async (dispatch) => {
+  try {
+    const { data } = await api.getWebAllDataset(websiteId);
+    dispatch(setWebDatasetsReducer(data.data));
+    return data;
+  } catch (error) { }
+};
+
+export const createWebDatasetAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createWebDataset(payload);
+    if (data.success)
+      dispatch(getWebDatasetsAction(data.data.collectionId));
     return data;
   } catch (error) { }
 };
