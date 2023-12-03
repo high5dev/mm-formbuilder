@@ -219,7 +219,32 @@ export const menu = [
     id: 'blog',
     name: 'Blog',
     icon: <FaBlog size={24} color={'#585858'} />,
-    subMenu: [],
+    subMenu: [
+      {
+        id:'post-list-large',
+        name:'Post List(Large)'
+      },
+      {
+        id:'post-list-sidebar',
+        name:'Post List(Sidebar)'
+      },
+      {
+        id:'recent-posts',
+        name:'Recent Posts'
+      },
+      {
+        id:'category-menu',
+        name:'Category Menu'
+      },
+      {
+        id:'archive',
+        name:'Archive'
+      },
+      {
+        id:'rss-button',
+        name:'RSS Button'
+      }
+    ],
   },
   {
     id: 'store',

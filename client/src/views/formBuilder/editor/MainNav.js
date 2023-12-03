@@ -44,32 +44,31 @@ import {
 } from 'reactstrap';
 
 export default function MainNav({
-  createMdl,
-  setCreateMdl,
-  renameMdl,
-  setRenameMdl,
-  duplicateMdl,
-  setDuplicateMdl,
-  customwidth,
-  setCustomWidth,
-  ispreview, 
-  isinvite,
-  setIsInvite,
-  page,
-  setPage,
-  setIsClear,
-  setIsPreview,
-  setIsPublish,
-  setTab,
-  open,
-  setOpen,
-  rsidebarOpen,
-  setRSidebarOpen,
-  store,
-  device,
-  setDevice,
-  openAddElementMdl,
-  setOpenAddElementMdl
+setIsBlog,
+createMdl,
+setCreateMdl,
+renameMdl,
+setRenameMdl,
+duplicateMdl,
+setDuplicateMdl,
+customwidth,
+setCustomWidth,
+ispreview, 
+page,
+setPage,
+setIsClear,
+setIsPreview,
+setIsPublish,
+setTab,
+open,
+setOpen,
+rsidebarOpen,
+setRSidebarOpen,
+store,
+device,
+setDevice,
+openAddElementMdl,
+setOpenAddElementMdl
 }) {
   const dispatch=useDispatch();
   const [width, setWidth]=useState(1280);
@@ -205,7 +204,7 @@ export default function MainNav({
           </div>
         </div>
         <div className="additional-bar d-flex align-items-center justify-content-around">
-          <div className="menu-item hover-effect text-white" onClick={(e)=>setIsInvite(true)}>Invite</div>
+          <div className="menu-item hover-effect text-white">Invite</div>
           <span className="menu-item text-primary text-white" onClick={(e)=>{
             setIsPreview(true);
             dispatch(setLinkUrlReducer('preview'));
@@ -336,9 +335,9 @@ export default function MainNav({
               </UncontrolledTooltip>
             </span>
             <span className="menu-icon">
-              <MdOutlineFormatColorReset size={24} color={'black'} id="menu"/>
-              <UncontrolledTooltip placement="bottom" target="menu">
-                Format
+              <MdOutlineFormatColorReset size={24} color={'black'} id="blog" onClick={()=>setIsBlog(true)}/>
+              <UncontrolledTooltip placement="bottom" target="blog">
+                Blog
               </UncontrolledTooltip>
             </span>
             <span className="menu-icon">
