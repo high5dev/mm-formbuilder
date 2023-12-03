@@ -537,6 +537,48 @@
   }
 }
 
+.trait-date-date, .trait-date-time {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 
+.trait-date-input-year, .trait-date-input-month, .trait-date-input-date, .trait-date-input-hour, .trait-date-input-min, .trait-date-input-sec {
+  width: 50px !important;
+  border: 1px solid gray !important;
+  border-radius: 3px;
+}
 
+.trait-cycle-select, .trait-start-time-input, .trait-end-time-input, .trait-time-zone-select, .trait-end-date-input, .popup-page-select, .monthly-day-input {
+  border: 1px solid grey !important;
+  border-radius: 3px;
+  margin-bottom: 3px;
+  font-size: 12px;
+}
 
+.trait-popup-start-time {
+  margin-right: 5px;
+}
+
+.trait-popup-end-time {
+  margin-left: 5px;
+}
+
+.rule-section {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: bold ;
+}
+
+.rule-sub-section {
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-size: 12px;
+}
+
+.popup-rule-day-checkbox, .form-check {
+  margin-right: 10px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}

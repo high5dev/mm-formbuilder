@@ -450,7 +450,7 @@ exports.getPublishPage = asyncHandler(async (req, res) => {
     const page=await WebPage.findOne({name:pageName, websiteId:mongoose.Types.ObjectId(id)});
     if(data && data.isPublish){
       const result=await googleCloudStorageWebBuilder.readPage(`${data._id}/${page._id}`);
-      return res.status(200).json({ success: true, data:result });
+      return res.status(200).json({ success: true, data:result, pageInfo: page });
     }
     return res.status(404).json({ success: false, message: `Page not found` });
   } catch (err) {
