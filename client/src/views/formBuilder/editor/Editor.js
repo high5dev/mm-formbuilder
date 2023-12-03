@@ -108,6 +108,7 @@ export default function Editor({
   const [openCreateDatasetMdl, setOpenCreateDatasetMdl] = useState({isOpen: false, data: {}});
   const [connectData, setConnectData] = useState({isOpen: false, data: {}});
   const [modelsToConnect, setModelsToConnect] = useState([]);
+  const [isinvite, setIsInvite] = useState(false);
 
   const toggle = () => {
     setOpen(!open);
@@ -833,6 +834,7 @@ export default function Editor({
                         })
                       }
                     </div>
+                  </div>
                   )
                 }
                 {
