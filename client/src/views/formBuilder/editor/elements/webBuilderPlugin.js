@@ -52,7 +52,7 @@ export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('rss-outline-black-button', blackoutlineButton);
   editor.DomComponents.addType('rss-outline-gray-button', grayoutlineButton);
   editor.DomComponents.addType('count-down', countDown);
-  editor.DomComponents.addType('popup', popup
+  editor.DomComponents.addType('popup', popup);
   editor.TraitManager.addType('image-url', {
     createInput({trait, component}){
       let image_url="https://storage.googleapis.com/mymember-storage/my-manager/a4fbe6f0-192e-4c2a-bf03-7db291aafbd2-@fabbiyedev.png";

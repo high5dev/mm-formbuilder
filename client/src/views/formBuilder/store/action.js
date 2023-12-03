@@ -10,7 +10,7 @@ import {
   setFormProductsReducer,
   setWebElementsReducer,
   setWebCollectionsReducer,
-  setWebDatasetsReducer
+  setWebDatasetsReducer,
   setWebBlogsReducer
 } from './reducer';
 import * as api from './api';
