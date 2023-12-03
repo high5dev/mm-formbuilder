@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import { Bold, X, Trash2} from 'react-feather';
+import { Bold, X, Trash2, Check, ChevronRight} from 'react-feather';
 import { RiQuestionMark } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import { Link, useHistory, useParams } from 'react-router-dom';
@@ -8,6 +8,7 @@ import {
   Button,
   ButtonGroup,
   Collapse,
+  Label,
   Nav,
   NavItem,
   NavLink,
@@ -30,7 +31,7 @@ import StyleSidebar from './topNav/styles';
 import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
-import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction} from '../store/action'
+import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction} from '../store/action'
 import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
@@ -46,6 +47,13 @@ import AddElementModal from './topNav/import/AddElementModal';
 import RenameModal from './topNav/rename/renameModal';
 import CreateFormModal from '../createForm/CreateFormModal';
 import DuplicateModal from './topNav/duplicate/duplicateModal';
+import InvitationModal from './topNav/invite/invitationModal';
+import cmsimg from '../../../assets/img/cms-img.png'
+import { CiCircleChevRight, CiCirclePlus } from 'react-icons/ci';
+import CreateCollectionModal from './cms/collection/CreateCollectionModal';
+import EditCollectionModal from './cms/collection/EditCollectionModal';
+import CreateDatasetModal from './cms/CreateDatasetModal';
+import ConnectCollectionModal from './elements/toolbar/ConnectCollectionModal';
 import BlogModal from './topNav/blog/BlogModal'
 import { GiConsoleController } from 'react-icons/gi';
 export default function Editor({
@@ -93,10 +101,32 @@ export default function Editor({
   const [isRunning, setIsRunning] = useState(true);
   const [isPublishModal, setIsPublishModal]=useState(false);
   const [publishUrl, setPublishUrl]=useState();
+  const [viewCMSMenu, setViewCMSMenu]=useState(false);
+  const [openCreateColMdl, setOpenCreateColMdl] = useState(false);
+  const [openEditCollection, setOpenEditCollection] = useState({isOpen: false, data: {}});
   const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
+  const [openCreateDatasetMdl, setOpenCreateDatasetMdl] = useState({isOpen: false, data: {}});
+  const [connectData, setConnectData] = useState({isOpen: false, data: {}});
+  const [modelsToConnect, setModelsToConnect] = useState([]);
+
   const toggle = () => {
     setOpen(!open);
   };
+
+  const toggleOpenEditCollection = (data) => {
+    if (data) {
+      setOpenEditCollection({
+        ...openEditCollection,
+        isOpen: !openEditCollection.isOpen,
+        data,
+      });
+    } else {
+      setOpenEditCollection({
+        ...openEditCollection,
+        isOpen: !openEditCollection.isOpen,
+      });
+    }
+  }
 
   const _toggleRename =(_open) =>{
     setRenameMdl(_open);
@@ -111,10 +141,20 @@ export default function Editor({
     setIsPublish(false);
   }
 
+  const createColMdlToggle = () => {
+    setOpenCreateColMdl(!openCreateColMdl);
+  };
+
+  const createDatasetToggle = (data) => {
+    if (data) {
+      setOpenCreateDatasetMdl({...openCreateDatasetMdl, isOpen: !openCreateDatasetMdl.isOpen, data});
+    } else {
+      setOpenCreateDatasetMdl({...openCreateDatasetMdl, isOpen: !openCreateDatasetMdl.isOpen});
+    }
+  };
   const toggleBlog =(_open) =>{
     setIsBlog(_open);
   }
-
 
   const handleSidebarOpen = (e) => {
     setSidebarData({
@@ -149,6 +189,12 @@ export default function Editor({
   //        return () => clearInterval(interval);
   //     }
   // }, [editor?.getHtml(editor?.Pages.getSelected()), editor?.getCss(editor?.Pages.getSelected()), form, page])
+
+  useEffect(() => {
+    if (store?.form?._id)
+      dispatch(getWebsiteAllDatasetsAction(store?.form?._id));
+      dispatch(getWebCollectionsAction(store?.form?._id));
+  }, [store?.form?._id]);
 
   useEffect(() => {
     dispatch(getWebElementsAction());
@@ -257,6 +303,14 @@ export default function Editor({
     });
     gjsEditor.on('component:selected', (cmp) => {
       setSelectedCmp(cmp);
+      if (cmp.attributes.type === 'repeater') {
+        const repeaterItemCmp = cmp.getChildAt(0);
+        const tempModelsToConnect = [];
+        repeaterItemCmp.components().models.map(m => {
+          tempModelsToConnect.push(m);
+        });
+        setModelsToConnect(tempModelsToConnect);
+      }
     });
 
     gjsEditor.on('block:custom', props => {
@@ -414,12 +468,17 @@ export default function Editor({
         });
       });
 
+      gjsEditor.Commands.add('connect-collection', geditor => {
+        setConnectData({isOpen: true, data: {}});
+      });
+
       // Add new toolbar
       const dc = gjsEditor.DomComponents;
       const new_toolbar_id = 'custom-id';
   
       const htmlLabel = `<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 24 24" id="save"><path d="m20.71 9.29-6-6a1 1 0 0 0-.32-.21A1.09 1.09 0 0 0 14 3H6a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-8a1 1 0 0 0-.29-.71ZM9 5h4v2H9Zm6 14H9v-3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1Zm4-1a1 1 0 0 1-1 1h-1v-3a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3v3H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6.41l4 4Z"></path></svg>`
-      
+      const connectionLabel = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="connection"><path d="M8.86 6H12a6 6 0 0 1 6 6 1 1 0 0 0 2 0 8 8 0 0 0-8-8H8.86a4 4 0 1 0 0 2ZM3 5a2 2 0 1 1 2 2 2 2 0 0 1-2-2Zm16 10a4 4 0 0 0-3.86 3H12a6 6 0 0 1-6-6 1 1 0 0 0-2 0 8 8 0 0 0 8 8h3.14A4 4 0 1 0 19 15Zm0 6a2 2 0 1 1 2-2 2 2 0 0 1-2 2Z"></path></svg>`;
+
       dc.getTypes().forEach(elType => {
         let {model:oldModel, view:oldView} = elType;
         if (elType.id !== 'wrapper') {
@@ -436,6 +495,13 @@ export default function Editor({
                     label: htmlLabel
                   });
                   this.set('toolbar', toolbar);
+                }
+                if (elType.id === 'repeater' || elType.id === 'gallery') {
+                  toolbar.unshift({
+                    id: 'connect-collection',
+                    command: 'connect-collection',
+                    label: connectionLabel
+                  });
                 }
               }
             }),
@@ -571,7 +637,7 @@ export default function Editor({
         }  
       })
     }
-  }, [page?._id])
+  }, [page?._id]);
 
   useEffect(() => {
     if (editor) {
@@ -712,7 +778,7 @@ export default function Editor({
                   )
                 }
                 {
-                  sidebarData.menu.id != 'quick-add' && sidebarData.menu.id != 'blog' && (
+                  sidebarData.menu.id != 'quick-add' && sidebarData.menu.id != 'blog' && sidebarData.menu.id !== 'cms' && (
                   <div className='submenu-and-element d-flex'>
                     <div className="submenu-list">
                       {
@@ -766,11 +832,75 @@ export default function Editor({
                             </div>);
                         })
                       }
-                      {
-
-                      }
                     </div>
-                  </div>
+                  )
+                }
+                {
+                  sidebarData.menu.id === 'cms' && (
+                    <>
+                      {viewCMSMenu && <div className="cms-element" style={{width: 350}}>
+                        {
+                          sidebarData?.menu?.subMenu?.map(sub => {
+                            return (
+                              <div className='my-1'>
+                                {sub.menu && <h5 className='ps-1 pt-2' color='black'>{sub.menu}</h5>}
+                                {
+                                  sub.data.map(e => {
+                                    return (
+                                      <div
+                                        className='d-flex align-items-center px-2 py-1 cms-menu-item'
+                                        onClick={() => {
+                                          if (e.id === 'add-preset') {
+
+                                          }
+                                          if (e.id === 'create-collection') {
+                                            createColMdlToggle();
+                                          }
+                                          if (e.id === 'dataset') {
+                                            createDatasetToggle();
+                                          }
+                                          if (e.id === 'form-dataset') {
+                                            createDatasetToggle({isFormDataset: true});
+                                          }
+                                          if (e.id === 'rich-content') {
+                                            
+                                          }
+                                        }}
+                                        >
+                                        <img className="me-1" width="70" height="70" src={e.icon}/>
+                                        <div>
+                                          <div style={{color: 'black', fontWeight: 500, fontSize: 15}}>{e.title}</div>
+                                          <div style={{fontSize: 13}}>{e.description}</div>
+                                        </div>
+                                        <div style={{width: 50, height: 50}} className='d-flex align-items-center'>
+                                          {(e.id === 'add-preset' || e.id === 'create-collection') ?
+                                            <CiCircleChevRight className='ms-1 cms-menu-icon' size={27} />
+                                            : <CiCirclePlus className='ms-1 cms-menu-icon' size={27} />
+                                          }
+                                        </div>
+                                      </div>
+                                    );
+                                  })
+                                }
+                              </div>
+                            )
+                          })
+                        }                        
+                      </div>}
+                      {
+                        !viewCMSMenu && <div className="cms-element d-flex flex-column align-items-center">
+                          <img width="350" src={cmsimg}/>
+                          <h2 className='mt-3'>Use the CMS</h2>
+                          <h4 className='mb-3'>Easily manage your site content</h4>
+                          <div>
+                            <h6 className='mt-1'><Check size={20} color='green'/> Set up content collections</h6>
+                            <h6 className='mt-1'><Check size={20} color='green'/> Create 100s of dynamic pages</h6>
+                            <h6 className='mt-1'><Check size={20} color='green'/> Collect info from site visitors</h6>
+                          </div>
+                          <Button color='primary' className='round mt-3' onClick={() => {setViewCMSMenu(true)}}>Add to Site</Button>
+                        </div>
+                      }
+                    </>
                   )
                 }
                 {
@@ -862,8 +992,7 @@ export default function Editor({
                     </div>
                   </div>
                   )
-                }
-                          
+                }                
             </div>
           </div>
         </Collapse>
@@ -878,10 +1007,10 @@ export default function Editor({
     </div>
     <div className="property-sidebar" style={{display:rsidebarOpen?'block':'none'}}>
       <PerfectScrollbar
-      className="scrollable-content"
-      options={{ suppressScrollX: true }}
-      style={{ height: `calc(100vh - 120px)` }}
-    >
+        className="scrollable-content"
+        options={{ suppressScrollX: true }}
+        style={{ height: `calc(100vh - 120px)` }}
+      >
           <div className="sidebar-header px-1">
           <span className="px-1 fs-5 fw-bolder text-black">{tab}</span>
           <span>
@@ -893,28 +1022,33 @@ export default function Editor({
             />
           </span>
         </div>
-            <div style={{display:tab==='Styles'?'block':'none'}}>
-                <div id="selector-manager-container" />
-                <div id="style-manager-container" />
-              </div>
-            <div style={{display:tab==='Layers'?'block':'none'}}>
-              <div id="layer-manager-container" />  
-            </div>
-            <div style={{display:tab==='Traits'?'block':'none'}}>
-              <div id="trait-manager-container" />
-            </div>
-            <div style={{display:tab==='Pages'?'block':'none'}}>
-              <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} page={page} setPage={setPage}/>
-            </div>
-      </PerfectScrollbar>
-    </div>
-    <ImportModal editor={editor} setEditor={setEditor} open={open} toggle={toggle} />
-    <PublishModal publishUrl={publishUrl} isOpen={isPublishModal} toggle={togglePublish}/>
-    <AddElementModal editor={editor} setEditor={setEditor} openAddElementMdl={openAddElementMdl} setOpenAddElementMdl={setOpenAddElementMdl} />
-    <RenameModal store={store} isOpen={renameMdl} toggle={_toggleRename}/>
-    <CreateFormModal open={createMdl} store={store} dispatch={dispatch}/>
-    <DuplicateModal store={store} isOpen={duplicateMdl} toggle={_toggleDuplicate}/>
-    <BlogModal store ={store} isOpen={isblog} toggle={toggleBlog}/>
+          <div style={{display:tab==='Styles'?'block':'none'}}>
+            <div id="selector-manager-container" />
+            <div id="style-manager-container" />
+          </div>
+          <div style={{display:tab==='Layers'?'block':'none'}}>
+            <div id="layer-manager-container" />  
+          </div>
+          <div style={{display:tab==='Traits'?'block':'none'}}>
+            <div id="trait-manager-container" />
+          </div>
+          <div style={{display:tab==='Pages'?'block':'none'}}>
+            <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} page={page} setPage={setPage}/>
+          </div>
+        </PerfectScrollbar>
+      </div>
+      <ImportModal editor={editor} setEditor={setEditor} open={open} toggle={toggle} />
+      <PublishModal publishUrl={publishUrl} isOpen={isPublishModal} toggle={togglePublish}/>
+      <AddElementModal editor={editor} setEditor={setEditor} openAddElementMdl={openAddElementMdl} setOpenAddElementMdl={setOpenAddElementMdl} />
+      <RenameModal store={store} isOpen={renameMdl} toggle={_toggleRename}/>
+      <CreateFormModal open={createMdl} store={store} dispatch={dispatch}/>
+      <DuplicateModal store={store} isOpen={duplicateMdl} toggle={_toggleDuplicate}/>
+      <InvitationModal store={store} isOpen={isinvite} toggle={setIsInvite}/>
+      <CreateCollectionModal store={store} open={openCreateColMdl} toggle={createColMdlToggle} editCollectionToggle={toggleOpenEditCollection}/>
+      <CreateDatasetModal store={store} mdlData={openCreateDatasetMdl} toggle={createDatasetToggle} />
+      <EditCollectionModal store={store} openCollection={openEditCollection} setOpenEditCollection={setOpenEditCollection} toggle={toggleOpenEditCollection} />
+      <ConnectCollectionModal store={store} connectData={connectData} setConnectData={setConnectData} modelsToConnect={modelsToConnect} />
+      <BlogModal store ={store} isOpen={isblog} toggle={toggleBlog}/>
   </div>
   );
 }

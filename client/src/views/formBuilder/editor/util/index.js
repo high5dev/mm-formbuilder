@@ -21,6 +21,14 @@ import {
   MdOutlineGroupAdd,
   MdLanguage,
 } from 'react-icons/md';
+import cmsMenu1 from '../../../../assets/img/cms-menu-1.png';
+import cmsMenu2 from '../../../../assets/img/cms-menu-2.png';
+import cmsMenu3 from '../../../../assets/img/cms-menu-3.png';
+import cmsMenu4 from '../../../../assets/img/cms-menu-4.png'
+import { Calendar, CheckSquare, Clock, Code, File, FilePlus, FileText, Grid, Hash, Image, Link, Link2, MapPin, Music, Tag, Type, Video } from 'react-feather';
+import { BsFileRichtext } from 'react-icons/bs';
+import { GrGallery } from 'react-icons/gr';
+import { BiBracket } from 'react-icons/bi';
 
 export function cx(inputs){
     const inp = Array.isArray(inputs[0]) ? inputs[0] : [...inputs];
@@ -274,7 +282,58 @@ export const menu = [
     id: 'cms',
     name: 'CMS',
     icon: <MdOutlineNewspaper size={24} color={'#585858'} />,
-    subMenu: [],
+    subMenu: [
+      {
+        menu: '',
+        data: [
+          {
+            id: 'add-preset',
+            title: 'Add a preset',
+            description: 'Get a new collection connected to dynamic pages.',
+            icon: cmsMenu1,
+          }
+        ]
+      },
+      {
+        menu: 'Collection',
+        data: [
+          {
+            id: 'create-collection',
+            title: 'Create collection',
+            description: `Create a new collection to store your site's dynamic sontent.`,
+            icon: cmsMenu2,
+          }
+        ]
+      },
+      {
+        menu: 'Datasets',
+        data: [
+          {
+            id: 'dataset',
+            title: 'Dataset',
+            description: 'Connect page elements to your content.',
+            icon: cmsMenu3,
+          },
+          {
+            id: 'form-dataset',
+            title: 'Form dataset',
+            description: 'Create a form and collect data from your visitors.',
+            icon: cmsMenu3,
+          }
+        ]
+      },
+      {
+        menu: 'Elements',
+        data: [
+          {
+            id: 'rich-content',
+            title: 'Rich content',
+            description: 'Show rich content from a collection on your site.',
+            icon: cmsMenu4,
+          }
+        ]
+      }
+    ],
   },
   {
     id: 'multilingual',
@@ -284,24 +343,125 @@ export const menu = [
   },
 ];
 
-  // const mainMenu = [
-//   'quick-add',
-//   'assets',
-//   'compositions',
-//   'wireframes',
-//   'layout-tools',
-//   'text',
-//   'buttons',
-//   'menus-search',
-//   'media',
-//   'decorative',
-//   'contact-forms',
-//   'embed-social',
-//   'blog',
-//   'store',
-//   'bookings',
-//   'events',
-//   'members',
-//   'cms',
-//   'multilingual',
-// ];
+export const collectionFieldTypes = [
+  {
+    category: 'Essential',
+    types: [
+      {
+        name: 'Text',
+        description: 'Titles, paragraph',
+        icon: <Type size={18}/>,
+      },
+      {
+        name: 'Rich text',
+        description: 'Text with formatting',
+        icon: <BsFileRichtext size={18}/>,
+      },
+      {
+        name: 'Rich content',
+        description: 'Text with links and media',
+        icon: <FileText size={18}/>,
+      },
+      {
+        name: 'URL',
+        description: 'Links',
+        icon: <Link size={18}/>,
+      },
+      {
+        name: 'Number',
+        description: 'ID, rating, order number',
+        icon: <Hash size={18}/>,
+      },
+      {
+        name: 'Tags',
+        description: 'Tagging items, filters',
+        icon: <Tag size={18}/>,
+      },
+      {
+        name: 'Boolean',
+        description: 'Yes or no, true or false',
+        icon: <CheckSquare size={18}/>,
+      },
+      {
+        name: 'Reference',
+        description: 'Link to another collection',
+        icon: <Link2 size={18}/>,
+      },
+      {
+        name: 'Multi-reference',
+        description: 'Link between collections',
+        icon: <Grid size={18}/>,
+      },
+    ]
+  },
+  {
+    category: 'Media',
+    types: [
+      {
+        name: 'Image',
+        description: 'Upload a single image',
+        icon: <Image size={18}/>,
+      },
+      {
+        name: 'Media gallery',
+        description: 'A gallery of images and videos',
+        icon: <GrGallery size={18}/>,
+      },
+      {
+        name: 'Video',
+        description: 'Upload a single video',
+        icon: <Video size={18}/>,
+      },
+      {
+        name: 'Audio',
+        description: 'Upload an audio file',
+        icon: <Music size={18}/>,
+      },
+      {
+        name: 'Document',
+        description: 'Add files to a collection',
+        icon: <File size={18}/>,
+      },
+      {
+        name: 'Multiple documents',
+        description: 'Let site visitors upload files to a collection',
+        icon: <FilePlus size={18}/>,
+      },
+    ]
+  },
+  {
+    category: 'Time and location',
+    types: [
+      {
+        name: 'Date',
+        description: 'Date of event, date added',
+        icon: <Calendar size={18}/>,
+      },
+      {
+        name: 'Time',
+        description: 'Opening hours',
+        icon: <Clock size={18}/>,
+      },
+      {
+        name: 'Address',
+        description: 'Location',
+        icon: <MapPin size={18}/>,
+      },
+    ]
+  },
+  {
+    category: 'Javascript (Velo code)',
+    types: [
+      {
+        name: 'Object',
+        description: 'Javascript object',
+        icon: <Code size={18}/>,
+      },
+      {
+        name: 'Array',
+        description: 'Javascript array',
+        icon: <BiBracket size={18}/>,
+      },
+    ]
+  }
+];
