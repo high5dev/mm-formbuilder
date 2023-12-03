@@ -496,6 +496,47 @@
   margin-bottom: 5px;
 }
 
+.cms-menu-item {
+  &:hover {
+    background-color: #e7f0ff;
+    cursor: pointer;
+  }
+  .cms-menu-icon {
+    color: #63aeee;
+    &:hover {
+      background-color: #63aeee;
+      color: #fff;
+      border-radius: 50%;
+    }
+  }
+}
+
+.collection-sel-type {
+  &:hover {
+    border-color: #a0c5ff;
+    cursor: pointer;
+  }
+}
+
+.collection-table-header {
+  padding: '3px 20px 3px 20px';
+  border-right: '1px solid #cbdfff';
+  border-bottom: '1px solid #cbdfff';
+  background-color: '#e7f0ff';
+}
+
+.collection-table-body{
+  padding: '3px 20px 3px 20px';
+  border-right: '1px solid #cbdfff';
+  border-bottom: '1px solid #cbdfff';
+}
+
+.item-to-connect{
+  &:hover {
+    background-color: #eaf1fb;
+  }
+}
+
 
 
 

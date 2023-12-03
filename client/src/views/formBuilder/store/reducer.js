@@ -26,6 +26,8 @@ export const formEditor = createSlice({
     imageLibrary: [],
     formCategories:[],
     webElements: [],
+    webCollections: [],
+    webDatasets: [],
   },
   reducers: {
     setLinkUrlReducer:(state,action) =>{
@@ -93,6 +95,12 @@ export const formEditor = createSlice({
     setWebElementsReducer: (state, action) => {
       state.webElements = action?.payload;
     },
+    setWebCollectionsReducer: (state, action) => {
+      state.webCollections = action?.payload;
+    },
+    setWebDatasetsReducer: (state, action) => {
+      state.webDatasets = action?.payload;
+    }
   }
 });
 
@@ -109,5 +117,7 @@ export const {
   setFormProductsReducer,
   setFormSalesTypeReducer,
   setWebElementsReducer,
+  setWebCollectionsReducer,
+  setWebDatasetsReducer,
 } = formEditor.actions;
 export default formEditor.reducer;

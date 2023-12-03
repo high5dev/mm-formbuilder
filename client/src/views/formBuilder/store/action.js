@@ -8,7 +8,9 @@ import {
   setFormCategoriesReducer,
   setFormOrderElementsReducer,
   setFormProductsReducer,
-  setWebElementsReducer
+  setWebElementsReducer,
+  setWebCollectionsReducer,
+  setWebDatasetsReducer
 } from './reducer';
 import * as api from './api';
 import { toast } from 'react-toastify';
@@ -486,6 +488,57 @@ export const createWebElementAction = (payload) => async (dispatch) => {
     const { data } = await api.createWebElement(payload);
     if (data.success)
       dispatch(getWebElementsAction(data.data));
+    return data;
+  } catch (error) { }
+};
+
+export const getWebCollectionsAction = (websiteId) => async (dispatch) => {
+  try {
+    const { data } = await api.getWebCollection(websiteId);
+    dispatch(setWebCollectionsReducer(data.data));
+    return data;
+  } catch (error) { }
+};
+
+export const createWebCollectionAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createWebCollection(payload);
+    if (data.success)
+      dispatch(getWebCollectionsAction(data.data.websiteId));
+    return data;
+  } catch (error) { }
+};
+
+export const updateWebCollectionAction = (id, payload) => async (dispatch) => {
+  try {
+    const { data } = await api.updateWebCollection(id, payload);
+    if (data.success)
+      dispatch(getWebCollectionsAction(data.data.websiteId));
+    return data;
+  } catch (error) { }
+};
+
+export const getWebDatasetsAction = (collectionId) => async (dispatch) => {
+  try {
+    const { data } = await api.getWebDataset(collectionId);
+    dispatch(setWebDatasetsReducer(data.data));
+    return data;
+  } catch (error) { }
+};
+
+export const getWebsiteAllDatasetsAction = (websiteId) => async (dispatch) => {
+  try {
+    const { data } = await api.getWebAllDataset(websiteId);
+    dispatch(setWebDatasetsReducer(data.data));
+    return data;
+  } catch (error) { }
+};
+
+export const createWebDatasetAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createWebDataset(payload);
+    if (data.success)
+      dispatch(getWebDatasetsAction(data.data.collectionId));
     return data;
   } catch (error) { }
 };

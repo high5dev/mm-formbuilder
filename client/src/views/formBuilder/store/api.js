@@ -181,3 +181,39 @@ export const createWebElement = (payload) => {
 export const getWebElements = () => {
   return API.get(`/web-builder-element/elements`);
 }
+
+export const createWebCollection = (payload) => {
+  return API.post(`/web-builder-cms/collection/create`, payload);
+}
+
+export const updateWebCollection = (id, payload) => {
+  return API.post(`/web-builder-cms/collection/update/${id}`, payload);
+}
+
+export const deleteWebCollection = (id, payload) => {
+  return API.delete(`/web-builder-cms/collection/update/${id}`);
+}
+
+export const getWebCollection = (id) => {
+  return API.get(`/web-builder-cms/collection/${id}`);
+}
+
+export const createWebDataset = (payload) => {
+  return API.post(`/web-builder-cms/dataset/create`, payload);
+}
+
+export const updateWebDataset = (id, payload) => {
+  return API.post(`/web-builder-cms/dataset/update/${id}`, payload);
+}
+
+export const deleteWebDataset = (id) => {
+  return API.delete(`/web-builder-cms/dataset/update/${id}`);
+}
+
+export const getWebDataset = (id) => {
+  return API.get(`/web-builder-cms/dataset/${id}`);
+}
+
+export const getWebAllDataset = (id) => {
+  return API.get(`/web-builder-cms/all-datasets/${id}`);
+}
