@@ -170,6 +170,7 @@ const SocialProofDisplayUrl = require("../SocialProofDisplayUrl");
 // //employeeActivityLog
 // const EmployeeActivityLog = require("../EmployeeActivityLog");
 
+const WebBlog = require("../WebBlog");
 const WebBuilder = require("../WebBuilder");
 const WebPage = require("../WebPage");
 const WebBuilderElement = require("../WebBuilderElement");
@@ -335,6 +336,7 @@ const models = {
   // TournamentEvent,
   // Division,
   // Tournament,
+  WebBlog,
   WebBuilder,
   WebPage,
   WebBuilderElement,
