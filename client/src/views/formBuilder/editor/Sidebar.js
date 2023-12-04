@@ -40,7 +40,7 @@ export default function Index({sidebarData, setSidebarData, selectedCategory, se
 
   return (
     <div className="d-flex">
-      <div className="sidebar">
+      <div className="sidebar" style={{borderRight: '1px solid #aaa'}}>
         <PerfectScrollbar
           className="scrollable-content"
           options={{ suppressScrollX: true }}
