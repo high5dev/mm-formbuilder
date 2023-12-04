@@ -777,7 +777,7 @@ export default function Editor({
                   )
                 }
                 {
-                  sidebarData.menu.id != 'quick-add' && sidebarData.menu.id != 'blog' && sidebarData.menu.id !== 'cms' && (
+                  sidebarData.menu.id != 'quick-add' && sidebarData.menu.id != 'blog' && sidebarData.menu.id !== 'cms' && sidebarData.menu.id !== 'store' && (
                   <div className='submenu-and-element d-flex'>
                     <div className="submenu-list">
                       {
@@ -991,6 +991,46 @@ export default function Editor({
                       }
                     </div>
                   </div>
+                  )
+                }
+                {
+                  sidebarData.menu.id === 'store' && (
+                    <div className="store-add">
+                        {editor?.BlockManager.blocks.filter(e => e.get('category') === 'Store').map((block) => (
+                          <div
+                            key={block.getId()}
+                            draggable
+                            className='store-item cursor-pointer'
+                            onDragStart={(ev) => {
+                              ev.stopPropagation();
+                              blockManager.dragStart(block, ev.nativeEvent);
+                            }}
+                            onDragEnd={(ev) => {
+                              ev.stopPropagation();
+                              blockManager.dragStop(false);
+                            }}
+                          >
+                            {/* <div
+                              style={{ width: 30, height: 30 }}
+                              dangerouslySetInnerHTML={{ __html: block.getMedia() }}
+                            /> */}
+                            <div
+                              className="text-sm w-full mt-1"
+                              title={block.getLabel()}
+                            >
+                              {block.getLabel()}
+                              <span class="info-icon-tooltip">
+                                <svg width="18" height="18" preserveAspectRatio="xMidYMid" viewBox="1.5 1.5 18 18" class="symbol symbol-infoIcon"><g id="infoIconSvg"><circle cx="10.5" cy="10.5" r="8" fill="transparent"></circle><path id="path-1" fill-rule="evenodd" d="M10.5 19.5a9 9 0 01-9-9 9 9 0 019-9 9 9 0 019 9 9 9 0 01-9 9zm-8-9c0 4.411 3.589 8 8 8s8-3.589 8-8-3.589-8-8-8-8 3.589-8 8zm10 5h-4l1-2v-3h-1l1-2h2v5l1 2zm-3-10h2v2h-2v-2z"></path></g></svg>
+                                <div className='tooltip-content'>
+                                  <div className='tooltip-title'>{block.getLabel()}</div>
+                                  <div className='tooltip-text'>{block.getContent().text}</div>
+                                </div>
+                                </span>
+                            </div>
+                            <img src={`/assets/images/elements/${block.getMedia()}.png`} style={{ marginLeft: "14px", marginRight: "14px" }} />
+                          </div>
+                        ))}
+                      </div>
                   )
                 }                
             </div>
