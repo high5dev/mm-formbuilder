@@ -23,6 +23,11 @@ import grayoutlineButton from "../elements/blog/rss/grayoutlineButton";
 import countDown from "./countdown/countdown";
 import popup from "./popup/popup";
 import gridproductgallery from "./gridproductgallery/gridproductgallery";
+import sliderproductgallery from "./slideproductgallery/sliderproductgallery";
+import relatedproducts from "./relatedproducts/relatedproducts";
+import shoppingcart from "./shoppingcart/shoppingcart";
+import addtocartbutton from "./addtocartbutton/addtocartbutton";
+import currencyconverter from "./currencyconverter/currencyconverter";
 import productItem from "./gridproductgallery/productItem";
 
 
@@ -218,6 +223,11 @@ export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('iframe-element', iframe);
   editor.DomComponents.addType('social-bar', socialBar);
   editor.DomComponents.addType('grid-product-gallery', gridproductgallery);
+  editor.DomComponents.addType('slider-product-gallery', sliderproductgallery);
+  editor.DomComponents.addType('related-products', relatedproducts);
+  editor.DomComponents.addType('shopping-cart', shoppingcart);
+  editor.DomComponents.addType('add-to-cart-button', addtocartbutton);
+  editor.DomComponents.addType('currency-converter', currencyconverter);
   editor.DomComponents.addType('product-item', productItem);
 
   editor.TraitManager.addType('social-link', {
