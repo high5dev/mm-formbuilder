@@ -995,7 +995,18 @@ export default function Editor({
                 }
                 {
                   sidebarData.menu.id === 'store' && (
-                    <div className="store-add">
+                    <div className='submenu-and-element d-flex'>
+                      <div className="submenu-list">
+                        {
+                          sidebarData?.menu?.subMenu?.map(sub => {
+                            const returnComponent = <>
+                              <div className='submenu-item' onClick={() => scrollToTarget(sub.menu)}>{sub.menu}</div>
+                            </>
+                            return returnComponent;
+                          })
+                        }
+                      </div>
+                      <div className="store-add">
                         {editor?.BlockManager.blocks.filter(e => e.get('category') === 'Store').map((block) => (
                           <div
                             key={block.getId()}
@@ -1009,6 +1020,7 @@ export default function Editor({
                               ev.stopPropagation();
                               blockManager.dragStop(false);
                             }}
+                            id={block.getLabel()}
                           >
                             {/* <div
                               style={{ width: 30, height: 30 }}
@@ -1025,12 +1037,13 @@ export default function Editor({
                                   <div className='tooltip-title'>{block.getLabel()}</div>
                                   <div className='tooltip-text'>{block.getContent().text}</div>
                                 </div>
-                                </span>
+                              </span>
                             </div>
                             <img src={`/assets/images/elements/${block.getMedia()}.png`} style={{ marginLeft: "14px", marginRight: "14px" }} />
                           </div>
                         ))}
                       </div>
+                    </div>
                   )
                 }                
             </div>
