@@ -111,6 +111,7 @@ export default function Editor({
   const [isinvite, setIsInvite] = useState(false);
   const [productDataset, setProductDataset] = useState({});
   const [datasetConnect, setDatasetConnect] = useState([]);
+  const [selectedDataset, setSelectedDataSet] = useState({});
   const loadedRef = useRef();
   loadedRef.current = isLoading;
   
@@ -223,10 +224,16 @@ export default function Editor({
     const tempModelsToConnect = [];
     repeaterItemCmp.components().models.map(m => {
       const connectedField = dataSet.filter((data) => data.id == m.ccid);
-      m.description = connectedField.name;
+      if(connectedField.length > 0)
+        m.description = connectedField[0].name;
       tempModelsToConnect.push(m);
     });
     setModelsToConnect(tempModelsToConnect);
+  }
+
+  const handleSelectChangeDataSet = (data) => {
+    setSelectedDataSet(data);
+    selectedCmp.set('selectedDataset', data);
   }
 
   // useEffect(() =>{
@@ -391,6 +398,7 @@ export default function Editor({
     gjsEditor.on('component:selected', (cmp) => {
       setSelectedCmp(cmp);
       if (cmp.attributes.type === 'repeater' || cmp.attributes.type === 'grid-product-gallery' || cmp.attributes.type === 'slider-product-gallery' || cmp.attributes.type === 'related-products') {
+        setSelectedDataSet(cmp.get('selectedDataset'));
         setDatasetConnect(cmp.get('datasetConnect'));
         if(cmp.attributes.type === 'slider-product-gallery' || cmp.attributes.type === 'related-products')
           setConnectModel(cmp.getChildAt(0), cmp.get('datasetConnect'));
@@ -1185,7 +1193,7 @@ export default function Editor({
       <CreateCollectionModal store={store} open={openCreateColMdl} toggle={createColMdlToggle} editCollectionToggle={toggleOpenEditCollection}/>
       <CreateDatasetModal store={store} mdlData={openCreateDatasetMdl} toggle={createDatasetToggle} />
       <EditCollectionModal store={store} openCollection={openEditCollection} setOpenEditCollection={setOpenEditCollection} toggle={toggleOpenEditCollection} />
-      <ConnectCollectionModal store={store} connectData={connectData} setConnectData={setConnectData} modelsToConnect={modelsToConnect} getProductDataset={getProductDataset} datasetConnect={datasetConnect} setDatasetConnect={setDatasetFields} />
+      <ConnectCollectionModal store={store} connectData={connectData} setConnectData={setConnectData} modelsToConnect={modelsToConnect} getProductDataset={getProductDataset} datasetConnect={datasetConnect} setDatasetConnect={setDatasetFields} handleSelectChangeDataSet={handleSelectChangeDataSet} selectedDataset={selectedDataset} />
       <BlogModal store ={store} isOpen={isblog} toggle={toggleBlog}/>
   </div>
   );

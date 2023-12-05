@@ -5,10 +5,10 @@ import { isObjEmpty, selectThemeColors } from '@utils'
 import Select, { components } from 'react-select';
 import { useDispatch } from 'react-redux';
 
-const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToConnect, getProductDataset, datasetConnect, setDatasetConnect }) => {
+const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToConnect, getProductDataset, datasetConnect, setDatasetConnect, selectedDataset, handleSelectChangeDataSet }) => {
   const dispatch = useDispatch();
   const [dataSets, setDataSets] = useState([]);
-  const [selectedDataSet, setSelectedDataSet] = useState(null);
+  // const [selectedDataSet, setSelectedDataSet] = useState(null);
   const [viewConnection, setViewConnection] = useState(false);
   const [selectedModel, setSelectedModel] = useState(null);
   const [fieldsOfCollection, setFieldsOfCollection] = useState([]);
@@ -23,8 +23,8 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToCo
   }, [store.webDatasets]);
 
   useEffect(() => {
-    if (selectedDataSet && store.webCollections.length > 0) {
-      const selDataset = store.webDatasets.find(d => d._id === selectedDataSet.value);
+    if (selectedDataset && selectedDataset?.value && store.webCollections?.length > 0) {
+      const selDataset = store.webDatasets.find(d => d._id === selectedDataset.value);
       const collection = store.webCollections.find(c => c._id === selDataset.collectionId);
       getProductDataset(selDataset.collectionId);
 
@@ -34,7 +34,7 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToCo
       });
       setFieldsOfCollection(tempFields);
     }
-  }, [selectedDataSet, store.webCollections]);
+  }, [selectedDataset, store.webCollections]);
 
   const changeField = (data) => {
     setSelectedField(data);
@@ -52,8 +52,8 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToCo
 
   return (
     <>
-      <Modal isOpen={connectData} toggle={() => setConnectData(!connectData)} centered size='md'>
-        <ModalHeader toggle={() => setConnectData(!connectData)} className="font-medium-5 px-2 py-1 modal-title text-primary">
+      <Modal isOpen={connectData} toggle={() => { setConnectData(!connectData); setViewConnection(false); }} centered size='md'>
+        <ModalHeader toggle={() => { setConnectData(!connectData); setViewConnection(false); }} className="font-medium-5 px-2 py-1 modal-title text-primary">
           Connect to dataset
         </ModalHeader>
         <ModalBody className="d-flex justify-content-between p-2" style={{ minHeight: 400 }}>
@@ -79,8 +79,8 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToCo
                   isClearable={false}
                   options={dataSets}
                   theme={selectThemeColors}
-                  value={selectedDataSet}
-                  onChange={(data) => setSelectedDataSet(data)}
+                  value={selectedDataset}
+                  onChange={(data) => { handleSelectChangeDataSet(data); }}
                 />
                 <div className='bg-light-secondary d-flex justify-content-center'>
                   <Label className="mdl-select-main-menu-label fs-6 my-1" for="mdl-select-main-menu">
@@ -116,8 +116,8 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToCo
                         isClearable={false}
                         options={dataSets}
                         theme={selectThemeColors}
-                        value={selectedDataSet}
-                        onChange={(data) => setSelectedDataSet(data)}
+                        value={selectedDataset}
+                        onChange={(data) => { handleSelectChangeDataSet(data); }}
                       />
                     </>
                   ) : (
@@ -148,7 +148,7 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToCo
                                   {connect?.attributes.type || 'Connection name'}
                                 </Label>
                                 <Label className="mdl-input-category-label fs-7" for="mdl-input-category">
-                                  {'Connected to ' + connect?.description || 'Not connected'}
+                                  {connect?.description ? ('Connected to ' + connect?.description) : 'Not connected'}
                                 </Label>
                               </div>
                               <div className='d-flex'>

@@ -23,6 +23,7 @@ let gridproductgallery = {
       numPerRow: 3,
       numOfItems: 3,
       datasetConnect: [],
+      selectedDataset: {},
       traits: [
         {
           type: 'number',
