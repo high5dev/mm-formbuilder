@@ -243,3 +243,7 @@ export const getWebDataset = (id) => {
 export const getWebAllDataset = (id) => {
   return API.get(`/web-builder-cms/all-datasets/${id}`);
 }
+
+export const getProductDataset = (id) => {
+  return API.get(`/web-builder-store/dataset/${id}`);
+}

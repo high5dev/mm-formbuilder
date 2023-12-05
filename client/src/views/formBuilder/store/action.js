@@ -631,3 +631,12 @@ export const createWebDatasetAction = (payload) => async (dispatch) => {
     return data;
   } catch (error) { }
 };
+
+export const getProductDatasetAction = (collectionId) => async (dispatch) => {
+  try {
+    const { data } = await api.getProductDataset(collectionId);
+    return data;
+  } catch (error) {
+
+  }
+}

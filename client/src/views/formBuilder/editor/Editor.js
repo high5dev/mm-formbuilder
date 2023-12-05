@@ -38,7 +38,7 @@ import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
 import { webBuilderPlugin } from './elements/webBuilderPlugin';
 import PublishModal from './topNav/publish/publishModal';
-import { getWebElementsAction, createWebElementAction, getBlogsAction } from '../store/action';
+import { getWebElementsAction, createWebElementAction, getBlogsAction, getProductDatasetAction } from '../store/action';
 import { menu } from './util';
 import { getCategoriesByMenu, createWebElement } from '../store/api';
 import * as htmlToImage from 'html-to-image';
@@ -96,7 +96,7 @@ export default function Editor({
   const history = useHistory();
   const [editor, setEditor] = useState(null);
   const [blockManager, setBlockManager] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedCmp, setSelectedCmp] = useState(null);
   const [isRunning, setIsRunning] = useState(true);
   const [isPublishModal, setIsPublishModal]=useState(false);
@@ -109,7 +109,11 @@ export default function Editor({
   const [connectData, setConnectData] = useState({isOpen: false, data: {}});
   const [modelsToConnect, setModelsToConnect] = useState([]);
   const [isinvite, setIsInvite] = useState(false);
-
+  const [productDataset, setProductDataset] = useState({});
+  const [datasetConnect, setDatasetConnect] = useState([]);
+  const loadedRef = useRef();
+  loadedRef.current = isLoading;
+  
   const toggle = () => {
     setOpen(!open);
   };
@@ -172,6 +176,58 @@ export default function Editor({
     document.getElementById(_target).scrollIntoView(true);
   } 
 
+  const getProductDataset = (collectionId) => {
+    dispatch(getProductDatasetAction(collectionId)).then(res => {
+      if (res) {
+        console.log(res);
+        setProductDataset(res.data[0]);
+        selectedCmp.set('numOfItems', res.data[0].values.length);
+      }
+    })
+  };
+
+  const setDatasetFields = (data) => {
+    setDatasetConnect(data);
+    let selCmp = selectedCmp;
+    selectedCmp.set('datasetConnect', data);
+    if(selectedCmp.attributes.type === 'slider-product-gallery' || selectedCmp.attributes.type === 'related-products')
+    {
+      selCmp = selectedCmp.getChildAt(0);
+      setConnectModel(selectedCmp.getChildAt(0), data);
+    }
+    else
+      setConnectModel(selectedCmp, data);
+    selCmp.components().models.map((m, index) => {
+      m.components().models.map((element) => {
+        const existingItemIndex = data.findIndex(item => (item.id + (index != 0 ? ("-" + (index + 1)) : "")) === element.ccid);
+
+        if (existingItemIndex !== -1) {
+          // Update the name if the ID exists
+          if (element.get('type') == 'text') {
+            if (element.components().models.length == 0) {
+              element.set('content', productDataset.values[index][data[existingItemIndex].name]);
+            } else {
+              element.components().models[0].set('content', productDataset.values[index][data[existingItemIndex].name]);
+            }
+          }
+        } else {
+          // Add a new item if the ID doesn't exist
+          //dataConnect.push(newData);
+        }
+      });
+    });
+  }
+
+  const setConnectModel = (cmp, dataSet) => {
+    const repeaterItemCmp = cmp.getChildAt(0);
+    const tempModelsToConnect = [];
+    repeaterItemCmp.components().models.map(m => {
+      const connectedField = dataSet.filter((data) => data.id == m.ccid);
+      m.description = connectedField.name;
+      tempModelsToConnect.push(m);
+    });
+    setModelsToConnect(tempModelsToConnect);
+  }
 
   // useEffect(() =>{
   //   let interval;
@@ -275,8 +331,38 @@ export default function Editor({
       },
     });
 
+    let compoId = "";
+    gjsEditor.on('component:add', (component) => {
+      if (!loadedRef.current) {
+        if(compoId == "")
+          compoId = component.ccid;
+        const parentType = component.parent().get('type');
+        if (parentType == 'product-item' || parentType == 'repeat-item') {
+          const parentComponent = component.parent().parent();
+          const parentChildren = parentComponent.get('components');
 
+          // Filter out the current component from the children
+          const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
+          setIsLoading(true);
+          childrenWithoutCurrent.forEach((child, index) => {
+            console.log(child);
+            console.log(component.toHTML());
 
+            const copiedComponent = gjsEditor.DomComponents.addComponent({
+              tagName: component.get('tagName'),
+              type: component.get('type'),
+              content: component.get('content'),
+              style: component.get('type') == 'text' ? { padding: '10px' } : component.get('style'),
+              attributes: component.get('attributes')
+            });
+             copiedComponent.ccid = compoId + "-" + (index + 2);
+            child.append(copiedComponent);
+          });
+          setIsLoading(false);;
+        }
+        compoId = "";
+      }
+    });
     gjsEditor.on('block:drag:start', function (model) {
       setSidebarData({
         ...sidebarData,
@@ -304,13 +390,12 @@ export default function Editor({
     });
     gjsEditor.on('component:selected', (cmp) => {
       setSelectedCmp(cmp);
-      if (cmp.attributes.type === 'repeater') {
-        const repeaterItemCmp = cmp.getChildAt(0);
-        const tempModelsToConnect = [];
-        repeaterItemCmp.components().models.map(m => {
-          tempModelsToConnect.push(m);
-        });
-        setModelsToConnect(tempModelsToConnect);
+      if (cmp.attributes.type === 'repeater' || cmp.attributes.type === 'grid-product-gallery' || cmp.attributes.type === 'slider-product-gallery' || cmp.attributes.type === 'related-products') {
+        setDatasetConnect(cmp.get('datasetConnect'));
+        if(cmp.attributes.type === 'slider-product-gallery' || cmp.attributes.type === 'related-products')
+          setConnectModel(cmp.getChildAt(0), cmp.get('datasetConnect'));
+        else
+          setConnectModel(cmp, cmp.get('datasetConnect'));
       }
     });
 
@@ -495,7 +580,7 @@ export default function Editor({
                   });
                   this.set('toolbar', toolbar);
                 }
-                if (elType.id === 'repeater' || elType.id === 'gallery') {
+                if (elType.id === 'repeater' || elType.id === 'gallery' || elType.id === 'grid-product-gallery' || elType.id === 'slider-product-gallery' || elType.id === 'related-products') {
                   toolbar.unshift({
                     id: 'connect-collection',
                     command: 'connect-collection',
@@ -629,10 +714,10 @@ export default function Editor({
       setIsLoading(true);
       dispatch(getPageAction(page._id)).then((res) => {
         if (res) {
-          setIsLoading(false);
           if (editor) {
             editor.setComponents(res);
           };
+          setIsLoading(false);
         }
       })
     }
@@ -1100,7 +1185,7 @@ export default function Editor({
       <CreateCollectionModal store={store} open={openCreateColMdl} toggle={createColMdlToggle} editCollectionToggle={toggleOpenEditCollection}/>
       <CreateDatasetModal store={store} mdlData={openCreateDatasetMdl} toggle={createDatasetToggle} />
       <EditCollectionModal store={store} openCollection={openEditCollection} setOpenEditCollection={setOpenEditCollection} toggle={toggleOpenEditCollection} />
-      <ConnectCollectionModal store={store} connectData={connectData} setConnectData={setConnectData} modelsToConnect={modelsToConnect} />
+      <ConnectCollectionModal store={store} connectData={connectData} setConnectData={setConnectData} modelsToConnect={modelsToConnect} getProductDataset={getProductDataset} datasetConnect={datasetConnect} setDatasetConnect={setDatasetFields} />
       <BlogModal store ={store} isOpen={isblog} toggle={toggleBlog}/>
   </div>
   );

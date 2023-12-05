@@ -6,42 +6,45 @@ let sliderproductgallery = {
       tagName: 'sliderproductgallery',
       draggable: '*',
       droppable: true,
-      attributes: { class: 'sliderproductgallery' },
-      components: (props) => {
-        return `
-        <div class="sliderproductgallery">
-          <div class="slides">
-              <img src="http://placehold.it/150x150">
-              <img src="http://placehold.it/150x150">
-              <img src="http://placehold.it/150x150">
-              <img src="http://placehold.it/150x150">
-              <img src="http://placehold.it/150x150">
-              <img src="http://placehold.it/150x150">
-              <img src="http://placehold.it/150x150">
-              <img src="http://placehold.it/150x150">
-              <img src="http://placehold.it/150x150">
-              <img src="http://placehold.it/150x150">
-              <img src="http://placehold.it/150x150">
-              <img src="http://placehold.it/150x150">
-          </div>
-          <button class="prev" data-gjs-selectable="false">&#10094;</button>
-          <button class="next" data-gjs-selectable="false">&#10095;</button>
-        </div>
-        `;
-        const numOfItems = props.attributes.numOfItems;
-        const components = [];
-        const item = {
-          type: 'product-item',
-        };
-
-        for (let i = 0; i < numOfItems; i++) {
-          components.push(item);
-        }
-        return components;
-      },
+      attributes: { class: 'sliderproductgallery', 'data-num-of-items': 3 },
+      components: [
+        {
+          type: 'div',
+          draggable: false,
+          droppable: false,
+          attributes: { class: 'slides', 'data-gjs-selectable': false },
+          components: [
+            {
+              type: 'product-item',
+            },
+            {
+              type: 'product-item',
+            },
+            {
+              type: 'product-item',
+            },
+            // Add more product-item components as needed
+          ],
+        },
+        {
+          type: 'button',
+          draggable: false,
+          droppable: false,
+          attributes: { class: 'prev', 'data-gjs-selectable': false },
+          content: '&#10094;'
+        },
+        {
+          type: 'button',
+          draggable: false,
+          droppable: false,
+          attributes: { class: 'next', 'data-gjs-selectable': false },
+          content: '&#10095;'
+        },
+      ],
       // components: [],
-      numPerRow: 4,
-      numOfItems: 8,
+      numPerRow: 3,
+      numOfItems: 3,
+      datasetConnect: [],
       traits: [
         {
           type: 'number',
@@ -57,18 +60,26 @@ let sliderproductgallery = {
         }
       ],
       script: function () {
+        function getNumOfItems() {
+          //console.log(props);
+          var element = document.querySelector('.sliderproductgallery');
+          var numOfItems = parseInt(element.getAttribute('data-num-of-items'), 10);
+          return numOfItems;
+        }
         var slideIndex = 0;
-        document.getElementsByClassName('prev')[0].addEventListener('click', function() {
+        document.getElementsByClassName('prev')[0].addEventListener('click', function () {
           moveSlide(-1);
         });
-        document.getElementsByClassName('next')[0].addEventListener('click', function() {
+        document.getElementsByClassName('next')[0].addEventListener('click', function () {
           moveSlide(1);
         });
+        //var numOfItems = this.model.get('numOfItems');
         function moveSlide(step) {
-          var totalImages = 9;
-          var imagesToShow = 4;
+          var totalImages = getNumOfItems() - 2;
+          if (totalImages <= 0) return;
+          var imagesToShow = 3;
           slideIndex = (slideIndex + step + totalImages) % totalImages; // ensures the index loops around
-
+          console.log(slideIndex);
           var offset = -(slideIndex * 100) / imagesToShow; // calculates the percentage to move
           document.querySelector(".slides").style.transform = 'translateX(' + offset + '%)';
         }
@@ -77,27 +88,30 @@ let sliderproductgallery = {
         moveSlide(0);
       },
       styles: `.sliderproductgallery {
-                  position: relative;
-                  width: 80%;
-                  /* Adjust this width based on your layout */
-                  overflow: hidden;
-                  /* Ensures only the part of .slides within the container is visible */
+                position: relative;
+                width: 1010px;
+                /* Adjust this width based on your layout */
+                overflow: hidden;
+                display: block;
+                padding: 0px 40px;
+                /* Ensures only the part of .slides within the container is visible */
               }
 
               .slides {
-                  display: flex;
-                  /* Lays out the images in a horizontal row */
-                  transition: transform 0.5s ease;
-                  /* Smooth transition for sliding effect */
+                width: 100%;
+                display: flex;
+                /* Lays out the images in a horizontal row */
+                transition: transform 0.5s ease;
+                /* Smooth transition for sliding effect */
               }
 
               .slides img {
-                  width: 25%;
-                  /* Each image takes up 25% of the carousel width */
-                  flex-shrink: 0;
-                  /* Prevents images from shrinking */
-                  object-fit: cover;
-                  /* Adjusts the image size to cover the area */
+                width: 25%;
+                /* Each image takes up 25% of the carousel width */
+                flex-shrink: 0;
+                /* Prevents images from shrinking */
+                object-fit: cover;
+                /* Adjusts the image size to cover the area */
               }
 
               /* Styling for 'Previous' and 'Next' buttons */
@@ -152,7 +166,6 @@ let sliderproductgallery = {
                   background-color: rgba(0, 0, 0, 1);
               }`,
     },
-
   },
   view: {
     init() {
@@ -168,19 +181,22 @@ let sliderproductgallery = {
     },
 
     handleChangeNumOfItems(e) {
-      let comps = this.model.get('components');
-      while (comps.length > 0) {
-        comps.pop();
-      };
-      const item = {
-        type: 'product-item',
-      };
       const numOfItems = this.model.get('numOfItems');
-      const numPerRow = this.model.get('numPerRow');
-      for (let i = 0; i < numOfItems; i++) {
-        comps.push(item)
+      this.model.setAttributes({ class: 'sliderproductgallery', 'data-num-of-items': numOfItems });
+      const slidesComponent = this.model.components().find(comp => comp.getAttributes().class === 'slides');
+
+      if (slidesComponent) {
+        // Remove all existing 'product-item' components
+        slidesComponent.components().reset();
+
+        // Add new 'product-item' components based on numOfItems
+        for (let i = 0; i < numOfItems; i++) {
+          slidesComponent.components().add({
+            type: 'product-item',
+          });
+        }
       }
-      comps.parent.addStyle({ 'grid-template-columns': `repeat(${numPerRow}, 1fr)` });
+
       this.render();
     }
   }

@@ -20,8 +20,9 @@ let gridproductgallery = {
         return components;
       },
       // components: [],
-      numPerRow: 4,
-      numOfItems: 8,
+      numPerRow: 3,
+      numOfItems: 3,
+      datasetConnect: [],
       traits: [
         {
           type: 'number',
