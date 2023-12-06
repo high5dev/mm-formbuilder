@@ -930,7 +930,7 @@ export default function Editor({
                           )
                         }
                         {
-                          sidebarData.menu.id != 'quick-add' && sidebarData.menu.id != 'blog' && sidebarData.menu.id !== 'cms' && sidebarData.menu.id !== 'store' (
+                          sidebarData.menu.id != 'quick-add' && sidebarData.menu.id != 'blog' && sidebarData.menu.id !== 'cms' && sidebarData.menu.id !== 'store' && (
                           <div className='submenu-and-element d-flex'>
                             <div className="submenu-list">
                               {
