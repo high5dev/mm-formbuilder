@@ -191,11 +191,12 @@ export default function Editor({
   };
 
   const setDatasetFields = (data) => {
+    setIsLoading(true);
+    selectedCmp.set('cloning', true);
     setDatasetConnect(data);
     let selCmp = selectedCmp;
     selectedCmp.set('datasetConnect', data);
-    if(selectedCmp.attributes.type === 'slider-product-gallery' || selectedCmp.attributes.type === 'related-products')
-    {
+    if (selectedCmp.attributes.type === 'slider-product-gallery' || selectedCmp.attributes.type === 'related-products') {
       selCmp = selectedCmp.getChildAt(0);
       setConnectModel(selectedCmp.getChildAt(0), data);
     }
@@ -220,6 +221,8 @@ export default function Editor({
         }
       });
     });
+    selectedCmp.set('cloning', false);
+    setIsLoading(false);
   }
 
   const setConnectModel = (cmp, dataSet) => {
@@ -342,36 +345,72 @@ export default function Editor({
     });
 
     let compoId = "";
+    const setChildIds = (originalComponent, clonedComponent, i) => {
+      var originalChildren = originalComponent.get('components');
+      var clonedChildren = clonedComponent.get('components');
+
+      originalChildren.each(function (originalChild, index) {
+        var clonedChild = clonedChildren.at(index);
+        clonedChild.ccid = originalChild.ccid.split('-')[0] + "a" + (i == 0 ? "" : ("-" + (i + 1)));
+
+        // Recursive call for any nested children
+        if (originalChild.get('components').length > 0) {
+          setChildIds(originalChild, clonedChild);
+        }
+      });
+    }
+
+
     gjsEditor.on('component:add', (component) => {
-      if (!loadedRef.current) {
+      if (!loadedRef.current && component.get('type') != 'image') {
+        console.log(component);
         if (compoId == "")
           compoId = component.ccid;
         const parentType = component.parent().get('type');
         
         if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
-          const parentComponent = component.parent().parent();
-          const parentChildren = parentComponent.get('components');
-
-          // Filter out the current component from the children
-          const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
           setIsLoading(true);
-          childrenWithoutCurrent.forEach((child, index) => {
-            console.log(child);
-            console.log(component.toHTML());
+          let numOfItems;
+          if(component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
+            numOfItems = component.parent().parent().get('numOfItems');
+          } else {
+            numOfItems = component.parent().parent().parent().get('numOfItems');
+          }
+          let originalComp = component.parent().clone();
+          let comps = component.parent().parent().get('components');
+          for (let i = comps.models.length - 1; i >= 0; i--) {
+            comps.models[i].remove();
+          }
 
-            const copiedComponent = component.clone();
-            copiedComponent.ccid = compoId + "-" + (index + 2);
-            if(component.get('type') == 'text')
-              copiedComponent.set('style', { padding: "10px" });
-            child.append(copiedComponent);
-          });
+          for (let i = 0; i < numOfItems; i++) {
+            const item = originalComp.clone();
+
+            setChildIds(originalComp, item, i);
+            comps.push(item);
+          }
+          setIsLoading(false);
+
+          // const parentComponent = component.parent().parent();
+          // const parentChildren = parentComponent.get('components');
+
+          // // Filter out the current component from the children
+          // const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
+          
+          // childrenWithoutCurrent.forEach((child, index) => {
+
+          //   const copiedComponent = component.clone();
+          //   copiedComponent.ccid = compoId + "-" + (index + 2);
+          //   if(component.get('type') == 'text')
+          //     copiedComponent.set('style', { padding: "10px" });
+          //   child.append(copiedComponent);
+          // });
           setIsLoading(false);
         }
         compoId = "";
       }
     });
     gjsEditor.on('component:remove', (component) => {
-      if (!loadedRef.current) {
+      if (!loadedRef.current && component.changed != {}) {
         if (compoId == "")
           compoId = component.ccid.split('-')[0];
         const parentType = component.parent().get('type');
@@ -395,31 +434,39 @@ export default function Editor({
         compoId = "";
       }
     });
-    // gjsEditor.on('component:update', (component) => {
-    //   if (!loadedRef.current) {
-    //     const parentType = component.parent().get('type');
+    gjsEditor.on('component:update', (component) => {
+      console.log(component);
+      if (!loadedRef.current) {
+        try {
+          const parentType = component.parent().get('type');
 
-    //     if (parentType == 'product-item' || parentType == 'repeat-item') {
-    //       if(component.parent().parent().get('tagName') == 'gridproductgallery') {
+          if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
+            setIsLoading(true);
+            let numOfItems;
+            if (component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
+              numOfItems = component.parent().parent().get('numOfItems');
+            } else {
+              numOfItems = component.parent().parent().parent().get('numOfItems');
+            }
+            let originalComp = component.parent().clone();
+            let comps = component.parent().parent().get('components');
+            for (let i = comps.models.length - 1; i >= 0; i--) {
+              comps.models[i].remove();
+            }
 
-    //       }
-    //       const parentComponent = component.parent().parent();
-    //       const parentChildren = parentComponent.get('components');
+            for (let i = 0; i < numOfItems; i++) {
+              const item = originalComp.clone();
 
-    //       // Filter out the current component from the children
-    //       const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
-    //       setIsLoading(true);
-    //       childrenWithoutCurrent.forEach((child, index) => {
-    //         child.get('components').models.forEach((element) => {
-    //           if (element.ccid.includes(compoId)) {
-    //             element.remove();
-    //           }
-    //         })
-    //       });
-    //       setIsLoading(false);
-    //     }
-    //   }
-    // });
+              setChildIds(originalComp, item, i);
+              comps.push(item);
+            }
+            setIsLoading(false);
+          }
+        } catch (e) {
+
+        }
+      }
+    });
     gjsEditor.on('block:drag:start', function (model) {
       setSidebarData({
         ...sidebarData,
