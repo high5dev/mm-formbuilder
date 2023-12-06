@@ -654,6 +654,14 @@ $layout-padding: 18px;
   background-color: #949494;
 }
 
+.loadingLayer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(19, 23, 32, 0.6);
+  z-index: 999999;
+}
+
 .store-add {
   .store-item {
     >.text-sm {

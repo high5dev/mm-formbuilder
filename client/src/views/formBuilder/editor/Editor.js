@@ -100,6 +100,7 @@ export default function Editor({
   const [editor, setEditor] = useState(null);
   const [blockManager, setBlockManager] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isStoreLoading, setIsStoreLoading] = useState(true);
   const [selectedCmp, setSelectedCmp] = useState(null);
   const [isRunning, setIsRunning] = useState(true);
   const [isPublishModal, setIsPublishModal]=useState(false);
@@ -116,7 +117,7 @@ export default function Editor({
   const [datasetConnect, setDatasetConnect] = useState([]);
   const [selectedDataset, setSelectedDataSet] = useState({});
   const loadedRef = useRef();
-  loadedRef.current = isLoading;
+  loadedRef.current = isStoreLoading;
   
   const toggle = () => {
     setOpen(!open);
@@ -191,7 +192,7 @@ export default function Editor({
   };
 
   const setDatasetFields = (data) => {
-    setIsLoading(true);
+    setIsStoreLoading(true);
     selectedCmp.set('cloning', true);
     setDatasetConnect(data);
     let selCmp = selectedCmp;
@@ -222,7 +223,7 @@ export default function Editor({
       });
     });
     selectedCmp.set('cloning', false);
-    setIsLoading(false);
+    setIsStoreLoading(false);
   }
 
   const setConnectModel = (cmp, dataSet) => {
@@ -369,7 +370,7 @@ export default function Editor({
         const parentType = component.parent().get('type');
         
         if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
-          setIsLoading(true);
+          setIsStoreLoading(true);
           let numOfItems;
           if(component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
             numOfItems = component.parent().parent().get('numOfItems');
@@ -388,7 +389,7 @@ export default function Editor({
             setChildIds(originalComp, item, i);
             comps.push(item);
           }
-          setIsLoading(false);
+          setIsStoreLoading(false);
 
           // const parentComponent = component.parent().parent();
           // const parentChildren = parentComponent.get('components');
@@ -404,7 +405,7 @@ export default function Editor({
           //     copiedComponent.set('style', { padding: "10px" });
           //   child.append(copiedComponent);
           // });
-          setIsLoading(false);
+          // setIsLoading(false);
         }
         compoId = "";
       }
@@ -421,7 +422,7 @@ export default function Editor({
 
           // Filter out the current component from the children
           const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
-          setIsLoading(true);
+          setIsStoreLoading(true);
           childrenWithoutCurrent.forEach((child, index) => {
             child.get('components').models.forEach((element) => {
               if (element.ccid.includes(compoId)) {
@@ -429,7 +430,7 @@ export default function Editor({
               }
             })
           });
-          setIsLoading(false);
+          setIsStoreLoading(false);
         }
         compoId = "";
       }
@@ -441,7 +442,7 @@ export default function Editor({
           const parentType = component.parent().get('type');
 
           if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
-            setIsLoading(true);
+            setIsStoreLoading(true);
             let numOfItems;
             if (component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
               numOfItems = component.parent().parent().get('numOfItems');
@@ -460,7 +461,7 @@ export default function Editor({
               setChildIds(originalComp, item, i);
               comps.push(item);
             }
-            setIsLoading(false);
+            setIsStoreLoading(false);
           }
         } catch (e) {
 
@@ -817,12 +818,14 @@ export default function Editor({
   useEffect(() => {
     if (page) {
       setIsLoading(true);
+      setIsStoreLoading(true);
       dispatch(getPageAction(page._id)).then((res) => {
         if (res) {
           if (editor) {
             editor.setComponents(res);
           };
           setIsLoading(false);
+          setIsStoreLoading(false);
         }
       })
     }
@@ -1277,6 +1280,11 @@ export default function Editor({
 
       <div id="editor"></div>
     </div>
+      {isStoreLoading ? <div className='loadingLayer'>
+        <div className="d-flex  justify-content-center mb-2 mt-2" style={{ position: 'absolute', top: "50%", left: "50%", zIndex: 10 }}>
+          <Spinner color="secondary">Loading...</Spinner>
+        </div>
+      </div> : <></>}
     <div className="property-sidebar" style={{display:rsidebarOpen?'block':'none'}}>
       <PerfectScrollbar
         className="scrollable-content"
