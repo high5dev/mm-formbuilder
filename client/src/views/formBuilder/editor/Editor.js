@@ -373,7 +373,7 @@ export default function Editor({
           compoId = component.ccid.split('-')[0];
         const parentType = component.parent().get('type');
 
-        if (parentType == 'product-item' || parentType == 'repeat-item') {
+        if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
           const parentComponent = component.parent().parent();
           const parentChildren = parentComponent.get('components');
 

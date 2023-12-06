@@ -89,7 +89,7 @@ let gridproductgallery = {
             }
           });
         }
-        setChildIds(slidesComponent.components().models[0], item);
+        setChildIds(this.model.get('components').models[0], item);
         comps.push(item);
       }
       comps.parent.addStyle({ 'grid-template-columns': `repeat(${numPerRow}, 1fr)` });
