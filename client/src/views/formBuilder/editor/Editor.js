@@ -56,6 +56,7 @@ import CreateDatasetModal from './cms/CreateDatasetModal';
 import ConnectCollectionModal from './elements/toolbar/ConnectCollectionModal';
 import BlogModal from './topNav/blog/BlogModal'
 import { GiConsoleController } from 'react-icons/gi';
+import Sidebar from './Sidebar';
 export default function Editor({
   isblog,
   setIsBlog,
@@ -88,6 +89,8 @@ export default function Editor({
   setSelectedCategory,
   openAddElementMdl,
   setOpenAddElementMdl,
+  addSideBarOpen,
+  setAddSideBarOpen,
 }) {
   const [openCreateForm, setOpenCreateForm] = useState();
   const {id}=useParams();
@@ -732,270 +735,299 @@ export default function Editor({
         options={{ suppressScrollX: true }}
         style={{ height: `calc(100vh - 120px)` }}
       >
-       <Collapse isOpen={sidebarData.isOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{height: '100%'}}>
-          <div className="expanded-header">
-            <span>{sidebarData.menu.name}</span>
-            <div>
-              <span className="header-icon">
-                <RiQuestionMark size={16} />
-              </span>
-              <span className="header-icon" onClick={handleSidebarOpen}>
-                <X size={16} />
-              </span>
-            </div>
-          </div>
-          <div className="expanded-content">
-            <div id="blocks">
-              {
-                sidebarData.menu.id === 'quick-add' && (
-                  <div className="quick-add">
-                    {editor?.BlockManager.blocks.filter(e => e.get('category') === 'Basic').map((block) => (
-                      <div
-                        key={block.getId()}
-                        draggable
-                        className='d-flex flex-column align-items-center border border-secondary rounded cursor-pointer py-2 px-1 transition-colors mt-1 mb-1'
-                        onDragStart={(ev) => {
-                          ev.stopPropagation();
-                          blockManager.dragStart(block, ev.nativeEvent);
-                        }}
-                        onDragEnd={(ev) => {
-                          ev.stopPropagation();
-                          blockManager.dragStop(false);
-                        }}
-                      >
-                        <div
-                          style={{width: 30, height: 30}}
-                          dangerouslySetInnerHTML={{ __html: block.getMedia() }}
-                        />
-                        <div
-                          className="text-sm text-center w-full mt-1"
-                          title={block.getLabel()}
-                        >
-                          {block.getLabel()}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  )
-                }
-                {
-                  sidebarData.menu.id != 'quick-add' && sidebarData.menu.id != 'blog' && sidebarData.menu.id !== 'cms' && (
-                  <div className='submenu-and-element d-flex'>
-                    <div className="submenu-list">
-                      {
-                        sidebarData?.menu?.subMenu?.map(sub => {
-                          const categories = [];
-                          const tempBlocks = [];
-                          editor?.BlockManager.blocks.map((e) => {
-                            if (e.get('menu') === `${sidebarData.menu.id}-${sub.id}` && categories.findIndex(c => c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`) === -1) {
-                              categories.push(`${sidebarData.menu.id}-${sub.id}-${e.get('label')}`);
-                              tempBlocks.push(e);
-                            }
-                          });
-                          
-                          const returnComponent = <>
-                            <h5 className='submenu-item'>{sub.name}</h5>
-                            {
-                              tempBlocks.map(b => {
-                                return (
-                                  <div
-                                    className={selectedCategory === `${sidebarData.menu.id}-${sub.id}-${b.get('label')}` ? 'selected-submenu-category' : 'submenu-category'}
-                                    onClick={() => {setSelectedCategory(`${sidebarData.menu.id}-${sub.id}-${b.get('label')}`)}}
-                                    >
-                                    {b.get('label')}
-                                  </div>
-                                );
-                              })
-                            }
-                          </>
-                          return returnComponent;
-                        })
-                      }
+        <Collapse isOpen={addSideBarOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{height: '100%'}} className='d-flex'>
+          {
+            tab !== 'Pages' && <>
+              <Sidebar
+                sidebarData={sidebarData}
+                setSidebarData={setSidebarData}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+              />
+              <Collapse isOpen={sidebarData.isOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{height: '100%'}} className='d-flex'>
+                <div>
+                  <div className="expanded-header">
+                    <span>{sidebarData.menu.name}</span>
+                    <div>
+                      <span className="header-icon">
+                        <RiQuestionMark size={16} />
+                      </span>
+                      <span className="header-icon" onClick={handleSidebarOpen}>
+                        <X size={16} />
+                      </span>
                     </div>
-                    <div className="element-container">
+                  </div>
+                  <div className="expanded-content">
+                    <div id="blocks">
                       {
-                        blockManager?.blocks?.filter(e => e.get('category').id === selectedCategory).map(b => {
-                          return (
-                            <div className="element">
-                              <img width="280" src={b.get('media')} />
+                        sidebarData.menu.id === 'quick-add' && (
+                          <div className="quick-add">
+                            {editor?.BlockManager.blocks.filter(e => e.get('category') === 'Basic').map((block) => (
                               <div
+                                key={block.getId()}
                                 draggable
-                                onDragStart={(e) => {
-                                  e.stopPropagation();
-                                  blockManager.dragStart(b, e.nativeEvent);
+                                className='d-flex flex-column align-items-center border border-secondary rounded cursor-pointer py-2 px-1 transition-colors mt-1 mb-1'
+                                onDragStart={(ev) => {
+                                  ev.stopPropagation();
+                                  blockManager.dragStart(block, ev.nativeEvent);
                                 }}
-                                onDragEnd={(e) => {
-                                  e.stopPropagation();
+                                onDragEnd={(ev) => {
+                                  ev.stopPropagation();
                                   blockManager.dragStop(false);
                                 }}
                               >
+                                <div
+                                  style={{width: 30, height: 30}}
+                                  dangerouslySetInnerHTML={{ __html: block.getMedia() }}
+                                />
+                                <div
+                                  className="text-sm text-center w-full mt-1"
+                                  title={block.getLabel()}
+                                >
+                                  {block.getLabel()}
+                                </div>
                               </div>
-                            </div>);
-                        })
-                      }
-                    </div>
-                  </div>
-                  )
-                }
-                {
-                  sidebarData.menu.id === 'cms' && (
-                    <>
-                      {viewCMSMenu && <div className="cms-element" style={{width: 350}}>
-                        {
-                          sidebarData?.menu?.subMenu?.map(sub => {
-                            return (
-                              <div className='my-1'>
-                                {sub.menu && <h5 className='ps-1 pt-2' color='black'>{sub.menu}</h5>}
-                                {
-                                  sub.data.map(e => {
-                                    return (
-                                      <div
-                                        className='d-flex align-items-center px-2 py-1 cms-menu-item'
-                                        onClick={() => {
-                                          if (e.id === 'add-preset') {
-
-                                          }
-                                          if (e.id === 'create-collection') {
-                                            createColMdlToggle();
-                                          }
-                                          if (e.id === 'dataset') {
-                                            createDatasetToggle();
-                                          }
-                                          if (e.id === 'form-dataset') {
-                                            createDatasetToggle({isFormDataset: true});
-                                          }
-                                          if (e.id === 'rich-content') {
-                                            
-                                          }
-                                        }}
-                                        >
-                                        <img className="me-1" width="70" height="70" src={e.icon}/>
-                                        <div>
-                                          <div style={{color: 'black', fontWeight: 500, fontSize: 15}}>{e.title}</div>
-                                          <div style={{fontSize: 13}}>{e.description}</div>
-                                        </div>
-                                        <div style={{width: 50, height: 50}} className='d-flex align-items-center'>
-                                          {(e.id === 'add-preset' || e.id === 'create-collection') ?
-                                            <CiCircleChevRight className='ms-1 cms-menu-icon' size={27} />
-                                            : <CiCirclePlus className='ms-1 cms-menu-icon' size={27} />
-                                          }
-                                        </div>
-                                      </div>
-                                    );
-                                  })
-                                }
-                              </div>
-                            )
-                          })
-                        }                        
-                      </div>}
-                      {
-                        !viewCMSMenu && <div className="cms-element d-flex flex-column align-items-center">
-                          <img width="350" src={cmsimg}/>
-                          <h2 className='mt-3'>Use the CMS</h2>
-                          <h4 className='mb-3'>Easily manage your site content</h4>
-                          <div>
-                            <h6 className='mt-1'><Check size={20} color='green'/> Set up content collections</h6>
-                            <h6 className='mt-1'><Check size={20} color='green'/> Create 100s of dynamic pages</h6>
-                            <h6 className='mt-1'><Check size={20} color='green'/> Collect info from site visitors</h6>
+                            ))}
                           </div>
-                          <Button color='primary' className='round mt-3' onClick={() => {setViewCMSMenu(true)}}>Add to Site</Button>
-                        </div>
-                      }
-                    </>
-                  )
-                }
-                {
-                  sidebarData.menu.id === 'blog' && (
-                    <div className='submenu-and-element d-flex'>
-                    <div className="submenu-list">
-                      {
-                        sidebarData?.menu?.subMenu?.map(sub => {
-                          const returnComponent = <>
-                            <div className='submenu-item' onClick={()=>scrollToTarget(sub.name)}>{sub.name}</div>
-                          </>
-                          return returnComponent;
-                        })
-                      }
-                    </div>
-                    <div className="element-container">
-                      {
-                         sidebarData.menu.id === 'blog' && sidebarData?.menu?.subMenu?.map(sub =>{
-                          let tempblocks=[];
-                          blockManager?.blocks?.filter(e => e.get('label')=== sub.name).map((b) =>{
-                            tempblocks.push(b);
-                          });
-                          const returnComponent=
-                            <>
-                              <div className='fw-bold text-black p-2' id={sub.name}>
-                                {sub.name}
-                              </div>
+                          )
+                        }
+                        {
+                          sidebarData.menu.id != 'quick-add' && sidebarData.menu.id != 'blog' && sidebarData.menu.id !== 'cms' && (
+                          <div className='submenu-and-element d-flex'>
+                            <div className="submenu-list">
                               {
-                                sub.name!="RSS Button" && 
-                                <div className=''>
-                                  {tempblocks.map((b)=>{
-                                  return(
+                                sidebarData?.menu?.subMenu?.map(sub => {
+                                  const categories = [];
+                                  const tempBlocks = [];
+                                  editor?.BlockManager.blocks.map((e) => {
+                                    if (e.get('menu') === `${sidebarData.menu.id}-${sub.id}` && categories.findIndex(c => c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`) === -1) {
+                                      categories.push(`${sidebarData.menu.id}-${sub.id}-${e.get('label')}`);
+                                      tempBlocks.push(e);
+                                    }
+                                  });
+                                  
+                                  const returnComponent = <>
+                                    <h5 className='submenu-item'>{sub.name}</h5>
+                                    {
+                                      tempBlocks.map(b => {
+                                        return (
+                                          <div
+                                            className={selectedCategory === `${sidebarData.menu.id}-${sub.id}-${b.get('label')}` ? 'selected-submenu-category' : 'submenu-category'}
+                                            onClick={() => {setSelectedCategory(`${sidebarData.menu.id}-${sub.id}-${b.get('label')}`)}}
+                                            >
+                                            {b.get('label')}
+                                          </div>
+                                        );
+                                      })
+                                    }
+                                  </>
+                                  return returnComponent;
+                                })
+                              }
+                            </div>
+                            <div className="element-container">
+                              {
+                                blockManager?.blocks?.filter(e => e.get('category').id === selectedCategory).map(b => {
+                                  return (
                                     <div className="element">
                                       <img width="280" src={b.get('media')} />
-                                      {/* <iframe srcDoc={b.get('content')}/> */}
                                       <div
                                         draggable
                                         onDragStart={(e) => {
                                           e.stopPropagation();
                                           blockManager.dragStart(b, e.nativeEvent);
-                                        } }
+                                        }}
                                         onDragEnd={(e) => {
                                           e.stopPropagation();
                                           blockManager.dragStop(false);
-                                        } }
+                                        }}
                                       >
                                       </div>
-                                    </div>
-                                    )
-                                 })                           
-                                }
-                                    </div>
+                                    </div>);
+                                })
                               }
-                              
-                              
-                                {sub.name==="RSS Button" && 
-                                <div className='d-flex'>
-                                  {
-                                    tempblocks&& tempblocks.map((b)=>{
-                                      return(
-                                        <div className="element" style={{marginBottom:'10px'}}>
-                                          <img width="40" src={b.get('media')} />
-                                          {/* <iframe srcDoc={b.get('content')}/> */}
-                                          <div
-                                            draggable
-                                            onDragStart={(e) => {
-                                              e.stopPropagation();
-                                              blockManager.dragStart(b, e.nativeEvent);
-                                            } }
-                                            onDragEnd={(e) => {
-                                              e.stopPropagation();
-                                              blockManager.dragStop(false);
-                                            } }
-                                          >
-                                          </div>
-                                        </div>
-                                        )
-                                      })  
-                                  }
+                            </div>
+                          </div>
+                          )
+                        }
+                        {
+                          sidebarData.menu.id === 'cms' && (
+                            <>
+                              {viewCMSMenu && <div className="cms-element" style={{width: 350}}>
+                                {
+                                  sidebarData?.menu?.subMenu?.map(sub => {
+                                    return (
+                                      <div className='my-1'>
+                                        {sub.menu && <h5 className='ps-1 pt-2' color='black'>{sub.menu}</h5>}
+                                        {
+                                          sub.data.map(e => {
+                                            return (
+                                              <div
+                                                className='d-flex align-items-center px-2 py-1 cms-menu-item'
+                                                onClick={() => {
+                                                  if (e.id === 'add-preset') {
+
+                                                  }
+                                                  if (e.id === 'create-collection') {
+                                                    createColMdlToggle();
+                                                  }
+                                                  if (e.id === 'dataset') {
+                                                    createDatasetToggle();
+                                                  }
+                                                  if (e.id === 'form-dataset') {
+                                                    createDatasetToggle({isFormDataset: true});
+                                                  }
+                                                  if (e.id === 'rich-content') {
+                                                    
+                                                  }
+                                                }}
+                                                >
+                                                <img className="me-1" width="70" height="70" src={e.icon}/>
+                                                <div>
+                                                  <div style={{color: 'black', fontWeight: 500, fontSize: 15}}>{e.title}</div>
+                                                  <div style={{fontSize: 13}}>{e.description}</div>
+                                                </div>
+                                                <div style={{width: 50, height: 50}} className='d-flex align-items-center'>
+                                                  {(e.id === 'add-preset' || e.id === 'create-collection') ?
+                                                    <CiCircleChevRight className='ms-1 cms-menu-icon' size={27} />
+                                                    : <CiCirclePlus className='ms-1 cms-menu-icon' size={27} />
+                                                  }
+                                                </div>
+                                              </div>
+                                            );
+                                          })
+                                        }
+                                      </div>
+                                    )
+                                  })
+                                }                        
+                              </div>}
+                              {
+                                !viewCMSMenu && <div className="cms-element d-flex flex-column align-items-center">
+                                  <img width="350" src={cmsimg}/>
+                                  <h2 className='mt-3'>Use the CMS</h2>
+                                  <h4 className='mb-3'>Easily manage your site content</h4>
+                                  <div>
+                                    <h6 className='mt-1'><Check size={20} color='green'/> Set up content collections</h6>
+                                    <h6 className='mt-1'><Check size={20} color='green'/> Create 100s of dynamic pages</h6>
+                                    <h6 className='mt-1'><Check size={20} color='green'/> Collect info from site visitors</h6>
+                                  </div>
+                                  <Button color='primary' className='round mt-3' onClick={() => {setViewCMSMenu(true)}}>Add to Site</Button>
                                 </div>
-                         
-                                }
-                            
-                            </>;
-                            return returnComponent;
-                          
-                         })
-                      }
+                              }
+                            </>
+                          )
+                        }
+                        {
+                          sidebarData.menu.id === 'blog' && (
+                            <div className='submenu-and-element d-flex'>
+                            <div className="submenu-list">
+                              {
+                                sidebarData?.menu?.subMenu?.map(sub => {
+                                  const returnComponent = <>
+                                    <div className='submenu-item' onClick={()=>scrollToTarget(sub.name)}>{sub.name}</div>
+                                  </>
+                                  return returnComponent;
+                                })
+                              }
+                            </div>
+                            <div className="element-container">
+                              {
+                                sidebarData.menu.id === 'blog' && sidebarData?.menu?.subMenu?.map(sub =>{
+                                  let tempblocks=[];
+                                  blockManager?.blocks?.filter(e => e.get('label')=== sub.name).map((b) =>{
+                                    tempblocks.push(b);
+                                  });
+                                  const returnComponent=
+                                    <>
+                                      <div className='fw-bold text-black p-2' id={sub.name}>
+                                        {sub.name}
+                                      </div>
+                                      {
+                                        sub.name!="RSS Button" && 
+                                        <div className=''>
+                                          {tempblocks.map((b)=>{
+                                          return(
+                                            <div className="element">
+                                              <img width="280" src={b.get('media')} />
+                                              {/* <iframe srcDoc={b.get('content')}/> */}
+                                              <div
+                                                draggable
+                                                onDragStart={(e) => {
+                                                  e.stopPropagation();
+                                                  blockManager.dragStart(b, e.nativeEvent);
+                                                } }
+                                                onDragEnd={(e) => {
+                                                  e.stopPropagation();
+                                                  blockManager.dragStop(false);
+                                                } }
+                                              >
+                                              </div>
+                                            </div>
+                                            )
+                                        })                           
+                                        }
+                                            </div>
+                                      }
+                                      
+                                      
+                                        {sub.name==="RSS Button" && 
+                                        <div className='d-flex'>
+                                          {
+                                            tempblocks&& tempblocks.map((b)=>{
+                                              return(
+                                                <div className="element" style={{marginBottom:'10px'}}>
+                                                  <img width="40" src={b.get('media')} />
+                                                  {/* <iframe srcDoc={b.get('content')}/> */}
+                                                  <div
+                                                    draggable
+                                                    onDragStart={(e) => {
+                                                      e.stopPropagation();
+                                                      blockManager.dragStart(b, e.nativeEvent);
+                                                    } }
+                                                    onDragEnd={(e) => {
+                                                      e.stopPropagation();
+                                                      blockManager.dragStop(false);
+                                                    } }
+                                                  >
+                                                  </div>
+                                                </div>
+                                                )
+                                              })  
+                                          }
+                                        </div>
+                                
+                                        }
+                                    
+                                    </>;
+                                    return returnComponent;
+                                  
+                                })
+                              }
+                            </div>
+                          </div>
+                          )
+                        }                
                     </div>
                   </div>
-                  )
-                }                
+                </div>
+              </Collapse>
+            </>
+          }
+          
+          <div style={{display:tab==='Pages'?'block':'none', height: '100%'}}>
+            <div className="sidebar-header px-1">
+              <span className="px-1 fs-5 fw-bolder text-black">{tab}</span>
+              <span>
+                <X
+                  size={20}
+                  onClick={(e) => {
+                    setAddSideBarOpen(false);
+                  }}
+                />
+              </span>
             </div>
+            <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} page={page} setPage={setPage}/>
           </div>
         </Collapse>
       </PerfectScrollbar>
@@ -1033,9 +1065,6 @@ export default function Editor({
           </div>
           <div style={{display:tab==='Traits'?'block':'none'}}>
             <div id="trait-manager-container" />
-          </div>
-          <div style={{display:tab==='Pages'?'block':'none'}}>
-            <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} page={page} setPage={setPage}/>
           </div>
         </PerfectScrollbar>
       </div>

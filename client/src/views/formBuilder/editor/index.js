@@ -25,6 +25,7 @@ export default function Index() {
     menu: '',
   });
   const [rsidebarOpen, setRSidebarOpen]=useState(false);
+  const [addSideBarOpen, setAddSideBarOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const { stepId } = useParams();
   const [openAddElementMdl, setOpenAddElementMdl] = useState(false);
@@ -66,15 +67,19 @@ export default function Index() {
             store={store}
             openAddElementMdl={openAddElementMdl}
             setOpenAddElementMdl={setOpenAddElementMdl}
+            addSideBarOpen={addSideBarOpen}
+            setAddSideBarOpen={setAddSideBarOpen}
+            sidebarData={sidebarData}
+            setSidebarData={setSidebarData}
           />
         </div>
         <div className="land-body d-flex">
-          <Sidebar
+          {/* <Sidebar
             sidebarData={sidebarData}
             setSidebarData={setSidebarData}
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
-          /> 
+          />  */}
           <div className="editor-content">
             <Editor
               isblog={isblog}
@@ -112,6 +117,8 @@ export default function Index() {
               setSelectedCategory={setSelectedCategory}
               openAddElementMdl={openAddElementMdl}
               setOpenAddElementMdl={setOpenAddElementMdl}
+              addSideBarOpen={addSideBarOpen}
+              setAddSideBarOpen={setAddSideBarOpen}
             />
           </div>
         </div>
