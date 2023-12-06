@@ -45,6 +45,8 @@ let relatedproducts = {
       numPerRow: 3,
       numOfItems: 3,
       datasetConnect: [],
+      selectedDataset: {},
+      cloning: false,
       traits: [
         {
           type: 'number',
@@ -181,23 +183,43 @@ let relatedproducts = {
     },
 
     handleChangeNumOfItems(e) {
+      this.model.set('cloning', true);
       const numOfItems = this.model.get('numOfItems');
-      this.model.setAttributes({ class: 'relatedproducts', 'data-num-of-items': numOfItems });
-      const slidesComponent = this.model.components().find(comp => comp.getAttributes().class === 'slides');
+      this.model.setAttributes({ class: 'sliderproductgallery', 'data-num-of-items': numOfItems });
+      var slidesComponent = this.model.components().find(comp => comp.getAttributes().class === 'slides');
 
       if (slidesComponent) {
         // Remove all existing 'product-item' components
-        slidesComponent.components().reset();
+        while (slidesComponent.components().length > 1) {
+          slidesComponent.components().pop();
+        };
 
         // Add new 'product-item' components based on numOfItems
-        for (let i = 0; i < numOfItems; i++) {
-          slidesComponent.components().add({
-            type: 'product-item',
-          });
+        for (let i = 1; i < numOfItems; i++) {
+          var item = slidesComponent.components().models[0].clone();
+          function setChildIds(originalComponent, clonedComponent) {
+            var originalChildren = originalComponent.get('components');
+            var clonedChildren = clonedComponent.get('components');
+
+            originalChildren.each(function (originalChild, index) {
+              var clonedChild = clonedChildren.at(index);
+              console.log(originalChild.ccid);
+              console.log(numOfItems);
+              clonedChild.ccid = originalChild.ccid + "-" + (i + 1);
+
+              // Recursive call for any nested children
+              if (originalChild.get('components').length > 0) {
+                setChildIds(originalChild, clonedChild);
+              }
+            });
+          }
+          setChildIds(slidesComponent.components().models[0], item);
+          slidesComponent.components().add(item);
         }
       }
 
       this.render();
+      this.model.set('cloning', false);
     }
   }
 };

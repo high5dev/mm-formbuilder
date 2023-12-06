@@ -341,10 +341,11 @@ export default function Editor({
     let compoId = "";
     gjsEditor.on('component:add', (component) => {
       if (!loadedRef.current) {
-        if(compoId == "")
+        if (compoId == "")
           compoId = component.ccid;
         const parentType = component.parent().get('type');
-        if (parentType == 'product-item' || parentType == 'repeat-item') {
+        
+        if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
           const parentComponent = component.parent().parent();
           const parentChildren = parentComponent.get('components');
 
@@ -355,21 +356,67 @@ export default function Editor({
             console.log(child);
             console.log(component.toHTML());
 
-            const copiedComponent = gjsEditor.DomComponents.addComponent({
-              tagName: component.get('tagName'),
-              type: component.get('type'),
-              content: component.get('content'),
-              style: component.get('type') == 'text' ? { padding: '10px' } : component.get('style'),
-              attributes: component.get('attributes')
-            });
-             copiedComponent.ccid = compoId + "-" + (index + 2);
+            const copiedComponent = component.clone();
+            copiedComponent.ccid = compoId + "-" + (index + 2);
+            if(component.get('type') == 'text')
+              copiedComponent.set('style', { padding: "10px" });
             child.append(copiedComponent);
           });
-          setIsLoading(false);;
+          setIsLoading(false);
         }
         compoId = "";
       }
     });
+    gjsEditor.on('component:remove', (component) => {
+      if (!loadedRef.current) {
+        if (compoId == "")
+          compoId = component.ccid.split('-')[0];
+        const parentType = component.parent().get('type');
+
+        if (parentType == 'product-item' || parentType == 'repeat-item') {
+          const parentComponent = component.parent().parent();
+          const parentChildren = parentComponent.get('components');
+
+          // Filter out the current component from the children
+          const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
+          setIsLoading(true);
+          childrenWithoutCurrent.forEach((child, index) => {
+            child.get('components').models.forEach((element) => {
+              if (element.ccid.includes(compoId)) {
+                element.remove();
+              }
+            })
+          });
+          setIsLoading(false);
+        }
+        compoId = "";
+      }
+    });
+    // gjsEditor.on('component:update', (component) => {
+    //   if (!loadedRef.current) {
+    //     const parentType = component.parent().get('type');
+
+    //     if (parentType == 'product-item' || parentType == 'repeat-item') {
+    //       if(component.parent().parent().get('tagName') == 'gridproductgallery') {
+
+    //       }
+    //       const parentComponent = component.parent().parent();
+    //       const parentChildren = parentComponent.get('components');
+
+    //       // Filter out the current component from the children
+    //       const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
+    //       setIsLoading(true);
+    //       childrenWithoutCurrent.forEach((child, index) => {
+    //         child.get('components').models.forEach((element) => {
+    //           if (element.ccid.includes(compoId)) {
+    //             element.remove();
+    //           }
+    //         })
+    //       });
+    //       setIsLoading(false);
+    //     }
+    //   }
+    // });
     gjsEditor.on('block:drag:start', function (model) {
       setSidebarData({
         ...sidebarData,
