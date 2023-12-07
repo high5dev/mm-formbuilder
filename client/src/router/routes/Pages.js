@@ -23,7 +23,8 @@ const PagesRoutes = [
     layout: 'BlankLayout',
     meta: {
       publicRoute: true
-    }
+    },
+    exact: true
   },
   {
     path: '/website/:id/:pageName',
@@ -31,7 +32,17 @@ const PagesRoutes = [
     layout: 'BlankLayout',
     meta: {
       publicRoute: true
-    }
+    },
+    exact:true
+  },
+  {
+    path: '/website/:id/:pageName/:blogId',
+    component: lazy(() => import('../../views/website')),
+    layout: 'BlankLayout',
+    meta: {
+      publicRoute: true
+    },
+    exact:true
   },
   {
     path: '/preview/:id',
@@ -48,6 +59,12 @@ const PagesRoutes = [
   {
     path:'/preview/form/:formId/:formPageId',
     component: lazy(() => import('../../views/form')),
+    layout: 'BlankLayout',
+    exact:true
+  },
+  {
+    path: '/preview/:id/:pageName/:blogId',
+    component: lazy(() => import('../../views/website')),
     layout: 'BlankLayout',
     exact:true
   },

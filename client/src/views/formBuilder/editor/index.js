@@ -12,8 +12,8 @@ export default function Index() {
   const [device, setDevice] = useState('desktop');
   const [ispreview, setIsPreview]=useState(false);
   const [ispublish, setIsPublish]=useState(false);
-  const [isinvite, setIsInvite]=useState(false);
   const [isclear, setIsClear] =useState(false);
+  const [isblog, setIsBlog]=useState(false);
   const [tab, setTab]=useState('');
   const [createMdl, setCreateMdl]=useState(false);
   const [renameMdl, setRenameMdl]=useState(false);
@@ -25,6 +25,7 @@ export default function Index() {
     menu: '',
   });
   const [rsidebarOpen, setRSidebarOpen]=useState(false);
+  const [addSideBarOpen, setAddSideBarOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const { stepId } = useParams();
   const [openAddElementMdl, setOpenAddElementMdl] = useState(false);
@@ -34,13 +35,16 @@ export default function Index() {
     };
   });
 
+  console.log('%%%%%%%%%%%%%%', sidebarData)
+
+
   return (
     <>
       <div className="editor-body">
         <div>
           <MainNav
-            isinvite ={isinvite}
-            setIsInvite={setIsInvite}
+            isblog={isblog}
+            setIsBlog={setIsBlog}
             createMdl={createMdl}
             setCreateMdl={setCreateMdl}
             renameMdl ={renameMdl}
@@ -66,19 +70,23 @@ export default function Index() {
             store={store}
             openAddElementMdl={openAddElementMdl}
             setOpenAddElementMdl={setOpenAddElementMdl}
+            addSideBarOpen={addSideBarOpen}
+            setAddSideBarOpen={setAddSideBarOpen}
+            sidebarData={sidebarData}
+            setSidebarData={setSidebarData}
           />
         </div>
         <div className="land-body d-flex">
-          <Sidebar
+          {/* <Sidebar
             sidebarData={sidebarData}
             setSidebarData={setSidebarData}
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
-          /> 
+          />  */}
           <div className="editor-content">
             <Editor
-              isinvite={isinvite}
-              setIsInvite={setIsInvite}
+              isblog={isblog}
+              setIsBlog={setIsBlog}
               createMdl={createMdl}
               setCreateMdl={setCreateMdl}
               renameMdl ={renameMdl}
@@ -112,6 +120,8 @@ export default function Index() {
               setSelectedCategory={setSelectedCategory}
               openAddElementMdl={openAddElementMdl}
               setOpenAddElementMdl={setOpenAddElementMdl}
+              addSideBarOpen={addSideBarOpen}
+              setAddSideBarOpen={setAddSideBarOpen}
             />
           </div>
         </div>

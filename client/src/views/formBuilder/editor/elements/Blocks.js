@@ -32,19 +32,146 @@ export const blocks = [
     category: 'Basic',
   },
   {
-    id: 'popup',
-    label: 'Pop up',
+    id: 'post-list-large',
+    label: 'Post List(Large)',
     attributes: { class: 'fa fa-text' },
-    content: { type: 'popup' },
-    media: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="pop-up"><path d="M21,2H7A1,1,0,0,0,6,3V6H3A1,1,0,0,0,2,7V21a1,1,0,0,0,1,1H17a1,1,0,0,0,1-1V18h3a1,1,0,0,0,1-1V3A1,1,0,0,0,21,2ZM16,20H4V8H6v9a1,1,0,0,0,1,1h9Zm4-4H8V4H20ZM11,7a1,1,0,0,1,1-1h5a1,1,0,0,1,1,1v5a1,1,0,0,1-2,0V8H12A1,1,0,0,1,11,7Z" data-name="57 Pop Up"></path></svg>`,
-    category: 'Basic',
+    content: { type: 'post-list-large' },
+    media: `https://i.ibb.co/6br0NxL/1.png`,
+    category: 'blog'
   },
   {
-    id: 'count-down',
+    id: 'post-card-large',
+    label: 'Post List(Large)',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'post-card-large' },
+    media: `https://i.ibb.co/j34rmMk/3.png`,
+    category: 'blog'
+  },
+  {
+    id: 'post-list-sidebar',
+    label: 'Post List(Sidebar)',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'post-list-sidebar' },
+    media: `https://i.ibb.co/TTs2tXk/2.png`,
+    category: 'blog'
+  },
+  {
+    id: 'recent-post',
+    label: 'Recent Posts',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'recent-post' },
+    media: `https://i.ibb.co/j34rmMk/3.png`,
+    category: 'blog'
+  },
+  {
+    id: 'category-menu',
+    label: 'Category Menu',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'category-menu' },
+    media: `https://i.ibb.co/hBk6hBb/4.png`,
+    category: 'blog'
+  },
+  {
+    id: 'archive',
+    label: 'Archive',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'archive-menu' },
+    media: `https://i.ibb.co/HG7zbgb/5.png`,
+    category: 'blog'
+  },
+  {
+    id: 'rss button yellow',
+    label: 'RSS Button',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'rss-yellow-button' },
+    media: `https://i.ibb.co/CBwqT6V/rss.png`,
+    category: 'blog'
+  },
+  {
+    id: 'rss button black',
+    label: 'RSS Button',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'rss-black-button' },
+    media: `https://i.ibb.co/jH2JzG3/rss-1.png`,
+    category: 'blog'
+  },
+  {
+    id: 'rss button gray',
+    label: 'RSS Button',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'rss-gray-button' },
+    media: `https://i.ibb.co/VBQS6m8/rss-2.png`,
+    category: 'blog'
+  },
+  {
+    id: 'rss button outline black',
+    label: 'RSS Button',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'rss-outline-black-button' },
+    media: `https://i.ibb.co/z7Nh9Cx/rss-3.png`,
+    category: 'blog'
+  },
+  {
+    id: 'rss button outline gray',
+    label: 'RSS Button',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'rss-outline-gray-button' },
+    media: `https://i.ibb.co/JQqFgcX/rss-4.png`,
+    category: 'blog'
+  },
+ {id: 'count-down',
     label: 'Count Down',
     attributes: { class: 'fa fa-text' },
     content: { type: 'count-down' },
     media: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" id="countdown-timer"><g data-name="Layer 10"><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.91 7.81h0a8.7 8.7 0 00-1.51-.87M25.83 18.59a9.87 9.87 0 01-.59 1.63M16.17 26a10 10 0 010-20M21.91 24.19h0a8.7 8.7 0 01-1.51.87M25.83 13.41a9.87 9.87 0 00-.59-1.63h0"></path><polyline fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="19 18.83 16.17 16 16.17 12"></polyline></g></svg>`,
     category: 'Basic',
+  },
+  {
+    id: 'grid-product-gallery',
+    label: 'Grid Product Gallery',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'grid-product-gallery', text: 'Display multiple products in a grid layout.' },
+    media: 'productGridGalleryRevamp',
+    category: 'Store',
+  },
+  {
+    id: 'slider-product-gallery',
+    label: 'Slider Product Gallery',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'slider-product-gallery', text: 'Let customers browse products in a compact gallery.' },
+    media: 'sliderProductGalleryRevamp',
+    category: 'Store',
+  },
+  {
+    id: 'related-products',
+    label: 'Related Products',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'related-products', text: 'Increase sales by adding a slider gallery with recommended products for your customers.' },
+    media: 'relatedProductGalleryRevamp',
+    category: 'Store',
+  },
+  {
+    id: 'shopping-cart',
+    label: 'Shopping Cart',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'shopping-cart', text: 'Add a shortcut to your shopping cart anywhere on your site.' },
+    media: 'shoppingBags',
+    category: 'Store',
+  },
+  {
+    id: 'add-to-cart-button',
+    label: 'Add To Cart Button',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'add-to-cart-button', text: 'Place a standalone Add to Cart button anywhere on your site.' },
+    media: 'addToCartButton',
+    category: 'Store',
+  },
+  {
+    id: 'currency-converter',
+    label: 'Currency Converter',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'currency-converter', text: 'Make shopping easier by letting customers shop products in their currency.' },
+    media: 'currencyConverter',
+    category: 'Store',
   },
 ];

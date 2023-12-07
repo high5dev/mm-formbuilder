@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Eye, Save, X, ChevronDown, MoreHorizontal, Trash2, PlusSquare } from 'react-feather';
+import { Eye, Save, X, ChevronDown, MoreHorizontal, Trash2, PlusSquare, Plus } from 'react-feather';
 import { BiMobile } from 'react-icons/bi';
 import { FaBox, FaPaintBrush } from 'react-icons/fa';
 import { FiSettings } from 'react-icons/fi';
@@ -44,32 +44,35 @@ import {
 } from 'reactstrap';
 
 export default function MainNav({
-  createMdl,
-  setCreateMdl,
-  renameMdl,
-  setRenameMdl,
-  duplicateMdl,
-  setDuplicateMdl,
-  customwidth,
-  setCustomWidth,
-  ispreview, 
-  isinvite,
-  setIsInvite,
-  page,
-  setPage,
-  setIsClear,
-  setIsPreview,
-  setIsPublish,
-  setTab,
-  open,
-  setOpen,
-  rsidebarOpen,
-  setRSidebarOpen,
-  store,
-  device,
-  setDevice,
-  openAddElementMdl,
-  setOpenAddElementMdl
+setIsBlog,
+createMdl,
+setCreateMdl,
+renameMdl,
+setRenameMdl,
+duplicateMdl,
+setDuplicateMdl,
+customwidth,
+setCustomWidth,
+ispreview, 
+page,
+setPage,
+setIsClear,
+setIsPreview,
+setIsPublish,
+setTab,
+open,
+setOpen,
+rsidebarOpen,
+setRSidebarOpen,
+store,
+device,
+setDevice,
+openAddElementMdl,
+setOpenAddElementMdl,
+addSideBarOpen,
+setAddSideBarOpen,
+sidebarData,
+setSidebarData,
 }) {
   const dispatch=useDispatch();
   const [width, setWidth]=useState(1280);
@@ -205,7 +208,7 @@ export default function MainNav({
           </div>
         </div>
         <div className="additional-bar d-flex align-items-center justify-content-around">
-          <div className="menu-item hover-effect text-white" onClick={(e)=>setIsInvite(true)}>Invite</div>
+          <div className="menu-item hover-effect text-white">Invite</div>
           <span className="menu-item text-primary text-white" onClick={(e)=>{
             setIsPreview(true);
             dispatch(setLinkUrlReducer('preview'));
@@ -229,10 +232,33 @@ export default function MainNav({
               Inspector
             </UncontrolledTooltip>
           </span>
-          <span className="px-2">
-            <MdOutlineInsertComment size={26} color={'black'} id="comments" />
+          <span className="hover-bg px-2" onClick={(e)=>{
+                setAddSideBarOpen(true);
+                setTab('');
+                setRSidebarOpen(false);
+             }}>
+            {/* <MdOutlineInsertComment size={26} color={'black'} id="comments" />
             <UncontrolledTooltip placement="bottom" target="comments">
               Comments
+            </UncontrolledTooltip> */}
+            <Plus size={24} color={'black'} id="addElements"/>
+            <UncontrolledTooltip placement="bottom" target="addElements">
+              Add Elements
+            </UncontrolledTooltip>
+          </span>
+          <span className="hover-bg px-2" onClick={(e)=>{
+                setTab('Pages');
+                setAddSideBarOpen(true);
+                setRSidebarOpen(false);
+                setSidebarData({...sidebarData, isOpen: false});
+             }}>
+            {/* <MdOutlineInsertComment size={26} color={'black'} id="comments" />
+            <UncontrolledTooltip placement="bottom" target="comments">
+              Comments
+            </UncontrolledTooltip> */}
+            <MdOutlineLibraryBooks size={24} color={'black'} id="pages" />
+            <UncontrolledTooltip placement="bottom" target="pages">
+              Pages
             </UncontrolledTooltip>
           </span>
           <span className="hover-bg px-2">
@@ -336,9 +362,9 @@ export default function MainNav({
               </UncontrolledTooltip>
             </span>
             <span className="menu-icon">
-              <MdOutlineFormatColorReset size={24} color={'black'} id="menu"/>
-              <UncontrolledTooltip placement="bottom" target="menu">
-                Format
+              <MdOutlineFormatColorReset size={24} color={'black'} id="blog" onClick={()=>setIsBlog(true)}/>
+              <UncontrolledTooltip placement="bottom" target="blog">
+                Blog
               </UncontrolledTooltip>
             </span>
             <span className="menu-icon">
@@ -380,10 +406,10 @@ export default function MainNav({
                   setRSidebarOpen(true);
                 }}/>
               <UncontrolledTooltip placement="bottom" target="traits">
-                Traits
+                Settings
               </UncontrolledTooltip>
             </span>
-            <span className="menu-icon">
+            {/* <span className="menu-icon">
               <MdOutlineLibraryBooks size={24} color={'black'} id="pages" onClick={(e)=>{
                 setTab('Pages');
                 setRSidebarOpen(true);
@@ -391,7 +417,7 @@ export default function MainNav({
               <UncontrolledTooltip placement="bottom" target="pages">
                 Pages
               </UncontrolledTooltip>
-            </span>
+            </span> */}
           </div>
         </div>
       </div>
