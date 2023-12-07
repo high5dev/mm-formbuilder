@@ -31,7 +31,8 @@ export const formEditor = createSlice({
     webElements: [],
     webCollections: [],
     webDatasets: [],
-    webBlogs:[]
+    webBlogs:[],
+    webConnections: [],
   },
   reducers: {
     setLinkUrlReducer:(state,action) =>{
@@ -113,6 +114,9 @@ export const formEditor = createSlice({
     },
     setWebDatasetsReducer: (state, action) => {
       state.webDatasets = action?.payload;
+    },
+    setWebConnectionsReducer: (state, action) => {
+      state.webConnections = action?.payload;
     }
   }
 });
@@ -134,6 +138,7 @@ export const {
   setWebElementsReducer,
   setWebCollectionsReducer,
   setWebDatasetsReducer,
-  setWebBlogsReducer
+  setWebBlogsReducer,
+  setWebConnectionsReducer,
 } = formEditor.actions;
 export default formEditor.reducer;

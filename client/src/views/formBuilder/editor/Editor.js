@@ -32,8 +32,9 @@ import StyleSidebar from './topNav/styles';
 import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
-import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, updatePageNameAction, createChildFormAction,  getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction} from '../store/action'
 import { setChildFormReducer, setFormReducer } from '../store/reducer';
+import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, createChildFormAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction, getConnectionsByWebsiteAction} from '../store/action'
+import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
@@ -115,6 +116,14 @@ export default function Editor({
   const [connectData, setConnectData] = useState({isOpen: false, data: {}});
   const [modelsToConnect, setModelsToConnect] = useState([]);
   const [isinvite, setIsInvite] = useState(false);
+  const [selectedCollection, setSelectedCollection] = useState(null);
+
+  useEffect(() => {
+    if (store.form._id) {
+      dispatch(getConnectionsByWebsiteAction(store.form._id));
+    }
+  }, [store.form._id]);
+  
   const [productDataset, setProductDataset] = useState({});
   const [datasetConnect, setDatasetConnect] = useState([]);
   const [selectedDataset, setSelectedDataSet] = useState({});
@@ -523,21 +532,6 @@ export default function Editor({
       }
     });
 
-    gjsEditor.on('block:custom', props => {
-      // The `props` will contain all the information you need in order to update your UI.
-      // props.blocks (Array<Block>) - Array of all blocks
-      // props.dragStart (Function<Block>) - A callback to trigger the start of block dragging.
-      // props.dragStop (Function<Block>) - A callback to trigger the stop of block dragging.
-      // props.container (HTMLElement) - The default element where you can append your UI
-
-      // Here you would put the logic to render/update your UI.
-      setBlockManager(props);
-    });
-
-    gjsEditor.on('component:selected', (cmp) => {
-      console.log('cmp=======', cmp);
-      setSelectedCmp(cmp);
-    });
       // Add custom commands
       gjsEditor.Commands.add('save-component', editor => {
         const saveModalElement = document.createElement('div');
@@ -887,11 +881,7 @@ export default function Editor({
             }
             component.set('postList', postList);
           }
-        }
-        else{
-          console.log('no webblogs')
-        }
-    
+        }    
       })
       const components=editor.getWrapper().components().models;
       for(let i=0; i<components.length; i++){
@@ -1339,7 +1329,7 @@ export default function Editor({
       <CreateCollectionModal store={store} open={openCreateColMdl} toggle={createColMdlToggle} editCollectionToggle={toggleOpenEditCollection}/>
       <CreateDatasetModal store={store} mdlData={openCreateDatasetMdl} toggle={createDatasetToggle} />
       <EditCollectionModal store={store} openCollection={openEditCollection} setOpenEditCollection={setOpenEditCollection} toggle={toggleOpenEditCollection} />
-      <ConnectCollectionModal store={store} connectData={connectData} setConnectData={setConnectData} modelsToConnect={modelsToConnect} getProductDataset={getProductDataset} datasetConnect={datasetConnect} setDatasetConnect={setDatasetFields} handleSelectChangeDataSet={handleSelectChangeDataSet} selectedDataset={selectedDataset} />
+      <ConnectCollectionModal store={store} connectData={connectData} setConnectData={setConnectData} getProductDataset={getProductDataset} datasetConnect={datasetConnect} setDatasetConnect={setDatasetFields} handleSelectChangeDataSet={handleSelectChangeDataSet} selectedDataset={selectedDataset} setSelectedDataSet={setSelectedDataSet} selectedCmp={selectedCmp} selectedCollection={selectedCollection} setSelectedCollection={setSelectedCollection} />
       <BlogModal store ={store} isOpen={isblog} toggle={toggleBlog}/>
     </div>
   )
