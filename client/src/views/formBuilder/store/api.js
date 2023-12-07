@@ -217,7 +217,7 @@ export const updateWebCollection = (id, payload) => {
 }
 
 export const deleteWebCollection = (id, payload) => {
-  return API.delete(`/web-builder-cms/collection/update/${id}`);
+  return API.delete(`/web-builder-cms/collection/delete/${id}`);
 }
 
 export const getWebCollection = (id) => {
@@ -242,4 +242,20 @@ export const getWebDataset = (id) => {
 
 export const getWebAllDataset = (id) => {
   return API.get(`/web-builder-cms/all-datasets/${id}`);
+}
+
+export const getConnectsByWebsite = (id) => {
+  return API.get(`/web-builder-cms/connections-of-website/${id}`);
+}
+
+export const createOrUpdateConnect = (payload) => {
+  return API.post(`/web-builder-cms/connection/create-update`, payload);
+}
+
+export const deleteConnect = (id) => {
+  return API.delete(`/web-builder-cms/connection/delete/${id}`);
+}
+
+export const deleteMultipleConnects = (payload) => {
+  return API.post(`/web-builder-cms/connection/multiple-delete`, payload);
 }

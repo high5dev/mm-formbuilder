@@ -582,33 +582,31 @@ export const webBuilderPlugin = (editor) => {
     editor.StyleManager.addProperty(property.sector, property);
   })
 
-  // editor.on(`block:drag:stop`, (component, block) => {
-  //   if (component && component.isChildOf('repeater-item')) {
-  //     const index = component.index();
-  //     const parentElements = component.parents();
-  //     const parentIndexes = [];
-  //     let parentRepeater = null;
-  //     for (let i = 0; i < parentElements.length; i++) {
-  //       if (parentElements[i].get('type') === 'repeater') {
-  //         parentRepeater = parentElements[i];
-  //         break;
-  //       }
+  editor.on('canvas:drop', (DataTransfer, component) => {
+    if (component && component.isChildOf('repeater-item')) {
+      const index = component.index();
+      const parentElements = component.parents();
+      const parentIndexes = [];
+      let parentRepeater = null;
+      for (let i = 0; i < parentElements.length; i++) {
+        if (parentElements[i].get('type') === 'repeater') {
+          parentRepeater = parentElements[i];
+          break;
+        }
 
-  //       const tempIndex = parentElements[i].index();
-  //       parentIndexes.splice(0, 0, tempIndex);
-  //     }
-  //     for (let i = 0; i < parentRepeater.components().length; i++) {
-  //       if (i === parentIndexes[0]) continue;
-  //       let tempCpt = parentRepeater.getChildAt(i);
-  //       for (let j = 1; j < parentIndexes.length; j++) {
-  //         tempCpt = tempCpt.getChildAt(parentIndexes[j]);
-  //       }
-  //       tempCpt.append(component.clone(), {at: index})
-  //     }
-  //   }
-  // });
-
-
+        const tempIndex = parentElements[i].index();
+        parentIndexes.splice(0, 0, tempIndex);
+      }
+      for (let i = 0; i < parentRepeater.components().length; i++) {
+        if (i === parentIndexes[0]) continue;
+        let tempCpt = parentRepeater.getChildAt(i);
+        for (let j = 1; j < parentIndexes.length; j++) {
+          tempCpt = tempCpt.getChildAt(parentIndexes[j]);
+        }
+        tempCpt.append(component.clone(), {at: index})
+      }
+    }
+  })
 
   editor.on(`component:update:numOfItems`, (model) => {
     if (model.get('type') === 'repeater') {

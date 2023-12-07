@@ -4,6 +4,7 @@ const asyncHandler = require("express-async-handler");
 const {
   WebSiteCollection,
   WebSiteDataSet,
+  WebSiteConnection,
 } = require("../models/index/index");
 
 exports.createCollection = asyncHandler(async (req, res) => {
@@ -149,6 +150,83 @@ exports.deleteDataset = asyncHandler(async (req, res) => {
     const deletedDataset = await WebSiteDataSet.findByIdAndUpdate(id, { isDelete: true });
 
     res.status(200).json({ success: true });
+  } catch (err) {
+    res.send({ msg: err.message.replace(/\'/g, ""), success: false });
+  }
+});
+
+exports.createOrUpdateConnection = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { organization } = req.headers;
+  const { componentId, websiteId, datasetId } = req.body;
+  const payload = req.body;
+
+  try {
+    let connection = await WebSiteConnection.findOne({
+      userId: mongoose.Types.ObjectId(userId),
+      websiteId: mongoose.Types.ObjectId(websiteId),
+      componentId,
+      isDelete: false,
+    });
+
+    if (connection) {
+      connection = await WebSiteConnection.findOneAndUpdate({
+        userId: mongoose.Types.ObjectId(userId),
+        websiteId: mongoose.Types.ObjectId(websiteId),
+        componentId,
+      }, payload, {new: true});
+    } else {
+      connection = await WebSiteConnection.create({
+        ...payload,
+        userId: mongoose.Types.ObjectId(userId),
+        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+        websiteId: mongoose.Types.ObjectId(websiteId),
+        datasetId: mongoose.Types.ObjectId(datasetId),
+      });
+    }
+
+    res.status(200).json({ success: true, data: connection });
+  } catch (err) {
+    res.send({ msg: err.message.replace(/\'/g, ""), success: false });
+  }
+});
+
+exports.getConnectionsByWebsiteId = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { organization } = req.headers;
+  const {id} = req.params;
+
+  try {
+    const connections = await WebSiteConnection.find({
+      userId: mongoose.Types.ObjectId(userId),
+      organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+      websiteId: mongoose.Types.ObjectId(id),
+      isDelete: false,
+    });
+
+    res.status(200).json({ success: true, data: connections });
+  } catch (err) {
+    res.send({ msg: err.message.replace(/\'/g, ""), success: false });
+  }
+});
+
+exports.deleteConnection = asyncHandler(async (req, res) => {
+  const {id} = req.params;
+  try {
+    const deletedDataset = await WebSiteConnection.findByIdAndUpdate(mongoose.Types.ObjectId(id), { isDelete: true });
+    res.status(200).json({ success: true, data: deletedDataset });
+  } catch (err) {
+    res.send({ msg: err.message.replace(/\'/g, ""), success: false });
+  }
+});
+
+exports.multipleDeleteConnection = asyncHandler(async (req, res) => {
+  const { ids } = req.body;
+  try {
+    ids.forEach(async(e) => {
+      await WebSiteConnection.findOneAndUpdate({_id: mongoose.Types.ObjectId(e)}, { isDelete: true });
+    });
+    res.status(200).json({ success: true, data: deletedDataset });
   } catch (err) {
     res.send({ msg: err.message.replace(/\'/g, ""), success: false });
   }
