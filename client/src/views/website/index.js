@@ -54,7 +54,7 @@ export default function Index() {
         else{
           dispatch(getPublishPageAction(payload)).then((res)=>{
             const parser = new DOMParser();
-            let htmlCmp = parser.parseFromString(res, 'text/html');
+            let htmlCmp = parser.parseFromString(res.data, 'text/html');
             let linkElements=htmlCmp.getElementsByTagName('a');
             for(let i=0; i<linkElements.length; i++){
               let link_href=linkElements[i].getAttribute('href');
@@ -66,6 +66,8 @@ export default function Index() {
             var tmp = document.createElement("div");
             tmp.append(htmlCmp.body)
             setPageContent(tmp.innerHTML);
+            setPageInfo(res.pageInfo);
+            setPopupData(res.pageInfo.popups || []);
           });
         }
       }
@@ -80,7 +82,7 @@ export default function Index() {
         else{
           dispatch(getPreviewPageAction(payload)).then((res)=>{
             const parser = new DOMParser();
-            let htmlCmp = parser.parseFromString(res, 'text/html');
+            let htmlCmp = parser.parseFromString(res.data, 'text/html');
             let linkElements=htmlCmp.getElementsByTagName('a');
             for(let i=0; i<linkElements.length; i++){
               let link_href=linkElements[i].getAttribute('href');
@@ -91,7 +93,9 @@ export default function Index() {
             };
             var tmp = document.createElement("div");
             tmp.append(htmlCmp.body)
-            setPageContent(tmp.innerHTML); 
+            setPageContent(tmp.innerHTML);
+            setPageInfo(res.pageInfo);
+            setPopupData(res.pageInfo.popups || []);
           })
         }
       };
@@ -214,7 +218,7 @@ export default function Index() {
               <meta property="og:image" content={`${pageInfo?.seoDetails?.socialImage}`} />
               <meta
                 property="og:url"
-                content={`/${linkUrl}/${id}/${pageInfo?.name}`}
+                content={`/${store.linkUrl}/${id}/${pageInfo?.name}`}
               />
               <meta property="og:site_name" content={`${pageInfo?.seoDetails?.title}`} />
 
@@ -223,7 +227,7 @@ export default function Index() {
               <meta name="twitter:image" content={`${pageInfo?.seoDetails?.socialImage}`} />
               <meta
                 name="twitter:site"
-                content={`/${linkUrl}/${id}/${pageInfo?.name}`}
+                content={`/${store.linkUrl}/${id}/${pageInfo?.name}`}
               />
               <meta name="twitter:creator" content={`${pageInfo?.seoDetails?.twitter}`} />
               {pageInfo?.seoDetails?.headCode}

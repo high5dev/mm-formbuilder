@@ -6,7 +6,7 @@ import galleryItem from './gallery/galleryItem'
 import iframe from "./iframe/iframe";
 import { blocks } from "./Blocks";
 import { customSectors, customProperties } from "./CustomStyles";
-import * as api from  '../../store/api'
+import * as api from '../../store/api'
 import socialBar from "./socialBar/socialBar";
 import socialLink from "./traits/socialLink";
 import postLarge from "../elements/blog/postlarge/postlarge";
@@ -22,6 +22,13 @@ import blackoutlineButton from "./blog/rss/blackoutlineButton";
 import grayoutlineButton from "../elements/blog/rss/grayoutlineButton";
 import countDown from "./countdown/countdown";
 import popup from "./popup/popup";
+import gridproductgallery from "./gridproductgallery/gridproductgallery";
+import sliderproductgallery from "./slideproductgallery/sliderproductgallery";
+import relatedproducts from "./relatedproducts/relatedproducts";
+import shoppingcart from "./shoppingcart/shoppingcart";
+import addtocartbutton from "./addtocartbutton/addtocartbutton";
+import currencyconverter from "./currencyconverter/currencyconverter";
+import productItem from "./gridproductgallery/productItem";
 
 
 const testImageUrls = [
@@ -54,31 +61,30 @@ export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('count-down', countDown);
   editor.DomComponents.addType('popup', popup);
   editor.TraitManager.addType('image-url', {
-    createInput({trait, component}){
-      let image_url="https://storage.googleapis.com/mymember-storage/my-manager/a4fbe6f0-192e-4c2a-bf03-7db291aafbd2-@fabbiyedev.png";
+    createInput({ trait, component }) {
+      let image_url = "https://storage.googleapis.com/mymember-storage/my-manager/a4fbe6f0-192e-4c2a-bf03-7db291aafbd2-@fabbiyedev.png";
       let _url;
       let _id;
-      let pageSize=21;
-      let pageNum=2;
+      let pageSize = 21;
+      let pageNum = 2;
       let selected_index;
-      const trait_name=trait.get('name');
-      let images=component.get('images');
-      const src=component.getAttributes().src;
+      const trait_name = trait.get('name');
+      let images = component.get('images');
+      const src = component.getAttributes().src;
       const newLinkElement = document.createElement('div');
       newLinkElement.className = 'trait-image-url';
       newLinkElement.innerHTML = `
         <input class="input-image-url" type="url" placeholder="Insert link URL" value=${src}>/>
         <button class="btn-primary trait-image-btn">...</button>`;
-      const modalElement=document.createElement('div');
-      modalElement.innerHTML=`
+      const modalElement = document.createElement('div');
+      modalElement.innerHTML = `
         <div class="gallery-image-list">
-          ${
-            images && images.map((item)=>{
-                return(
-                  `<img class="select-image-item" id=${item.id} src=${item.url} width="110" height="110"/>`
-                )
-            }).join('')
-          }
+          ${images && images.map((item) => {
+        return (
+          `<img class="select-image-item" id=${item.id} src=${item.url} width="110" height="110"/>`
+        )
+      }).join('')
+        }
         </div>
         <div class="gallery-view-footer d-flex justify-content-between">
           <div class="">
@@ -94,121 +100,121 @@ export const webBuilderPlugin = (editor) => {
           </div>
         <div>
       `;
-      newLinkElement.querySelector('.trait-image-btn').addEventListener('click', (ev)=>{
+      newLinkElement.querySelector('.trait-image-btn').addEventListener('click', (ev) => {
         editor.Modal.open({
-          title: 'Select Gallery Image', 
+          title: 'Select Gallery Image',
           content: modalElement
         });
       });
 
-      const scrollElement=modalElement.querySelector(".gallery-image-list")
-      scrollElement.addEventListener('scroll', (ev)=>{
+      const scrollElement = modalElement.querySelector(".gallery-image-list")
+      scrollElement.addEventListener('scroll', (ev) => {
         if (scrollElement.scrollTop + scrollElement.clientHeight >= scrollElement.scrollHeight) {
-          const payload={
-            page:pageNum,
-            pageSize 
+          const payload = {
+            page: pageNum,
+            pageSize
           }
-          api.getImageLibrary(payload).then((res)=>{
-            if(res.data){
-              pageNum+=1;
-              const result=res.data;
-              if(result.data){
-                let temp_images=images;
-                for(let i=0; i<result.data.length; i++){
-                  temp_images.push({id:result.data[i]._id, url:result.data[i].image});
+          api.getImageLibrary(payload).then((res) => {
+            if (res.data) {
+              pageNum += 1;
+              const result = res.data;
+              if (result.data) {
+                let temp_images = images;
+                for (let i = 0; i < result.data.length; i++) {
+                  temp_images.push({ id: result.data[i]._id, url: result.data[i].image });
                 };
 
-              document.querySelector(".gallery-image-list").innerHTML= 
-              temp_images && temp_images.map((item)=>{
-                    return(
+                document.querySelector(".gallery-image-list").innerHTML =
+                  temp_images && temp_images.map((item) => {
+                    return (
                       `<img class="select-image-item" id=${item.id} src=${item.url} width="110" height="110"/>`
                     )
-                }).join('');
+                  }).join('');
                 modalElement.querySelectorAll('.select-image-item').forEach((item, index) => {
                   item.addEventListener('click', event => {
-                    _url=event.target.src;
-                    _id=event.target.id;
-                    selected_index=index;
-                    newLinkElement.querySelector('.input-image-url').value=_url;
-                    for(let i=0; i<modalElement.querySelectorAll('.select-image-item').length; i++){
-                      const el=modalElement.querySelectorAll('.select-image-item')[i];
-                      if (selected_index===i){
-                        el.style.border="2px solid blue";
+                    _url = event.target.src;
+                    _id = event.target.id;
+                    selected_index = index;
+                    newLinkElement.querySelector('.input-image-url').value = _url;
+                    for (let i = 0; i < modalElement.querySelectorAll('.select-image-item').length; i++) {
+                      const el = modalElement.querySelectorAll('.select-image-item')[i];
+                      if (selected_index === i) {
+                        el.style.border = "2px solid blue";
                       }
-                      else{
-                        el.style.border="none";
+                      else {
+                        el.style.border = "none";
                       }
                     }
                   });
                 });
-              const parentElements = component.parents();
-              let parentRepeater=null;
-              for (let i = 0; i < parentElements.length; i++) {
-                if (parentElements[i].get('type') === 'gallery') {
-                  parentRepeater = parentElements[i];
-                  break;
+                const parentElements = component.parents();
+                let parentRepeater = null;
+                for (let i = 0; i < parentElements.length; i++) {
+                  if (parentElements[i].get('type') === 'gallery') {
+                    parentRepeater = parentElements[i];
+                    break;
+                  }
                 }
-              }
-              for (let i = 0; i < parentRepeater.components().length; i++){
-                parentRepeater.getChildAt(i).set('images', temp_images);
-              }   
+                for (let i = 0; i < parentRepeater.components().length; i++) {
+                  parentRepeater.getChildAt(i).set('images', temp_images);
+                }
               }
             }
           })
-        } 
+        }
       })
       modalElement.querySelectorAll('.select-image-item').forEach((item, index) => {
         item.addEventListener('click', event => {
-          _url=event.target.src;
-          _id=event.target.id;
-          selected_index=index;
-          newLinkElement.querySelector('.input-image-url').value=_url;
-          for(let i=0; i<modalElement.querySelectorAll('.select-image-item').length; i++){
-            const el=modalElement.querySelectorAll('.select-image-item')[i];
-            if (selected_index===i){
-              el.style.border="2px solid blue";
+          _url = event.target.src;
+          _id = event.target.id;
+          selected_index = index;
+          newLinkElement.querySelector('.input-image-url').value = _url;
+          for (let i = 0; i < modalElement.querySelectorAll('.select-image-item').length; i++) {
+            const el = modalElement.querySelectorAll('.select-image-item')[i];
+            if (selected_index === i) {
+              el.style.border = "2px solid blue";
             }
-            else{
-              el.style.border="none";
+            else {
+              el.style.border = "none";
             }
           }
         });
       });
-      modalElement.querySelector('#select-btn').addEventListener('click', (ev)=>{
-        if(_url){
+      modalElement.querySelector('#select-btn').addEventListener('click', (ev) => {
+        if (_url) {
           component.set(trait_name, _url);
           editor.Modal.close();
         }
       });
-      modalElement.querySelector('#del-btn').addEventListener('click', (ev)=>{
-        if(_id){
-          api.delImageFromLibrary(_id).then((res)=>{
-            const {data}=res;
-            if(data.success){
-              let _images=images && images.filter((item)=>item.id!=_id);
+      modalElement.querySelector('#del-btn').addEventListener('click', (ev) => {
+        if (_id) {
+          api.delImageFromLibrary(_id).then((res) => {
+            const { data } = res;
+            if (data.success) {
+              let _images = images && images.filter((item) => item.id != _id);
               component.set('images', _images);
               document.getElementById(_id).remove();
               const parentElements = component.parents();
-              let parentRepeater=null;
+              let parentRepeater = null;
               for (let i = 0; i < parentElements.length; i++) {
                 if (parentElements[i].get('type') === 'gallery') {
                   parentRepeater = parentElements[i];
                   break;
                 }
               }
-              for (let i = 0; i < parentRepeater.components().length; i++){
+              for (let i = 0; i < parentRepeater.components().length; i++) {
                 parentRepeater.getChildAt(i).set('images', _images);
               }
             }
           }
           )
         }
-        else{
+        else {
           editor.Modal.close();
         }
         // api.addToImageLibrary({image:image_url});
       });
-      modalElement.querySelector('#cancel-btn').addEventListener('click', (ev)=>{
+      modalElement.querySelector('#cancel-btn').addEventListener('click', (ev) => {
         editor.Modal.close();
       });
       return newLinkElement;
@@ -216,11 +222,18 @@ export const webBuilderPlugin = (editor) => {
   });
   editor.DomComponents.addType('iframe-element', iframe);
   editor.DomComponents.addType('social-bar', socialBar);
+  editor.DomComponents.addType('grid-product-gallery', gridproductgallery);
+  editor.DomComponents.addType('slider-product-gallery', sliderproductgallery);
+  editor.DomComponents.addType('related-products', relatedproducts);
+  editor.DomComponents.addType('shopping-cart', shoppingcart);
+  editor.DomComponents.addType('add-to-cart-button', addtocartbutton);
+  editor.DomComponents.addType('currency-converter', currencyconverter);
+  editor.DomComponents.addType('product-item', productItem);
 
   editor.TraitManager.addType('social-link', {
     noLabel: true,
     // Expects as return a simple HTML string or an HTML element
-    createInput({trait, component}) {
+    createInput({ trait, component }) {
       const socialList = component.props().socialList;
       const traitName = trait.get('name');
       let newName = '';
@@ -232,12 +245,12 @@ export const webBuilderPlugin = (editor) => {
       //   { id: 'url', name: 'URL' },
       //   { id: 'email', name: 'Email' },
       // ];
-  
+
       // Create a new element container and add some content
       const el = document.createElement('div');
       el.className = 'trait-social-bar';
       el.innerHTML = `<h6>Social links</h6>`;
-  
+
       const containerElement = document.createElement('div');
       containerElement.className = 'trait-social-items-container';
       const socialItems = [];
@@ -254,7 +267,7 @@ export const webBuilderPlugin = (editor) => {
         `);
       });
       containerElement.innerHTML = socialItems.join('');
-  
+
       const newLinkElement = document.createElement('div');
       newLinkElement.className = 'trait-new-social';
       newLinkElement.innerHTML = `
@@ -266,10 +279,10 @@ export const webBuilderPlugin = (editor) => {
         </div>
         <button class="btn btn-primary mb-1 trait-new-social-link-add-btn">Add</button>
       `;
-  
+
       el.appendChild(containerElement);
       el.appendChild(newLinkElement);
-  
+
       // Let's make our content interactive
       const newLinkName = el.querySelector('.trait-new-social-link__name');
       const newLinkUrl = el.querySelector('.trait-new-social-link__url');
@@ -289,13 +302,12 @@ export const webBuilderPlugin = (editor) => {
 
       modalElement.innerHTML = `
         <div class="select-image-view-image">
-          ${
-            testImageUrls.map((imageUrl, idx) => {
-              return (
-                `<img class="select-image-item" src=${imageUrl} width="70" height="70"/>`
-              );
-            })
-          }
+          ${testImageUrls.map((imageUrl, idx) => {
+        return (
+          `<img class="select-image-item" src=${imageUrl} width="70" height="70"/>`
+        );
+      })
+        }
         </div>
         <div class="select-image-upload-image">
           <input id="file-browser" type="file" class="upload-image-input" multiple hidden />
@@ -326,7 +338,7 @@ export const webBuilderPlugin = (editor) => {
           content: modalElement, // string | HTMLElement
         });
       })
-  
+
       el.querySelectorAll('.trait-social-link-delete').forEach((item, index) => {
         item.addEventListener('click', event => {
           //handle click
@@ -335,7 +347,7 @@ export const webBuilderPlugin = (editor) => {
           component.set(traitName, tempList);
         })
       })
-  
+
       btnAdd.addEventListener('click', ev => {
         newLinkIcon.value = '';
         newLinkName.value = '';
@@ -353,28 +365,28 @@ export const webBuilderPlugin = (editor) => {
         newUrl = '';
         newImage = '';
       })
-  
+
       return el;
     },
-  
+
     onEvent({ elInput, component, event }) {
       if (event.target.name) {
         const index = parseInt(event.target.id.split('-')[3], 10);
         const socialList = [...component.props().socialList];
         const itemToChange = socialList[index];
-        socialList.splice(index, 1, {...itemToChange, [event.target.name]: event.target.value});
+        socialList.splice(index, 1, { ...itemToChange, [event.target.name]: event.target.value });
         component.set('socialList', socialList.slice(0, socialList.length));
       }
     },
-  
+
     onUpdate({ elInput, component }) {
       const socialList = component.props().socialList;
       const itemsContainer = elInput.querySelector('.trait-social-items-container');
-  
+
       while (itemsContainer.hasChildNodes()) {
         itemsContainer.removeChild(itemsContainer.firstChild);
       }
-  
+
       const socialItems = [];
       socialList.forEach((item, index) => {
         socialItems.push(`
@@ -389,7 +401,7 @@ export const webBuilderPlugin = (editor) => {
         `);
       });
       itemsContainer.innerHTML = socialItems.join('');
-  
+
       itemsContainer.querySelectorAll('.trait-social-link-delete').forEach((item, index) => {
         item.addEventListener('click', event => {
           const tempList = [...socialList];
@@ -404,13 +416,12 @@ export const webBuilderPlugin = (editor) => {
 
       modalElement.innerHTML = `
         <div class="select-image-view-image">
-          ${
-            testImageUrls.map((imageUrl, idx) => {
-              return (
-                `<img class="select-image-item" src=${imageUrl} width="70" height="70"/>`
-              );
-            })
-          }
+          ${testImageUrls.map((imageUrl, idx) => {
+        return (
+          `<img class="select-image-item" src=${imageUrl} width="70" height="70"/>`
+        );
+      })
+        }
         </div>
         <div class="select-image-upload-image">
           <input id="file-browser" type="file" class="upload-image-input" multiple hidden />
@@ -431,29 +442,29 @@ export const webBuilderPlugin = (editor) => {
           const url = event.target.src;
           const socialList = [...component.props().socialList];
           const itemToChange = socialList[selectedItemIndex];
-          socialList.splice(selectedItemIndex, 1, {...itemToChange, image: url});
+          socialList.splice(selectedItemIndex, 1, { ...itemToChange, image: url });
           component.set('socialList', socialList.slice(0, socialList.length));
           editor.Modal.close();
         })
       });
-  
+
       itemsContainer.querySelectorAll('.trait-social-link-item-img').forEach((item, index) => {
         item.addEventListener('click', event => {
           selectedItemIndex = index;
-          
+
           editor.Modal.open({
             title: 'Select Image', // string | HTMLElement
             content: modalElement, // string | HTMLElement
           });
         })
-      });      
+      });
     },
   });
 
   editor.TraitManager.addType('date', {
     noLabel: true,
     // Expects as return a simple HTML string or an HTML element
-    createInput({trait, component}) {
+    createInput({ trait, component }) {
       const dateTrait = component.props().date;
       const dateStr = dateTrait.split('T')[0];
       const timeStr = dateTrait.split('T')[1];
@@ -465,11 +476,11 @@ export const webBuilderPlugin = (editor) => {
       let hour = timeStr.split(':')[0];
       let min = timeStr.split(':')[1];
       let sec = timeStr.split(':')[2];
-      
+
       const el = document.createElement('div');
       el.className = 'trait-date';
       el.innerHTML = `<h6>${traitLabel}</h6>`;
-  
+
       const dateElement = document.createElement('div');
       dateElement.className = 'trait-date-date';
       dateElement.innerHTML = `
@@ -490,10 +501,10 @@ export const webBuilderPlugin = (editor) => {
         :
         <div><input type="number" class="trait-date-input-sec" value=${sec} placeholder="second" /></div>
       `;
-  
+
       el.appendChild(dateElement);
       el.appendChild(timeElement);
-  
+
       // Let's make our content interactive
       const yearEl = el.querySelector('.trait-date-input-year');
       const monthEl = el.querySelector('.trait-date-input-month');
@@ -541,7 +552,7 @@ export const webBuilderPlugin = (editor) => {
         if (parseInt(sec, 10) < 0) sec = '00';
         component.set(traitName, `${('0000' + year.toString()).slice(-4)}-${('00' + month.toString()).slice(-2)}-${('00' + date.toString()).slice(-2)}T${('00' + hour.toString()).slice(-2)}:${('00' + min.toString()).slice(-2)}:${('00' + sec.toString()).slice(-2)}`);
       })
-  
+
       return el;
     },
     onUpdate({ elInput, component }) {
@@ -617,11 +628,11 @@ export const webBuilderPlugin = (editor) => {
     }
   });
 
-  editor.on(`style:property:update`, ({property, from, to}) => {
+  editor.on(`style:property:update`, ({ property, from, to }) => {
     const component = editor.getSelected();
     if (component?.isChildOf('repeater-item')) {
       const index = component.index();
-      const changedStyle = {...component.getStyle(), ...property.getStyle()};
+      const changedStyle = { ...component.getStyle(), ...property.getStyle() };
       const parentElements = component.parents();
       const parentIndexes = [];
       let parentRepeater = null;
@@ -646,7 +657,7 @@ export const webBuilderPlugin = (editor) => {
     }
 
     if (component?.get('type') === 'repeater-item') {
-      const changedStyle = {...component.getStyle(), ...property.getStyle()};
+      const changedStyle = { ...component.getStyle(), ...property.getStyle() };
       const parentRepeater = component.parent();
 
       for (let i = 0; i < parentRepeater.components().length; i++) {
@@ -680,7 +691,7 @@ export const webBuilderPlugin = (editor) => {
           tempCpt = tempCpt.getChildAt(parentIndexes[j]);
         }
         if (tempCpt?.getChildAt(index)) {
-          editor.selectAdd(tempCpt.getChildAt(index)); 
+          editor.selectAdd(tempCpt.getChildAt(index));
         }
       }
     }

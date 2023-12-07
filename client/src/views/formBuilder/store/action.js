@@ -157,7 +157,7 @@ export const getPublishPageAction =(payload) =>async(dispatch) =>{
     const {data} = await api.getPublishPage(payload);
     console.log('data.data', data.data);
     if(data?.success === true){
-      return data.data
+      return data;
     }
     else{
       toast.error('Something went wrong! please try again');
@@ -199,7 +199,7 @@ export const getPreviewPageAction =(payload) =>async(dispatch) =>{
   try{
     const {data} = await api.getPreviewPage(payload);
     if(data?.success === true){
-      return data.data
+      return data;
     }
     else{
       toast.error('Something went wrong! please try again');
@@ -665,3 +665,11 @@ export const deleteMultipleWebConnectionAction = (payload) => async (dispatch) =
   } catch (error) { }
 };
 
+export const getProductDatasetAction = (collectionId) => async (dispatch) => {
+  try {
+    const { data } = await api.getProductDataset(collectionId);
+    return data;
+  } catch (error) {
+
+  }
+}

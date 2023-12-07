@@ -6,10 +6,11 @@ import Select, { components } from 'react-select';
 import { useDispatch } from 'react-redux';
 import { createOrUpdateConnectionAction, deleteMultipleWebConnectionAction } from '../../../store/action';
 
-const ConnectCollectionModal = ({ store, connectData, setConnectData, selectedCmp, selectedCollection, setSelectedCollection }) =>{
+const ConnectCollectionModal = ({ store, connectData, setConnectData, getProductDataset, datasetConnect, setDatasetConnect, selectedDataset, setSelectedDataSet, handleSelectChangeDataSet, selectedCmp, selectedCollection, setSelectedCollection }) => {
+
   const dispatch = useDispatch();
   const [dataSets, setDataSets] = useState([]);
-  const [selectedDataSet, setSelectedDataSet] = useState(null);
+  // const [selectedDataSet, setSelectedDataSet] = useState(null);
   const [viewConnection, setViewConnection] = useState(false);
   const [selectedModel, setSelectedModel] = useState(null);
   const [fieldsOfCollection, setFieldsOfCollection] = useState([]);
@@ -21,7 +22,7 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, selectedCm
   useEffect(() => {
     if (store.webDatasets.length > 0) {
       const tempDatasets = [];
-      store.webDatasets.map(ds => {tempDatasets.push({value: ds._id, label: ds.name})})
+      store.webDatasets.map(ds => { tempDatasets.push({ value: ds._id, label: ds.name }) })
       setDataSets(tempDatasets);
     }
   }, [store.webDatasets]);
@@ -99,7 +100,21 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, selectedCm
       });
       setFieldsOfCollection(tempFields);
     }
-  }, [selectedDataSet, store.webCollections]);
+  }, [selectedDataset, store.webCollections]);
+
+  const changeField = (data) => {
+    setSelectedField(data);
+    const existingItemIndex = datasetConnect.findIndex(item => item.id === selectedModel.ccid);
+
+    if (existingItemIndex !== -1) {
+      // Update the name if the ID exists
+      datasetConnect[existingItemIndex].name = data.value;
+    } else {
+      // Add a new item if the ID doesn't exist
+      datasetConnect.push({ id: selectedModel.ccid, name: data.value });
+    }
+    setDatasetConnect(datasetConnect);
+  }
 
   useEffect(() => {
     if (selectedModel?.connectedField) {
@@ -144,16 +159,16 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, selectedCm
 
   return (
     <>
-      <Modal isOpen={connectData} toggle={() => setConnectData(!connectData)} centered size='md'>
-        <ModalHeader toggle={() => setConnectData(!connectData)} className="font-medium-5 px-2 py-1 modal-title text-primary">
+      <Modal isOpen={connectData} toggle={() => { setConnectData(!connectData); setViewConnection(false); }} centered size='md'>
+        <ModalHeader toggle={() => { setConnectData(!connectData); setViewConnection(false); }} className="font-medium-5 px-2 py-1 modal-title text-primary">
           Connect to dataset
         </ModalHeader>
-        <ModalBody className="d-flex justify-content-between p-2"  style={{minHeight: 400}}>
+        <ModalBody className="d-flex justify-content-between p-2" style={{ minHeight: 400 }}>
           {
             viewConnection ? (
               <div className='d-flex flex-column flex-1'>
-                <Badge className='mb-1 round px-2' style={{width: 'fit-content'}} color='light-primary' onClick={() => setViewConnection(false)}>
-                  <ChevronLeft size={14} className='me-1'/>
+                <Badge className='mb-1 round px-2' style={{ width: 'fit-content' }} color='light-primary' onClick={() => setViewConnection(false)}>
+                  <ChevronLeft size={14} className='me-1' />
                   Back to connections
                 </Badge>
                 {/* <div className='bg-light-secondary d-flex justify-content-center'>
@@ -162,8 +177,8 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, selectedCm
                   </Label>
                 </div>
                 <Label className="mdl-select-main-menu-label fs-6 mt-1" for="mdl-select-main-menu">
-                    Choose a dataset
-                  </Label>
+                  Choose a dataset
+                </Label>
                 <Select
                   id="mdl-select-main-menu"
                   className="react-select mb-1"
@@ -190,7 +205,7 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, selectedCm
                   options={fieldsOfCollection}
                   theme={selectThemeColors}
                   value={selectedField}
-                  onChange={onChangeConnectionOption}
+                  onChange={(data) => { changeField(data); onChangeConnectionOption(data);}}
                 />
               </div>
             ) : (
@@ -208,8 +223,8 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, selectedCm
                         isClearable={false}
                         options={dataSets}
                         theme={selectThemeColors}
-                        value={selectedDataSet}
-                        onChange={onSelectDataset}
+                        value={selectedDataset}
+                        onChange={(data) => { handleSelectChangeDataSet(data); onSelectDataset(data);}}
                       />
                     </>
                   ) : (
@@ -217,12 +232,12 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, selectedCm
                       <Label className="mdl-select-main-menu-label fs-6" for="mdl-select-main-menu">
                         Start by creating a dataset
                       </Label>
-                      <Button color="primary" className="add-todo-item me-1 align-self-center mt-1" onClick={() => {}}>
+                      <Button color="primary" className="add-todo-item me-1 align-self-center mt-1" onClick={() => { }}>
                         Create Dataset
                       </Button>
                     </>
                   )
-                }            
+                }
                 <div className='bg-light-secondary d-flex justify-content-center'>
                   <Label className="mdl-input-category-label fs-6 my-1" for="mdl-input-category">
                     Connections
@@ -266,12 +281,15 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, selectedCm
                               <div className='d-flex'>
                                 {connect?.connectedField && <Link size={17} className='me-2' color='#7fb1ff'/>}
                                 <ChevronRight size={17} onClick={() => {
+                                  if (connect?.description) {
+                                    setSelectedField(connect?.description);
+                                  }
                                   setSelectedModel(connect);
                                   setViewConnection(true);
-                                }} color='#7fb1ff'/>
+                                }} color='#7fb1ff' />
                               </div>
                             </div>
-                            <hr className='m-0'/>
+                            <hr className='m-0' />
                           </ListGroupItem>;
                         })
                       }
@@ -281,7 +299,7 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, selectedCm
               </div>
             )
           }
-          
+
         </ModalBody>
       </Modal>
     </>

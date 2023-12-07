@@ -38,7 +38,7 @@ import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
 import { webBuilderPlugin } from './elements/webBuilderPlugin';
 import PublishModal from './topNav/publish/publishModal';
-import { getWebElementsAction, createWebElementAction, getBlogsAction } from '../store/action';
+import { getWebElementsAction, createWebElementAction, getBlogsAction, getProductDatasetAction } from '../store/action';
 import { menu } from './util';
 import { getCategoriesByMenu, createWebElement } from '../store/api';
 import * as htmlToImage from 'html-to-image';
@@ -56,6 +56,7 @@ import CreateDatasetModal from './cms/CreateDatasetModal';
 import ConnectCollectionModal from './elements/toolbar/ConnectCollectionModal';
 import BlogModal from './topNav/blog/BlogModal'
 import { GiConsoleController } from 'react-icons/gi';
+import Sidebar from './Sidebar';
 export default function Editor({
   isblog,
   setIsBlog,
@@ -88,15 +89,18 @@ export default function Editor({
   setSelectedCategory,
   openAddElementMdl,
   setOpenAddElementMdl,
+  addSideBarOpen,
+  setAddSideBarOpen,
 }) {
   const [openCreateForm, setOpenCreateForm] = useState();
-  const {id}=useParams();
-  const form=store.form;
-  const dispatch=useDispatch();
-  const history=useHistory();
+  const { id } = useParams();
+  const form = store.form;
+  const dispatch = useDispatch();
+  const history = useHistory();
   const [editor, setEditor] = useState(null);
   const [blockManager, setBlockManager] = useState(null);
-  const [isLoading, setIsLoading]=useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isStoreLoading, setIsStoreLoading] = useState(true);
   const [selectedCmp, setSelectedCmp] = useState(null);
   const [isRunning, setIsRunning] = useState(true);
   const [isPublishModal, setIsPublishModal]=useState(false);
@@ -116,7 +120,13 @@ export default function Editor({
       dispatch(getConnectionsByWebsiteAction(store.form._id));
     }
   }, [store.form._id]);
-
+  
+  const [productDataset, setProductDataset] = useState({});
+  const [datasetConnect, setDatasetConnect] = useState([]);
+  const [selectedDataset, setSelectedDataSet] = useState({});
+  const loadedRef = useRef();
+  loadedRef.current = isStoreLoading;
+  
   const toggle = () => {
     setOpen(!open);
   };
@@ -140,11 +150,11 @@ export default function Editor({
     setRenameMdl(_open);
   }
 
-  const _toggleDuplicate = (_open) =>{
+  const _toggleDuplicate = (_open) => {
     setDuplicateMdl(_open);
   }
 
-  const togglePublish=(_open)=>{
+  const togglePublish = (_open) => {
     setIsPublishModal(_open);
     setIsPublish(false);
   }
@@ -170,7 +180,7 @@ export default function Editor({
       isOpen: false,
     })
   };
-  
+
   const handleRSideBarOpen = (e) => {
     setRSidebarOpen(false);
   };
@@ -179,6 +189,67 @@ export default function Editor({
     document.getElementById(_target).scrollIntoView(true);
   } 
 
+  const getProductDataset = (collectionId) => {
+    dispatch(getProductDatasetAction(collectionId)).then(res => {
+      if (res) {
+        console.log(res);
+        setProductDataset(res.data[0]);
+        selectedCmp.set('numOfItems', res.data[0].values.length);
+      }
+    })
+  };
+
+  const setDatasetFields = (data) => {
+    setIsStoreLoading(true);
+    selectedCmp.set('cloning', true);
+    setDatasetConnect(data);
+    let selCmp = selectedCmp;
+    selectedCmp.set('datasetConnect', data);
+    if (selectedCmp.attributes.type === 'slider-product-gallery' || selectedCmp.attributes.type === 'related-products') {
+      selCmp = selectedCmp.getChildAt(0);
+      setConnectModel(selectedCmp.getChildAt(0), data);
+    }
+    else
+      setConnectModel(selectedCmp, data);
+    selCmp.components().models.map((m, index) => {
+      m.components().models.map((element) => {
+        const existingItemIndex = data.findIndex(item => (item.id + (index != 0 ? ("-" + (index + 1)) : "")) === element.ccid);
+
+        if (existingItemIndex !== -1) {
+          // Update the name if the ID exists
+          if (element.get('type') == 'text') {
+            if (element.components().models.length == 0) {
+              element.set('content', productDataset.values[index][data[existingItemIndex].name]);
+            } else {
+              element.components().models[0].set('content', productDataset.values[index][data[existingItemIndex].name]);
+            }
+          }
+        } else {
+          // Add a new item if the ID doesn't exist
+          //dataConnect.push(newData);
+        }
+      });
+    });
+    selectedCmp.set('cloning', false);
+    setIsStoreLoading(false);
+  }
+
+  const setConnectModel = (cmp, dataSet) => {
+    const repeaterItemCmp = cmp.getChildAt(0);
+    const tempModelsToConnect = [];
+    repeaterItemCmp.components().models.map(m => {
+      const connectedField = dataSet.filter((data) => data.id == m.ccid);
+      if(connectedField.length > 0)
+        m.description = connectedField[0].name;
+      tempModelsToConnect.push(m);
+    });
+    setModelsToConnect(tempModelsToConnect);
+  }
+
+  const handleSelectChangeDataSet = (data) => {
+    setSelectedDataSet(data);
+    selectedCmp.set('selectedDataset', data);
+  }
 
   // useEffect(() =>{
   //   let interval;
@@ -214,8 +285,8 @@ export default function Editor({
     })
     const gjsEditor = grapesjs.init({
       container: '#editor',
-      height: window. innerHeight-117,
-      plugins: [basicBlockPlugin,(editor) => webBuilderPlugin(editor), websitePlugin],
+      height: window.innerHeight - 117,
+      plugins: [basicBlockPlugin, (editor) => webBuilderPlugin(editor), websitePlugin],
 
       richTextEditor: {
         actions: []
@@ -224,20 +295,20 @@ export default function Editor({
         custom: true,
         // appendTo: '#blocks'
       },
-      styleManager:{
+      styleManager: {
         appendTo: document.querySelector('#style-manager-container'),
       },
-      selectorManager:{
-        appendTo:document.querySelector('#selector-manager-container'),
+      selectorManager: {
+        appendTo: document.querySelector('#selector-manager-container'),
       },
-      layerManager:{
+      layerManager: {
         appendTo: document.querySelector('#layer-manager-container'),
       },
-      traitManager:{
+      traitManager: {
         appendTo: document.querySelector('#trait-manager-container'),
       },
       pageManager: true,
-      pageManager:{
+      pageManager: {
         appendTo: document.querySelector('#page-manager-container'),
       },
       storageManager: {
@@ -250,7 +321,7 @@ export default function Editor({
         storeHtml: true,
         storeCss: true,
         autorender: false
-    },
+      },
       deviceManager: {
         default: 'desktop',
         devices: [
@@ -282,8 +353,129 @@ export default function Editor({
       },
     });
 
+    let compoId = "";
+    const setChildIds = (originalComponent, clonedComponent, i) => {
+      var originalChildren = originalComponent.get('components');
+      var clonedChildren = clonedComponent.get('components');
+
+      originalChildren.each(function (originalChild, index) {
+        var clonedChild = clonedChildren.at(index);
+        clonedChild.ccid = originalChild.ccid.split('-')[0] + "a" + (i == 0 ? "" : ("-" + (i + 1)));
+
+        // Recursive call for any nested children
+        if (originalChild.get('components').length > 0) {
+          setChildIds(originalChild, clonedChild);
+        }
+      });
+    }
 
 
+    gjsEditor.on('component:add', (component) => {
+      if (!loadedRef.current && component.get('type') != 'image') {
+        console.log(component);
+        if (compoId == "")
+          compoId = component.ccid;
+        const parentType = component.parent().get('type');
+        
+        if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
+          setIsStoreLoading(true);
+          let numOfItems;
+          if(component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
+            numOfItems = component.parent().parent().get('numOfItems');
+          } else {
+            numOfItems = component.parent().parent().parent().get('numOfItems');
+          }
+          let originalComp = component.parent().clone();
+          let comps = component.parent().parent().get('components');
+          for (let i = comps.models.length - 1; i >= 0; i--) {
+            comps.models[i].remove();
+          }
+
+          for (let i = 0; i < numOfItems; i++) {
+            const item = originalComp.clone();
+
+            setChildIds(originalComp, item, i);
+            comps.push(item);
+          }
+          setIsStoreLoading(false);
+
+          // const parentComponent = component.parent().parent();
+          // const parentChildren = parentComponent.get('components');
+
+          // // Filter out the current component from the children
+          // const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
+          
+          // childrenWithoutCurrent.forEach((child, index) => {
+
+          //   const copiedComponent = component.clone();
+          //   copiedComponent.ccid = compoId + "-" + (index + 2);
+          //   if(component.get('type') == 'text')
+          //     copiedComponent.set('style', { padding: "10px" });
+          //   child.append(copiedComponent);
+          // });
+          // setIsLoading(false);
+        }
+        compoId = "";
+      }
+    });
+    gjsEditor.on('component:remove', (component) => {
+      if (!loadedRef.current && component.changed != {}) {
+        if (compoId == "")
+          compoId = component.ccid.split('-')[0];
+        const parentType = component.parent().get('type');
+
+        if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
+          const parentComponent = component.parent().parent();
+          const parentChildren = parentComponent.get('components');
+
+          // Filter out the current component from the children
+          const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
+          setIsStoreLoading(true);
+          childrenWithoutCurrent.forEach((child, index) => {
+            child.get('components').models.forEach((element) => {
+              if (element.ccid.includes(compoId)) {
+                element.remove();
+              }
+            })
+          });
+          setIsStoreLoading(false);
+        }
+        compoId = "";
+      }
+    });
+    gjsEditor.on('component:update', (component) => {
+      console.log(component);
+      if (!loadedRef.current) {
+        try {
+          const parentType = component.parent().get('type');
+
+          if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
+            setIsStoreLoading(true);
+            let numOfItems;
+            if (component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
+              numOfItems = component.parent().parent().get('numOfItems');
+            } else {
+              numOfItems = component.parent().parent().parent().get('numOfItems');
+            }
+            let originalComp = component.parent().clone();
+            let comps = component.parent().parent().get('components');
+            for (let i = comps.models.length - 1; i >= 0; i--) {
+              comps.models[i].remove();
+            }
+
+            for (let i = 0; i < numOfItems; i++) {
+              const item = originalComp.clone();
+
+              setChildIds(originalComp, item, i);
+              comps.push(item);
+            }
+            setIsStoreLoading(false);
+          }
+        } catch (e) {
+
+        }
+      }
+    });
     gjsEditor.on('block:drag:start', function (model) {
       setSidebarData({
         ...sidebarData,
@@ -311,6 +503,14 @@ export default function Editor({
     });
     gjsEditor.on('component:selected', (cmp) => {
       setSelectedCmp(cmp);
+      if (cmp.attributes.type === 'repeater' || cmp.attributes.type === 'grid-product-gallery' || cmp.attributes.type === 'slider-product-gallery' || cmp.attributes.type === 'related-products') {
+        setSelectedDataSet(cmp.get('selectedDataset'));
+        setDatasetConnect(cmp.get('datasetConnect'));
+        if(cmp.attributes.type === 'slider-product-gallery' || cmp.attributes.type === 'related-products')
+          setConnectModel(cmp.getChildAt(0), cmp.get('datasetConnect'));
+        else
+          setConnectModel(cmp, cmp.get('datasetConnect'));
+      }
     });
 
       // Add custom commands
@@ -323,27 +523,25 @@ export default function Editor({
             <div class="w-50 p-1">
               <h5>Main menu</h5>
               <select class="select-main-menu w-100">
-                ${
-                  menu.map((e, idx) => {
-                    if (idx !== 0)
-                    return (
-                      `<option class="main-menu-option" value=${e.id}>${e.name}</option>`
-                    );
-                  })
-                }
+                ${menu.map((e, idx) => {
+        if (idx !== 0)
+          return (
+            `<option class="main-menu-option" value=${e.id}>${e.name}</option>`
+          );
+      })
+        }
               </select>
             </div>
             
             <div class="w-50  p-1">
               <h5>Sub menu</h5>
               <select class="select-sub-menu w-100">
-                ${
-                  menu[1].subMenu.map((e, idx) => {
-                    return (
-                      `<option class="sub-menu-option" value=${e.id}>${e.name}</option>`
-                    );
-                  })
-                }
+                ${menu[1].subMenu.map((e, idx) => {
+          return (
+            `<option class="sub-menu-option" value=${e.id}>${e.name}</option>`
+          );
+        })
+        }
               </select >
             </div>
           </div>
@@ -481,7 +679,7 @@ export default function Editor({
                   });
                   this.set('toolbar', toolbar);
                 }
-                if (elType.id === 'repeater' || elType.id === 'gallery') {
+                if (elType.id === 'repeater' || elType.id === 'gallery' || elType.id === 'grid-product-gallery' || elType.id === 'slider-product-gallery' || elType.id === 'related-products') {
                   toolbar.unshift({
                     id: 'connect-collection',
                     command: 'connect-collection',
@@ -506,21 +704,21 @@ export default function Editor({
       editor?.DeviceManager.add({
         id: device_name,
         name: device_name,
-        width: customwidth.toString()+'px'
-       });
-       editor.Commands.add(command_name, (editor) => {
+        width: customwidth.toString() + 'px'
+      });
+      editor.Commands.add(command_name, (editor) => {
         editor?.setDevice(device_name);
       });
       editor?.runCommand(command_name);
     }
-    else{
-      if(customwidth===320){
+    else {
+      if (customwidth === 320) {
         editor?.runCommand('set-device-mobile');
       }
-      else if(customwidth===768){
+      else if (customwidth === 768) {
         editor?.runCommand('set-device-tablet');
       }
-      else{
+      else {
         editor?.runCommand('set-device-desktop');
       }
     }
@@ -576,50 +774,52 @@ export default function Editor({
     }
   }, [device]);
 
-  useEffect(()=>{
-    if(editor){
-      const current_page=editor.Pages.getSelected();
+  useEffect(() => {
+    if (editor) {
+      const current_page = editor.Pages.getSelected();
       const html = editor.getHtml({ current_page });
       const css = editor.getCss({ current_page });
-      const payload={
-        page:page?._id,
-        html:html,
-        css:css,
+      const payload = {
+        page: page?._id,
+        html: html,
+        css: css,
       };
 
-      if(ispreview){
-        dispatch(updatePageAction(id, payload)).then((res)=>{
-          if(res){
+      if (ispreview) {
+        dispatch(updatePageAction(id, payload)).then((res) => {
+          if (res) {
             history.push(`/preview/${id}/${page?.name}`);
             setIsPreview(false);
           }
         });
       }
-      if(ispublish){
-        dispatch(publishWebsiteAction(id, payload)).then((res)=>{
-          if(res){
-            const _form={...form, ...res};
+      if (ispublish) {
+        dispatch(publishWebsiteAction(id, payload)).then((res) => {
+          if (res) {
+            const _form = { ...form, ...res };
             dispatch(setFormReducer(_form));
             setIsPublishModal(true);
             setPublishUrl(`/website/${id}`);
             toast.success('Website published successfully');
             setIsPublish(false);
-          } 
+          }
         });
       }
     };
   }, [ispreview, ispublish]);
 
-  useEffect(()=>{
-    if(page){
+  useEffect(() => {
+    if (page) {
       setIsLoading(true);
-      dispatch(getPageAction(page._id)).then((res)=>{
-        if(res){
-          setIsLoading(false);
-          if(editor){
+      setIsStoreLoading(true);
+      dispatch(getPageAction(page._id)).then((res) => {
+        if (res) {
+          if (editor) {
             editor.setComponents(res);
           };
-        }  
+          setIsLoading(false);
+          setIsStoreLoading(false);
+        }
       })
     }
   }, [page?._id]);
@@ -712,270 +912,352 @@ export default function Editor({
         options={{ suppressScrollX: true }}
         style={{ height: `calc(100vh - 120px)` }}
       >
-       <Collapse isOpen={sidebarData.isOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{height: '100%'}}>
-          <div className="expanded-header">
-            <span>{sidebarData.menu.name}</span>
-            <div>
-              <span className="header-icon">
-                <RiQuestionMark size={16} />
-              </span>
-              <span className="header-icon" onClick={handleSidebarOpen}>
-                <X size={16} />
-              </span>
-            </div>
-          </div>
-          <div className="expanded-content">
-            <div id="blocks">
-              {
-                sidebarData.menu.id === 'quick-add' && (
-                  <div className="quick-add">
-                    {editor?.BlockManager.blocks.filter(e => e.get('category') === 'Basic').map((block) => (
-                      <div
-                        key={block.getId()}
-                        draggable
-                        className='d-flex flex-column align-items-center border border-secondary rounded cursor-pointer py-2 px-1 transition-colors mt-1 mb-1'
-                        onDragStart={(ev) => {
-                          ev.stopPropagation();
-                          blockManager.dragStart(block, ev.nativeEvent);
-                        }}
-                        onDragEnd={(ev) => {
-                          ev.stopPropagation();
-                          blockManager.dragStop(false);
-                        }}
-                      >
-                        <div
-                          style={{width: 30, height: 30}}
-                          dangerouslySetInnerHTML={{ __html: block.getMedia() }}
-                        />
-                        <div
-                          className="text-sm text-center w-full mt-1"
-                          title={block.getLabel()}
-                        >
-                          {block.getLabel()}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  )
-                }
-                {
-                  sidebarData.menu.id != 'quick-add' && sidebarData.menu.id != 'blog' && sidebarData.menu.id !== 'cms' && (
-                  <div className='submenu-and-element d-flex'>
-                    <div className="submenu-list">
-                      {
-                        sidebarData?.menu?.subMenu?.map(sub => {
-                          const categories = [];
-                          const tempBlocks = [];
-                          editor?.BlockManager.blocks.map((e) => {
-                            if (e.get('menu') === `${sidebarData.menu.id}-${sub.id}` && categories.findIndex(c => c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`) === -1) {
-                              categories.push(`${sidebarData.menu.id}-${sub.id}-${e.get('label')}`);
-                              tempBlocks.push(e);
-                            }
-                          });
-                          
-                          const returnComponent = <>
-                            <h5 className='submenu-item'>{sub.name}</h5>
-                            {
-                              tempBlocks.map(b => {
-                                return (
-                                  <div
-                                    className={selectedCategory === `${sidebarData.menu.id}-${sub.id}-${b.get('label')}` ? 'selected-submenu-category' : 'submenu-category'}
-                                    onClick={() => {setSelectedCategory(`${sidebarData.menu.id}-${sub.id}-${b.get('label')}`)}}
-                                    >
-                                    {b.get('label')}
-                                  </div>
-                                );
-                              })
-                            }
-                          </>
-                          return returnComponent;
-                        })
-                      }
+        <Collapse isOpen={addSideBarOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{height: '100%'}} className='d-flex'>
+          {
+            tab !== 'Pages' && <>
+              <Sidebar
+                sidebarData={sidebarData}
+                setSidebarData={setSidebarData}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+              />
+              <Collapse isOpen={sidebarData.isOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{height: '100%'}} className='d-flex'>
+                <div>
+                  <div className="expanded-header">
+                    <span>{sidebarData.menu.name}</span>
+                    <div>
+                      <span className="header-icon">
+                        <RiQuestionMark size={16} />
+                      </span>
+                      <span className="header-icon" onClick={handleSidebarOpen}>
+                        <X size={16} />
+                      </span>
                     </div>
-                    <div className="element-container">
+                  </div>
+                  <div className="expanded-content">
+                    <div id="blocks">
                       {
-                        blockManager?.blocks?.filter(e => e.get('category').id === selectedCategory).map(b => {
-                          return (
-                            <div className="element">
-                              <img width="280" src={b.get('media')} />
+                        sidebarData.menu.id === 'quick-add' && (
+                          <div className="quick-add">
+                            {editor?.BlockManager.blocks.filter(e => e.get('category') === 'Basic').map((block) => (
                               <div
+                                key={block.getId()}
                                 draggable
-                                onDragStart={(e) => {
-                                  e.stopPropagation();
-                                  blockManager.dragStart(b, e.nativeEvent);
+                                className='d-flex flex-column align-items-center border border-secondary rounded cursor-pointer py-2 px-1 transition-colors mt-1 mb-1'
+                                onDragStart={(ev) => {
+                                  ev.stopPropagation();
+                                  blockManager.dragStart(block, ev.nativeEvent);
                                 }}
-                                onDragEnd={(e) => {
-                                  e.stopPropagation();
+                                onDragEnd={(ev) => {
+                                  ev.stopPropagation();
                                   blockManager.dragStop(false);
                                 }}
                               >
+                                <div
+                                  style={{width: 30, height: 30}}
+                                  dangerouslySetInnerHTML={{ __html: block.getMedia() }}
+                                />
+                                <div
+                                  className="text-sm text-center w-full mt-1"
+                                  title={block.getLabel()}
+                                >
+                                  {block.getLabel()}
+                                </div>
                               </div>
-                            </div>);
-                        })
-                      }
-                    </div>
-                  </div>
-                  )
-                }
-                {
-                  sidebarData.menu.id === 'cms' && (
-                    <>
-                      {viewCMSMenu && <div className="cms-element" style={{width: 350}}>
-                        {
-                          sidebarData?.menu?.subMenu?.map(sub => {
-                            return (
-                              <div className='my-1'>
-                                {sub.menu && <h5 className='ps-1 pt-2' color='black'>{sub.menu}</h5>}
-                                {
-                                  sub.data.map(e => {
-                                    return (
-                                      <div
-                                        className='d-flex align-items-center px-2 py-1 cms-menu-item'
-                                        onClick={() => {
-                                          if (e.id === 'add-preset') {
-
-                                          }
-                                          if (e.id === 'create-collection') {
-                                            createColMdlToggle();
-                                          }
-                                          if (e.id === 'dataset') {
-                                            createDatasetToggle();
-                                          }
-                                          if (e.id === 'form-dataset') {
-                                            createDatasetToggle({isFormDataset: true});
-                                          }
-                                          if (e.id === 'rich-content') {
-                                            
-                                          }
-                                        }}
-                                        >
-                                        <img className="me-1" width="70" height="70" src={e.icon}/>
-                                        <div>
-                                          <div style={{color: 'black', fontWeight: 500, fontSize: 15}}>{e.title}</div>
-                                          <div style={{fontSize: 13}}>{e.description}</div>
-                                        </div>
-                                        <div style={{width: 50, height: 50}} className='d-flex align-items-center'>
-                                          {(e.id === 'add-preset' || e.id === 'create-collection') ?
-                                            <CiCircleChevRight className='ms-1 cms-menu-icon' size={27} />
-                                            : <CiCirclePlus className='ms-1 cms-menu-icon' size={27} />
-                                          }
-                                        </div>
-                                      </div>
-                                    );
-                                  })
-                                }
-                              </div>
-                            )
-                          })
-                        }                        
-                      </div>}
-                      {
-                        !viewCMSMenu && <div className="cms-element d-flex flex-column align-items-center">
-                          <img width="350" src={cmsimg}/>
-                          <h2 className='mt-3'>Use the CMS</h2>
-                          <h4 className='mb-3'>Easily manage your site content</h4>
-                          <div>
-                            <h6 className='mt-1'><Check size={20} color='green'/> Set up content collections</h6>
-                            <h6 className='mt-1'><Check size={20} color='green'/> Create 100s of dynamic pages</h6>
-                            <h6 className='mt-1'><Check size={20} color='green'/> Collect info from site visitors</h6>
+                            ))}
                           </div>
-                          <Button color='primary' className='round mt-3' onClick={() => {setViewCMSMenu(true)}}>Add to Site</Button>
-                        </div>
-                      }
-                    </>
-                  )
-                }
-                {
-                  sidebarData.menu.id === 'blog' && (
-                    <div className='submenu-and-element d-flex'>
-                    <div className="submenu-list">
-                      {
-                        sidebarData?.menu?.subMenu?.map(sub => {
-                          const returnComponent = <>
-                            <div className='submenu-item' onClick={()=>scrollToTarget(sub.name)}>{sub.name}</div>
-                          </>
-                          return returnComponent;
-                        })
-                      }
-                    </div>
-                    <div className="element-container">
-                      {
-                         sidebarData.menu.id === 'blog' && sidebarData?.menu?.subMenu?.map(sub =>{
-                          let tempblocks=[];
-                          blockManager?.blocks?.filter(e => e.get('label')=== sub.name).map((b) =>{
-                            tempblocks.push(b);
-                          });
-                          const returnComponent=
-                            <>
-                              <div className='fw-bold text-black p-2' id={sub.name}>
-                                {sub.name}
-                              </div>
+                          )
+                        }
+                        {
+                          sidebarData.menu.id != 'quick-add' && sidebarData.menu.id != 'blog' && sidebarData.menu.id !== 'cms' && sidebarData.menu.id !== 'store' && (
+                          <div className='submenu-and-element d-flex'>
+                            <div className="submenu-list">
                               {
-                                sub.name!="RSS Button" && 
-                                <div className=''>
-                                  {tempblocks.map((b)=>{
-                                  return(
+                                sidebarData?.menu?.subMenu?.map(sub => {
+                                  const categories = [];
+                                  const tempBlocks = [];
+                                  editor?.BlockManager.blocks.map((e) => {
+                                    if (e.get('menu') === `${sidebarData.menu.id}-${sub.id}` && categories.findIndex(c => c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`) === -1) {
+                                      categories.push(`${sidebarData.menu.id}-${sub.id}-${e.get('label')}`);
+                                      tempBlocks.push(e);
+                                    }
+                                  });
+                                  
+                                  const returnComponent = <>
+                                    <h5 className='submenu-item'>{sub.name}</h5>
+                                    {
+                                      tempBlocks.map(b => {
+                                        return (
+                                          <div
+                                            className={selectedCategory === `${sidebarData.menu.id}-${sub.id}-${b.get('label')}` ? 'selected-submenu-category' : 'submenu-category'}
+                                            onClick={() => {setSelectedCategory(`${sidebarData.menu.id}-${sub.id}-${b.get('label')}`)}}
+                                            >
+                                            {b.get('label')}
+                                          </div>
+                                        );
+                                      })
+                                    }
+                                  </>
+                                  return returnComponent;
+                                })
+                              }
+                            </div>
+                            <div className="element-container">
+                              {
+                                blockManager?.blocks?.filter(e => e.get('category').id === selectedCategory).map(b => {
+                                  return (
                                     <div className="element">
                                       <img width="280" src={b.get('media')} />
-                                      {/* <iframe srcDoc={b.get('content')}/> */}
                                       <div
                                         draggable
                                         onDragStart={(e) => {
                                           e.stopPropagation();
                                           blockManager.dragStart(b, e.nativeEvent);
-                                        } }
+                                        }}
                                         onDragEnd={(e) => {
                                           e.stopPropagation();
                                           blockManager.dragStop(false);
-                                        } }
+                                        }}
                                       >
                                       </div>
-                                    </div>
-                                    )
-                                 })                           
-                                }
-                                    </div>
+                                    </div>);
+                                })
                               }
-                              
-                              
-                                {sub.name==="RSS Button" && 
-                                <div className='d-flex'>
-                                  {
-                                    tempblocks&& tempblocks.map((b)=>{
-                                      return(
-                                        <div className="element" style={{marginBottom:'10px'}}>
-                                          <img width="40" src={b.get('media')} />
-                                          {/* <iframe srcDoc={b.get('content')}/> */}
-                                          <div
-                                            draggable
-                                            onDragStart={(e) => {
-                                              e.stopPropagation();
-                                              blockManager.dragStart(b, e.nativeEvent);
-                                            } }
-                                            onDragEnd={(e) => {
-                                              e.stopPropagation();
-                                              blockManager.dragStop(false);
-                                            } }
-                                          >
-                                          </div>
-                                        </div>
-                                        )
-                                      })  
-                                  }
+                            </div>
+                          </div>
+                          )
+                        }
+                        {
+                          sidebarData.menu.id === 'cms' && (
+                            <>
+                              {viewCMSMenu && <div className="cms-element" style={{width: 350}}>
+                                {
+                                  sidebarData?.menu?.subMenu?.map(sub => {
+                                    return (
+                                      <div className='my-1'>
+                                        {sub.menu && <h5 className='ps-1 pt-2' color='black'>{sub.menu}</h5>}
+                                        {
+                                          sub.data.map(e => {
+                                            return (
+                                              <div
+                                                className='d-flex align-items-center px-2 py-1 cms-menu-item'
+                                                onClick={() => {
+                                                  if (e.id === 'add-preset') {
+
+                                                  }
+                                                  if (e.id === 'create-collection') {
+                                                    createColMdlToggle();
+                                                  }
+                                                  if (e.id === 'dataset') {
+                                                    createDatasetToggle();
+                                                  }
+                                                  if (e.id === 'form-dataset') {
+                                                    createDatasetToggle({isFormDataset: true});
+                                                  }
+                                                  if (e.id === 'rich-content') {
+                                                    
+                                                  }
+                                                }}
+                                                >
+                                                <img className="me-1" width="70" height="70" src={e.icon}/>
+                                                <div>
+                                                  <div style={{color: 'black', fontWeight: 500, fontSize: 15}}>{e.title}</div>
+                                                  <div style={{fontSize: 13}}>{e.description}</div>
+                                                </div>
+                                                <div style={{width: 50, height: 50}} className='d-flex align-items-center'>
+                                                  {(e.id === 'add-preset' || e.id === 'create-collection') ?
+                                                    <CiCircleChevRight className='ms-1 cms-menu-icon' size={27} />
+                                                    : <CiCirclePlus className='ms-1 cms-menu-icon' size={27} />
+                                                  }
+                                                </div>
+                                              </div>
+                                            );
+                                          })
+                                        }
+                                      </div>
+                                    )
+                                  })
+                                }                        
+                              </div>}
+                              {
+                                !viewCMSMenu && <div className="cms-element d-flex flex-column align-items-center">
+                                  <img width="350" src={cmsimg}/>
+                                  <h2 className='mt-3'>Use the CMS</h2>
+                                  <h4 className='mb-3'>Easily manage your site content</h4>
+                                  <div>
+                                    <h6 className='mt-1'><Check size={20} color='green'/> Set up content collections</h6>
+                                    <h6 className='mt-1'><Check size={20} color='green'/> Create 100s of dynamic pages</h6>
+                                    <h6 className='mt-1'><Check size={20} color='green'/> Collect info from site visitors</h6>
+                                  </div>
+                                  <Button color='primary' className='round mt-3' onClick={() => {setViewCMSMenu(true)}}>Add to Site</Button>
                                 </div>
-                         
+                              }
+                            </>
+                          )
+                        }
+                        {
+                          sidebarData.menu.id === 'blog' && (
+                            <div className='submenu-and-element d-flex'>
+                            <div className="submenu-list">
+                              {
+                                sidebarData?.menu?.subMenu?.map(sub => {
+                                  const returnComponent = <>
+                                    <div className='submenu-item' onClick={()=>scrollToTarget(sub.name)}>{sub.name}</div>
+                                  </>
+                                  return returnComponent;
+                                })
+                              }
+                            </div>
+                            <div className="element-container">
+                              {
+                                sidebarData.menu.id === 'blog' && sidebarData?.menu?.subMenu?.map(sub =>{
+                                  let tempblocks=[];
+                                  blockManager?.blocks?.filter(e => e.get('label')=== sub.name).map((b) =>{
+                                    tempblocks.push(b);
+                                  });
+                                  const returnComponent=
+                                    <>
+                                      <div className='fw-bold text-black p-2' id={sub.name}>
+                                        {sub.name}
+                                      </div>
+                                      {
+                                        sub.name!="RSS Button" && 
+                                        <div className=''>
+                                          {tempblocks.map((b)=>{
+                                          return(
+                                            <div className="element">
+                                              <img width="280" src={b.get('media')} />
+                                              {/* <iframe srcDoc={b.get('content')}/> */}
+                                              <div
+                                                draggable
+                                                onDragStart={(e) => {
+                                                  e.stopPropagation();
+                                                  blockManager.dragStart(b, e.nativeEvent);
+                                                } }
+                                                onDragEnd={(e) => {
+                                                  e.stopPropagation();
+                                                  blockManager.dragStop(false);
+                                                } }
+                                              >
+                                              </div>
+                                            </div>
+                                            )
+                                        })                           
+                                        }
+                                            </div>
+                                      }
+                                      
+                                      
+                                        {sub.name==="RSS Button" && 
+                                        <div className='d-flex'>
+                                          {
+                                            tempblocks&& tempblocks.map((b)=>{
+                                              return(
+                                                <div className="element" style={{marginBottom:'10px'}}>
+                                                  <img width="40" src={b.get('media')} />
+                                                  {/* <iframe srcDoc={b.get('content')}/> */}
+                                                  <div
+                                                    draggable
+                                                    onDragStart={(e) => {
+                                                      e.stopPropagation();
+                                                      blockManager.dragStart(b, e.nativeEvent);
+                                                    } }
+                                                    onDragEnd={(e) => {
+                                                      e.stopPropagation();
+                                                      blockManager.dragStop(false);
+                                                    } }
+                                                  >
+                                                  </div>
+                                                </div>
+                                                )
+                                              })  
+                                          }
+                                        </div>
+                                
+                                        }
+                                    
+                                    </>;
+                                    return returnComponent;
+                                  
+                                })
+                              }
+                            </div>
+                          </div>
+                          )
+                        }
+                        {
+                          sidebarData.menu.id === 'store' && (
+                            <div className='submenu-and-element d-flex'>
+                              <div className="submenu-list">
+                                {
+                                  sidebarData?.menu?.subMenu?.map(sub => {
+                                    const returnComponent = <>
+                                      <div className='submenu-item' onClick={() => scrollToTarget(sub.menu)}>{sub.menu}</div>
+                                    </>
+                                    return returnComponent;
+                                  })
                                 }
-                            
-                            </>;
-                            return returnComponent;
-                          
-                         })
-                      }
+                              </div>
+                              <div className="store-add">
+                                {editor?.BlockManager.blocks.filter(e => e.get('category') === 'Store').map((block) => (
+                                  <div
+                                    key={block.getId()}
+                                    draggable
+                                    className='store-item cursor-pointer'
+                                    onDragStart={(ev) => {
+                                      ev.stopPropagation();
+                                      blockManager.dragStart(block, ev.nativeEvent);
+                                    }}
+                                    onDragEnd={(ev) => {
+                                      ev.stopPropagation();
+                                      blockManager.dragStop(false);
+                                    }}
+                                    id={block.getLabel()}
+                                  >
+                                    {/* <div
+                              style={{ width: 30, height: 30 }}
+                              dangerouslySetInnerHTML={{ __html: block.getMedia() }}
+                            /> */}
+                                    <div
+                                      className="text-sm w-full mt-1"
+                                      title={block.getLabel()}
+                                    >
+                                      {block.getLabel()}
+                                      <span class="info-icon-tooltip">
+                                        <svg width="18" height="18" preserveAspectRatio="xMidYMid" viewBox="1.5 1.5 18 18" class="symbol symbol-infoIcon"><g id="infoIconSvg"><circle cx="10.5" cy="10.5" r="8" fill="transparent"></circle><path id="path-1" fill-rule="evenodd" d="M10.5 19.5a9 9 0 01-9-9 9 9 0 019-9 9 9 0 019 9 9 9 0 01-9 9zm-8-9c0 4.411 3.589 8 8 8s8-3.589 8-8-3.589-8-8-8-8 3.589-8 8zm10 5h-4l1-2v-3h-1l1-2h2v5l1 2zm-3-10h2v2h-2v-2z"></path></g></svg>
+                                        <div className='tooltip-content'>
+                                          <div className='tooltip-title'>{block.getLabel()}</div>
+                                          <div className='tooltip-text'>{block.getContent().text}</div>
+                                        </div>
+                                      </span>
+                                    </div>
+                                    <img src={`/assets/images/elements/${block.getMedia()}.png`} style={{ marginLeft: "14px", marginRight: "14px" }} />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )
+                        }                    
                     </div>
                   </div>
-                  )
-                }                
+                </div>
+              </Collapse>
+            </>
+          }
+          
+          <div style={{display:tab==='Pages'?'block':'none', height: '100%'}}>
+            <div className="sidebar-header px-1">
+              <span className="px-1 fs-5 fw-bolder text-black">{tab}</span>
+              <span>
+                <X
+                  size={20}
+                  onClick={(e) => {
+                    setAddSideBarOpen(false);
+                  }}
+                />
+              </span>
             </div>
+            <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} page={page} setPage={setPage}/>
           </div>
         </Collapse>
       </PerfectScrollbar>
@@ -987,6 +1269,11 @@ export default function Editor({
 
       <div id="editor"></div>
     </div>
+      {isStoreLoading ? <div className='loadingLayer'>
+        <div className="d-flex  justify-content-center mb-2 mt-2" style={{ position: 'absolute', top: "50%", left: "50%", zIndex: 10 }}>
+          <Spinner color="secondary">Loading...</Spinner>
+        </div>
+      </div> : <></>}
     <div className="property-sidebar" style={{display:rsidebarOpen?'block':'none'}}>
       <PerfectScrollbar
         className="scrollable-content"
@@ -1014,13 +1301,10 @@ export default function Editor({
           <div style={{display:tab==='Traits'?'block':'none'}}>
             <div id="trait-manager-container" />
           </div>
-          <div style={{display:tab==='Pages'?'block':'none'}}>
-            <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} page={page} setPage={setPage}/>
-          </div>
         </PerfectScrollbar>
       </div>
       <ImportModal editor={editor} setEditor={setEditor} open={open} toggle={toggle} />
-      <PublishModal publishUrl={publishUrl} isOpen={isPublishModal} toggle={togglePublish}/>
+      <PublishModal publishUrl={publishUrl} isOpen={isPublishModal} toggle={togglePublish} />
       <AddElementModal editor={editor} setEditor={setEditor} openAddElementMdl={openAddElementMdl} setOpenAddElementMdl={setOpenAddElementMdl} />
       <RenameModal store={store} isOpen={renameMdl} toggle={_toggleRename}/>
       <CreateFormModal open={createMdl} store={store} dispatch={dispatch}/>
@@ -1029,7 +1313,7 @@ export default function Editor({
       <CreateCollectionModal store={store} open={openCreateColMdl} toggle={createColMdlToggle} editCollectionToggle={toggleOpenEditCollection}/>
       <CreateDatasetModal store={store} mdlData={openCreateDatasetMdl} toggle={createDatasetToggle} />
       <EditCollectionModal store={store} openCollection={openEditCollection} setOpenEditCollection={setOpenEditCollection} toggle={toggleOpenEditCollection} />
-      <ConnectCollectionModal store={store} connectData={connectData} setConnectData={setConnectData} modelsToConnect={modelsToConnect} selectedCmp={selectedCmp} selectedCollection={selectedCollection} setSelectedCollection={setSelectedCollection} />
+      <ConnectCollectionModal store={store} connectData={connectData} setConnectData={setConnectData} getProductDataset={getProductDataset} datasetConnect={datasetConnect} setDatasetConnect={setDatasetFields} handleSelectChangeDataSet={handleSelectChangeDataSet} selectedDataset={selectedDataset} setSelectedDataSet={setSelectedDataSet} selectedCmp={selectedCmp} selectedCollection={selectedCollection} setSelectedCollection={setSelectedCollection} />
       <BlogModal store ={store} isOpen={isblog} toggle={toggleBlog}/>
   </div>
   );

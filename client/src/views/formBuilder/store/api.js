@@ -259,3 +259,7 @@ export const deleteConnect = (id) => {
 export const deleteMultipleConnects = (payload) => {
   return API.post(`/web-builder-cms/connection/multiple-delete`, payload);
 }
+
+export const getProductDataset = (id) => {
+  return API.get(`/web-builder-store/dataset/${id}`);
+}
