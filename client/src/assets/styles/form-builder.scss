@@ -1,0 +1,87 @@
+@import '../../@core/scss/base/bootstrap-extended/include';
+@import '../../@core/scss/base/components/include';
+.form-builder-navbar{
+    padding:5px;
+    border-bottom: 1px solid lightgray;
+    background-color: black;
+}
+
+.form-builder-sidebar{
+  
+}
+.form-builder-body{
+    background-color: gray;
+    .form-sidebar-action{
+        background-color: white;
+    }
+    .form-expanded-sidebar{
+        height:'500px';
+        background-color: white;
+        border:1px solid lightgray;
+        border-top: none;
+        .form-expanded-header{
+          border-bottom: 1px solid lightgray;; 
+        }
+    }
+    #form-editor{
+        background-color: white;
+        height: 300px;
+    }
+}
+#form-blocks{
+    display: grid;
+    gap: 5px;
+    grid-template-columns: auto auto auto;
+    margin-left: 10px;
+}
+.tab-button{
+    border-radius: 10px;
+    width: 100px;
+    text-align: center;
+    cursor: pointer;
+}
+.action-icon{
+    border-radius: 50%;
+    border: 1px solid black;
+    padding: 5px;
+}
+.item-event{
+    font-size: 12px;
+    color:black
+}
+.form-editor{
+    width:500px;
+    height: auto;
+}
+.rule-btn{
+    width:100px
+}
+.rule-card{
+    height: 100px;
+    padding: 8px;
+    border: 1px solid lightgray;
+    border-radius: 15px;
+    height: fit-content;
+    &:hover{
+        background-color: rgb(233, 233, 233);
+        cursor: pointer;
+    }
+}
+.page-card{
+    width: 100px;
+    padding: 5px;
+    border: 1px solid blue;
+    text-align: center;
+    color: blue;
+    cursor: pointer;
+}
+
+.page-card-active{
+    width: 100px;
+    padding: 5px;
+    border: 1px solid blue;
+    text-align: center;
+    color: white;
+    background-color: blue;
+    cursor: pointer;
+}

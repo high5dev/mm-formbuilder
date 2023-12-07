@@ -14,7 +14,8 @@ import {
   Offcanvas,
   OffcanvasBody,
   OffcanvasHeader,
-  Spinner
+  Spinner,
+  Modal
 } from 'reactstrap';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import websitePlugin from 'grapesjs-preset-webpage';
@@ -30,8 +31,8 @@ import StyleSidebar from './topNav/styles';
 import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
-import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, updatePageNameAction} from '../store/action'
-import { setFormReducer } from '../store/reducer';
+import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, updatePageNameAction, createChildFormAction} from '../store/action'
+import { setChildFormReducer, setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
@@ -46,6 +47,7 @@ import RenameModal from './topNav/rename/renameModal';
 import CreateFormModal from '../createForm/CreateFormModal';
 import DuplicateModal from './topNav/duplicate/duplicateModal';
 import InvitationModal from './topNav/invite/invitationModal';
+import FormEditorModal from './leftSidebar/form/FormEditorModal';
 export default function Editor({
   isinvite,
   setIsInvite,
@@ -92,6 +94,7 @@ export default function Editor({
   const [isRunning, setIsRunning] = useState(true);
   const [isPublishModal, setIsPublishModal]=useState(false);
   const [publishUrl, setPublishUrl]=useState();
+  const [formeditorMdl, setFormEditorMdl]=useState(false);
   const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
   const toggle = () => {
     setOpen(!open);
@@ -121,23 +124,47 @@ export default function Editor({
     setRSidebarOpen(false);
   };
 
-  useEffect(() =>{
-    let interval;
-      if(editor && !form.isPublish){
-        interval=setInterval(() =>{
-          const current_page=editor.Pages.getSelected();
-          const html = editor.getHtml({ current_page });
-          const css = editor.getCss({ current_page });
-          const payload={
-            page:page?._id,
-            html:html,
-            css:css,
-          };
-          dispatch(updatePageAction(id, payload));
-        }, 2000);
-        return () => clearInterval(interval);
+  const createForm =() =>{
+     const pageId=page?._id;
+     const websiteId=form?._id;
+     const elements=[];
+     const name="Page1";
+     const payload={
+      websiteId,
+      pageId,
+      elements,
+      name
+     };
+     dispatch(createChildFormAction(payload)).then(res=>{
+      if(res){
+        const {form, formPage}=res;
+        let pageList=[];
+        pageList.push({...formPage, html:'', css:''});
+        const newForm={...form, formPages:pageList};
+        dispatch(setChildFormReducer(newForm));
+        setFormEditorMdl(true);
       }
-  }, [editor?.getHtml(editor?.Pages.getSelected()), editor?.getCss(editor?.Pages.getSelected()), form, page])
+     })
+ 
+  }
+
+  // useEffect(() =>{
+  //   let interval;
+  //     if(editor && !form.isPublish){
+  //       interval=setInterval(() =>{
+  //         const current_page=editor.Pages.getSelected();
+  //         const html = editor.getHtml({ current_page });
+  //         const css = editor.getCss({ current_page });
+  //         const payload={
+  //           page:page?._id,
+  //           html:html,
+  //           css:css,
+  //         };
+  //         dispatch(updatePageAction(id, payload));
+  //       }, 2000);
+  //       return () => clearInterval(interval);
+  //     }
+  // }, [editor?.getHtml(editor?.Pages.getSelected()), editor?.getCss(editor?.Pages.getSelected()), form, page])
 
   useEffect(() => {
     dispatch(getWebElementsAction());
@@ -148,7 +175,7 @@ export default function Editor({
     })
     const gjsEditor = grapesjs.init({
       container: '#editor',
-      height: window. innerHeight-117,
+      height: window.innerHeight-117,
       plugins: [basicBlockPlugin,(editor) => webBuilderPlugin(editor), websitePlugin],
 
       richTextEditor: {
@@ -789,21 +816,6 @@ export default function Editor({
     }
   }, [isclear])
 
-  useEffect(() => {
-    if (editor) {
-      store.webElements.map((el, idx) => {
-        editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
-          label: el.category[0].name,
-          content: el.html,
-          media: el.imageUrl,
-          category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
-          menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
-        });
-      });
-
-    }
-  }, [isclear])
-
   editor?.on('component:selected', (cmp) => {
     if(cmp){
       setSelectedCmp(cmp);
@@ -886,10 +898,13 @@ export default function Editor({
           media: el.imageUrl,
           category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
           menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+                    mainMenu:`${el.category[0].mainMenu}`,
+          refcategory:`${el.category[0].name}`
         });
       });
     }
   }, [store.webElements, editor]);
+
   return (
     <div className="d-flex">
       <div className="expanded-sidebar">
@@ -989,6 +1004,7 @@ export default function Editor({
                                   onDragEnd={(e) => {
                                     e.stopPropagation();
                                     blockManager.dragStop(false);
+                                    createForm();
                                   }}
                                 >
                                 </div>
@@ -1052,6 +1068,9 @@ export default function Editor({
       <CreateFormModal open={createMdl} store={store} dispatch={dispatch}/>
       <DuplicateModal store={store} isOpen={duplicateMdl} toggle={_toggleDuplicate}/>
       <InvitationModal store={store} isOpen={isinvite} toggle={setIsInvite}/>
+      <Modal isOpen={formeditorMdl} centered className='form-builder-modal' fullscreen scrollable style={{ overflowX: 'hidden' }}>
+        <FormEditorModal toggle={(e)=>setFormEditorMdl(e)} store={store} page={page}/>
+      </Modal>
     </div>
   );
 }

@@ -37,11 +37,19 @@ const PagesRoutes = [
     path: '/preview/:id',
     component: lazy(() => import('../../views/website')),
     layout: 'BlankLayout',
+    exact:true
   },
   {
     path: '/preview/:id/:pageName',
     component: lazy(() => import('../../views/website')),
     layout: 'BlankLayout',
+    exact:true
+  },
+  {
+    path:'/preview/form/:formId/:formPageId',
+    component: lazy(() => import('../../views/form')),
+    layout: 'BlankLayout',
+    exact:true
   },
   {
     path: '/login/:contactTypeId/:assignerId',

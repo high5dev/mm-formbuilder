@@ -3,6 +3,8 @@ import {
   setAllFormsReducer,
   setFormContacts,
   setFormReducer,
+  setChildFormReducer,
+  setFormRuleReducer,
   setTemplatesReducer,
   setImageLibraryReducer,
   setFormCategoriesReducer,
@@ -14,12 +16,13 @@ import * as api from './api';
 import { toast } from 'react-toastify';
 import { getUserData } from '../../../auth/utils';
 
-export const createFormAction = (payload) => async (dispatch) => {
+export const createChildFormAction = (payload) => async (dispatch) => {
   try {
-    const { data } = await api.createForm(payload);
-    dispatch(setFormReducer(data.data));
+    const { data } = await api.createChildForm(payload);
+    dispatch(setChildFormReducer(data.data));
     if (data?.success === true) {
       toast.success('Form created successfully');
+      return data.data;
     } else {
       toast.error('Something went wrong! please try again');
     }
@@ -27,6 +30,123 @@ export const createFormAction = (payload) => async (dispatch) => {
     return data.data
   } catch (error) { }
 };
+
+export const editChildFormAction =(id, payload) =>async(dispatch) =>{
+  try {
+    const { data } = await api.updateChildForm(id, payload);
+    dispatch(setChildFormReducer(data.data));
+    if (data?.success === true) {
+      toast.success('Form saved successfully');
+      return data.data
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+  } catch (error) { }
+}
+
+export const getChildPreviewFormPageAction =(payload) =>async(dispatch) =>{
+  try{
+    const {data} = await api.getChildFormPreviewPage(payload);
+    if(data?.success === true){
+      return data.data
+    }
+    else{
+      toast.error('Something went wrong! please try again');
+    }
+  }
+  catch(error){
+  }
+} 
+
+export const createFormRuleAction =(payload) =>async(dispatch) =>{
+  try {
+    const { data } = await api.createFormRule(payload);
+    if (data?.success === true) {
+      toast.success('Rule created successfully');
+      return data.data
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+    
+  } catch (error) { 
+
+  }
+}
+
+export const deleteFormRuleAction =(id) =>async(dispatch) =>{
+  const {data} = await api.deleteFormRule(id);
+  if (data?.success === true) {
+    toast.success('Rule deleted successfully');
+    return true
+  } else {
+    toast.error('Something went wrong! please try again');
+    return false
+  }
+}
+
+export const updateFormRuleAction =(id, payload) =>async(dispatch) =>{
+  const {data} = await api.updateFormRule(id, payload);
+  if (data?.success === true) {
+    toast.success('Page updated successfully');
+    return data.data
+  } else {
+    toast.error('Something went wrong! please try again');
+  }
+}
+
+
+
+export const createFormAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createForm(payload);
+    dispatch(setFormReducer(data.data));
+    if (data?.success === true) {
+      toast.success('Form created successfully');
+      return true;
+    } else {
+      toast.error('Something went wrong! please try again');
+      return false;
+    }
+  } catch (error) { }
+};
+
+export const createFormPageAction = (payload) => async (dispatch) => {
+  try {
+    const {data} = await api.createFormPage(payload);
+    if (data?.success === true) {
+      toast.success('Page created successfully');
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+    return data.data; 
+  } catch (error) { }
+};
+
+export const removeFormPageAction =(id) =>async (dispatch) =>{
+  try {
+    const {data} = await api.deleteFormPage(id);
+    if (data?.success === true) {
+      toast.success('Page deleted successfully');
+      return true;
+    } else {
+      toast.error('Something went wrong! please try again');
+      return false;
+    }
+    return data.data; 
+  } catch (error) { }
+}
+
+export const getFormPageAction =(id) =>async(dispatch) =>{
+  try {
+    const {data} = await api.getFormPage(id);
+    if (data?.success === true) {
+      return data.data
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+  } catch (error) { }
+
+}
 
 export const createWebBuilderAction = (payload) => async (dispatch) => {
   try {
