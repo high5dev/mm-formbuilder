@@ -258,7 +258,68 @@ export const menu = [
     id: 'store',
     name: 'Store',
     icon: <MdStorefront size={24} color={'#585858'} />,
-    subMenu: [],
+    subMenu: [
+      {
+        menu: 'Grid Product Gallery',
+        data: [
+          {
+            id: 'grid-product-gallery',
+            title: 'Grid Product Gallery',
+            description: 'Display multiple products in a grid layout.',
+          }
+        ]
+      },
+      {
+        menu: 'Slider Product Gallery',
+        data: [
+          {
+            id: 'slider-product-gallery',
+            title: 'Slider Product Gallery',
+            description: 'Let customers browse products in a compact gallery.',
+          }
+        ]
+      },
+      {
+        menu: 'Related Products',
+        data: [
+          {
+            id: 'related-products',
+            title: 'Related Products',
+            description: 'Increase sales by adding a slider gallery with recommended products for your customers.',
+          }
+        ]
+      },
+      {
+        menu: 'Shopping Cart',
+        data: [
+          {
+            id: 'shopping-cart',
+            title: 'Shopping Cart',
+            description: 'Add a shortcut to your shopping cart anywhere on your site.',
+          }
+        ]
+      },
+      {
+        menu: 'Add To Cart Button',
+        data: [
+          {
+            id: 'add-to-cart-button',
+            title: 'Add To Cart Button',
+            description: 'Place a standalone Add to Cart button anywhere on your site.',
+          }
+        ]
+      },
+      {
+        menu: 'Currency Converter',
+        data: [
+          {
+            id: 'currency-converter',
+            title: 'Currency Converter',
+            description: 'Make shopping easier by letting customers shop products in their currency.',
+          }
+        ]
+      }
+    ],
   },
   {
     id: 'bookings',
