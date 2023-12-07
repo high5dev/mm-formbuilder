@@ -16,6 +16,9 @@ export const formEditor = createSlice({
       status: '',
       isTemplate: false
     },
+    childForm:{
+    },
+    formRules:[],
     linkUrl:'website',
     formOrderElements:{},
     formSalesType:'',
@@ -37,6 +40,12 @@ export const formEditor = createSlice({
     },
     setFormReducer: (state, action) => {
       state.form = action?.payload;
+    },
+    setChildFormReducer: (state,action) =>{
+      state.childForm=action?.payload
+    },
+    setFormRuleReducer: (state,action) =>{
+      state.formRules=action?.payload;
     },
     setWebBlogsReducer: (state, action) =>{
       state.webBlogs= action?.payload;
@@ -115,6 +124,8 @@ export const formEditor = createSlice({
 export const {
   setLinkUrlReducer,
   setFormReducer,
+  setFormRuleReducer,
+  setChildFormReducer,
   setToDefaultReducer,
   setAllFormsReducer,
   setFormCategoriesReducer,

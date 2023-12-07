@@ -108,6 +108,9 @@ const UproofLabel = require("../UproofLabel");
 // const Video = require("../Video");
 //Form builder entry
 const FormEntry = require("../FormEntry");
+const Form = require("../Form");
+const FormRule=require("../FormRule");
+const FormPage=require("../FormPage");
 const ImageLibrary = require("../ImageLibrary");
 
 // const Tag = require("../Tag");
@@ -265,6 +268,9 @@ const models = {
   // Income,
   // FinanceCategory,
   // UserGoal,
+  Form,
+  FormRule,
+  FormPage,
   FormEntry,
   ImageLibrary,
   // ActionPlans,

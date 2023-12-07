@@ -35,6 +35,9 @@ export default function Index() {
     };
   });
 
+  console.log('%%%%%%%%%%%%%%', sidebarData)
+
+
   return (
     <>
       <div className="editor-body">

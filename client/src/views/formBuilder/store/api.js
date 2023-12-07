@@ -6,6 +6,45 @@ const API = customInterIceptors();
 export const createForm = (payload) => {
   return API.post('/form-builder/create', payload);
 };
+//create child form
+
+export const createChildForm=(payload) => {
+  return API.post('/form/create', payload)
+}
+
+export const updateChildForm =(id, payload) =>{
+  return API.put('/form/edit/'+id, payload)
+}
+
+export const getChildFormPreviewPage =(payload) =>{
+  return API.get('/form/preview-page/',{params:payload});
+}
+
+export const createFormPage =(payload) =>{
+  return API.post('/form/create-page', payload);
+}
+
+export const deleteFormPage =(id) =>{
+  return API.delete(`/form/delete-page/${id}`)
+}
+
+export const getFormPage =(id) =>{
+  return API.get(`/form/page/${id}`)
+}
+
+//create form rule
+
+export const createFormRule =(payload) =>{
+  return API.post('/form-rule/create', payload)
+}
+
+export const deleteFormRule=(id) =>{
+  return API.delete(`/form-rule/delete/${id}`)
+}
+
+export const updateFormRule =(id, payload) =>{
+  return API.put('/form-rule/edit/' + id, payload);
+}
 
 //create webbuilder
 
