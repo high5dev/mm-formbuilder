@@ -177,6 +177,7 @@ const WebBuilderElement = require("../WebBuilderElement");
 const WebBuilderElementCategory = require("../WebElementCategory");
 const WebSiteCollection = require("../WebSiteCollection");
 const WebSiteDataSet = require("../WebSiteDataSet");
+const WebSiteConnection = require("../WebSiteConnection");
 
 const models = {
   Authenticate,
@@ -343,6 +344,7 @@ const models = {
   WebBuilderElementCategory,
   WebSiteCollection,
   WebSiteDataSet,
+  WebSiteConnection,
 };
 
 module.exports = models;

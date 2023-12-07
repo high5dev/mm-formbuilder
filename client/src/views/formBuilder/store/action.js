@@ -11,7 +11,8 @@ import {
   setWebElementsReducer,
   setWebCollectionsReducer,
   setWebDatasetsReducer,
-  setWebBlogsReducer
+  setWebBlogsReducer,
+  setWebConnectionsReducer,
 } from './reducer';
 import * as api from './api';
 import { toast } from 'react-toastify';
@@ -628,6 +629,38 @@ export const createWebDatasetAction = (payload) => async (dispatch) => {
     const { data } = await api.createWebDataset(payload);
     if (data.success)
       dispatch(getWebDatasetsAction(data.data.collectionId));
+    return data;
+  } catch (error) { }
+};
+
+export const getConnectionsByWebsiteAction = (websiteId) => async (dispatch) => {
+  try {
+    const { data } = await api.getConnectsByWebsite(websiteId);
+    dispatch(setWebConnectionsReducer(data.data));
+    return data;
+  } catch (error) { }
+};
+
+export const createOrUpdateConnectionAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createOrUpdateConnect(payload);
+    dispatch(getConnectionsByWebsiteAction(data.data.websiteId));
+    return data;
+  } catch (error) { }
+};
+
+export const deleteWebConnectionAction = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.deleteConnect(id);
+    dispatch(getConnectionsByWebsiteAction(data.data.websiteId));
+    return data;
+  } catch (error) { }
+};
+
+export const deleteMultipleWebConnectionAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.deleteMultipleConnects(payload);
+    dispatch(getConnectionsByWebsiteAction(data.data.websiteId));
     return data;
   } catch (error) { }
 };

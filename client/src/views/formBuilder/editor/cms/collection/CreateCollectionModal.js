@@ -6,21 +6,21 @@ import { createWebCollectionAction } from '../../../store/action';
 const defaultFields = [
   {
     name: 'id',
-    type: 'text',
+    type: 'Text',
     default: true,
   },
   {
     name: 'title',
-    type: 'text',
+    type: 'Text',
   },
   {
     name: 'createdAt',
-    type: 'date',
+    type: 'Date',
     default: true,
   },
   {
     name: 'updatedAt',
-    type: 'date',
+    type: 'Date',
     default: true,
   },
 ];
