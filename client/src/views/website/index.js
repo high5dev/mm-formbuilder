@@ -135,10 +135,11 @@ export default function Index() {
           let linkElements = htmlCmp.getElementsByTagName('a');
           for (let i = 0; i < linkElements.length; i++) {
             let link_href = linkElements[i].getAttribute('href');
-            if (!link_href.includes('https') || !link_href.includes('http') || !link_href.includes('preview') || !link_href.includes('website')) {
+            if (link_href && link_href.includes('https') && !link_href.includes('http') && !link_href.includes('preview') && !link_href.includes('website')) {
               link_href = '/website' + link_href;
             }
             linkElements[i].setAttribute('href', link_href);
+            linkElements[i].setAttribute('target', '_parent');
           };
           var tmp = document.createElement("div");
           tmp.append(htmlCmp.body)
@@ -163,10 +164,11 @@ export default function Index() {
           let linkElements = htmlCmp.getElementsByTagName('a');
           for (let i = 0; i < linkElements.length; i++) {
             let link_href = linkElements[i].getAttribute('href');
-            if (!link_href.includes('https') || !link_href.includes('http') || !link_href.includes('preview') || !link_href.includes('website')) {
+            if (link_href && link_href.includes('https') && !link_href.includes('http') && !link_href.includes('preview') && !link_href.includes('website')) {
               link_href = '/preview' + link_href;
             }
             linkElements[i].setAttribute('href', link_href)
+            linkElements[i].setAttribute('target', '_parent');
           };
           var tmp = document.createElement("div");
           tmp.append(htmlCmp.body)

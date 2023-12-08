@@ -6,11 +6,11 @@ import Select, { components } from 'react-select';
 import { useDispatch } from 'react-redux';
 import { createOrUpdateConnectionAction, deleteMultipleWebConnectionAction } from '../../../store/action';
 
-const ConnectCollectionModal = ({ store, connectData, setConnectData, getProductDataset, datasetConnect, setDatasetConnect, selectedDataSet, setSelectedDataSet, handleSelectChangeDataSet, selectedCmp, selectedCollection, setSelectedCollection }) => {
+const ConnectCollectionModal = ({ store, connectData, setConnectData, getProductDataset, datasetConnect, setDatasetConnect, handleSelectChangeDataSet, selectedCmp, selectedCollection, setSelectedCollection, createDatasetToggle }) => {
 
   const dispatch = useDispatch();
   const [dataSets, setDataSets] = useState([]);
-  // const [selectedDataSet, setSelectedDataSet] = useState(null);
+  const [selectedDataSet, setSelectedDataSet] = useState(null);
   const [viewConnection, setViewConnection] = useState(false);
   const [selectedModel, setSelectedModel] = useState(null);
   const [fieldsOfCollection, setFieldsOfCollection] = useState([]);
@@ -159,8 +159,8 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, getProduct
 
   return (
     <>
-      <Modal isOpen={connectData} toggle={() => { setConnectData(!connectData); setViewConnection(false); }} centered size='md'>
-        <ModalHeader toggle={() => { setConnectData(!connectData); setViewConnection(false); }} className="font-medium-5 px-2 py-1 modal-title text-primary">
+      <Modal isOpen={connectData.isOpen} toggle={() => { setConnectData({...connectData, isOpen: false}); setViewConnection(false); }} centered size='md'>
+        <ModalHeader toggle={() => { setConnectData({...connectData, isOpen: false}); setViewConnection(false); }} className="font-medium-5 px-2 py-1 modal-title text-primary">
           Connect to dataset
         </ModalHeader>
         <ModalBody className="d-flex justify-content-between p-2" style={{ minHeight: 400 }}>
@@ -205,7 +205,10 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, getProduct
                   options={fieldsOfCollection}
                   theme={selectThemeColors}
                   value={selectedField}
-                  onChange={(data) => { changeField(data); onChangeConnectionOption(data);}}
+                  onChange={(data) => {
+                    // changeField(data);
+                    onChangeConnectionOption(data);
+                  }}
                 />
               </div>
             ) : (
@@ -232,7 +235,7 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, getProduct
                       <Label className="mdl-select-main-menu-label fs-6" for="mdl-select-main-menu">
                         Start by creating a dataset
                       </Label>
-                      <Button color="primary" className="add-todo-item me-1 align-self-center mt-1" onClick={() => { }}>
+                      <Button color="primary" className="add-todo-item me-1 align-self-center my-1" onClick={() => {createDatasetToggle()}}>
                         Create Dataset
                       </Button>
                     </>
@@ -268,7 +271,7 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, getProduct
                               }
                             }
                           }
-                          return <ListGroupItem className='item-to-connect'>
+                          return <ListGroupItem className='item-to-connect' key={idx}>
                             <div className='d-flex justify-content-between align-items-center'>
                               <div className='d-flex flex-column align-items-start'>
                                 <Label className="mdl-input-category-label fs-6" for="mdl-input-category">
