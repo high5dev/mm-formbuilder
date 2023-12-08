@@ -124,12 +124,13 @@ export default function Editor({
   useEffect(() => {
     if (store.form._id) {
       dispatch(getConnectionsByWebsiteAction(store.form._id));
+      dispatch(getWebsiteAllDatasetsAction(store.form._id));
     }
   }, [store.form._id]);
   
   const [productDataset, setProductDataset] = useState({});
   const [datasetConnect, setDatasetConnect] = useState([]);
-  const [selectedDataset, setSelectedDataSet] = useState({});
+  const [selectedDataSet, setSelectedDataSet] = useState({});
   const [showProductDataSetModal, setShowProductDataSetModal] = useState(false);
   const [showEditProductsModal, setShowEditProductsModal] = useState(false);
   const [showAddCartButtonModal, setShowAddCartButtonModal] = useState(false);
@@ -489,7 +490,7 @@ export default function Editor({
       if (!loadedRef.current && component.changed != {}) {
         if (compoId == "")
           compoId = component.ccid.split('-')[0];
-        const parentType = component.parent().get('type');
+        const parentType = component.parent()?.get('type');
 
         if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
           const parentComponent = component.parent().parent();
@@ -569,7 +570,7 @@ export default function Editor({
     });
     gjsEditor.on('component:selected', (cmp) => {
       setSelectedCmp(cmp);
-      if (cmp.attributes.type === 'repeater' || cmp.attributes.type === 'grid-product-gallery' || cmp.attributes.type === 'slider-product-gallery' || cmp.attributes.type === 'related-products') {
+      if (cmp.attributes.type === 'grid-product-gallery' || cmp.attributes.type === 'slider-product-gallery' || cmp.attributes.type === 'related-products') {
         setSelectedDataSet(cmp.get('selectedDataset'));
         setDatasetConnect(cmp.get('datasetConnect'));
         if(cmp.attributes.type === 'slider-product-gallery' || cmp.attributes.type === 'related-products')
@@ -722,7 +723,7 @@ export default function Editor({
       });
 
       gjsEditor.Commands.add('connect-collection', geditor => {
-        setConnectData({isOpen: true, data: {}});
+        setConnectData({...connectData, isOpen: true});
       });
 
       gjsEditor.Commands.add('connect-product-dataset', geditor => {
@@ -1066,7 +1067,7 @@ export default function Editor({
                       <div className='submenu-and-element d-flex'>
                         <div className="submenu-list">
                           {
-                            sidebarData?.menu?.subMenu?.map(sub => {
+                            sidebarData?.menu?.subMenu?.map((sub) => {
                               const categories = [];
                               const tempBlocks = [];
                               editor?.BlockManager.blocks.map((e) => {
@@ -1079,9 +1080,10 @@ export default function Editor({
                               const returnComponent = <>
                                 <h5 className='submenu-item'>{sub.name}</h5>
                                 {
-                                  tempBlocks.map(b => {
+                                  tempBlocks.map((b, ix) => {
                                     return (
                                       <div
+                                            key={ix}
                                         className={selectedCategory === `${sidebarData.menu.id}-${sub.id}-${b.get('label')}` ? 'selected-submenu-category' : 'submenu-category'}
                                         onClick={() => {setSelectedCategory(`${sidebarData.menu.id}-${sub.id}-${b.get('label')}`)}}
                                         >
@@ -1097,9 +1099,9 @@ export default function Editor({
                         </div>
                         <div className="element-container">
                           {
-                            blockManager?.blocks?.filter(e => e.get('category').id === selectedCategory).map(b => {
+                            blockManager?.blocks?.filter(e => e.get('category').id === selectedCategory).map((b, ix) => {
                               return (
-                                <div className="element">
+                                <div className="element" key={ix}>
                                   <img width="280" src={b.get('media')} />
                                   <div
                                     draggable
@@ -1125,14 +1127,15 @@ export default function Editor({
                       <>
                         {viewCMSMenu && <div className="cms-element" style={{width: 350}}>
                           {
-                            sidebarData?.menu?.subMenu?.map(sub => {
+                            sidebarData?.menu?.subMenu?.map((sub, ix) => {
                               return (
-                                <div className='my-1'>
+                                <div className='my-1' key={ix}>
                                   {sub.menu && <h5 className='ps-1 pt-2' color='black'>{sub.menu}</h5>}
                                   {
-                                    sub.data.map(e => {
+                                    sub.data.map((e, ei) => {
                                       return (
                                         <div
+                                                key={ei}
                                           className='d-flex align-items-center px-2 py-1 cms-menu-item'
                                           onClick={() => {
                                             if (e.id === 'add-preset') {
@@ -1216,9 +1219,9 @@ export default function Editor({
                                   {
                                     sub.name!="RSS Button" && 
                                     <div className=''>
-                                      {tempblocks.map((b)=>{
+                                      {tempblocks.map((b, bi)=>{
                                       return(
-                                        <div className="element">
+                                        <div className="element" key={bi}>
                                           <img width="280" src={b.get('media')} />
                                           {/* <iframe srcDoc={b.get('content')}/> */}
                                           <div
@@ -1244,9 +1247,9 @@ export default function Editor({
                                     {sub.name==="RSS Button" && 
                                     <div className='d-flex'>
                                       {
-                                        tempblocks&& tempblocks.map((b)=>{
+                                        tempblocks&& tempblocks.map((b, bi)=>{
                                           return(
-                                            <div className="element" style={{marginBottom:'10px'}}>
+                                            <div key={bi} className="element" style={{marginBottom:'10px'}}>
                                               <img width="40" src={b.get('media')} />
                                               {/* <iframe srcDoc={b.get('content')}/> */}
                                               <div
@@ -1413,7 +1416,7 @@ export default function Editor({
       <CreateCollectionModal store={store} open={openCreateColMdl} toggle={createColMdlToggle} editCollectionToggle={toggleOpenEditCollection}/>
       <CreateDatasetModal store={store} mdlData={openCreateDatasetMdl} toggle={createDatasetToggle} />
       <EditCollectionModal store={store} openCollection={openEditCollection} setOpenEditCollection={setOpenEditCollection} toggle={toggleOpenEditCollection} />
-      <ConnectCollectionModal store={store} connectData={connectData} setConnectData={setConnectData} getProductDataset={getProductDataset} datasetConnect={datasetConnect} setDatasetConnect={setDatasetFields} handleSelectChangeDataSet={handleSelectChangeDataSet} selectedDataset={selectedDataset} setSelectedDataSet={setSelectedDataSet} selectedCmp={selectedCmp} selectedCollection={selectedCollection} setSelectedCollection={setSelectedCollection} />
+      <ConnectCollectionModal store={store} connectData={connectData} setConnectData={setConnectData} getProductDataset={getProductDataset} datasetConnect={datasetConnect} setDatasetConnect={setDatasetFields} handleSelectChangeDataSet={handleSelectChangeDataSet} selectedDataSet={selectedDataSet} setSelectedDataSet={setSelectedDataSet} selectedCmp={selectedCmp} selectedCollection={selectedCollection} setSelectedCollection={setSelectedCollection} createDatasetToggle={createDatasetToggle} />
       <EditProductsModal store={store} showEditProductsModal={showEditProductsModal} setShowEditProductsModal={setShowEditProductsModal} />
       <ConnectProductDataSetModal store={store} showProductDataSetModal={showProductDataSetModal} setShowProductDataSetModal={setShowProductDataSetModal} modelsToConnect={modelsToConnect} datasetConnect={datasetConnect} setDatasetFields={setDatasetFields} />
       <AddCartButtonModal store={store} showAddCartButtonModal={showAddCartButtonModal} setShowAddCartButtonModal={setShowAddCartButtonModal} productId={cartProductId} handleChangeProductId={handleChangeProductId} />
