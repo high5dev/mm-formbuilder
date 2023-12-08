@@ -1,5 +1,5 @@
 let socialBar = {
-  isComponent: el => el.tagName === 'div',
+  isComponent: el => (el.tagName === 'DIV' && el.classList.contains('social-bar')),
   model: {
     defaults: {
       tagName: 'div',
@@ -19,13 +19,15 @@ let socialBar = {
               draggable: false,
               droppable: false,
               hoverable: false,
-              attributes: { href: `${socialItem.url}` },
+              attributes: { href: `${socialItem.url}`, target: '_parent' },
+              selectable: false,
               components: [
                 {
                   tagName: 'img',
                   draggable: false,
                   droppable: false,
                   hoverable: false,
+                  selectable: false,
                   attributes: {
                     class: 'social-icon',
                     src: socialItem.image || `https://i.ibb.co/YZX14HG/image33.png`,

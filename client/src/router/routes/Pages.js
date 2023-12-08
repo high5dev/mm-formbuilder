@@ -307,6 +307,11 @@ const PagesRoutes = [
     meta: {
       publicRoute: true
     }
+  },
+  {
+    path: '/store/checkout',
+    component: lazy(() => import('../../views/pages/cart/checkout')),
+    layout: 'BlankLayout',
   }
 ];
 

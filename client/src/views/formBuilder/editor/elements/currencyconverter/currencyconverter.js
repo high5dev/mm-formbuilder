@@ -1,5 +1,5 @@
 let currencyconverter = {
-  isComponent: el => el.tagName === 'div',
+  isComponent: el => (el.tagName === 'DIV' && el.classList.contains('currencyconverter')),
   model: {
     defaults: {
       tagName: 'div',

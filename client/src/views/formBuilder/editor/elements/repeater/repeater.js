@@ -6,7 +6,7 @@ const script = function(props) {
 };
 
 let repeater = {
-  isComponent: el => el.tagName === 'div',
+  isComponent: el => (el.tagName === 'DIV' && el.classList.contains('repeater')),
   model: {
     defaults: {
       // script,

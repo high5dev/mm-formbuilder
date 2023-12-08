@@ -726,3 +726,19 @@ $layout-padding: 18px;
     }
   }
 }
+
+.productHover:hover {
+  background-color: #c9f3f6;
+}
+
+.productSelected {
+  background-color: #3899ec;
+}
+
+.cartItem {
+  &:hover {
+    .close {
+      display: flex !important;
+    }
+  }
+}

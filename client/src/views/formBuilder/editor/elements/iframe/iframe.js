@@ -6,7 +6,7 @@ const script = function(props) {
   };
   
   let iframe = {
-    isComponent: el => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('iframe-element')),
     model: {
       defaults: {
         // script,

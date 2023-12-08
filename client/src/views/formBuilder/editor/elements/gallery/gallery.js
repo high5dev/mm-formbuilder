@@ -1,5 +1,5 @@
 let gallery = {
-    isComponent: el => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('gallery')),
     model: {
       defaults: {
         // script,

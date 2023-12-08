@@ -27,22 +27,27 @@ export const formEditor = createSlice({
     funnels: [],
     templates: [],
     imageLibrary: [],
-    formCategories:[],
+    formCategories: [],
     webElements: [],
     webCollections: [],
     webDatasets: [],
     webBlogs:[],
     webConnections: [],
+    webProducts: {},
+    cartProducts: [],
   },
   reducers: {
-    setLinkUrlReducer:(state,action) =>{
-      state.linkUrl=action?.payload;
+    setLinkUrlReducer: (state, action) => {
+      state.linkUrl = action?.payload;
     },
     setFormReducer: (state, action) => {
       state.form = action?.payload;
     },
     setChildFormReducer: (state,action) =>{
       state.childForm=action?.payload
+    },
+    setWebStoreReducer: (state, action) => {
+      state.webProducts = action?.payload;
     },
     setFormRuleReducer: (state,action) =>{
       state.formRules=action?.payload;
@@ -56,7 +61,7 @@ export const formEditor = createSlice({
     setFormOrderElementsReducer: (state, action) => {
       state.formOrderElements = action?.payload;
     },
- 
+
     setToDefaultReducer: (state, action) => {
       if (action?.payload?.isTemplate && action?.payload?.isTemplate === true) {
         state.form = {
@@ -103,7 +108,7 @@ export const formEditor = createSlice({
     setImageLibraryReducer: (state, action) => {
       state.imageLibrary = action?.payload;
     },
-    setFormCategoriesReducer:(state,action) =>{
+    setFormCategoriesReducer: (state, action) => {
       state.formCategories = action?.payload
     },
     setWebElementsReducer: (state, action) => {
@@ -117,6 +122,9 @@ export const formEditor = createSlice({
     },
     setWebConnectionsReducer: (state, action) => {
       state.webConnections = action?.payload;
+    },
+    setCartProductsReducer: (state, action) => {
+      state.cartProducts = action?.payload;
     }
   }
 });
@@ -140,5 +148,7 @@ export const {
   setWebDatasetsReducer,
   setWebBlogsReducer,
   setWebConnectionsReducer,
+  setWebStoreReducer,
+  setCartProductsReducer
 } = formEditor.actions;
 export default formEditor.reducer;
