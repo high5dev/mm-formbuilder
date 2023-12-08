@@ -73,6 +73,8 @@ addSideBarOpen,
 setAddSideBarOpen,
 sidebarData,
 setSidebarData,
+selectedMainNav,
+setSelectedMainNav,
 }) {
   const dispatch=useDispatch();
   const [width, setWidth]=useState(1280);
@@ -233,9 +235,8 @@ setSidebarData,
             </UncontrolledTooltip>
           </span>
           <span className="hover-bg px-2" onClick={(e)=>{
-                setAddSideBarOpen(true);
-                setTab('');
-                setRSidebarOpen(false);
+                setSelectedMainNav('elements');
+                setAddSideBarOpen(false);
              }}>
             {/* <MdOutlineInsertComment size={26} color={'black'} id="comments" />
             <UncontrolledTooltip placement="bottom" target="comments">
@@ -247,10 +248,8 @@ setSidebarData,
             </UncontrolledTooltip>
           </span>
           <span className="hover-bg px-2" onClick={(e)=>{
-                setTab('Pages');
+                setSelectedMainNav('pages');
                 setAddSideBarOpen(true);
-                setRSidebarOpen(false);
-                setSidebarData({...sidebarData, isOpen: false});
              }}>
             {/* <MdOutlineInsertComment size={26} color={'black'} id="comments" />
             <UncontrolledTooltip placement="bottom" target="comments">
