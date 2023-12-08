@@ -1,5 +1,5 @@
 let repeaterItem = {
-  isComponent: el => el.tagName === 'div',
+  isComponent: el => (el.tagName === 'DIV' && el.classList.contains('repeater-item')),
   model: {
     defaults: {
       tagName: 'div',

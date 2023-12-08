@@ -21,7 +21,7 @@ const script = function(props) {
 };
 
 let countDown = {
-  isComponent: el => el.tagName === 'div',
+  isComponent: el => (el.tagName === 'DIV' && el.classList.contains('count-down')),
   model: {
     defaults: {
       script,
