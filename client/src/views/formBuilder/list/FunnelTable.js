@@ -93,7 +93,7 @@ export default function FunnelTable({
     history.push(`/pages/editor/${row._id}`);
   };
   const handleDetails = (row) => {
-    history.push('/form-funnel/form-setting/' + row._id);
+    history.push(`/pages/editor/${row._id}`);
   };
   useEffect(() => {
     if (tableData && tableData?.length > 0 && rowsPerPage) {
@@ -273,7 +273,7 @@ export default function FunnelTable({
                 <DropdownToggle tag="div" className="btn btn-sm">
                   <MoreVertical size={14} className="cursor-pointer" />
                 </DropdownToggle>
-                <DropdownMenu container="body">
+                <DropdownMenu>
                   {ability.can('update', 'business/formsFunnels') ? (
                     <DropdownItem tag="span" className="w-100" onClick={() => handleEdit(row)}>
                       <Edit size={14} className="me-50" />

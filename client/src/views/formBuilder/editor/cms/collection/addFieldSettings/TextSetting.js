@@ -4,6 +4,7 @@ import { Nav, NavItem, TabContent, TabPane, NavLink, Label, Input } from 'reacts
 
 const TextSetting = ({fieldType, onChange, fieldData}) => {
   const [activeTab, setActiveTab] = useState('1');
+  const [isLimitCount, setLimitCount] = useState(fieldData.isLimitCount);
   return (
     <div>
       <Nav tabs>
@@ -55,26 +56,33 @@ const TextSetting = ({fieldType, onChange, fieldData}) => {
           <Input
             id='create-field-name'
             type='text'
-            onChange={(e) => {}}
+            onChange={(e) => {{onChange({ helpText: e.target.value})}}}
           />
           <div className='mt-1 d-flex'>
-            <Input type='switch' className='me-1' onChange={() => {}} />
+            <Input type='switch' className='me-1' onChange={(e) => {onChange({ isEncrypt: e.target.checked})}} />
             Encrypt this field content as Personally Identifiable Information
           </div>
         </TabPane>
         <TabPane tabId="2">
           <div className='mt-1 d-flex'>
-            <Input type='switch' className='me-1' onChange={() => {}} />
+            <Input type='switch' className='me-1' onChange={(e) => {onChange({ isRequired: e.target.checked})}} />
             Make this a required field
           </div>
           <div className='mt-1 d-flex'>
-            <Input type='switch' className='me-1' onChange={() => {}} />
+            <Input type='switch' className='me-1' onChange={(e) => {onChange({ isLimitCount: e.target.checked}); setLimitCount(e.target.checked);}} />
             Limit character count
           </div>
-          <div className='mt-1 d-flex'>
-            <Input type='switch' className='me-1' onChange={() => {}} />
-            Accept specific values only
-          </div>
+          {isLimitCount && <div className='d-flex'>
+            <div className='w-50 p-1'>
+              Min count
+              <Input type='number' onChange={(e) => {onChange({ minCount: e.target.value})}} />
+            </div>
+            
+            <div className='w-50 p-1'>
+              Max count
+              <Input type='number' onChange={(e) => {onChange({ maxCount: e.target.value})}} />
+            </div>
+          </div>}
         </TabPane>
         <TabPane tabId="3">
           <Label className="fs-6" for="default-value">
@@ -83,7 +91,7 @@ const TextSetting = ({fieldType, onChange, fieldData}) => {
           <Input
             id='default-value'
             type='text'
-            onChange={(e) => {}}
+            onChange={(e) => {onChange({ defaultValue: e.target.value })}}
           />
         </TabPane>
       </TabContent>

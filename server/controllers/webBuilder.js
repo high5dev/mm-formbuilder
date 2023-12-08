@@ -353,9 +353,6 @@ exports.renameWebsite =asyncHandler(async (req, res) =>{
   }
 })
 
-
-
-
 exports.createPage = asyncHandler(async (req, res) => {
   const {id, pageData} = req.body;
   try {
@@ -367,7 +364,6 @@ exports.createPage = asyncHandler(async (req, res) => {
     const newPage = await page.save();
     const blankPageData = "<body></body><style></style>"
     await googleCloudStorageWebBuilder.createAndUpdatePage(`${id}/${newPage._id}`, blankPageData);
-
     return res.status(200).json({ success: true, data:newPage });
   } catch (err) {
     res.send({ msg: "error" });

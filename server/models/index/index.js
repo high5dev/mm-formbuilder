@@ -108,6 +108,9 @@ const UproofLabel = require("../UproofLabel");
 // const Video = require("../Video");
 //Form builder entry
 const FormEntry = require("../FormEntry");
+const Form = require("../Form");
+const FormRule=require("../FormRule");
+const FormPage=require("../FormPage");
 const ImageLibrary = require("../ImageLibrary");
 
 // const Tag = require("../Tag");
@@ -177,8 +180,8 @@ const WebBuilderElement = require("../WebBuilderElement");
 const WebBuilderElementCategory = require("../WebElementCategory");
 const WebSiteCollection = require("../WebSiteCollection");
 const WebSiteDataSet = require("../WebSiteDataSet");
+const WebSiteConnection = require("../WebSiteConnection");
 const ProductDataSet = require("../ProductDataSet");
-
 const models = {
   Authenticate,
   User,
@@ -265,6 +268,9 @@ const models = {
   // Income,
   // FinanceCategory,
   // UserGoal,
+  Form,
+  FormRule,
+  FormPage,
   FormEntry,
   ImageLibrary,
   // ActionPlans,
@@ -344,6 +350,7 @@ const models = {
   WebBuilderElementCategory,
   WebSiteCollection,
   WebSiteDataSet,
+  WebSiteConnection,
   ProductDataSet
 };
 

@@ -9,7 +9,7 @@ const WebSiteDatasetSchema = new mongoose.Schema(
       required: true,
     },
     organizationId: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "organizations",
       default: null,
     },
@@ -20,7 +20,6 @@ const WebSiteDatasetSchema = new mongoose.Schema(
     },
     name: {
       type: String,
-      unique: true,
       required: true,
     },
     isFormDataset: {

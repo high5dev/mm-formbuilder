@@ -15,7 +15,8 @@ import {
   Offcanvas,
   OffcanvasBody,
   OffcanvasHeader,
-  Spinner
+  Spinner,
+  Modal
 } from 'reactstrap';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import websitePlugin from 'grapesjs-preset-webpage';
@@ -31,7 +32,8 @@ import StyleSidebar from './topNav/styles';
 import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
-import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction} from '../store/action'
+import { setChildFormReducer, setFormReducer } from '../store/reducer';
+import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, createChildFormAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction, getConnectionsByWebsiteAction} from '../store/action'
 import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
@@ -48,6 +50,7 @@ import RenameModal from './topNav/rename/renameModal';
 import CreateFormModal from '../createForm/CreateFormModal';
 import DuplicateModal from './topNav/duplicate/duplicateModal';
 import InvitationModal from './topNav/invite/invitationModal';
+import FormEditorModal from './leftSidebar/form/FormEditorModal';
 import cmsimg from '../../../assets/img/cms-img.png'
 import { CiCircleChevRight, CiCirclePlus } from 'react-icons/ci';
 import CreateCollectionModal from './cms/collection/CreateCollectionModal';
@@ -108,14 +111,22 @@ export default function Editor({
   const [isRunning, setIsRunning] = useState(true);
   const [isPublishModal, setIsPublishModal]=useState(false);
   const [publishUrl, setPublishUrl]=useState();
+  const [formeditorMdl, setFormEditorMdl]=useState(false);
   const [viewCMSMenu, setViewCMSMenu]=useState(false);
   const [openCreateColMdl, setOpenCreateColMdl] = useState(false);
   const [openEditCollection, setOpenEditCollection] = useState({isOpen: false, data: {}});
-  const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
   const [openCreateDatasetMdl, setOpenCreateDatasetMdl] = useState({isOpen: false, data: {}});
   const [connectData, setConnectData] = useState({isOpen: false, data: {}});
   const [modelsToConnect, setModelsToConnect] = useState([]);
   const [isinvite, setIsInvite] = useState(false);
+  const [selectedCollection, setSelectedCollection] = useState(null);
+
+  useEffect(() => {
+    if (store.form._id) {
+      dispatch(getConnectionsByWebsiteAction(store.form._id));
+    }
+  }, [store.form._id]);
+  
   const [productDataset, setProductDataset] = useState({});
   const [datasetConnect, setDatasetConnect] = useState([]);
   const [selectedDataset, setSelectedDataSet] = useState({});
@@ -123,6 +134,7 @@ export default function Editor({
   const [showEditProductsModal, setShowEditProductsModal] = useState(false);
   const [showAddCartButtonModal, setShowAddCartButtonModal] = useState(false);
   const [cartProductId, setCartProductId] = useState("");
+  const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
   const loadedRef = useRef();
   const storeRef = useRef();
   loadedRef.current = isStoreLoading;
@@ -186,6 +198,28 @@ export default function Editor({
     setRSidebarOpen(false);
   };
 
+  const createForm =() =>{
+     const pageId=page?._id;
+     const websiteId=form?._id;
+     const elements=[];
+     const name="Page1";
+     const payload={
+      websiteId,
+      pageId,
+      elements,
+      name
+     };
+     dispatch(createChildFormAction(payload)).then(res=>{
+      if(res){
+        const {form, formPage}=res;
+        let pageList=[];
+        pageList.push({...formPage, html:'', css:''});
+        const newForm={...form, formPages:pageList};
+        dispatch(setChildFormReducer(newForm));
+        setFormEditorMdl(true);
+      }
+     })
+    }
   const scrollToTarget =(_target) =>{
     document.getElementById(_target).scrollIntoView(true);
   } 
@@ -262,7 +296,7 @@ export default function Editor({
   // useEffect(() =>{
   //   let interval;
   //     if(editor && !form.isPublish){
-  //        interval=setInterval(() =>{
+  //       interval=setInterval(() =>{
   //         const current_page=editor.Pages.getSelected();
   //         const html = editor.getHtml({ current_page });
   //         const css = editor.getCss({ current_page });
@@ -272,8 +306,8 @@ export default function Editor({
   //           css:css,
   //         };
   //         dispatch(updatePageAction(id, payload));
-  //        }, 2000);
-  //        return () => clearInterval(interval);
+  //       }, 2000);
+  //       return () => clearInterval(interval);
   //     }
   // }, [editor?.getHtml(editor?.Pages.getSelected()), editor?.getCss(editor?.Pages.getSelected()), form, page])
 
@@ -308,9 +342,8 @@ export default function Editor({
     })
     const gjsEditor = grapesjs.init({
       container: '#editor',
-      height: window.innerHeight - 117,
-      plugins: [basicBlockPlugin, (editor) => webBuilderPlugin(editor), websitePlugin],
-
+      height: window.innerHeight-117,
+      plugins: [basicBlockPlugin,(editor) => webBuilderPlugin(editor), websitePlugin],
       richTextEditor: {
         actions: []
       },
@@ -550,21 +583,6 @@ export default function Editor({
       }
     });
 
-    gjsEditor.on('block:custom', props => {
-      // The `props` will contain all the information you need in order to update your UI.
-      // props.blocks (Array<Block>) - Array of all blocks
-      // props.dragStart (Function<Block>) - A callback to trigger the start of block dragging.
-      // props.dragStop (Function<Block>) - A callback to trigger the stop of block dragging.
-      // props.container (HTMLElement) - The default element where you can append your UI
-
-      // Here you would put the logic to render/update your UI.
-      setBlockManager(props);
-    });
-
-    gjsEditor.on('component:selected', (cmp) => {
-      console.log('cmp=======', cmp);
-      setSelectedCmp(cmp);
-    });
       // Add custom commands
       gjsEditor.Commands.add('save-component', editor => {
         const saveModalElement = document.createElement('div');
@@ -825,20 +843,12 @@ export default function Editor({
     }
   }, [isclear])
 
-  useEffect(() => {
-    if (editor) {
-      store.webElements.map((el, idx) => {
-        editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
-          label: el.category[0].name,
-          content: el.html,
-          media: el.imageUrl,
-          category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
-          menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
-        });
-      });
+  editor?.on('component:selected', (cmp) => {
+    if(cmp){
+      setSelectedCmp(cmp);
     }
-  }, [])
-
+    
+  });
   useEffect(() => {
     if (editor !== null) {
       switch (device) {
@@ -894,15 +904,15 @@ export default function Editor({
 
   useEffect(() => {
     if (page) {
-      setIsLoading(true);
+      // setIsLoading(true);
       setIsStoreLoading(true);
       dispatch(getPageAction(page._id)).then((res) => {
         if (res) {
           if (editor) {
             editor.setComponents(res);
           };
-          setIsLoading(false);
-          setIsStoreLoading(false);
+          // setIsLoading(false);
+          // setIsStoreLoading(false);
         }
       })
     }
@@ -917,8 +927,9 @@ export default function Editor({
           media: el.imageUrl,
           category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
           menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+          mainMenu:`${el.category[0].mainMenu}`,
+          refcategory:`${el.category[0].name}`,
           submenu:el.category[0].subMenu,
-          mainmenu:el.category[0].mainMenu
         });
       });
     }
@@ -953,11 +964,7 @@ export default function Editor({
             }
             component.set('postList', postList);
           }
-        }
-        else{
-          console.log('no webblogs')
-        }
-    
+        }    
       })
       const components=editor.getWrapper().components().models;
       for(let i=0; i<components.length; i++){
@@ -990,8 +997,6 @@ export default function Editor({
       }
     }
   }, [store.webBlogs])
-
-
 
   return (
     <div className="d-flex">
@@ -1104,7 +1109,10 @@ export default function Editor({
                                         }}
                                         onDragEnd={(e) => {
                                           e.stopPropagation();
+                                         if(b.get('mainMenu')==='contact-forms'){
+                                          createForm();
                                           blockManager.dragStop(false);
+                                         }
                                         }}
                                       >
                                       </div>
@@ -1115,7 +1123,7 @@ export default function Editor({
                           </div>
                           )
                         }
-                        {
+                          {
                           sidebarData.menu.id === 'cms' && (
                             <>
                               {viewCMSMenu && <div className="cms-element" style={{width: 350}}>
@@ -1357,11 +1365,11 @@ export default function Editor({
 
       <div id="editor"></div>
     </div>
-      {isStoreLoading ? <div className='loadingLayer'>
+      {/* {isStoreLoading ? <div className='loadingLayer'>
         <div className="d-flex  justify-content-center mb-2 mt-2" style={{ position: 'absolute', top: "50%", left: "50%", zIndex: 10 }}>
           <Spinner color="secondary">Loading...</Spinner>
         </div>
-      </div> : <></>}
+      </div> : <></>} */}
     <div className="property-sidebar" style={{display:rsidebarOpen?'block':'none'}}>
       <PerfectScrollbar
         className="scrollable-content"
@@ -1398,14 +1406,17 @@ export default function Editor({
       <CreateFormModal open={createMdl} store={store} dispatch={dispatch}/>
       <DuplicateModal store={store} isOpen={duplicateMdl} toggle={_toggleDuplicate}/>
       <InvitationModal store={store} isOpen={isinvite} toggle={setIsInvite}/>
+      <Modal isOpen={formeditorMdl} centered className='form-builder-modal' fullscreen scrollable style={{ overflowX: 'hidden' }}>
+        <FormEditorModal toggle={(e)=>setFormEditorMdl(e)} store={store} page={page}/>
+      </Modal>
       <CreateCollectionModal store={store} open={openCreateColMdl} toggle={createColMdlToggle} editCollectionToggle={toggleOpenEditCollection}/>
       <CreateDatasetModal store={store} mdlData={openCreateDatasetMdl} toggle={createDatasetToggle} />
       <EditCollectionModal store={store} openCollection={openEditCollection} setOpenEditCollection={setOpenEditCollection} toggle={toggleOpenEditCollection} />
+      <ConnectCollectionModal store={store} connectData={connectData} setConnectData={setConnectData} getProductDataset={getProductDataset} datasetConnect={datasetConnect} setDatasetConnect={setDatasetFields} handleSelectChangeDataSet={handleSelectChangeDataSet} selectedDataset={selectedDataset} setSelectedDataSet={setSelectedDataSet} selectedCmp={selectedCmp} selectedCollection={selectedCollection} setSelectedCollection={setSelectedCollection} />
       <EditProductsModal store={store} showEditProductsModal={showEditProductsModal} setShowEditProductsModal={setShowEditProductsModal} />
-      <ConnectCollectionModal store={store} connectData={connectData} setConnectData={setConnectData} modelsToConnect={modelsToConnect} getProductDataset={getProductDataset} datasetConnect={datasetConnect} setDatasetConnect={setDatasetFields} handleSelectChangeDataSet={handleSelectChangeDataSet} selectedDataset={selectedDataset} />
       <ConnectProductDataSetModal store={store} showProductDataSetModal={showProductDataSetModal} setShowProductDataSetModal={setShowProductDataSetModal} modelsToConnect={modelsToConnect} datasetConnect={datasetConnect} setDatasetFields={setDatasetFields} />
       <AddCartButtonModal store={store} showAddCartButtonModal={showAddCartButtonModal} setShowAddCartButtonModal={setShowAddCartButtonModal} productId={cartProductId} handleChangeProductId={handleChangeProductId} />
       <BlogModal store ={store} isOpen={isblog} toggle={toggleBlog}/>
-  </div>
-  );
+    </div>
+  )
 }

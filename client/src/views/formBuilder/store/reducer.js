@@ -16,10 +16,13 @@ export const formEditor = createSlice({
       status: '',
       isTemplate: false
     },
-    linkUrl: 'website',
-    formOrderElements: {},
-    formSalesType: '',
-    formProducts: [],
+    childForm:{
+    },
+    formRules:[],
+    linkUrl:'website',
+    formOrderElements:{},
+    formSalesType:'',
+    formProducts:[],
     formContacts: [],
     funnels: [],
     templates: [],
@@ -28,7 +31,8 @@ export const formEditor = createSlice({
     webElements: [],
     webCollections: [],
     webDatasets: [],
-    webBlogs: [],
+    webBlogs:[],
+    webConnections: [],
     webProducts: {},
     cartProducts: [],
   },
@@ -39,11 +43,17 @@ export const formEditor = createSlice({
     setFormReducer: (state, action) => {
       state.form = action?.payload;
     },
-    setWebBlogsReducer: (state, action) => {
-      state.webBlogs = action?.payload;
+    setChildFormReducer: (state,action) =>{
+      state.childForm=action?.payload
     },
     setWebStoreReducer: (state, action) => {
       state.webProducts = action?.payload;
+    },
+    setFormRuleReducer: (state,action) =>{
+      state.formRules=action?.payload;
+    },
+    setWebBlogsReducer: (state, action) =>{
+      state.webBlogs= action?.payload;
     },
     setFormSalesTypeReducer: (state, action) => {
       state.formSalesType = action?.payload;
@@ -110,6 +120,9 @@ export const formEditor = createSlice({
     setWebDatasetsReducer: (state, action) => {
       state.webDatasets = action?.payload;
     },
+    setWebConnectionsReducer: (state, action) => {
+      state.webConnections = action?.payload;
+    },
     setCartProductsReducer: (state, action) => {
       state.cartProducts = action?.payload;
     }
@@ -119,6 +132,8 @@ export const formEditor = createSlice({
 export const {
   setLinkUrlReducer,
   setFormReducer,
+  setFormRuleReducer,
+  setChildFormReducer,
   setToDefaultReducer,
   setAllFormsReducer,
   setFormCategoriesReducer,
@@ -132,6 +147,7 @@ export const {
   setWebCollectionsReducer,
   setWebDatasetsReducer,
   setWebBlogsReducer,
+  setWebConnectionsReducer,
   setWebStoreReducer,
   setCartProductsReducer
 } = formEditor.actions;

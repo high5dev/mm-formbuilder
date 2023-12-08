@@ -11,6 +11,10 @@ const {
   deleteDataset,
   getDatasetsByCollection,
   getAllDatasets,
+  createOrUpdateConnection,
+  getConnectionsByWebsiteId,
+  deleteConnection,
+  multipleDeleteConnection,
 } = require("../controllers/webBuilderCms");
 
 router.post("/collection/create", isAuthenticated, createCollection);
@@ -22,5 +26,9 @@ router.post("/dataset/update/:id", isAuthenticated, updateDataset);
 router.delete("/dataset/delete/:id", isAuthenticated, deleteDataset);
 router.get("/dataset/:id", isAuthenticated, getDatasetsByCollection);
 router.get("/all-datasets/:id", isAuthenticated, getAllDatasets);
+router.get("/connections-of-website/:id", isAuthenticated, getConnectionsByWebsiteId);
+router.post("/connection/create-update", isAuthenticated, createOrUpdateConnection);
+router.delete("/connection/delete/:id", isAuthenticated, deleteConnection);
+router.post("/connection/multiple-delete", isAuthenticated, multipleDeleteConnection)
 
 module.exports = router;

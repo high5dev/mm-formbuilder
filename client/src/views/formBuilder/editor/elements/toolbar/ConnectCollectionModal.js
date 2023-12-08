@@ -1,18 +1,23 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Button, Label, Input, Modal, ModalHeader, ModalBody, ModalFooter, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, ListGroup, ListGroupItem, Badge } from 'reactstrap';
-import { MoreVertical, Send, Image, ChevronDown, ChevronRight, Link2, ChevronLeft } from 'react-feather';
+import { MoreVertical, Send, Image, ChevronDown, ChevronRight, Link2, ChevronLeft, Link } from 'react-feather';
 import { isObjEmpty, selectThemeColors } from '@utils'
 import Select, { components } from 'react-select';
 import { useDispatch } from 'react-redux';
+import { createOrUpdateConnectionAction, deleteMultipleWebConnectionAction } from '../../../store/action';
 
-const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToConnect, getProductDataset, datasetConnect, setDatasetConnect, selectedDataset, handleSelectChangeDataSet }) => {
+const ConnectCollectionModal = ({ store, connectData, setConnectData, getProductDataset, datasetConnect, setDatasetConnect, selectedDataset, setSelectedDataSet, handleSelectChangeDataSet, selectedCmp, selectedCollection, setSelectedCollection }) => {
+
   const dispatch = useDispatch();
   const [dataSets, setDataSets] = useState([]);
   // const [selectedDataSet, setSelectedDataSet] = useState(null);
   const [viewConnection, setViewConnection] = useState(false);
   const [selectedModel, setSelectedModel] = useState(null);
   const [fieldsOfCollection, setFieldsOfCollection] = useState([]);
-  const [selectedField, setSelectedField] = useState('');
+  const [selectedField, setSelectedField] = useState(null);
+  const [checkedConModels, setCheckedConModels] = useState([]);
+  const [repeaterChildCmps, setRepeaterChildCmps] = useState([]);
+  const [modelsToConnect, setModelsToConnect] = useState([]);
 
   useEffect(() => {
     if (store.webDatasets.length > 0) {
@@ -23,14 +28,75 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToCo
   }, [store.webDatasets]);
 
   useEffect(() => {
-    if (selectedDataset && selectedDataset?.value && store.webCollections?.length > 0) {
-      const selDataset = store.webDatasets.find(d => d._id === selectedDataset.value);
-      const collection = store.webCollections.find(c => c._id === selDataset.collectionId);
-      getProductDataset(selDataset.collectionId);
+    const connectedCon = store.webConnections.find(c => c.componentId === selectedCmp?.ccid && c.websiteId === store?.form?._id);
+    if (connectedCon) {
+      const originDataset = store.webDatasets.find(ds => ds._id === connectedCon.datasetId);
+      if (originDataset)
+        setSelectedDataSet({value: originDataset._id, label: originDataset.name});
+      else
+        setSelectedDataSet(null);
+    } else {
+      setSelectedDataSet(null);
+    }
+  }, [store.webConnections, store.webDatasets, selectedCmp]);
 
+  useEffect(() => {
+    const checkedModels = [];
+    modelsToConnect.map(m => {
+      const con = store.webConnections.find(c => c.componentId === m.ccid && c.websiteId === store.form._id);
+      if (con) {
+        checkedModels.push({...m, connectionId: con._id, websiteId: con.websiteId, connectedField: con.connectedField});
+      } else {
+        checkedModels.push(m);
+      }
+    });
+    setCheckedConModels(checkedModels);
+  }, [modelsToConnect, store.webConnections]);
+
+  useEffect(() => {
+    if (selectedDataSet && store.webCollections.length > 0) {
+      const selDataset = store.webDatasets.find(d => d._id === selectedDataSet.value);
+      const collection = store.webCollections.find(c => c._id === selDataset.collectionId);
+
+      if (collection && selectedCmp?.attributes?.type === 'repeater') {
+        const firstChild = selectedCmp.getChildAt(0);
+
+        if (selectedCmp.components().length > collection.values.length) {
+          const n = selectedCmp.components().length - collection.values.length;
+          for (let i = 1; i <= n; i++) {
+            const childCmp = selectedCmp.getChildAt(selectedCmp.components().length - i);
+            childCmp.remove();
+          }
+        }
+        if (selectedCmp.components().length < collection.values.length) {
+          const n = collection.values.length - selectedCmp.components().length;
+          for (let i = 0; i <= n; i++) {
+            selectedCmp.append(firstChild.clone());
+          }
+        }
+        
+        const tempModels = [];
+        for (let ci = 0; ci < selectedCmp.components().length; ci++) {
+          const repeaterItemCmp = selectedCmp.getChildAt(ci);
+          const tempModelsToConnect = [];
+          repeaterItemCmp.components().models.map(m => {
+            if (m.attributes.type === 'image' || m.attributes.type === 'text') {
+              tempModelsToConnect.push(m);
+            }
+          });
+          tempModels.push(tempModelsToConnect);
+          if (ci === 0)
+            setModelsToConnect(tempModelsToConnect);
+        }
+        setRepeaterChildCmps(tempModels);
+      }
+
+      setSelectedCollection(collection);
+      
       const tempFields = [];
-      collection.fields.map(f => {
-        tempFields.push({ value: f.name, label: f.name });
+      collection?.fields.map(f => {
+        if (!f.default)
+          tempFields.push({value: f.name, label: f.name});
       });
       setFieldsOfCollection(tempFields);
     }
@@ -50,6 +116,47 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToCo
     setDatasetConnect(datasetConnect);
   }
 
+  useEffect(() => {
+    if (selectedModel?.connectedField) {
+      const selectedFieldOfCollection = fieldsOfCollection.find(f => f.value === selectedModel.connectedField);
+      if (selectedFieldOfCollection) {
+        setSelectedField(selectedFieldOfCollection);
+      } else {
+        setSelectedField(null);
+      }
+    } else {
+      setSelectedField(null);
+    }
+  }, [selectedModel]);
+
+  const onSelectDataset = (data) => {
+    setSelectedDataSet(data);
+    const datasetId = data.value;
+    const componentId = selectedCmp?.ccid;
+    const componentType = selectedCmp.attributes.type;
+    const websiteId = store.form._id;
+
+    const ids = [];
+    checkedConModels.map(c => {
+      if (c.connectedField) {
+        ids.push(c.connectionId);
+      }
+    });
+    dispatch(deleteMultipleWebConnectionAction({ids}));
+    dispatch(createOrUpdateConnectionAction({datasetId, componentId, websiteId, componentType}));
+  };
+
+  const onChangeConnectionOption = (data) => {
+    setSelectedField(data);
+    const datasetId = selectedDataSet?.value;
+    const componentId = selectedModel?.ccid;
+    const componentType = selectedModel?.attributes.type;
+    const websiteId = store.form._id;
+    const connectedField = data.value;
+
+    dispatch(createOrUpdateConnectionAction({datasetId, componentId, websiteId, componentType, connectedField}));
+  };
+
   return (
     <>
       <Modal isOpen={connectData} toggle={() => { setConnectData(!connectData); setViewConnection(false); }} centered size='md'>
@@ -64,7 +171,7 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToCo
                   <ChevronLeft size={14} className='me-1' />
                   Back to connections
                 </Badge>
-                <div className='bg-light-secondary d-flex justify-content-center'>
+                {/* <div className='bg-light-secondary d-flex justify-content-center'>
                   <Label className="mdl-select-main-menu-label fs-6 my-1" for="mdl-select-main-menu">
                     Connect {selectedModel?.attributes.type}
                   </Label>
@@ -79,9 +186,9 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToCo
                   isClearable={false}
                   options={dataSets}
                   theme={selectThemeColors}
-                  value={selectedDataset}
-                  onChange={(data) => { handleSelectChangeDataSet(data); }}
-                />
+                  value={selectedDataSet}
+                  onChange={(data) => setSelectedDataSet(data)}
+                /> */}
                 <div className='bg-light-secondary d-flex justify-content-center'>
                   <Label className="mdl-select-main-menu-label fs-6 my-1" for="mdl-select-main-menu">
                     Connect Options
@@ -98,7 +205,7 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToCo
                   options={fieldsOfCollection}
                   theme={selectThemeColors}
                   value={selectedField}
-                  onChange={(data) => { changeField(data); }}
+                  onChange={(data) => { changeField(data); onChangeConnectionOption(data);}}
                 />
               </div>
             ) : (
@@ -117,7 +224,7 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToCo
                         options={dataSets}
                         theme={selectThemeColors}
                         value={selectedDataset}
-                        onChange={(data) => { handleSelectChangeDataSet(data); }}
+                        onChange={(data) => { handleSelectChangeDataSet(data); onSelectDataset(data);}}
                       />
                     </>
                   ) : (
@@ -137,10 +244,30 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToCo
                   </Label>
                 </div>
                 {
-                  modelsToConnect.length > 0 ? (
+                  checkedConModels.length > 0 && (
                     <ListGroup>
                       {
-                        modelsToConnect.map((connect) => {
+                        checkedConModels.map((connect, idx) => {
+                          if (connect.connectedField) {
+                            if (connect.attributes.type === 'text') {
+                              if (selectedCmp?.attributes.type === 'repeater') {
+                                for (let j = 0; j < repeaterChildCmps.length; j++) {
+                                  repeaterChildCmps[j][idx].components(selectedCollection.values[j] ? selectedCollection.values[j][connect.connectedField] || '' : '');
+                                }
+                              } else {
+                                // modelsToConnect[idx].components(selectedCollection.values[0][connect.connectedField]);
+                              }
+                            }
+                            if (connect.attributes.type === 'image') {
+                              if (selectedCmp?.attributes.type === 'repeater') {
+                                for (let j = 0; j < repeaterChildCmps.length; j++) {
+                                  repeaterChildCmps[j][idx].setAttributes({src: selectedCollection.values[j] ? selectedCollection.values[j][connect.connectedField] || '' : ''});
+                                }
+                              } else {
+                                // modelsToConnect[idx].setAttributes({src: 'https://i.ibb.co/tm0rJ2c/youtube-1.png'});
+                              }
+                            }
+                          }
                           return <ListGroupItem className='item-to-connect'>
                             <div className='d-flex justify-content-between align-items-center'>
                               <div className='d-flex flex-column align-items-start'>
@@ -148,11 +275,11 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToCo
                                   {connect?.attributes.type || 'Connection name'}
                                 </Label>
                                 <Label className="mdl-input-category-label fs-7" for="mdl-input-category">
-                                  {connect?.description ? ('Connected to ' + connect?.description) : 'Not connected'}
+                                  {connect?.connectedField ? `Connected to ${connect.connectedField}` : 'Not connected'}
                                 </Label>
                               </div>
                               <div className='d-flex'>
-                                <Link2 size={17} className='me-2' color='#7fb1ff' />
+                                {connect?.connectedField && <Link size={17} className='me-2' color='#7fb1ff'/>}
                                 <ChevronRight size={17} onClick={() => {
                                   if (connect?.description) {
                                     setSelectedField(connect?.description);
@@ -167,10 +294,6 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, modelsToCo
                         })
                       }
                     </ListGroup>
-                  ) : (
-                    <Label className="mdl-input-category-label fs-5 align-self-center" for="mdl-input-category">
-                      No connection...
-                    </Label>
                   )
                 }
               </div>
