@@ -352,7 +352,7 @@ export default function Index() {
       <Helmet>
         {
           pageInfo?.seoDetails && (
-            <>
+            <div>
                 <title>{pageInfo?.seoDetails?.title}</title>
                 <meta name="description" content={`${pageInfo?.seoDetails?.description}`} />
                 <meta name="keywords" content={`${pageInfo?.seoDetails?.keywords}`} />
@@ -379,7 +379,7 @@ export default function Index() {
                 />}
                 <meta name="twitter:creator" content={`${pageInfo?.seoDetails?.twitter}`} />
                 {pageInfo?.seoDetails?.headCode}
-            </>
+            </div>
           )
         }
       </Helmet>
