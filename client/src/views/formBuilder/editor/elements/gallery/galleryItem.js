@@ -1,6 +1,6 @@
 import * as api from  '../../../store/api';
 let galleryItem = {
-    isComponent: el => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('gallery-item')),
     model: {
       defaults: {
         tagName: 'img',

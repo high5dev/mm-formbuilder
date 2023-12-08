@@ -1,5 +1,5 @@
 let shoppingcart = {
-  isComponent: el => el.tagName === 'div',
+  isComponent: el => (el.tagName === 'DIV' && el.classList.contains('shoppingcart')),
   model: {
     defaults: {
       tagName: 'div',
