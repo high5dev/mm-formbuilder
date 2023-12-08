@@ -75,7 +75,6 @@ exports.editFormRule = asyncHandler(async (req, res) => {
   let { id } = req.params;
   try {
     const Obj=req.body;
-    console.log('Obj', req.body);
     const data=await FormRule.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, Obj, {new:true});
     console.log('data', data.input); 
       return res.send({ 

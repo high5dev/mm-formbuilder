@@ -22,9 +22,33 @@ import {
 
 
 export default function ConditionItem({formEditor, ruleCondition, index, components, changeCondition, removeCondition}) {
-  const [fields, setFields]=useState([]);
-  const [selectedField, setSelectedField]=useState(null);
-  let conditions;
+  let conditions=[
+    {
+      label:'is equal to',
+      value:'is equal to'
+    },
+    {
+      label:'is not equal to',
+      value:'is not equal to'
+    },
+    {
+      label:'is empty',
+      value:'is empty'
+    },
+    {
+      label:'is filled',
+      value:'is filled'
+    },
+    {
+      label:'Contains',
+      value:'Contains'
+    },
+    {
+      label:'Does not contain',
+      value:'Does not contain'
+    }
+
+  ];
   let options;
   if(ruleCondition.field.label==='Birthday'){
       conditions=[
@@ -54,38 +78,21 @@ export default function ConditionItem({formEditor, ruleCondition, index, compone
         }
       ]
   }
-  else{
+
+  if(ruleCondition.field.label==='Checkbox' || ruleCondition.field.label==='Subscribe'){
     conditions=[
       {
-        label:'is equal to',
-        value:'is equal to'
+        label:'is checked',
+        value:'is checked'
       },
       {
-        label:'is not equal to',
-        value:'is not equal to'
-      },
-      {
-        label:'is empty',
-        value:'is empty'
-      },
-      {
-        label:'is filled',
-        value:'is filled'
-      },
-      {
-        label:'Contains',
-        value:'Contains'
-      },
-      {
-        label:'Does not contain',
-        value:'Does not contain'
+        label:'is not checked',
+        value:'is not checked'
       }
-  
     ]
   }
-
   if(formEditor){
-    if(ruleCondition.field.label==='Single choice' || ruleCondition.field.label==='Multi choice'){
+    if(ruleCondition.field.label==='Single choice' || ruleCondition.field.label==='Multi choice' || ruleCondition.field.label ==='Dropdown'){
       const type=ruleCondition.field.value;
       const components=formEditor.getWrapper().components().models;
       for(let i=0; i<components.length; i++){
@@ -109,23 +116,42 @@ export default function ConditionItem({formEditor, ruleCondition, index, compone
   const [value, setValue]=useState();
 
   const onChangeComponent=(e) =>{
-    let newRuleCondition=ruleCondition;
-    const obj={field:{...e}};
-    newRuleCondition={...newRuleCondition, ...obj};
+    const _components=formEditor.getWrapper().components().models;
+    const selectedCmp=_components.filter((_component)=>_component.get('type')===e.value)[0];
+    const selectedEl=selectedCmp.getEl();
+    const selectNodes=selectedEl.getElementsByTagName('select');
+    let id='';
+    if(selectedCmp.get('type')==='birthday'){
+      id=selectedEl.id
+    }
+    else{
+      if(selectNodes.length>0){
+        id=selectNodes[0].id;
+      }
+      else{
+        const nodes=selectedEl.getElementsByTagName('input');
+        id=nodes[0].id;
+      }
+    }
+    let obj={id:id};
+    console.log('obj', obj)
+    let newRuleCondition=JSON.parse(JSON.stringify(ruleCondition));
+    newRuleCondition.field={...e};
+    newRuleCondition.value={...newRuleCondition.value, ...obj};
     changeCondition(index, newRuleCondition);
   }
 
   const onChangeCondition=(e) =>{
-    let newRuleCondition=ruleCondition;
+    let newRuleCondition=JSON.parse(JSON.stringify(ruleCondition));
     const obj={condition:{...e}};
     newRuleCondition={...newRuleCondition, ...obj};
     changeCondition(index, newRuleCondition);
   }
 
   const onChangeValue =(value) =>{
-    let newRuleCondition=ruleCondition;
-    const obj={value:value}
-    newRuleCondition={...newRuleCondition, ...obj};
+    let newRuleCondition=JSON.parse(JSON.stringify(ruleCondition));
+    const obj={inputValue:value};
+    newRuleCondition.value={...newRuleCondition.value, ...obj};
     changeCondition(index, newRuleCondition);
   }
 
@@ -160,16 +186,17 @@ export default function ConditionItem({formEditor, ruleCondition, index, compone
           </div>
           <div className='d-flex justify-content-around'>
             {
-              ruleCondition.condition.label!='is empty' && ruleCondition.condition.label!='is filled' &&             
+              ruleCondition.condition.label!='is empty' && ruleCondition.condition.label!='is filled' && ruleCondition.condition.label!='is checked' && ruleCondition.condition.label!='is not checked' &&          
               <div className='input-value-element'>
+                {console.log('values========', ruleCondition.value)}
                 {
-                  ruleCondition.field.label==='Birthday' && <Input type='date' className='my-1' value={ruleCondition.value} onChange={(e)=>onChangeValue(e)} placeholder='Enter a value.' style={{width:'200px'}}/>
+                  ruleCondition.field.label==='Birthday' && <Input type='date' className='my-1' value={ruleCondition.value.inputValue} onChange={(e)=>onChangeValue(e.target.value)} placeholder='Enter a value.' style={{width:'200px'}}/>
                 }
                 {
-                   ruleCondition.field.label==='Single choice' &&
+                   (ruleCondition.field.label==='Single choice' || ruleCondition.field.label==='Dropdown') && 
                    <div className='mt-2' style={{ width: '200px', minWidth:'200px' }}>
                     <Select
-                      value={ruleCondition.value}
+                      value={ruleCondition.value.inputValue}
                       className=""
                       classNamePrefix="select"
                       theme={selectThemeColors}
@@ -198,7 +225,7 @@ export default function ConditionItem({formEditor, ruleCondition, index, compone
                    </div>
                 }
                 {
-                  ruleCondition.field.label!='Birthday' && ruleCondition.field.label!='Single choice' && ruleCondition.field.label!='Multi choice' && <Input type='text' className='my-1' value={ruleCondition.value} onChange={(e)=>onChangeValue(e.target.value)} placeholder='Enter a value.'/>
+                  ruleCondition.field.label!='Birthday' && ruleCondition.field.label!='Single choice' && ruleCondition.field.label!='Multi choice' && ruleCondition.field.label!='Dropdown' && <Input type='text' className='my-1' value={ruleCondition.value.inputValue} onChange={(e)=>onChangeValue(e.target.value)} placeholder='Enter a value.'/>
                 }
             </div>
             }

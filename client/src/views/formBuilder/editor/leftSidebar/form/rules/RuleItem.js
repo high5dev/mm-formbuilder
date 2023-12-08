@@ -27,28 +27,38 @@ import {
 } from 'reactstrap';
 
 
-export default function RuleItem({index, ruleResult, components, changeRuleResult, removeRule}) {
+export default function RuleItem({formEditor, index, ruleResult, components, changeRuleResult, removeRule}) {
   const rules=[
     {
       label:'Hidden',
-      value:'Hidden'
+      value:'none'
     },
     {
       label:'Shown',
-      value:'Shown'
+      value:'block'
     }
   ];
 
   const onChangeComponent=(_values) =>{
+    const _components=formEditor.getWrapper().components().models;
     let newValues=_values && _values.filter((e)=>e.label!='');
-    let newRuleResult=ruleResult;
-    const obj={field:[...newValues]};
-    newRuleResult={...newRuleResult, ...obj};
-    changeRuleResult(index, newRuleResult);
+    if(newValues.length>0){
+      let outputIds=[];
+      for(let i=0; i<newValues.length;i++){
+        const e=newValues[i];
+        const selectedCmp=_components.filter((_component)=>_component.get('type')===e.value)[0];
+        const selectedEl=selectedCmp.getEl();
+        outputIds.push(selectedEl.id);
+      };
+      let newRuleResult=JSON.parse(JSON.stringify(ruleResult));
+      newRuleResult.outputIds=outputIds;
+      newRuleResult.field=[...newValues];
+      changeRuleResult(index, newRuleResult);
+    }
   }
 
   const onChangeValue=(e)=>{
-    let newRuleResult=ruleResult;
+    let newRuleResult=JSON.parse(JSON.stringify(ruleResult));
     const obj={value:{...e}};
     newRuleResult={...newRuleResult, ...obj};
     changeRuleResult(index, newRuleResult);

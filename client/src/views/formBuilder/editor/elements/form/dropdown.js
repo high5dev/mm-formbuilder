@@ -6,7 +6,7 @@ const script = function(props) {
 };
 
 let dropdownEl = {
-  isComponent: el => el.tagName === 'div',
+  isComponent: el => (el.tagName === 'DIV' && el.classList.contains('dropdown-element')),
   model: {
     defaults: {
       // script,
@@ -32,30 +32,30 @@ let dropdownEl = {
       },
       elProps:[
           {   
-            id: 'dropdown_'+ Math.random().toString(36).substring(2,7),
+            id: 'dropdown_'+ new Date().getTime(),
             name:'dropdown',
             type:'select',
             label:'Option1',
-            value:'option1',
+            value:'Option1',
           },
           {
-            id: 'dropdown_'+ Math.random().toString(36).substring(2,7),
+            id: 'dropdown_'+ new Date().getTime(),
             name:'dropdown',
             type:'select',
             label:'Option2',
-            value:'option2',
+            value:'Option2',
           },
           {  
-            id: 'dropdown_'+ Math.random().toString(36).substring(2,7),
+            id: 'dropdown_'+ new Date().getTime(),
             name:'dropdown',
             type:'select', 
             label:'Option3',
-            value:'option3',
+            value:'Option3',
           },
 
       ],
       styles: `
-      .dropdown-element {padding:10px; width:450px}
+      .dropdown-element {padding:10px; width:450px; margin-left:45px;}
       .select-dropdown-element {fontSize:16px; padding:10px; width:200px}
     `,
       stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius'],

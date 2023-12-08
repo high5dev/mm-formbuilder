@@ -6,14 +6,14 @@ const script = function(props) {
 };
 
 let longanswerEl = {
-  isComponent: el => el.tagName === 'div',
+  isComponent: el => (el.tagName === 'DIV' && el.classList.contains('long-answer-element')),
   model: {
     defaults: {
       // script,
       tagName: 'div',
       draggable: '*',
       droppable: false,
-      attributes: { class: 'long-answer-element' },
+      attributes: { class: 'long-answer-element', id:'long-answer-element'+new Date().getTime() },
       components: (props) => {
           const elProp = props.attributes.elProps[0];
           return(
@@ -28,7 +28,7 @@ let longanswerEl = {
         },
       elProps:[
           {   
-              id: 'long_answer'+ Math.random().toString(36).substring(2,7),
+              id: 'long_answer'+ new Date().getTime(),
               label:'Long answer',
               type:'textarea',
               name:'Long answer',

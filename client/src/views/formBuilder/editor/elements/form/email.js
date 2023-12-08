@@ -6,14 +6,14 @@ const script = function(props) {
   };
   
   let lastNameEl = {
-    isComponent: el => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('email-element')),
     model: {
       defaults: {
         // script,
         tagName: 'div',
         draggable: '*',
         droppable: false,
-        attributes: { class: 'email-element' },
+        attributes: { class: 'email-element', id:'email-element'+new Date().getTime() },
         components: (props) => {
             const elProp = props.attributes.elProps[0];
             return(
@@ -27,7 +27,7 @@ const script = function(props) {
           },
         elProps:[
             {   
-                id: 'email_'+ Math.random().toString(36).substring(2,7),
+                id: 'email_'+ new Date().getTime(),
                 label:'Email',
                 type:'email',
                 name:'email',

@@ -43,7 +43,6 @@ const formRuleSchema = new mongoose.Schema(
           }
         },
         value:{
-          type:String,
         }
       }
     ],
@@ -77,13 +76,13 @@ const formRuleSchema = new mongoose.Schema(
         value:{
           label:{
             type:String,
-            required:true
           },
           value:{
             type:String,
             required:true
           }
-        }
+        },
+        outputIds:[]
       }
     ]
   },

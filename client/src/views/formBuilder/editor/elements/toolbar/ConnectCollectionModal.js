@@ -6,11 +6,11 @@ import Select, { components } from 'react-select';
 import { useDispatch } from 'react-redux';
 import { createOrUpdateConnectionAction, deleteMultipleWebConnectionAction } from '../../../store/action';
 
-const ConnectCollectionModal = ({ store, connectData, setConnectData, getProductDataset, datasetConnect, setDatasetConnect, selectedDataset, setSelectedDataSet, handleSelectChangeDataSet, selectedCmp, selectedCollection, setSelectedCollection }) => {
+const ConnectCollectionModal = ({ store, connectData, setConnectData, getProductDataset, datasetConnect, setDatasetConnect, selectedDataset, handleSelectChangeDataSet, selectedCmp, selectedCollection, setSelectedCollection }) => {
 
   const dispatch = useDispatch();
   const [dataSets, setDataSets] = useState([]);
-  // const [selectedDataSet, setSelectedDataSet] = useState(null);
+  const [selectedDataSet, setSelectedDataSet] = useState(null);
   const [viewConnection, setViewConnection] = useState(false);
   const [selectedModel, setSelectedModel] = useState(null);
   const [fieldsOfCollection, setFieldsOfCollection] = useState([]);

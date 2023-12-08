@@ -6,14 +6,14 @@ const script = function(props) {
   };
   
   let vatIDEl = {
-    isComponent: el => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('vat-id-element')),
     model: {
       defaults: {
         // script,
         tagName: 'div',
         draggable: '*',
         droppable: false,
-        attributes: { class: 'vat-id-element' },
+        attributes: { class: 'vat-id-element', id:'vat-id-element' + new Date().getTime()},
         components: (props) => {
             const elProp = props.attributes.elProps[0];
             return(
@@ -27,7 +27,7 @@ const script = function(props) {
           },
         elProps:[
             {   
-                id: 'vat_id_'+ Math.random().toString(36).substring(2,7),
+                id: 'vat_id_'+  new Date().getTime(),
                 label:'VAT ID',
                 type:'text',
                 name:'vat id',
