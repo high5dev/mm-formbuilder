@@ -58,7 +58,7 @@ export default function Index() {
             let linkElements=htmlCmp.getElementsByTagName('a');
             for(let i=0; i<linkElements.length; i++){
               let link_href=linkElements[i].getAttribute('href');
-              if(!link_href.includes('https') || !link_href.includes('http') ||!link_href.includes('preview') || !link_href.includes('website')){
+              if(link_href && (!link_href.includes('https') && !link_href.includes('http') && !link_href.includes('preview') && !link_href.includes('website'))){
                 link_href='/website'+link_href;
               }
               linkElements[i].setAttribute('href', link_href);
@@ -86,10 +86,11 @@ export default function Index() {
             let linkElements=htmlCmp.getElementsByTagName('a');
             for(let i=0; i<linkElements.length; i++){
               let link_href=linkElements[i].getAttribute('href');
-              if(!link_href.includes('https') || !link_href.includes('http') ||!link_href.includes('preview') || !link_href.includes('website')){
+              if(link_href && !link_href.includes('https') && !link_href.includes('http') && !link_href.includes('preview') && !link_href.includes('website')){
                 link_href='/preview'+link_href;
               }
               linkElements[i].setAttribute('href', link_href )
+              linkElements[i].setAttribute('target', '_parent');
             };
             var tmp = document.createElement("div");
             tmp.append(htmlCmp.body)
@@ -201,40 +202,40 @@ export default function Index() {
 
   return (
     <>
-      {
-        pageInfo?.seoDetails && (
-          <>
-            <Helmet>
-              <title>{pageInfo?.seoDetails?.title}</title>
-              <meta name="description" content={`${pageInfo?.seoDetails?.description}`} />
-              <meta name="keywords" content={`${pageInfo?.seoDetails?.keywords}`} />
-              <link rel="icon" href={`${pageInfo?.seoDetails?.socialImage}`} />
-              <link rel="shortcut icon" href={`${pageInfo?.seoDetails?.socialImage}`} />
-              <link rel="apple-touch-icon" href={`${pageInfo?.seoDetails?.socialImage}`} />
-              <meta name="author" content={`${pageInfo?.seoDetails?.author}`} />
-              <meta property="og:type" content="article" />
-              <meta property="og:title" content={`${pageInfo?.seoDetails?.title}`} />
-              <meta property="og:description" content={`${pageInfo?.seoDetails?.description}`} />
-              <meta property="og:image" content={`${pageInfo?.seoDetails?.socialImage}`} />
-              <meta
-                property="og:url"
-                content={`/${store.linkUrl}/${id}/${pageInfo?.name}`}
-              />
-              <meta property="og:site_name" content={`${pageInfo?.seoDetails?.title}`} />
+      <Helmet>
+        {
+          pageInfo?.seoDetails && (
+            <>
+                <title>{pageInfo?.seoDetails?.title}</title>
+                <meta name="description" content={`${pageInfo?.seoDetails?.description}`} />
+                <meta name="keywords" content={`${pageInfo?.seoDetails?.keywords}`} />
+                <link rel="icon" href={`${pageInfo?.seoDetails?.socialImage}`} />
+                <link rel="shortcut icon" href={`${pageInfo?.seoDetails?.socialImage}`} />
+                <link rel="apple-touch-icon" href={`${pageInfo?.seoDetails?.socialImage}`} />
+                <meta name="author" content={`${pageInfo?.seoDetails?.author}`} />
+                <meta property="og:type" content="article" />
+                <meta property="og:title" content={`${pageInfo?.seoDetails?.title}`} />
+                <meta property="og:description" content={`${pageInfo?.seoDetails?.description}`} />
+                <meta property="og:image" content={`${pageInfo?.seoDetails?.socialImage}`} />
+                {store.linkUrl && <meta
+                  property="og:url"
+                  content={`/${store.linkUrl}/${id}/${pageInfo?.name}`}
+                />}
+                <meta property="og:site_name" content={`${pageInfo?.seoDetails?.title}`} />
 
-              <meta name="twitter:title" content={`${pageInfo?.seoDetails?.title}`} />
-              <meta name="twitter:description" content={`${pageInfo?.seoDetails?.description}`} />
-              <meta name="twitter:image" content={`${pageInfo?.seoDetails?.socialImage}`} />
-              <meta
-                name="twitter:site"
-                content={`/${store.linkUrl}/${id}/${pageInfo?.name}`}
-              />
-              <meta name="twitter:creator" content={`${pageInfo?.seoDetails?.twitter}`} />
-              {pageInfo?.seoDetails?.headCode}
-            </Helmet>
-          </>
-        )
-      }
+                <meta name="twitter:title" content={`${pageInfo?.seoDetails?.title}`} />
+                <meta name="twitter:description" content={`${pageInfo?.seoDetails?.description}`} />
+                <meta name="twitter:image" content={`${pageInfo?.seoDetails?.socialImage}`} />
+                {store.linkUrl && <meta
+                  name="twitter:site"
+                  content={`/${store.linkUrl}/${id}/${pageInfo?.name}`}
+                />}
+                <meta name="twitter:creator" content={`${pageInfo?.seoDetails?.twitter}`} />
+                {pageInfo?.seoDetails?.headCode}
+            </>
+          )
+        }
+      </Helmet>
       <div className='main'>
         {(!store.linkUrl || store.linkUrl==='website') && pageContent &&
           <iframe srcDoc={pageContent} width={window.innerWidth} height={window.innerHeight}/>
