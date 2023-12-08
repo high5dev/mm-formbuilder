@@ -34,7 +34,6 @@ import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
 import { setChildFormReducer, setFormReducer } from '../store/reducer';
 import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, createChildFormAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction, getConnectionsByWebsiteAction} from '../store/action'
-import { setFormReducer } from '../store/reducer';
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
@@ -904,15 +903,15 @@ export default function Editor({
 
   useEffect(() => {
     if (page) {
-      // setIsLoading(true);
+      setIsLoading(true);
       setIsStoreLoading(true);
       dispatch(getPageAction(page._id)).then((res) => {
         if (res) {
           if (editor) {
             editor.setComponents(res);
           };
-          // setIsLoading(false);
-          // setIsStoreLoading(false);
+          setIsLoading(false);
+          setIsStoreLoading(false);
         }
       })
     }
@@ -1365,11 +1364,11 @@ export default function Editor({
 
       <div id="editor"></div>
     </div>
-      {/* {isStoreLoading ? <div className='loadingLayer'>
+      {isStoreLoading ? <div className='loadingLayer'>
         <div className="d-flex  justify-content-center mb-2 mt-2" style={{ position: 'absolute', top: "50%", left: "50%", zIndex: 10 }}>
           <Spinner color="secondary">Loading...</Spinner>
         </div>
-      </div> : <></>} */}
+      </div> : <></>}
     <div className="property-sidebar" style={{display:rsidebarOpen?'block':'none'}}>
       <PerfectScrollbar
         className="scrollable-content"

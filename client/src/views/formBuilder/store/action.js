@@ -786,7 +786,7 @@ export const deleteMultipleWebConnectionAction = (payload) => async (dispatch) =
   } catch (error) { }
 };
 
-export const getProductDatasetAction = (collectionId) => async (dispatch) => {
+export const getProductDatasetAction = (pageId) => async (dispatch) => {
   try {
     const { data } = await api.getProductDataset(pageId);
     if (data.success) {
