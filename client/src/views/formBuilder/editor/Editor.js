@@ -1111,7 +1111,11 @@ export default function Editor({
                                     }}
                                     onDragEnd={(e) => {
                                       e.stopPropagation();
-                                      blockManager.dragStop(false);
+                                      if(b.get('label')==='New Form'){
+                                        createForm();
+                                        blockManager.dragStop(false);
+                                      }
+                                   
                                     }}
                                   >
                                   </div>
