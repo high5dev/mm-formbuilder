@@ -47,6 +47,7 @@ let sliderproductgallery = {
       datasetConnect: [],
       selectedDataset: {},
       cloning: false,
+      products: {},
       traits: [
         {
           type: 'number',
@@ -173,6 +174,11 @@ let sliderproductgallery = {
     init() {
       this.listenTo(this.model, 'change:numPerRow', this.handleChangeNumPerRow);
       this.listenTo(this.model, 'change:numOfItems', this.handleChangeNumOfItems);
+      this.listenTo(this.model, 'change:products', this.handleChangeProducts);
+    },
+
+    handleChangeProducts(e) {
+      this.model.set('numOfItems', this.model.get('products').values.length);
     },
 
     handleChangeNumPerRow(e) {
@@ -217,6 +223,23 @@ let sliderproductgallery = {
           slidesComponent.components().add(item);
         }
       }
+
+      let data = this.model.get('datasetConnect');
+      slidesComponent.get('components').models.map((m, index) => {
+        m.components().models.map((element) => {
+          const existingItemIndex = data.findIndex(item => (item.id + (index != 0 ? ("-" + (index + 1)) : "")) === element.ccid);
+  
+          if (existingItemIndex !== -1) {
+            // Update the name if the ID exists
+            if (element.get('type') == 'text') {
+              element.set('content', this.model.get('products').values[index][data[existingItemIndex].name]);
+            }
+          } else {
+            // Add a new item if the ID doesn't exist
+            //dataConnect.push(newData);
+          }
+        });
+      });
 
       this.render();
       this.model.set('cloning', false);

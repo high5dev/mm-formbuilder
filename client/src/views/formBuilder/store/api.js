@@ -247,3 +247,7 @@ export const getWebAllDataset = (id) => {
 export const getProductDataset = (id) => {
   return API.get(`/web-builder-store/dataset/${id}`);
 }
+
+export const updateProductDataset = (id, payload) => {
+  return API.post(`/web-builder-store/dataset/update/${id}`, payload);
+}

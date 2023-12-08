@@ -1,18 +1,17 @@
 let addtocartbutton = {
-  isComponent: el => el.tagName === 'div',
+  isComponent: el => el.tagName === 'addtocartbutton',
   model: {
     defaults: {
-      tagName: 'div',
+      tagName: 'addtocartbutton',
       draggable: '*',
       droppable: false,
-      attributes: { class: 'addtocartbutton' },
+      attributes: { class: 'addtocartbutton', productId: "" },
       components: (props) => {
         return `
-        <button class="addbutton">
           <span class="carttext">Add to Cart</span>
-        </button>
-      `;
+        `;
       },
+      productId: "",
       // viewSplit: 'true',
       // viewLabel: 'true',
       traits: [
@@ -35,13 +34,13 @@ let addtocartbutton = {
         .addtocartbutton {
           height: 55px;
           width: 200px;
-        }
-        .addbutton {
           color: #FFFFFF;
           background-color: #384AD3;
           border-width: 0;
-          width: 100%;
-          height: 100%;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         .carttext {
           margin: 0 auto;
@@ -57,6 +56,15 @@ let addtocartbutton = {
       }
     },
   },
+  view: {
+    init() {
+      this.listenTo(this.model, 'change:productId', this.handleChangeProductId);
+    },
+
+    handleChangeProductId(e) {
+      this.model.setAttributes({ class: 'addtocartbutton', 'productId': this.model.get('productId') });
+    }
+  }
 };
 
 export default addtocartbutton;
