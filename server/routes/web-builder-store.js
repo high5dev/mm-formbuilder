@@ -2,9 +2,11 @@ const router = require("express").Router();
 const isAuthenticated = require("../middleware/auth");
 
 const {
-  getDatasetsByCollection,
+  getDatasetsByPage,
+  updateDatasetsByPage,
 } = require("../controllers/webBuilderStore");
 
-router.get("/dataset/:id", isAuthenticated, getDatasetsByCollection);
+router.get("/dataset/:id", isAuthenticated, getDatasetsByPage);
+router.post("/dataset/update/:id", isAuthenticated, updateDatasetsByPage)
 
 module.exports = router;

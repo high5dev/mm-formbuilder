@@ -6,7 +6,7 @@ import Select, { components } from 'react-select';
 import { useDispatch } from 'react-redux';
 import { createOrUpdateConnectionAction, deleteMultipleWebConnectionAction } from '../../../store/action';
 
-const ConnectCollectionModal = ({ store, connectData, setConnectData, getProductDataset, datasetConnect, setDatasetConnect, selectedDataset, setSelectedDataSet, handleSelectChangeDataSet, selectedCmp, selectedCollection, setSelectedCollection }) => {
+const ConnectCollectionModal = ({ store, connectData, setConnectData, getProductDataset, datasetConnect, setDatasetConnect, selectedDataSet, setSelectedDataSet, handleSelectChangeDataSet, selectedCmp, selectedCollection, setSelectedCollection }) => {
 
   const dispatch = useDispatch();
   const [dataSets, setDataSets] = useState([]);
@@ -100,7 +100,7 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, getProduct
       });
       setFieldsOfCollection(tempFields);
     }
-  }, [selectedDataset, store.webCollections]);
+  }, [selectedDataSet, store.webCollections]);
 
   const changeField = (data) => {
     setSelectedField(data);
@@ -223,7 +223,7 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, getProduct
                         isClearable={false}
                         options={dataSets}
                         theme={selectThemeColors}
-                        value={selectedDataset}
+                        value={selectedDataSet}
                         onChange={(data) => { handleSelectChangeDataSet(data); onSelectDataset(data);}}
                       />
                     </>
