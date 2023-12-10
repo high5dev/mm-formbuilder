@@ -142,8 +142,8 @@ export const updateBlog =(id,payload) =>{
   return API.put(`/web-blog/update/${id}`,payload);
 }
 
-export const getWebBlogs =() =>{
-  return API.get('/web-blog/blogs')
+export const getWebBlogs =(id) =>{
+  return API.get(`/web-blog/blogs/${id}`)
 }
 
 export const getPreviewBlogPage =(payload)=>{

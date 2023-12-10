@@ -36,7 +36,7 @@ export const blocks = [
     label: 'Post List(Large)',
     attributes: { class: 'fa fa-text' },
     content: { type: 'post-list-large' },
-    media: `https://i.ibb.co/6br0NxL/1.png`,
+    media: `https://i.ibb.co/Y77hgQ6/2.png`,
     category: 'blog'
   },
   {

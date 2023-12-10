@@ -42,11 +42,11 @@ export default function Index({store, isOpen, toggle }) {
     {
       name: 'Image',
       sortable: true,
-      minWidth: '100px',
-      minHeight:'100px',
+      maxWidth: '100px',
+      maxHeight:'100px',
       sortField: 'imageUrl',
       selector: row => row.imageUrl,
-      cell: row => <img src={row.imageUrl} width="100px" style={{maxHeight:'100px'}}/>
+      cell: row => <img src={row.imageUrl} width="100px" style={{maxHeight:'50px'}}/>
     },
     {
       name: 'Title',
@@ -77,6 +77,7 @@ export default function Index({store, isOpen, toggle }) {
       minWidth: '100px',
       allowOverflow: true,
       cell: row => (
+        !row.isTemplate && 
         <div className='column-action'>
           <UncontrolledDropdown>
             <DropdownToggle tag='div' className='btn btn-sm'>
@@ -121,7 +122,7 @@ export default function Index({store, isOpen, toggle }) {
             Manage Posts
         </ModalHeader>
         <ModalBody className="mb-5">
-            <div className='d-flex justify-content-end'>
+            <div className='d-flex justify-content-end mb-1'>
                 <Button color="primary" onClick={(e)=>setPostMdl(true)}>Add Post</Button>
             </div>
             <div className="react-dataTable">
