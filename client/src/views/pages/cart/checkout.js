@@ -23,7 +23,7 @@ const Checkout = () => {
     const updateCart = (index, value, remove = false) => {
         let cartProducts = [];
         if (remove) {
-            cartProducts = [...store?.cartProducts?.slice(0, index)];
+            cartProducts = [...store?.cartProducts?.slice(0, index), ...store?.cartProducts?.slice(index + 1)];
             dispatch(updateCartProductsAction(cartProducts));
         } else {
             if (value > 0) {

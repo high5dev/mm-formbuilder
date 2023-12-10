@@ -27,7 +27,7 @@ function Cartsidebar({ store, showCartSidebar, setShowCartSidebar }) {
     const updateCart = (index, value, remove = false) => {
         let cartProducts = [];
         if (remove) {
-            cartProducts = [...store?.cartProducts?.slice(0, index)];
+            cartProducts = [...store?.cartProducts?.slice(0, index), ...store?.cartProducts?.slice(index + 1)];
             dispatch(updateCartProductsAction(cartProducts));
         } else {
             if (value > 0) {
@@ -53,7 +53,7 @@ function Cartsidebar({ store, showCartSidebar, setShowCartSidebar }) {
                         {
                             store?.cartProducts?.map((item, index) => {
                                 return (
-                                    <div className='d-flex position-relative cartItem'>
+                                    <div className='d-flex position-relative cartItem mb-2'>
                                         <img src={item.product.url} width="80" />
                                         <div className='d-flex flex-column ms-1'>
                                             <Label className="mdl-input-category-label fs-5" for="mdl-input-category">
