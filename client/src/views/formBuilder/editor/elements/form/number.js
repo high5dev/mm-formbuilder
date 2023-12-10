@@ -6,14 +6,14 @@ const script = function(props) {
 };
 
 let numberEl = {
-  isComponent: el => el.tagName === 'div',
+  isComponent: el => (el.tagName === 'DIV' && el.classList.contains('number-element')),
   model: {
     defaults: {
       // script,
       tagName: 'div',
       draggable: '*',
       droppable: false,
-      attributes: { class: 'number-element' },
+      attributes: { class: 'number-element', id:'number-element'+new Date().getTime() },
       components: (props) => {
           const elProp = props.attributes.elProps[0];
           return(
@@ -28,7 +28,7 @@ let numberEl = {
         },
       elProps:[
           {   
-              id: 'number_'+ Math.random().toString(36).substring(2,7),
+              id: 'number_'+ new Date().getTime(),
               label:'Number',
               type:'number',
               name:'Long answer',

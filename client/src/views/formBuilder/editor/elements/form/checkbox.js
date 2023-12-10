@@ -6,18 +6,18 @@ const script = function(props) {
 };
 
 let checkboxEl = {
-  isComponent: el => el.tagName === 'div',
+  isComponent: el => (el.tagName === 'DIV' && el.classList.contains('checkbox-element')),
   model: {
     defaults: {
       // script,
       tagName: 'div',
       draggable: '*',
       droppable: false,
-      attributes: { class: 'checkbox-element' },
+      attributes: { class: 'checkbox-element', id:'checkbox-element'+new Date().getTime() },
       components: (props) => {
           const elProp = props.attributes.elProps[0];
           return(
-                  <div>
+                  <div class="checkbox-container">
                       <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-checkbox-element" checked={elProp.checked} required={elProp.required}/> 
                       <span>{elProp.label}</span>
                   </div>   
@@ -25,7 +25,7 @@ let checkboxEl = {
         },
       elProps:[
           {   
-              id: 'checkbox_'+ Math.random().toString(36).substring(2,7),
+              id: 'checkbox_'+ new Date().getTime(),
               label:'Checkbox',
               type:'checkbox',
               name:'checkbox',
@@ -34,7 +34,8 @@ let checkboxEl = {
           }
       ],
       styles: `
-      .checkbox-element {padding:10px; margin-left:40px; width:450px}
+      .checkbox-element {padding:10px; display:flex; justify-content:space-around}
+      .checkbox-container{width:480px}
       .input-checkbox-element {padding:10px; font-size:14px}
     `,
       stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius'],
@@ -51,7 +52,7 @@ let checkboxEl = {
         comps.pop();
       };
       const item=
-      <div>
+      <div class="checkbox-container">
         <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-checkbox-element" checked={elProp.checked} required={elProp.required}/> 
         <span>{elProp.label}</span>
       </div>;

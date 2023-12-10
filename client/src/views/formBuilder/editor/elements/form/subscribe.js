@@ -6,19 +6,19 @@ const script = function(props) {
   };
   
   let subscribeEl = {
-    isComponent: el => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('subscribe-element')),
     model: {
       defaults: {
         // script,
         tagName: 'div',
         draggable: '*',
         droppable: false,
-        attributes: { class: 'subscribe-element' },
+        attributes: { class: 'subscribe-element', id:'subscribe-element'+new Date().getTime() },
         components: (props) => {
             const elProp = props.attributes.elProps[0];
             return(
-                    <div>
-                        <input type='checkbox' id="subscribe-checkbox" required={elProp.required} checked={elProp.checked}/>
+                    <div class="subscribe-container">
+                        <input type='checkbox' id={elProp.id} required={elProp.required} checked={elProp.checked}/>
                         <label className='ms-1' htmlFor='subscribe-checkbox'>{elProp.label}</label>
                     </div>
                     
@@ -26,7 +26,7 @@ const script = function(props) {
           },
         elProps:[
             {   
-                id: 'subscribe'+ Math.random().toString(36).substring(2,7),
+                id: 'subscribe'+ new Date().getTime(),
                 name:'subscribe',
                 label:'Yes, subscribe me to your newsletter.',
                 checked:false,
@@ -34,7 +34,8 @@ const script = function(props) {
             }
         ],
         styles: `
-        .subscribe-element {padding:10px; width:480px; margin-left:40px}
+        .subscribe-element {padding:10px; margin-left:40px; display:flex; justify-content:space-around}
+        .subscribe-container{width:480px}
       `,
         stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius'],
       },
@@ -51,7 +52,7 @@ const script = function(props) {
         };
         const item=
         <div>
-            <input type='checkbox' id="subscribe-checkbox" required={elProp.required} checked={elProp.checked}/>
+            <input type='checkbox' id={elProp.id} required={elProp.required} checked={elProp.checked}/>
             <label className='ms-1' htmlFor='subscribe-checkbox'>{elProp.label}</label>
         </div>
         

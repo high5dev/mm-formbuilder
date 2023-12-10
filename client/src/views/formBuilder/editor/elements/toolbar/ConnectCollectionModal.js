@@ -6,7 +6,7 @@ import Select, { components } from 'react-select';
 import { useDispatch } from 'react-redux';
 import { createOrUpdateConnectionAction, deleteMultipleWebConnectionAction } from '../../../store/action';
 
-const ConnectCollectionModal = ({ store, connectData, setConnectData, getProductDataset, datasetConnect, setDatasetConnect, handleSelectChangeDataSet, selectedCmp, selectedCollection, setSelectedCollection, createDatasetToggle }) => {
+const ConnectCollectionModal = ({ store, connectData, setConnectData, getProductDataset, datasetConnect, setDatasetConnect, selectedDataset, handleSelectChangeDataSet, selectedCmp, selectedCollection, setSelectedCollection }) => {
 
   const dispatch = useDispatch();
   const [dataSets, setDataSets] = useState([]);

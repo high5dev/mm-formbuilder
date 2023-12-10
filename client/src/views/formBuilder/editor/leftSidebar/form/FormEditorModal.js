@@ -54,14 +54,15 @@ export default function Index({store, toggle, page}) {
     {
       field:{label:'', value:''},
       condition:{label:'', value:''},
-      value:''
+      value:{id:'', inputValue:''}
     }
   ]);
   const [ruleOperators, setRuleOperators]=useState([]);
   const [ruleResults, setRuleResults]=useState([
     {
-      field:[{label:'', valule:''}],
-      value:{label:'', value:''}
+      field:[{label:'', value:''}],
+      value:{label:'', value:''},
+      outputIds:[]
     }
   ]);
   const [title, setTitle]=useState('');
@@ -291,7 +292,6 @@ export default function Index({store, toggle, page}) {
       operators,
       output
     };
-    console.log('payload', payload);
    if(selectedRule?._id){
     const id=selectedRule._id;
     dispatch(updateFormRuleAction(id, payload)).then((res)=>{
@@ -309,34 +309,41 @@ export default function Index({store, toggle, page}) {
         setRuleConditions([{
           field:{label:'', value:''},
           condition:{label:'', value:''},
-          value:''
+          value:{id:'', inputValue:''}
         }]);
         setRuleOperators([]);
-        setRuleResults([{
-          field:[{label:'', valule:''}],
-          value:{label:'', value:''}
-        }])
+        setRuleResults([
+          {
+            field:[{label:'', value:''}],
+            value:{label:'', value:''},
+            outputIds:[]
+          }
+      ])
         setRuleEditing(false);
       }
      })
    }
    else{
-    payload={...payload, formId:formId}
+    payload={...payload, formId:formId};
+    console.log('payload==========', payload);
     dispatch(createFormRuleAction(payload)).then((res)=>{
       if(res){
         let formRules=store.formRules;
         formRules=[...formRules, res];
         dispatch(setFormRuleReducer(formRules));
         setRuleConditions([{
-          field:{label:'', value:''},
-          condition:{label:'', value:''},
-          value:''
+            field:{label:'', value:''},
+            condition:{label:'', value:''},
+            value:{id:'', inputValue:''}
         }]);
         setRuleOperators([]);
-        setRuleResults([{
-          field:[{label:'', valule:''}],
-          value:{label:'', value:''}
-        }])
+        setRuleResults([
+          {
+            field:[{label:'', value:''}],
+            value:{label:'', value:''},
+            outputIds:[]
+          }
+        ])
         setRuleEditing(false);
       }
      })
@@ -378,7 +385,15 @@ export default function Index({store, toggle, page}) {
     let input_description='If ';
     for(let i=0; i<inputData.length; i++){
       const inputItem=inputData[i];
-      input_description=input_description+' '+inputItem.field.label+' '+inputItem.condition.label+' '+inputItem.value;
+      input_description=input_description+' '+inputItem.field.label+' '+inputItem.condition.label;
+      if(inputItem.value.inputValue){
+        if(inputItem.value.inputValue.value){
+          input_description=input_description+' '+inputItem.value.inputValue.value;
+        }
+        else{
+          input_description=input_description+' '+inputItem.value.inputValue;
+        }
+      }
       if(i<operators.length){
         input_description=input_description+' '+operators[i].label
       }
@@ -394,7 +409,10 @@ export default function Index({store, toggle, page}) {
         return _field.label
       });
       fields=fields.join(',');
-      output_description=output_description+fields+' '+'is'+' '+outputItem.value.label
+      output_description=output_description+fields+' '+'is'+' '+outputItem.value.label;
+      if(i<outputData.length-1){
+        output_description=output_description+' '+'and'+' ';
+      }
     }
     return output_description;
   }
@@ -830,7 +848,7 @@ export default function Index({store, toggle, page}) {
                             <div className='rule-container' style={{padding:'10px', borderLeft:'1px solid #174ae7'}}>
                               {
                                 ruleResults && ruleResults.map((ruleResult, idx)=>{
-                                  return(<RuleItem ruleResult={ruleResult} index={idx} components={components} changeRuleResult={changeRuleResult} removeRule={removeRule}/>)
+                                  return(<RuleItem formEditor={formEditor} ruleResult={ruleResult} index={idx} components={components} changeRuleResult={changeRuleResult} removeRule={removeRule}/>)
                                 })
                               }
                               <div className='d-flex justify-content-around mt-2'>
@@ -1048,43 +1066,7 @@ export default function Index({store, toggle, page}) {
                         </div>
                       }
                     </>
-                  )
-                    // if(key!='type'){
-                    //   return(
-                    //   <div className={typeof attributes[key]==='boolean'? 'd-flex justify-content-between align-items-center':'mb-2'}>
-                    //     <div className='text-capitalize fs-5 fw-bolder'>
-                    //       <Label>
-                    //         {key}
-                    //       </Label>
-                    //     </div>
-                    //     {
-                    //       (typeof attributes[key]!="boolean") && 
-                    //       <Input type='text' value={attributes[key]} style={{padding:'5px'}} onChange={(e)=>{
-                    //         var obj = {};
-                    //         obj[key] = e.target.value;
-                    //         setAttributes(attributes => ({...attributes, ...obj}));
-                    //           let _elProps=[];
-                    //           _elProps.push({...attributes, ...obj});
-                    //           selectedComponent.set('elProps', _elProps);
-                    //       }}/>
-                    //     }
-                    //     {
-                    //       (typeof attributes[key]==="boolean") && 
-                    //       <div className='d-flex justify-content-around'>
-                    //           <Input type='checkbox' checked={attributes[key]} style={{padding:'5px'}} onChange={(e)=>{
-                    //             var obj = {};
-                    //             obj[key] = e.target.checked;
-                    //             setAttributes(attributes => ({...attributes, ...obj}));
-                    //               let _elProps=[];
-                    //               _elProps.push({...attributes, ...obj});
-                    //               selectedComponent.set('elProps', _elProps);
-                    //           }}/>
-                    //       </div>
-              
-                    //     }     
-                    //   </div>
-                    //   )
-                    // }
+                    )
                   }
                 
                 

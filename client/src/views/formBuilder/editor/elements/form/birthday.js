@@ -6,14 +6,14 @@ const script = function(props) {
   };
   
   let birthdayEl = {
-    isComponent: el => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('birthday-element')),
     model: {
       defaults: {
         // script,
         tagName: 'div',
         draggable: '*',
         droppable: false,
-        attributes: { class: 'birthday-element' },
+        attributes: { class: 'birthday-element', id:'birthday-element'+new Date().getTime()  },
         components: (props) => {
             const elProp = props.attributes.elProps[0];
             const months=['Month','January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -27,10 +27,10 @@ const script = function(props) {
                               {
                                 months && months.map((month, i)=>{
                                   if(i===0){
-                                    return (<option value="">{month}</option>)
+                                    return (<option value={i}>{month}</option>)
                                   }
                                   else{
-                                    return(<option value={month}>{month}</option>)
+                                    return(<option value={i}>{month}</option>)
                                   }
                                   
                                 })

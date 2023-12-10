@@ -6,20 +6,20 @@ const script = function(props) {
   };
   
   let lastNameEl = {
-    isComponent: el => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('last-name-element')),
     model: {
       defaults: {
         // script,
         tagName: 'div',
         draggable: '*',
         droppable: false,
-        attributes: { class: 'last-name-element' },
+        attributes: { class: 'last-name-element', id:'last_name_element'+ new Date().getTime() },
         components: (props) => {
             const elProp = props.attributes.elProps[0];
             return(
                     <div>
                         <div class="last-name-label">
-                          <label for={elProp.id}>{elProp.label}</label>
+                          <label>{elProp.label}</label>
                         </div>
                         <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-last-name-element" placeholder={elProp.placeholder} required={elProp.required}/> 
                     </div>
@@ -28,7 +28,7 @@ const script = function(props) {
           },
         elProps:[
             {   
-                id: 'last_name'+ Math.random().toString(36).substring(2,7),
+                id:'last_name'+new Date().getTime(),
                 label:'Last name',
                 type:'text',
                 name:'last name',
@@ -57,7 +57,7 @@ const script = function(props) {
         const item=
         <div>
           <div class="last-name-label">
-            <label for={elProp.id}>{elProp.label}</label>
+            <label>{elProp.label}</label>
           </div>
           <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-last-name-element" placeholder={elProp.placeholder} required={elProp.required}/> 
         </div>;

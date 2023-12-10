@@ -6,18 +6,18 @@ const script = function(props) {
 };
 
 let multiChoiceEl = {
-  isComponent: el => el.tagName === 'div',
+  isComponent: el => (el.tagName === 'DIV' && el.classList.contains('multi-choice-element')),
   model: {
     defaults: {
       // script,
       tagName: 'div',
       draggable: '*',
       droppable: false,
-      attributes: { class: 'multi-choice-element' },
+      attributes: { class: 'multi-choice-element', id:'multi-choice-element'+new Date().getTime() },
       components: (props) => {
           const elProps = props.attributes.elProps;
           return(
-            <div>
+            <div class="multi-choice-container">
               {
               elProps && elProps.map((elProp)=>{
                 return(
@@ -33,21 +33,21 @@ let multiChoiceEl = {
         },
       elProps:[
           {   
-              id: 'multi_choice'+ Math.random().toString(36).substring(2,7),
+              id: 'multi_choice'+ new Date().getTime(),
               label:'Option1',
               type:'radio',
               name:'option',
               checked:true
           },
           {   
-            id: 'multi_choice'+ Math.random().toString(36).substring(2,7),
+            id: 'multi_choice'+ new Date().getTime(),
             label:'Option2',
             type:'radio',
             name:'option',
             checked:false
           },
           {   
-            id: 'multi_choice'+ Math.random().toString(36).substring(2,7),
+            id: 'multi_choice'+new Date().getTime(),
             label:'Option3',
             type:'radio',
             name:'option',
@@ -55,7 +55,8 @@ let multiChoiceEl = {
           }
       ],
       styles: `
-      .multi-choice-element {padding:10px; width:450px; margin-left:40px}
+      .multi-choice-element {padding:10px; margin-left:40px; display:flex; justify-content:space-around}
+      .multi-choice-container{width:480px}
       .input-single-choice-item{padding:5px}
     `,
       stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius'],
@@ -72,7 +73,7 @@ let multiChoiceEl = {
         comps.pop();
       };
       comps.push(
-        <div>
+        <div class="multi-choice-container">
             {
             elProps && elProps.map((elProp)=>{
               return(
