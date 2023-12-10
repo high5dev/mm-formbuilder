@@ -33,6 +33,7 @@ exports.createBlog = asyncHandler(async (req, res) => {
       websiteId:mongoose.Types.ObjectId(websiteId),
       name:user.firstName+' '+ user.lastName,
       imageUrl:imageUrl,
+      isTemplate:false,
       avatar:"https://i.ibb.co/7Sh09k6/avatar.png",
       userId: mongoose.Types.ObjectId(req.user._id),
       organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
@@ -138,11 +139,13 @@ exports.getPreviewBlogPage = asyncHandler(async (req, res) => {
 exports.getBlogs = asyncHandler(async (req, res) => {
     try {
       const { organization } = req.headers;
+      const websiteId = req.params.id;
       const user = req.user;
       let query = {
           userId: mongoose.Types.ObjectId(user._id),
           organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
           isDelete: false,
+          websiteId:mongoose.Types.ObjectId(websiteId)
       };
       const data = await WebBlog.aggregate([
         {$match: query},

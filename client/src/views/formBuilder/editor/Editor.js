@@ -335,7 +335,7 @@ export default function Editor({
 
   useEffect(() => {
     dispatch(getWebElementsAction());
-    dispatch(getBlogsAction());
+    dispatch(getBlogsAction(store?.form?._id));
     dispatch(getWebsiteAction(id)).then(res=>{
       if(res){
         setPage(res[0]);
@@ -951,22 +951,30 @@ export default function Editor({
   useEffect(() =>{
     if(editor){
       editor?.on('component:add',(component) =>{
-        if(store.webBlogs.length){
+        const customBlogs=store.webBlogs.filter((webBlog)=>webBlog.isTemplate===false);
+        let blogs;
+        if(customBlogs.length>0){
+          blogs=customBlogs;
+        }
+        else{
+          blogs=store.webBlogs;
+        }
+        if(blogs.length){
           if(component.get('type')==='post-list-large' || component.get('type') === 'post-card-large' || component.get('type') === 'post-list-sidebar'){
-            component.set('blogs', store.webBlogs);
+            component.set('blogs', blogs);
           }
           if(component.get('type') ==='recent-post'){
             let recentBlogs=[];
-            recentBlogs.push(store.webBlogs[store.webBlogs.length-1]);
+            recentBlogs.push(blogs[blogs.length-1]);
             component.set('blogs', recentBlogs);
           }
           if(component.get('type')==='category-menu'){
-            component.set('num', store.webBlogs.length);
+            component.set('num', blogs.length);
           }
           if(component.get('type')==='archive-menu'){
             let postList=[];
             for(let i=0; i<12;i++){
-              const blogs=store.webBlogs.filter((blog) =>new Date(blog.updatedAt).getMonth()===i);
+              const blogs=blogs.filter((blog) =>new Date(blog.updatedAt).getMonth()===i);
               const amount=blogs.length;
               if(amount>0){
                 const month=new Date(blogs[0].updatedAt).getMonth()+1;
@@ -978,25 +986,33 @@ export default function Editor({
             component.set('postList', postList);
           }
         }    
-      })
+      });
+      let blogs;
+      const customBlogs=store.webBlogs.filter((webBlog)=>webBlog.isTemplate===false);
+      if(customBlogs.length>0){
+        blogs=customBlogs;
+      }
+      else{
+        blogs=store.webBlogs;
+      }
       const components=editor.getWrapper().components().models;
       for(let i=0; i<components.length; i++){
         const component=components[i];
         if(component.get('type')==='post-list-large' || component.get('type') === 'post-card-large' || component.get('type') === 'post-list-sidebar'){
-          component.set('blogs', store.webBlogs);
+          component.set('blogs', blogs);
         }
         if(component.get('type') ==='recent-post'){
           let recentBlogs=[];
-          recentBlogs.push(store.webBlogs[store.webBlogs.length-1]);
+          recentBlogs.push(blogs[blogs.length-1]);
           component.set('blogs', recentBlogs);
         }
         if(component.get('type')==='category-menu'){
-          component.set('num', store.webBlogs.length);
+          component.set('num', blogs.length);
         }
         if(component.get('type')==='archive-menu'){
           let postList=[];
           for(let i=0; i<12;i++){
-            const blogs=store.webBlogs.filter((blog) =>new Date(blog.updatedAt).getMonth()===i);
+            const blogs=blogs.filter((blog) =>new Date(blog.updatedAt).getMonth()===i);
             const amount=blogs.length;
             if(amount>0){
               const month=new Date(blogs[0].updatedAt).getMonth()+1;
