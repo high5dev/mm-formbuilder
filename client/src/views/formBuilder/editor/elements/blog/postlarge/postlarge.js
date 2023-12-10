@@ -24,13 +24,13 @@ let postLarge = {
                     </div>
                   </span>
                   <div class="post-large-body">
-                        <div class="post-large-title">
-                            <h2>{blog.title}</h2>
-                        </div>
-                        <div class="post-large-description">
-                            {blog.description}
-                        </div>
+                      <div class="post-large-title">
+                          <h2>{blog.title}</h2>
                       </div>
+                      <div class="post-large-description">
+                          {blog.description}
+                      </div>
+                  </div>
                   </div>
                </div>);
                 })
@@ -41,12 +41,12 @@ let postLarge = {
         },
         blogs: [
           {
-            name: 'Tayler Jones',
-            title:'Design a Beautiful Blog',
-            avatar: 'https://i.ibb.co/0q9rwBT/1-1.png',
-            description: 'Send blog from anywhere',
-            imageUrl:'https://i.ibb.co/s2dLvd9/blendjet.png',
-          }
+            name: 'Maria Cole',
+            title: 'Now you can blog from everywhere',
+            avatar: 'https://i.ibb.co/yWzNT3Q/2-3.png',
+            description: 'We made it quick and convenient for you to manage blog',
+            imageUrl: 'https://i.ibb.co/kGBQfB3/images.jpg'
+          },
         ],
         traits: [
           {
@@ -121,7 +121,6 @@ let postLarge = {
           return;
         }
       },
-
       handleChangeBlogs(e){
         let comps=this.model.get('components');
         let blogs=this.model.get('blogs');
@@ -147,18 +146,18 @@ let postLarge = {
             </span>
             <div class="post-large-body">
                   <div class="post-large-title">
-                      <a href={`/${blog.websiteId}/${blog.pageName}/${blog._id}`}>
+                      <a href={`/${blog.websiteId}/${blog.pageName}/${blog._id}`} target='_blank'>
                        <h2>{blog.title}</h2>
                       </a>
                   </div>
                   <div class="post-large-description">
-                    <a href={`/${blog.websiteId}/${blog.pageName}/${blog._id}`}>
+                    <a href={`/${blog.websiteId}/${blog.pageName}/${blog._id}`} target='_blank'>
                       {blog.description}
                       </a>
                   </div>
-                </div>
             </div>
-         </div>);
+        </div>
+      </div>);
           })
         }
       </div>

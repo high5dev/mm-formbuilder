@@ -95,9 +95,7 @@ const AddElementModal = ({ editor, setEditor, openAddElementMdl, setOpenAddEleme
     newElement.innerHTML = code;
     editorBody.appendChild(newElement);
     const lastChild = editorBody.lastChild;
-    console.log('newElement data-------', newElement);
     htmlToImage.toPng(lastChild).then((dataUrl) => {
-      console.log('element data-------', selectedMenu, selectedSubMenu, category, code, dataUrl);
       dispatch(createWebElementAction({mainMenu: selectedMenu?.value || '', subMenu: selectedSubMenu?.value || '', category, html: code, imageUrl: dataUrl})).then((res) => {
         lastChild.remove();
         setEditor(editor);

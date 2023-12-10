@@ -46,6 +46,10 @@ const WebBlogSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isTemplate:{
+      type:Boolean,
+      default:true
+    }
   },
   {
     timestamps: true,

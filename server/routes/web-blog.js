@@ -12,7 +12,7 @@ const {
 } = require("../controllers/webBlog");
 //web builder
 router.post("/create", isAuthenticated, singleUploadControl, createBlog);
-router.get("/blogs", isAuthenticated, getBlogs);
+router.get("/blogs/:id", isAuthenticated, getBlogs);
 router.get("/preview", isAuthenticated, getPreviewBlogPage);
 router.get("/publish", getPublishBlogPage);
 router.delete("/delete/:id", isAuthenticated, deleteBlog);
