@@ -40,78 +40,8 @@ export default function Index() {
   const iframeRef = useRef(null);
   const storeRef = useRef(null);
   storeRef.current = store;
-
   useEffect(() => {
     dispatch(getProductDatasetAction(id));
-    let name;
-      if(pageName){
-        name=pageName;
-      }
-      else{
-        name="Home";  
-      };
-      const payload={id, pageName:name};
-      const linkUrl=store.linkUrl;
-      if(!linkUrl || linkUrl === 'website'){
-        if(blogId){
-          const payload={id, blogId};
-          dispatch(getPublishBlogPageAction(payload)).then((res)=>{
-            setPageContent(res);
-          });
-        }
-        else{
-          dispatch(getPublishPageAction(payload)).then((res)=>{
-            const parser = new DOMParser();
-            let htmlCmp = parser.parseFromString(res.data, 'text/html');
-            let linkElements=htmlCmp.getElementsByTagName('a');
-            for(let i=0; i<linkElements.length; i++){
-              let link_href=linkElements[i].getAttribute('href');
-              if(link_href && (!link_href.includes('https') && !link_href.includes('http') && !link_href.includes('preview') && !link_href.includes('website'))){
-                link_href='/website'+link_href;
-              }
-              linkElements[i].setAttribute('href', link_href);
-            };
-            var tmp = document.createElement("div");
-            tmp.append(htmlCmp.body)
-            setPageContent(tmp.innerHTML);
-            setPageInfo(res.pageInfo);
-            setPopupData(res.pageInfo.popups || []);
-          });
-        }
-      }
-      if(linkUrl === 'preview'){
-        if(blogId){
-          console.log('blogId', blogId)
-          const payload={id, blogId};
-          dispatch(getPreviewBlogPageAction(payload)).then((res) =>{
-            setPageContent(res);
-          })
-        }
-        else{
-          dispatch(getPreviewPageAction(payload)).then((res)=>{
-            const parser = new DOMParser();
-            let htmlCmp = parser.parseFromString(res.data, 'text/html');
-            let linkElements=htmlCmp.getElementsByTagName('a');
-            for(let i=0; i<linkElements.length; i++){
-              let link_href=linkElements[i].getAttribute('href');
-              if(link_href && !link_href.includes('https') && !link_href.includes('http') && !link_href.includes('preview') && !link_href.includes('website')){
-                link_href='/preview'+link_href;
-              }
-              linkElements[i].setAttribute('href', link_href )
-              linkElements[i].setAttribute('target', '_parent');
-            };
-            var tmp = document.createElement("div");
-            tmp.append(htmlCmp.body)
-            setPageContent(tmp.innerHTML);
-            setPageInfo(res.pageInfo);
-            setPopupData(res.pageInfo.popups || []);
-          })
-        }
-      };
-
-  }, []);
-
-  useEffect(() => {
     let name;
     if (pageName) {
       name = pageName;
@@ -151,7 +81,6 @@ export default function Index() {
     }
     if (linkUrl === 'preview') {
       if (blogId) {
-        console.log('blogId', blogId)
         const payload = { id, blogId };
         dispatch(getPreviewBlogPageAction(payload)).then((res) => {
           setPageContent(res);
@@ -164,14 +93,14 @@ export default function Index() {
           let linkElements = htmlCmp.getElementsByTagName('a');
           for (let i = 0; i < linkElements.length; i++) {
             let link_href = linkElements[i].getAttribute('href');
-            if (link_href && link_href.includes('https') && !link_href.includes('http') && !link_href.includes('preview') && !link_href.includes('website')) {
+            if (link_href && !link_href.includes('https') && !link_href.includes('http') && !link_href.includes('preview') && !link_href.includes('website')) {
               link_href = '/preview' + link_href;
             }
             linkElements[i].setAttribute('href', link_href)
-            linkElements[i].setAttribute('target', '_parent');
+            linkElements[i].setAttribute('target', '_blank');
           };
           var tmp = document.createElement("div");
-          tmp.append(htmlCmp.body)
+          tmp.append(htmlCmp.body);
           setPageContent(tmp.innerHTML);
           setPageInfo(res.pageInfo);
           setPopupData(res.pageInfo.popups || []);
