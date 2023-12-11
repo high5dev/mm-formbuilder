@@ -39,7 +39,7 @@ export default function Index({ page, setPage, id, store, editor, setEditor, set
   const dispatch=useDispatch();
   const [seoModalData, setSeoModalData] = useState({isOpen: false, data: null});
   const addNewPage = () => {
-      const pageNum=parseInt(localStorage.getItem('pageNum'));
+      const pageNum=form.formData.length;
       const name=`Page ${pageNum}`;
       const path='/'+form?._id+'/'+name;
       const payload={
@@ -56,7 +56,6 @@ export default function Index({ page, setPage, id, store, editor, setEditor, set
           ...form,
           formData:formData
         };
-        localStorage.setItem('pageNum', pageNum+1);
         dispatch(setFormReducer(_form));
       })
   };
