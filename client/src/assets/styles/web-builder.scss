@@ -301,15 +301,11 @@
     padding-top: 10px;
     .submenu-item {
       padding:5px;
+      padding-left: 15px;
       color: black;
       font-weight:600;
       margin-top: 10px;
       margin-bottom: 10px;
-      margin-left: 15px;
-      &:hover{
-        cursor: pointer;
-        background-color: lightgray;
-      }
     }
     .submenu-category {
       color: black;
@@ -564,6 +560,10 @@
   border-radius: 3px;
 }
 
+.post-description{
+  padding:10px;
+  border: 1px solid lightgray;
+}
 
 
 

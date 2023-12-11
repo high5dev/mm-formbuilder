@@ -303,8 +303,8 @@ setSelectedMainNav,
             <DropdownMenu container="body">
               {formData && formData.map((item)=>{
                 return(            
-                <DropdownItem tag="span" className="w-100">
-                  <span className="" onClick={(e)=>handlePage(item)}>{item.name}</span>
+                <DropdownItem tag="span" className="w-100" onClick={(e)=>handlePage(item)}>
+                  <span className="">{item.name}</span>
               </DropdownItem>);
               })}
               {/* <DropdownItem tag="span" className="w-100">
