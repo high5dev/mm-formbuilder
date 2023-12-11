@@ -856,12 +856,12 @@ export default function Editor({
     }
   }, [isclear])
 
-  editor?.on('component:selected', (cmp) => {
-    if(cmp){
-      setSelectedCmp(cmp);
-    }
+  // editor?.on('component:selected', (cmp) => {
+  //   if(cmp){
+  //     setSelectedCmp(cmp);
+  //   }
     
-  });
+  // });
   useEffect(() => {
     if (editor !== null) {
       switch (device) {
