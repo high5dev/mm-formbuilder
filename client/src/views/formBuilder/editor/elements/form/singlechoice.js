@@ -6,23 +6,23 @@ const script = function(props) {
 };
 
 let singleChoiceEl = {
-  isComponent: el => el.tagName === 'div',
+  isComponent: el => (el.tagName === 'DIV' && el.classList.contains('single-choice-element')),
   model: {
     defaults: {
       // script,
       tagName: 'div',
       draggable: '*',
       droppable: false,
-      attributes: { class: 'single-choice-element' },
+      attributes: { class: 'single-choice-element', id:'single-choice-element'+new Date().getTime() },
       components: (props) => {
           const elProps = props.attributes.elProps;
           return(
-            <div>
+            <div class="single-choice-container">
               {
               elProps && elProps.map((elProp)=>{
                 return(
                       <div>
-                         <label><input class="input-single-choice-item" type={elProp.type} id={elProp.id} name={elProp.name}/>{elProp.label}</label>
+                         <label><input class="input-single-choice-item" type={elProp.type} id={elProp.id} name={elProp.name} value={elProp.label}/>{elProp.label}</label>
                       </div>
                 )
   
@@ -34,21 +34,21 @@ let singleChoiceEl = {
         },
       elProps:[
           {   
-              id: 'single_choice'+ Math.random().toString(36).substring(2,7),
+              id: 'single_choice'+ new Date().getTime(),
               label:'Option1',
               type:'radio',
               name:'option',
               checked:true
           },
           {   
-            id: 'single_choice'+ Math.random().toString(36).substring(2,7),
+            id: 'single_choice'+ new Date().getTime(),
             label:'Option2',
             type:'radio',
             name:'option',
             checked:false
           },
           {   
-            id: 'single_choice'+ Math.random().toString(36).substring(2,7),
+            id: 'single_choice'+ new Date().getTime(),
             label:'Option3',
             type:'radio',
             name:'option',
@@ -56,7 +56,8 @@ let singleChoiceEl = {
           }
       ],
       styles: `
-      .single-choice-element {padding:10px; margin-left:40px; width:450px}
+      .single-choice-element {padding:10px; margin-left:40px; display:flex; justify-content:space-around}
+      .single-choice-container{width:480px}
       .input-single-choice-item {padding:5px;}
     `,
       stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius'],
@@ -73,12 +74,12 @@ let singleChoiceEl = {
         comps.pop();
       };
       comps.push(
-        <div>
+        <div class="single-choice-container">
             {
             elProps && elProps.map((elProp)=>{
               return(
                     <div>
-                      <label><input type={elProp.type} class="input-single-choice-item" id={elProp.id} name={elProp.name} checked={elProp.checked}/>{elProp.label}</label>
+                      <label><input type={elProp.type} class="input-single-choice-item" id={elProp.id} name={elProp.name} checked={elProp.checked} value={elProp.value}/>{elProp.label}</label>
                     </div>
               )
     

@@ -6,14 +6,14 @@ const script = function(props) {
   };
   
   let shortanswerEl = {
-    isComponent: el => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('short-answer-element')),
     model: {
       defaults: {
         // script,
         tagName: 'div',
         draggable: '*',
         droppable: false,
-        attributes: { class: 'short-answer-element' },
+        attributes: { class: 'short-answer-element', id:'short-answer-element'+new Date().getTime() },
         components: (props) => {
             const elProp = props.attributes.elProps[0];
             return(
@@ -27,7 +27,7 @@ const script = function(props) {
           },
         elProps:[
             {   
-                id: 'short_answer'+ Math.random().toString(36).substring(2,7),
+                id: 'short_answer'+ new Date().getTime(),
                 label:'Short answer',
                 type:'text',
                 name:'Short answer',

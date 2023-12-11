@@ -5,8 +5,9 @@ import { isObjEmpty, selectThemeColors } from '@utils'
 import Select, { components } from 'react-select';
 import { useDispatch } from 'react-redux';
 import { createOrUpdateConnectionAction, deleteMultipleWebConnectionAction } from '../../../store/action';
+import { toast } from 'react-toastify';
 
-const ConnectCollectionModal = ({ store, connectData, setConnectData, getProductDataset, datasetConnect, setDatasetConnect, handleSelectChangeDataSet, selectedCmp, selectedCollection, setSelectedCollection, createDatasetToggle }) => {
+const ConnectCollectionModal = ({ store, connectData, setConnectData, getProductDataset, datasetConnect, setDatasetConnect, selectedDataset, handleSelectChangeDataSet, selectedCmp, selectedCollection, setSelectedCollection, createDatasetToggle }) => {
 
   const dispatch = useDispatch();
   const [dataSets, setDataSets] = useState([]);
@@ -62,10 +63,14 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, getProduct
         const firstChild = selectedCmp.getChildAt(0);
 
         if (selectedCmp.components().length > collection.values.length) {
-          const n = selectedCmp.components().length - collection.values.length;
-          for (let i = 1; i <= n; i++) {
-            const childCmp = selectedCmp.getChildAt(selectedCmp.components().length - i);
-            childCmp.remove();
+          if (collection.values.length === 0) {
+            toast.error('No values in selected collection');
+          } else {
+            let n = selectedCmp.components().length - collection.values.length;
+            for (let i = 1; i <= n; i++) {
+              const childCmp = selectedCmp.getChildAt(selectedCmp.components().length - i);
+              childCmp.remove();
+            }
           }
         }
         if (selectedCmp.components().length < collection.values.length) {

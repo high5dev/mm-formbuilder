@@ -6,14 +6,14 @@ const script = function(props) {
 };
 
 let linkEl = {
-  isComponent: el => el.tagName === 'div',
+  isComponent: el => (el.tagName === 'DIV' && el.classList.contains('link-element')),
   model: {
     defaults: {
       // script,
       tagName: 'div',
       draggable: '*',
       droppable: false,
-      attributes: { class: 'link-element' },
+      attributes: { class: 'link-element', id:'link-element'+new Date().getTime() },
       components: (props) => {
           const elProp = props.attributes.elProps[0];
           return(
@@ -27,7 +27,7 @@ let linkEl = {
         },
       elProps:[
           {   
-              id: 'link_'+ Math.random().toString(36).substring(2,7),
+              id: 'link_'+ new Date().getTime(),
               label:'Link',
               type:'text',
               name:'link',

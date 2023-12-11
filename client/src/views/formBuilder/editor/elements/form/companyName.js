@@ -6,14 +6,14 @@ const script = function(props) {
   };
   
   let companyNameEl = {
-    isComponent: el => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('company-name-element')),
     model: {
       defaults: {
         // script,
         tagName: 'div',
         draggable: '*',
         droppable: false,
-        attributes: { class: 'company-name-element' },
+        attributes: { class: 'company-name-element', id:'company-name-element' + new Date().getTime()},
         components: (props) => {
             const elProp = props.attributes.elProps[0];
             return(
@@ -27,7 +27,7 @@ const script = function(props) {
           },
         elProps:[
             {   
-                id: 'company_name_'+ Math.random().toString(36).substring(2,7),
+                id: 'company_name_'+ new Date().getTime(),
                 label:'Company name',
                 type:'text',
                 name:'company name',

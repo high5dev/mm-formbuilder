@@ -7,6 +7,7 @@ const {
   User,
   Authenticate,
   WebPage,
+  WebBlog,
   //Income,
   //Contact,
 } = require("../models/index/index");
@@ -17,6 +18,7 @@ const { getFinanceCategoty, generateInvoiceNo } = require("../helper/finance");
 const { userNotifyFormEmail, invoiceEmailTemplate } = require("../constants/emailTemplates");
 const { SendMail } = require("../service/sendMail");
 const { getContactTypesHelper } = require("../helper/contacts");
+const {postMoment}=require('../Utilities/timeHandler');
 
 const googleCloudStorageWebBuilder = require("../Utilities/googleCloudStorageWebBuilder");
 
@@ -55,9 +57,98 @@ exports.createWebsite = asyncHandler(async (req, res) => {
         userId: mongoose.Types.ObjectId(req.user._id)
       };
       const newPage = await WebPage.create(pageData);
-      console.log('newPage', newPage);
       const blankPageData = "<body></body><style></style>"
       await googleCloudStorageWebBuilder.createAndUpdatePage(`${websiteData._id}/${newPage._id}`, blankPageData);
+      const templateBlogs=[
+        {
+          name: 'Maria Cole',
+          title: 'Now you can blog from everywhere',
+          avatar: 'https://i.ibb.co/yWzNT3Q/2-3.png',
+          description: 'We made it quick and convenient for you to manage blog',
+          imageUrl: 'https://i.ibb.co/kGBQfB3/images.jpg'
+        },
+        {
+          name: 'Maria Cole',
+          title: 'Grow Your Blog Community',
+          avatar: 'https://i.ibb.co/yWzNT3Q/2-3.png',
+          description: 'We made it quick and convenient for you to manage blog',
+          imageUrl: 'https://i.ibb.co/rGqqZtF/2.jpg'
+        },
+        {
+          name: 'Maria Cole',
+          title: 'Let us have more information',
+          avatar: 'https://i.ibb.co/yWzNT3Q/2-3.png',
+          description: 'We made it quick and convenient for you to manage blog',
+          imageUrl: 'https://i.ibb.co/bgfqQWN/3.jpg'
+        }
+      ];
+      for(let i=0; i<templateBlogs.length; i++){
+        const _blog=templateBlogs[i];
+        const blogData = {
+          ..._blog,
+          pageName:'Home',
+          websiteId:mongoose.Types.ObjectId(websiteData._id),
+          userId: mongoose.Types.ObjectId(req.user._id),
+          organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+          creatorType: organization
+              ? user.organizations.find((x) => x.organizationId.toString() === organization).userType
+              : user.userType,
+          isTemplate:true
+        };
+        const data = await WebBlog.create(blogData);
+        const blogDate=postMoment(data.createdAt);
+        const pageData=`
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+          </head>
+          <body>
+            <div class='main d-flex justify-content-around mt-3'>
+              <div class='blog-container w-50 p-4 mt-4' style="border:1px solid lightgray">
+                <div class='blog-header d-flex align-items-center'>
+                  <img src=${data.avatar} class='blog-avatar' width="100px"/>
+                  <div class='ms-2'>
+                    <h4>${data.name}</h4>
+                    <div>${blogDate}</div>
+                  </div>
+
+                </div>
+                <div class='blog-body mt-4'>
+                  <div class="blog-title">
+                    <h2 class='text-black'>${data.title}</h2>
+                  </div>
+                  <div class="blog-description fs-5 text-black">
+                    ${data.description}
+                  </div>
+                  <div class="blog-image d-flex justify-content-around mt-4">
+                    <img src=${data.imageUrl} width="70%"/>
+                  </div>
+                </div>  
+                <div class="blog-footer mt-4">
+                  <div class="social-comment d-flex p-2" style="border-top:1px solid lightgray; border-bottom: 1px solid lightgray">
+                    <img src="https://i.ibb.co/xCx4cQY/facebook.png" class="ms-4" width="20px"/>
+                    <img src="https://i.ibb.co/sJ6zSjV/linkedin.png" class="ms-4" width="20px"/>
+                    <img src="https://i.ibb.co/zGkfmkg/twitter.png" class="ms-4" width="20px"/>
+                  </div>
+                  <div class="post-comment p-2">
+                    <div class="customer-visit-history d-flex justify-content-between align-items-center">
+                      <div class="customer-visit-comment d-flex align-items-center">
+                        <img src="https://i.ibb.co/9TptRDC/eye.png" width="16px"height="16px"style="margin-right:5px"/>
+                        <div>0</div>
+                        <img src="https://i.ibb.co/YbVMJrd/message.png" width="16px" height="16px"                                                          															style="margin-left:20px; margin-right:5px"/>
+                        <div>0</div>
+                      </div>
+                      <img src="https://i.ibb.co/Zx2T8G3/heart.png" width="16px" height="16px"/>
+                    </div>
+                  </div>
+                </div>
+          </body>
+          `
+        await googleCloudStorageWebBuilder.createAndUpdatePage(`${websiteData._id}/${data._id}`, pageData);
+      }
+
       return res.send({
         success: true,
         message: "Website created successfully",
@@ -76,7 +167,6 @@ exports.createWebsite = asyncHandler(async (req, res) => {
           ? user.organizations.find((x) => x.organizationId.toString() === organization).userType
           : user.userType,
       }
-
       const data = await WebBuilder.create(webData);
 
       const pageData = [

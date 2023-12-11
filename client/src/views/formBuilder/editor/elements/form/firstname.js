@@ -6,20 +6,20 @@ const script = function(props) {
   };
   
   let firstNameEl = {
-    isComponent: el => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('first-name-element')),
     model: {
       defaults: {
         // script,
         tagName: 'div',
         draggable: '*',
         droppable: false,
-        attributes: { class: 'first-name-element' },
+        attributes: { class: 'first-name-element', id: 'first_name_element'+new Date().getTime()},
         components: (props) => {
             const elProp = props.attributes.elProps[0];
             return(
                     <div>
                         <div class="first-name-label">
-                          <label for={elProp.id}>{elProp.label}</label>
+                          <label>{elProp.label}</label>
                         </div>
                         <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-first-name-element" placeholder={elProp.placeholder} required={elProp.required}/> 
                     </div>
@@ -28,7 +28,7 @@ const script = function(props) {
           },
         elProps:[
             {   
-                id: 'first_name'+ Math.random().toString(36).substring(2,7),
+                id:'first_name'+new Date().getTime(),
                 label:'First name',
                 type:'text',
                 name:'first name',
@@ -57,7 +57,7 @@ const script = function(props) {
         const item=
         <div>
           <div class="first-name-label">
-            <label for={elProp.id}>{elProp.label}</label>
+            <label>{elProp.label}</label>
           </div>
           <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-first-name-element" placeholder={elProp.placeholder} required={elProp.required}/> 
         </div>;

@@ -8,14 +8,14 @@ const script = function(props) {
   };
   
   let submitButton = {
-    isComponent: el => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('submit-element')),
     model: {
       defaults: {
         // script,
         tagName: 'div',
         draggable: '*',
         droppable: false,
-        attributes: { class: 'submit-element' },
+        attributes: { class: 'submit-element', id:'submit-element'+new Date().getTime() },
         components: (props) => {
             const elProp = props.attributes.elProps[0];
             return(
@@ -29,13 +29,19 @@ const script = function(props) {
           },
         elProps:[
             {   
-                id: 'submit_'+ Math.random().toString(36).substring(2,7),
+                id: 'submit_'+ new Date().getTime(),
                 label:'Submit',
                 type:'button',
-                name:'submit_'+ Math.random().toString(36).substring(2,7),
+                name:'submit_'+ new Date().getTime(),
                 description:'Thanks, we received your submission.',
                 isUrl:false,
                 isNewTab:false,
+                isEmail:false,
+                emailInput:'',
+                isCall:false,
+                callInput:'',
+                isDownload:false,
+                fileUrl:'',
                 url:'',
             }
         ],

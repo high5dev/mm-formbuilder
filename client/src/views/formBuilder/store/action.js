@@ -473,9 +473,9 @@ export const addLeadAction = (id, payload) => async (dispatch) => {
 
 //blog actions
 
-export const getBlogsAction = () => async (dispatch) => {
+export const getBlogsAction = (id) => async (dispatch) => {
   try {
-    const { data } = await api.getWebBlogs();
+    const { data } = await api.getWebBlogs(id);
     if (data) {
       dispatch(setWebBlogsReducer(data.data));
       return data.data;
