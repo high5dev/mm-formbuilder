@@ -194,7 +194,8 @@ export default function Index() {
           // Elements found. Iterate over NodeList
           shoppingCartElements.forEach(element => {
             let itemsCountElement = element.querySelector('.items-count');
-            itemsCountElement.innerHTML = sum;
+            if(itemsCountElement)
+              itemsCountElement.innerHTML = sum;
             // Do something with each element
           });
         }
@@ -316,6 +317,18 @@ export default function Index() {
           console.log('cart button clicked');
           let cartProducts = [];
           const newItem = storeRef.current?.webProducts?.values.find(item => item.id === target.getAttribute('productId'))
+          const existingItem = storeRef.current?.cartProducts.find(item => item.product.id === newItem.id);
+          if (existingItem) {
+            cartProducts = storeRef.current?.cartProducts.map(item => item.product.id === newItem.id ? { ...item, count: item.count + 1 } : item);
+          } else {
+            cartProducts = [...storeRef.current?.cartProducts, { product: newItem, count: 1 }];
+          }
+          dispatch(updateCartProductsAction(cartProducts));
+          setShowCartSidebar(true);
+        }
+        else if(target.matches('.product-cart')) {
+          let cartProducts = [];
+          const newItem = storeRef.current?.webProducts?.values.find(item => item.id === target.parentElement.parentElement.getAttribute('productid'))
           const existingItem = storeRef.current?.cartProducts.find(item => item.product.id === newItem.id);
           if (existingItem) {
             cartProducts = storeRef.current?.cartProducts.map(item => item.product.id === newItem.id ? { ...item, count: item.count + 1 } : item);

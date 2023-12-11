@@ -439,110 +439,110 @@ export default function Editor({
         let cartItemCount = 0;
         
       }
-      if (!loadedRef.current && component.get('type') != 'image') {
-        if (compoId == "")
-          compoId = component.ccid;
-        const parentType = component.parent().get('type');
+      // if (!loadedRef.current && component.get('type') != 'image') {
+      //   if (compoId == "")
+      //     compoId = component.ccid;
+      //   const parentType = component.parent().get('type');
         
-        if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
-          console.log(component);
-          setIsStoreLoading(true);
-          let numOfItems;
-          if(component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
-            numOfItems = component.parent().parent().get('numOfItems');
-          } else {
-            numOfItems = component.parent().parent().parent().get('numOfItems');
-          }
-          let originalComp = component.parent().clone();
-          let comps = component.parent().parent().get('components');
-          for (let i = comps.models.length - 1; i >= 0; i--) {
-            comps.models[i].remove();
-          }
+      //   if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
+      //     console.log(component);
+      //     setIsStoreLoading(true);
+      //     let numOfItems;
+      //     if(component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
+      //       numOfItems = component.parent().parent().get('numOfItems');
+      //     } else {
+      //       numOfItems = component.parent().parent().parent().get('numOfItems');
+      //     }
+      //     let originalComp = component.parent().clone();
+      //     let comps = component.parent().parent().get('components');
+      //     for (let i = comps.models.length - 1; i >= 0; i--) {
+      //       comps.models[i].remove();
+      //     }
 
-          for (let i = 0; i < numOfItems; i++) {
-            const item = originalComp.clone();
+      //     for (let i = 0; i < numOfItems; i++) {
+      //       const item = originalComp.clone();
 
-            setChildIds(originalComp, item, i);
-            comps.push(item);
-          }
-          setIsStoreLoading(false);
+      //       setChildIds(originalComp, item, i);
+      //       comps.push(item);
+      //     }
+      //     setIsStoreLoading(false);
 
-          // const parentComponent = component.parent().parent();
-          // const parentChildren = parentComponent.get('components');
+      //     // const parentComponent = component.parent().parent();
+      //     // const parentChildren = parentComponent.get('components');
 
-          // // Filter out the current component from the children
-          // const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
+      //     // // Filter out the current component from the children
+      //     // const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
           
-          // childrenWithoutCurrent.forEach((child, index) => {
+      //     // childrenWithoutCurrent.forEach((child, index) => {
 
-          //   const copiedComponent = component.clone();
-          //   copiedComponent.ccid = compoId + "-" + (index + 2);
-          //   if(component.get('type') == 'text')
-          //     copiedComponent.set('style', { padding: "10px" });
-          //   child.append(copiedComponent);
-          // });
-          // setIsLoading(false);
-        }
-        compoId = "";
-      }
+      //     //   const copiedComponent = component.clone();
+      //     //   copiedComponent.ccid = compoId + "-" + (index + 2);
+      //     //   if(component.get('type') == 'text')
+      //     //     copiedComponent.set('style', { padding: "10px" });
+      //     //   child.append(copiedComponent);
+      //     // });
+      //     // setIsLoading(false);
+      //   }
+      //   compoId = "";
+      // }
     });
-    gjsEditor.on('component:remove', (component) => {
-      if (!loadedRef.current && component.changed != {}) {
-        if (compoId == "")
-          compoId = component.ccid.split('-')[0];
-        const parentType = component.parent()?.get('type');
+    // gjsEditor.on('component:remove', (component) => {
+    //   if (!loadedRef.current && component.changed != {}) {
+    //     if (compoId == "")
+    //       compoId = component.ccid.split('-')[0];
+    //     const parentType = component.parent()?.get('type');
 
-        if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
-          const parentComponent = component.parent().parent();
-          const parentChildren = parentComponent.get('components');
+    //     if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
+    //       const parentComponent = component.parent().parent();
+    //       const parentChildren = parentComponent.get('components');
 
-          // Filter out the current component from the children
-          const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
-          setIsStoreLoading(true);
-          childrenWithoutCurrent.forEach((child, index) => {
-            child.get('components').models.forEach((element) => {
-              if (element.ccid.includes(compoId)) {
-                element.remove();
-              }
-            })
-          });
-          setIsStoreLoading(false);
-        }
-        compoId = "";
-      }
-    });
-    gjsEditor.on('component:update', (component) => {
-      if (!loadedRef.current) {
-        try {
-          const parentType = component.parent().get('type');
+    //       // Filter out the current component from the children
+    //       const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
+    //       setIsStoreLoading(true);
+    //       childrenWithoutCurrent.forEach((child, index) => {
+    //         child.get('components').models.forEach((element) => {
+    //           if (element.ccid.includes(compoId)) {
+    //             element.remove();
+    //           }
+    //         })
+    //       });
+    //       setIsStoreLoading(false);
+    //     }
+    //     compoId = "";
+    //   }
+    // });
+    // gjsEditor.on('component:update', (component) => {
+    //   if (!loadedRef.current) {
+    //     try {
+    //       const parentType = component.parent().get('type');
 
-          if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
-            setIsStoreLoading(true);
-            let numOfItems;
-            if (component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
-              numOfItems = component.parent().parent().get('numOfItems');
-            } else {
-              numOfItems = component.parent().parent().parent().get('numOfItems');
-            }
-            let originalComp = component.parent().clone();
-            let comps = component.parent().parent().get('components');
-            for (let i = comps.models.length - 1; i >= 0; i--) {
-              comps.models[i].remove();
-            }
+    //       if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
+    //         setIsStoreLoading(true);
+    //         let numOfItems;
+    //         if (component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
+    //           numOfItems = component.parent().parent().get('numOfItems');
+    //         } else {
+    //           numOfItems = component.parent().parent().parent().get('numOfItems');
+    //         }
+    //         let originalComp = component.parent().clone();
+    //         let comps = component.parent().parent().get('components');
+    //         for (let i = comps.models.length - 1; i >= 0; i--) {
+    //           comps.models[i].remove();
+    //         }
 
-            for (let i = 0; i < numOfItems; i++) {
-              const item = originalComp.clone();
+    //         for (let i = 0; i < numOfItems; i++) {
+    //           const item = originalComp.clone();
 
-              setChildIds(originalComp, item, i);
-              comps.push(item);
-            }
-            setIsStoreLoading(false);
-          }
-        } catch (e) {
+    //           setChildIds(originalComp, item, i);
+    //           comps.push(item);
+    //         }
+    //         setIsStoreLoading(false);
+    //       }
+    //     } catch (e) {
 
-        }
-      }
-    });
+    //     }
+    //   }
+    // });
     gjsEditor.on('block:drag:start', function (model) {
       setSidebarData({
         ...sidebarData,
@@ -771,11 +771,11 @@ export default function Editor({
                   });
                 }
                 if (elType.id === 'grid-product-gallery' || elType.id === 'slider-product-gallery' || elType.id === 'related-products') {
-                  toolbar.unshift({
-                    id: 'connect-product-dataset',
-                    command: 'connect-product-dataset',
-                    label: connectionLabel
-                  });
+                  // toolbar.unshift({
+                  //   id: 'connect-product-dataset',
+                  //   command: 'connect-product-dataset',
+                  //   label: connectionLabel
+                  // });
                   toolbar.unshift({
                     id: 'setting-product',
                     command: 'setting-product',
