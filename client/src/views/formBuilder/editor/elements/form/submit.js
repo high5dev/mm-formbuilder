@@ -34,12 +34,15 @@ const script = function(props) {
                 type:'button',
                 name:'submit_'+ new Date().getTime(),
                 description:'Thanks, we received your submission.',
+                isButton:false,
                 isUrl:false,
                 isNewTab:false,
+                isPage:false,
+                pageUrl:{label:'', value:''},
                 isEmail:false,
-                emailInput:'',
+                email:'',
                 isCall:false,
-                callInput:'',
+                callNumber:'',
                 isDownload:false,
                 fileUrl:'',
                 url:'',
@@ -65,8 +68,16 @@ const script = function(props) {
         while (comps.length > 0) {
           comps.pop();
         };
-        console.log('isUrl', elProp.isUrl);
         let item;
+        if(elProp.isButton){
+            item=
+            <div>
+              <div class="submit-parent-element">
+                <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
+              </div>
+              <div id="message-container" class="message">{elProp.description}</div>
+            </div>;
+        }
         if(elProp.isUrl){
           if(elProp.isNewTab){
               item=
@@ -89,15 +100,49 @@ const script = function(props) {
             </a>
           }
         }
-        else{
+        if(elProp.isEmail){
+          const mail_href='mailto:'+elProp.email;
           item=
-          <div>
-            <div class="submit-parent-element">
-              <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
+          <a href={mail_href} class="submit-link-element" target="_blank">
+            <div>
+              <div class="submit-parent-element">
+                <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
+              </div>
             </div>
-            <div id="message-container" class="message">{elProp.description}</div>
-          </div>;
+          </a>
         }
+        if(elProp.isPage){
+          item=
+          <a href={elProp.pageUrl.value} class="submit-link-element" target="_blank">
+            <div>
+              <div class="submit-parent-element">
+                <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
+              </div>
+            </div>
+          </a>
+        }
+        if(elProp.isCall){
+          const tel_href='tel:'+elProp.email;
+          item=
+          <a href={tel_href} class="submit-link-element" target="_blank">
+            <div>
+              <div class="submit-parent-element">
+                <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
+              </div>
+            </div>
+          </a>
+        }
+        if(elProp.isDownload){
+          item=
+          <a href={elProp.fileUrl} file={true} class="submit-link-element" target="_blank" raw_url={elProp.fileUrl}>
+            <div>
+              <div class="submit-parent-element">
+                <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
+              </div>
+            </div>
+          </a>
+        }
+
         comps.push(item);
         this.render();
       },

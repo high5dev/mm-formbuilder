@@ -4,6 +4,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import basicBlockPlugin from 'grapesjs-blocks-basic';
 import {useDispatch, useSelector} from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
+import { selectThemeColors } from '@utils';
 import {
   Collapse,
   Button,
@@ -29,12 +30,12 @@ import { formBuilderPlugin } from '../../elements/formBuilderPlugin';
 import '@src/assets/styles/form-builder.scss';
 import { formblocks } from '../../elements/FormBlocks';
 import ConditionItem from '../form/rules/ConditionItem';
+import Select from 'react-select';
 import RuleItem from '../form/rules/RuleItem';
 import OperatorItem from '../form/rules/OperatorItem';
 import PreviewFormModal from './PreviewFormModal';
 import {setChildFormReducer, setFormRuleReducer} from '../../../store/reducer'
-import {createFormRuleAction, updateFormRuleAction, deleteFormRuleAction, editChildFormAction, createFormPageAction, removeFormPageAction, getFormPageAction} from '../../../store/action';
-
+import {createFormRuleAction, updateFormRuleAction, deleteFormRuleAction, editChildFormAction, uploadFileAction,createFormPageAction, removeFormPageAction, getFormPageAction} from '../../../store/action';
 export default function Index({store, toggle, page}) {
   const dispatch=useDispatch();
   const history=useHistory();
@@ -67,6 +68,13 @@ export default function Index({store, toggle, page}) {
   ]);
   const [title, setTitle]=useState('');
   const [options, setOptions]=useState([]);
+
+  const pages=store.form.formData && store.form.formData.map((pageInfo)=>{
+    return({
+      label:pageInfo.name,
+      value:'/website/'+pageInfo.websiteId+'/'+pageInfo.name
+    })
+  })
   const saveForm = () => {
     if(formEditor){
       const _components=formEditor.getWrapper().components().models;
@@ -462,6 +470,18 @@ export default function Index({store, toggle, page}) {
       }
     ]);
     setRuleEditing(false)
+  }
+
+  const handleFileUpload =(e)=>{
+    const file=e.target.files[0];
+    let formData=new FormData();
+    formData.append('file', file);
+    dispatch(uploadFileAction(formData)).then((res)=>{
+      if(res){
+        console.log('res', res);
+        changeAttributes({...attributes, fileUrl:res});
+      }
+    }) 
   }
 
   useEffect(() => {
@@ -1010,24 +1030,66 @@ export default function Index({store, toggle, page}) {
                       <div className="link-section">
                         <div className='mb-2'>When a visitor submits a form</div>
                         <div className='d-flex mb-1'>
-                          <input type='radio' id="submit-button" checked={!attributes.isUrl} onChange={(e)=>{
+                          <input type='radio' id="submit-button" checked={attributes.isButton} onChange={(e)=>{
                             if(e.target.checked){
-                              changeAttributes({isUrl:false});
+                              const _attributes={
+                                isButton:false,
+                                isUrl:false,
+                                isNewTab:false,
+                                isPage:false,
+                                pageUrl:'',
+                                isEmail:false,
+                                email:'',
+                                isCall:false,
+                                callNumber:'',
+                                isDownload:false,
+                                fileUrl:'',
+                                url:''
+                              };
+                              changeAttributes({..._attributes, isButton:true});
                             }
                           }}/>
-                          <label className='ms-1' htmlFor='submit-button'>Show a message</label>
+                          <label className='ms-1' htmlFor='submit-button'>Show a messsage</label>
                         </div>
+                        { attributes.isButton && 
+                                <div className='description-section'>
+                                <Label>Submission message</Label>
+                                <Input
+                                  value={attributes.description}
+                                  name="description"
+                                  placeholder="A bit of description about your page"
+                                  type="textarea"
+                                  onChange={(e)=>{
+                                    changeAttributes({description:e.target.value})
+                                  }}
+                                />
+                            </div>
+                        }
                         <div className='d-flex mb-1'>
                           <input type='radio' id="link-button" checked={attributes.isUrl} onChange={(e)=>{
                             if(e.target.checked){
-                              changeAttributes({isUrl:true});
+                              const _attributes={
+                                isButton:false,
+                                isUrl:false,
+                                isNewTab:false,
+                                isPage:false,
+                                pageUrl:'',
+                                isEmail:false,
+                                email:'',
+                                isCall:false,
+                                callNumber:'',
+                                isDownload:false,
+                                fileUrl:'',
+                                url:''
+                              }
+                              changeAttributes({..._attributes, isUrl:true});
                             }
                           }}/>
                           <label className="ms-1" htmlFor='link-button'>Redirect to an external URL</label>
                         </div>
                       </div>
                       {
-                        attributes.isUrl?                
+                        attributes.isUrl &&                
                         <div>
                             <Label>
                               Redirect URL
@@ -1040,31 +1102,188 @@ export default function Index({store, toggle, page}) {
                               <Label>Redirect to</Label>
                               <div className='d-flex justify-content-between'>
                                 <div className='tab-button' style={{color:`${attributes.isNewTab?'#174ae7':''}`, border:`${attributes.isNewTab?'1px solid #174ae7':''}`}} onClick={(e)=>{
-                                  changeAttributes({isNewTab:true})
+                                  const _attributes={
+                                    isButton:false,
+                                    isUrl:true,
+                                    isNewTab:false,
+                                    isPage:false,
+                                    pageUrl:'',
+                                    isEmail:false,
+                                    email:'',
+                                    isCall:false,
+                                    callNumber:'',
+                                    isDownload:false,
+                                    fileUrl:'',
+                                    url:''
+                                  };
+                                  changeAttributes({..._attributes, isNewTab:true})
                                 }}>
                                     New tab
                                 </div>
                                 <div className='tab-button' style={{color:`${!attributes.isNewTab?'#174ae7':''}`, border:`${!attributes.isNewTab?'1px solid #174ae7':''}`}} onClick={(e) =>{
-                                  changeAttributes({isNewTab:false})
+                                  const _attributes={
+                                    isButton:false,
+                                    isUrl:true,
+                                    isNewTab:false,
+                                    isPage:false,
+                                    pageUrl:'',
+                                    isEmail:false,
+                                    email:'',
+                                    isCall:false,
+                                    callNumber:'',
+                                    isDownload:false,
+                                    fileUrl:'',
+                                    url:'',
+                                  }
+                                  changeAttributes({..._attributes, isNewTab:false})
                                 }}>
                                     Same tab
                                 </div>
                               </div>
                           </div>
-                        </div>:
-                        <div className='description-section'>
-                            <Label>Submission message</Label>
+                        </div>
+                      }
+                      <div className='d-flex mb-1 mt-1'>
+                          <input type='radio' id="submit-button" checked={attributes.isPage} onChange={(e)=>{
+                            if(e.target.checked){
+                              const _attributes={
+                                isButton:false,
+                                isUrl:false,
+                                isNewTab:false,
+                                isPage:false,
+                                pageUrl:'',
+                                isEmail:false,
+                                email:'',
+                                isCall:false,
+                                callNumber:'',
+                                isDownload:false,
+                                fileUrl:'',
+                                url:''
+                              }
+                              changeAttributes({..._attributes, isPage:true});
+                            }
+                          }}/>
+                          <label className='ms-1' htmlFor='submit-button'>Pages</label>
+                      </div>
+                      {
+                        attributes.isPage && 
+                        <div>
+                          <Select
+                            value={attributes.pageUrl}
+                            className=""
+                            classNamePrefix="select"
+                            theme={selectThemeColors}
+                            options={pages}
+                            style={{marginLeft:'0px'}}
+                            onChange={(e)=>{changeAttributes({...attributes, pageUrl:{...e}})}}
+                            />
+                        </div>
+                      }
+                      <div className='d-flex mb-1 mt-1'>
+                          <input type='radio' id="submit-button" checked={attributes.isEmail} onChange={(e)=>{
+                            if(e.target.checked){
+                              const _attributes={
+                                isButton:false,
+                                isUrl:false,
+                                isNewTab:false,
+                                isPage:false,
+                                pageUrl:'',
+                                isEmail:false,
+                                email:'',
+                                isCall:false,
+                                callNumber:'',
+                                isDownload:false,
+                                fileUrl:'',
+                                url:''
+                              }
+                              changeAttributes({..._attributes, isEmail:true});
+                            }
+                          }}/>
+                          <label className='ms-1' htmlFor='submit-button'>Email address</label>
+                      </div>
+                      {
+                        attributes.isEmail &&
+                        <div className="email-section mt-2">
                             <Input
-                              value={attributes.description}
-                              name="description"
-                              placeholder="A bit of description about your page"
-                              type="textarea"
+                              value={attributes.email}
+                              name="email"
+                              placeholder="ex:example@outlook.com"
+                              type="email"
                               onChange={(e)=>{
-                                changeAttributes({description:e.target.value})
+                                changeAttributes({email:e.target.value})
                               }}
                             />
                         </div>
                       }
+                      <div className='d-flex mb-1 mt-1'>
+                          <input type='radio' id="submit-button" checked={attributes.isCall} onChange={(e)=>{
+                            if(e.target.checked){
+                              const _attributes={
+                                isButton:false,
+                                isUrl:false,
+                                isNewTab:false,
+                                isPage:false,
+                                pageUrl:'',
+                                isEmail:false,
+                                email:'',
+                                isCall:false,
+                                callNumber:'',
+                                isDownload:false,
+                                fileUrl:'',
+                                url:''
+                              }
+                              changeAttributes({..._attributes, isCall:true});
+                            }
+                          }}/>
+                          <label className='ms-1' htmlFor='submit-button'>Click to call</label>
+                      </div>
+                      {
+                        attributes.isCall &&
+                        <div className="email-section mt-2">
+                            <Input
+                              value={attributes.callNumber}
+                              name="callNumber"
+                              placeholder="222-222-222"
+                              type="text"
+                              onChange={(e)=>{
+                                changeAttributes({callNumber:e.target.value})
+                              }}
+                            />
+                        </div>
+                      }
+                       <div className='d-flex mb-1 mt-1'>
+                          <input type='radio' id="submit-button" checked={attributes.isDownload} onChange={(e)=>{
+                            if(e.target.checked){
+                              const _attributes={
+                                isButton:false,
+                                isUrl:false,
+                                isPage:false,
+                                pageUrl:'',
+                                isNewTab:false,
+                                isEmail:false,
+                                email:'',
+                                isCall:false,
+                                callNumber:'',
+                                isDownload:false,
+                                fileUrl:'',
+                                url:''
+                              }
+                              changeAttributes({..._attributes, isDownload:true});
+                            }
+                          }}/>
+                          <label className='ms-1' htmlFor='submit-button'>File Download</label>
+                      </div>
+                      {
+                        attributes.isDownload &&
+                        <div className='d-flex justify-content-around' style={{padding:'10px', border:'1px dashed'}}>
+                          <label for="upload">
+                              <span>File Upload</span>
+                              <input type="file" id="upload" style={{display:'none'}} onChange={(e)=>{handleFileUpload(e)}}/>
+                          </label>
+                        </div>
+
+                      }
+                      <></>
                     </>
                     )
                   }

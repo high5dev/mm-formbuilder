@@ -102,8 +102,6 @@ export const updateFormRuleAction =(id, payload) =>async(dispatch) =>{
   }
 }
 
-
-
 export const createFormAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.createForm(payload);
@@ -111,6 +109,20 @@ export const createFormAction = (payload) => async (dispatch) => {
     if (data?.success === true) {
       toast.success('Form created successfully');
       return true;
+    } else {
+      toast.error('Something went wrong! please try again');
+      return false;
+    }
+  } catch (error) { }
+};
+
+export const uploadFileAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.uploadFile(payload);
+    dispatch(setFormReducer(data.data));
+    if (data?.success === true) {
+      toast.success('File uploaded successfully');
+      return data.data;
     } else {
       toast.error('Something went wrong! please try again');
       return false;
@@ -488,9 +500,9 @@ export const addLeadAction = (id, payload) => async (dispatch) => {
 
 //blog actions
 
-export const getBlogsAction = (id) => async (dispatch) => {
+export const getBlogsAction = () => async (dispatch) => {
   try {
-    const { data } = await api.getWebBlogs(id);
+    const { data } = await api.getWebBlogs();
     if (data) {
       dispatch(setWebBlogsReducer(data.data));
       return data.data;

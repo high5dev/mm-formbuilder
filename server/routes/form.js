@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const isAuthenticated = require("../middleware/auth");
+const { singleUploadControl, singleUploadToServerControl } = require("../middleware/upload");
 
 const {
  createForm,
@@ -10,10 +11,12 @@ const {
  getFormPreviewPage,
  createFormPage,
  deleteFormPage,
- getFormPage
+ getFormPage,
+ uploadFile
 } = require("../controllers/form");
 //form builder
 router.get("/form/:id", isAuthenticated, getForm);
+router.post('/fileupload/', isAuthenticated, singleUploadControl, uploadFile);
 router.get("/forms/", isAuthenticated, getForms);
 router.get("/preview-page", isAuthenticated, getFormPreviewPage)
 router.post("/create", isAuthenticated, createForm);

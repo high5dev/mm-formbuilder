@@ -188,3 +188,12 @@ exports.getFormPage = asyncHandler(async (req, res) => {
     res.send({ msg: "error" });
   }
 });
+exports.uploadFile = asyncHandler(async (req, res) => {
+  try {
+    let url = "";
+    if (req.file) {
+      url = await GoogleCloudStorage.upload(req.file);
+    }
+    res.status(200).json({ success: "OK", data: url });
+  } catch (error) {}
+});

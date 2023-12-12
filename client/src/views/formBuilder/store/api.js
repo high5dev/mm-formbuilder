@@ -20,6 +20,10 @@ export const getChildFormPreviewPage =(payload) =>{
   return API.get('/form/preview-page/',{params:payload});
 }
 
+export const uploadFile =(payload) =>{
+  return API.post('/form/fileupload', payload);
+}
+
 export const createFormPage =(payload) =>{
   return API.post('/form/create-page', payload);
 }
@@ -146,8 +150,8 @@ export const updateBlog =(id,payload) =>{
   return API.put(`/web-blog/update/${id}`,payload);
 }
 
-export const getWebBlogs =(id) =>{
-  return API.get(`/web-blog/blogs/${id}`)
+export const getWebBlogs =() =>{
+  return API.get('/web-blog/blogs')
 }
 
 export const getPreviewBlogPage =(payload)=>{
