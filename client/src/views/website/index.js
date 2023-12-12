@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
-import { Input } from 'reactstrap'
+import { Input, Spinner } from 'reactstrap'
 import { Modal } from 'reactstrap';
 import { getPreviewPageAction, getPublishPageAction, getPreviewBlogPageAction, getPublishBlogPageAction, updateThankyouProductsAction, updateSelectedProductAction } from "../formBuilder/store/action";
 import renderHTML from 'react-render-html';
@@ -39,6 +39,7 @@ export default function Index() {
   const [cartLink, setCartLink] = useState("");
   const [thankyouLink, setThankyouLink] = useState("");
   const [productLink, setProductLink] = useState("");
+  const [isPageLoading, setIsPageLoading] = useState(false);
   const store = useSelector((state) => state.formEditor);
   const iframeRef = useRef(null);
   const storeRef = useRef(null);
@@ -221,14 +222,17 @@ export default function Index() {
     if (!linkUrl || linkUrl === 'website') {
       if (blogId) {
         const payload = { id, blogId };
+        setIsPageLoading(true);
         dispatch(getPublishBlogPageAction(payload)).then((res) => {
           setPageContent(res);
+          setIsPageLoading(false);
         });
       }
       else {
         setCartLink(`/website/${id}/Cart%20Page`);
         setThankyouLink(`/website/${id}/Thankyou%20Page`);
         setProductLink(`/website/${id}/Product%20Page`);
+        setIsPageLoading(true);
         dispatch(getPublishPageAction(payload)).then((res) => {
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(res.data, 'text/html');
@@ -244,6 +248,7 @@ export default function Index() {
           var tmp = document.createElement("div");
           tmp.append(htmlCmp.body)
           setPageContent(tmp.innerHTML);
+          setIsPageLoading(false);
           setPageInfo(res.pageInfo);
           setPopupData(res.pageInfo.popups || []);
         });
@@ -252,14 +257,17 @@ export default function Index() {
     if (linkUrl === 'preview') {
       if (blogId) {
         const payload = { id, blogId };
+        setIsPageLoading(true);
         dispatch(getPreviewBlogPageAction(payload)).then((res) => {
           setPageContent(res);
+          setIsPageLoading(false);
         })
       }
       else {
         setCartLink(`/preview/${id}/Cart%20Page`);
         setThankyouLink(`/preview/${id}/Thankyou%20Page`);
         setProductLink(`/website/${id}/Product%20Page`);
+        setIsPageLoading(true);
         dispatch(getPreviewPageAction(payload)).then((res) => {
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(res.data, 'text/html');
@@ -275,6 +283,7 @@ export default function Index() {
           var tmp = document.createElement("div");
           tmp.append(htmlCmp.body);
           setPageContent(tmp.innerHTML);
+          setIsPageLoading(false);
           setPageInfo(res.pageInfo);
           setPopupData(res.pageInfo.popups || []);
         })
@@ -322,6 +331,7 @@ export default function Index() {
       const second = currentDate.getSeconds();
       const currentSecondTime = hour * 3600 + min * 60 + second;
       let scriptContent = '';
+      setIsPageLoading(true);
       popupData.map((e, i) => {
         if (e.isTimer) {
           scriptContent = scriptContent + `
@@ -406,6 +416,7 @@ export default function Index() {
         }
       });
       setPageContent(`${pageContent}<script>${scriptContent}</script>`);
+      setIsPageLoading(false);
     }
   }, [popupData]);
 
@@ -542,6 +553,11 @@ export default function Index() {
           )
         }
       </Helmet>
+      {isPageLoading ? <div className='loadingLayer'>
+        <div className="d-flex  justify-content-center mb-2 mt-2" style={{ position: 'absolute', top: "50%", left: "50%", zIndex: 10 }}>
+          <Spinner color="secondary">Loading...</Spinner>
+        </div>
+      </div> : <></>}
       <div className='main'>
         {(!store.linkUrl || store.linkUrl === 'website') && pageContent &&
           <iframe srcDoc={pageContent} width={window.innerWidth} height={window.innerHeight} ref={iframeRef} />
