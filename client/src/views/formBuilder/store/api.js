@@ -69,6 +69,10 @@ export const createPage=(payload) => {
   return API.post('/web-builder/create-page', payload);
 }
 
+export const createShopPages=(payload) => {
+  return API.post('/web-builder/create-shop-pages', payload);
+}
+
 export const getPage = (id) => {
   return API.get('/web-builder/page/' + id);  
 };

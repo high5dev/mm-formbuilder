@@ -5,7 +5,7 @@ import { Input, Label } from 'reactstrap';
 import { updateCartProductsAction } from '../../formBuilder/store/action';
 import { useDispatch } from 'react-redux';
 
-function Cartsidebar({ store, showCartSidebar, setShowCartSidebar }) {
+function Cartsidebar({ store, showCartSidebar, setShowCartSidebar, cartLink }) {
     const [totalPrice, setTotalPrice] = useState(0);
 
     const dispatch = useDispatch();
@@ -88,7 +88,7 @@ function Cartsidebar({ store, showCartSidebar, setShowCartSidebar }) {
                     </div>
                 </div>
                 <div className='p-3' style={{ borderTop: "1px solid #E3E3E3" }}>
-                    <Link to="/store/checkout" className='w-100 d-block p-1 fs-3' style={{ backgroundColor: "#384AD3", color: "white", textAlign: 'center' }}>View Cart</Link>
+                    <Link to={cartLink} className='w-100 d-block p-1 fs-3' style={{ backgroundColor: "#384AD3", color: "white", textAlign: 'center' }}>View Cart</Link>
                 </div>
             </div>
         </>

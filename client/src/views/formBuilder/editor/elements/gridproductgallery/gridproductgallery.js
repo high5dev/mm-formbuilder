@@ -1,9 +1,9 @@
 let gridproductgallery = {
-  isComponent: el => el.tagName === 'gridproductgallery',
+  isComponent: el => (el.tagName === 'DIV' && el.classList.contains('gridproductgallery')),
   model: {
     defaults: {
       // script,
-      tagName: 'gridproductgallery',
+      tagName: 'div',
       draggable: '*',
       droppable: false,
       attributes: { class: 'gridproductgallery' },

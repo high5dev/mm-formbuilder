@@ -9,10 +9,10 @@ let productItem = {
       components: (props) => {
         return `
         <div class="bg-image hover-overlay ripple shadow-1-strong rounded" data-mdb-ripple-color="light" style="max-width: 22rem;">
-          <img src="https://mdbcdn.b-cdn.net/img/new/fluid/city/113.webp" class="w-100 product-img1" alt="Louvre" />
+          <img src="https://mdbcdn.b-cdn.net/img/new/fluid/city/113.webp" class="product-img1" alt="Louvre" />
           <a href="#!">
             <div class="mask">
-              <img src="https://mdbcdn.b-cdn.net/img/new/fluid/city/114.webp" class="w-100 product-img2" />
+              <img src="https://mdbcdn.b-cdn.net/img/new/fluid/city/114.webp" class="product-img2" />
               <div class="quick-view">Quick View</div>
             </div>
           </a>
@@ -107,20 +107,20 @@ let productItem = {
 
     handleChangeProduct(e) {
       let product = this.model.get('product');
-      this.model.setAttributes( { class: 'product-item', productId: product.id });
+      this.model.setAttributes({ class: 'product-item', productId: product.id });
       let comps = this.model.get('components');
       while (comps.length > 0) {
         comps.pop();
       }
       const comp = (
         <div class="bg-image hover-overlay ripple shadow-1-strong rounded" data-mdb-ripple-color="light" style="max-width: 22rem;">
-          <img src={(product.url == undefined || product.url == null || product.url == "") ? "https://i.ibb.co/6br0NxL/1.png" : product.url} class="w-100 product-img1" alt="Louvre" />
-          <a href="#!">
+          <img src={product.url ? product.url : "https://i.ibb.co/6br0NxL/1.png"} class="product-img1" alt="Louvre" />
+          <div class="product-hover">
             <div class="mask">
-              <img src={product.url1 ? product.url1 : "https://i.ibb.co/6br0NxL/1.png"} class="w-100 product-img2" />
+              <img src={product.url1 ? product.url1 : "https://i.ibb.co/6br0NxL/1.png"} class="product-img2" />
               <div class="quick-view">Quick View</div>
             </div>
-          </a>
+          </div>
           <div class="product-name">{product.name}</div>
           <div class="product-price">{product.currency} {product.price}</div>
           <div class="product-cart">Add to cart</div>

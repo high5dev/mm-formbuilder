@@ -108,13 +108,8 @@ let sliderproductgallery = {
                 /* Smooth transition for sliding effect */
               }
 
-              .slides img {
-                width: 25%;
-                /* Each image takes up 25% of the carousel width */
-                flex-shrink: 0;
-                /* Prevents images from shrinking */
-                object-fit: cover;
-                /* Adjusts the image size to cover the area */
+              .slides > div {
+                margin-right: 25px;
               }
 
               /* Styling for 'Previous' and 'Next' buttons */
@@ -196,51 +191,23 @@ let sliderproductgallery = {
 
       if (slidesComponent) {
         // Remove all existing 'product-item' components
-        while (slidesComponent.components().length > 1) {
+        while (slidesComponent.components().length > 0) {
           slidesComponent.components().pop();
         };
 
         // Add new 'product-item' components based on numOfItems
-        for (let i = 1; i < numOfItems; i++) {
-          var item = slidesComponent.components().models[0].clone();
-          function setChildIds(originalComponent, clonedComponent) {
-            var originalChildren = originalComponent.get('components');
-            var clonedChildren = clonedComponent.get('components');
-
-            originalChildren.each(function (originalChild, index) {
-              var clonedChild = clonedChildren.at(index);
-              console.log(originalChild.ccid);
-              console.log(numOfItems);
-              clonedChild.ccid = originalChild.ccid + "-" + (i + 1);
-
-              // Recursive call for any nested children
-              if (originalChild.get('components').length > 0) {
-                setChildIds(originalChild, clonedChild);
-              }
-            });
-          }
-          setChildIds(slidesComponent.components().models[0], item);
-          slidesComponent.components().add(item);
-        }
-      }
-
-      let data = this.model.get('datasetConnect');
-      slidesComponent.get('components').models.map((m, index) => {
-        m.components().models.map((element) => {
-          const existingItemIndex = data.findIndex(item => (item.id + (index != 0 ? ("-" + (index + 1)) : "")) === element.ccid);
+        const item = {
+          type: 'product-item',
+        };
   
-          if (existingItemIndex !== -1) {
-            // Update the name if the ID exists
-            if (element.get('type') == 'text') {
-              element.set('content', this.model.get('products').values[index][data[existingItemIndex].name]);
-            }
-          } else {
-            // Add a new item if the ID doesn't exist
-            //dataConnect.push(newData);
-          }
-        });
-      });
+        for (let i = 0; i < numOfItems; i++) {
+          slidesComponent.components().push(item);
+        }
 
+        slidesComponent.components().models.map((m, index) => {
+          m.set('product', this.model.get('products').values[index]);
+        });
+      }
       this.render();
       this.model.set('cloning', false);
     },
