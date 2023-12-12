@@ -29,6 +29,9 @@ import shoppingcart from "./shoppingcart/shoppingcart";
 import addtocartbutton from "./addtocartbutton/addtocartbutton";
 import currencyconverter from "./currencyconverter/currencyconverter";
 import productItem from "./gridproductgallery/productItem";
+import productpage from "./productpage/productpage";
+import cartpage from "./cartpage/cartpage";
+import thankyoupage from "./thankyoupage/thankyoupage";
 
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -223,14 +226,16 @@ export const webBuilderPlugin = (editor) => {
   });
   editor.DomComponents.addType('iframe-element', iframe);
   editor.DomComponents.addType('social-bar', socialBar);
-  editor.DomComponents.addType('grid-product-gallery', gridproductgallery);
-  editor.DomComponents.addType('slider-product-gallery', sliderproductgallery);
-  editor.DomComponents.addType('related-products', relatedproducts);
+  editor.DomComponents.addType('gridproductgallery', gridproductgallery);
+  editor.DomComponents.addType('sliderproductgallery', sliderproductgallery);
+  editor.DomComponents.addType('relatedproducts', relatedproducts);
   editor.DomComponents.addType('shopping-cart', shoppingcart);
   editor.DomComponents.addType('add-to-cart-button', addtocartbutton);
   editor.DomComponents.addType('currency-converter', currencyconverter);
   editor.DomComponents.addType('product-item', productItem);
-
+  editor.DomComponents.addType('productpage', productpage);
+  editor.DomComponents.addType('cartpage', cartpage);
+  editor.DomComponents.addType('thankyoupage', thankyoupage);
   editor.TraitManager.addType('social-link', {
     noLabel: true,
     // Expects as return a simple HTML string or an HTML element

@@ -33,7 +33,7 @@ import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
 import { setChildFormReducer, setFormReducer } from '../store/reducer';
-import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, createChildFormAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction, getConnectionsByWebsiteAction} from '../store/action'
+import { getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, createChildFormAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction, getConnectionsByWebsiteAction, createShopPagesAction, updateSelectedProductAction } from '../store/action'
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
@@ -243,7 +243,7 @@ export default function Editor({
     setDatasetConnect(data);
     let selCmp = selectedCmp;
     selectedCmp.set('datasetConnect', data);
-    if (selectedCmp.attributes.type === 'slider-product-gallery' || selectedCmp.attributes.type === 'related-products') {
+    if (selectedCmp.attributes.type === 'sliderproductgallery' || selectedCmp.attributes.type === 'relatedproducts') {
       selCmp = selectedCmp.getChildAt(0);
       setConnectModel(selectedCmp.getChildAt(0), data);
     }
@@ -313,11 +313,33 @@ export default function Editor({
   // }, [editor?.getHtml(editor?.Pages.getSelected()), editor?.getCss(editor?.Pages.getSelected()), form, page])
 
   useEffect(() => {
+    if(editor && store.selectedProduct) {
+      const components = editor.getWrapper().components().models;
+      components.forEach((component) => {
+        if(component.get('type') === 'productpage') {
+          component.set('product', store?.selectedProduct);
+        }
+      });
+    }
+  }, [store.selectedProduct]);
+
+  useEffect(() => {
+    if(editor && store.cartProducts) {
+      const components = editor.getWrapper().components().models;
+      components.forEach((component) => {
+        if(component.get('type') === 'cartpage') {
+          component.set('product', store?.cartProducts);
+        }
+      });
+    }
+  }, [store.cartProducts]);
+
+  useEffect(() => {
     if(editor) {
       setIsStoreLoading(true);
       const components = editor.getWrapper().components().models;
       components.forEach((component) => {
-        if(component.get('type') === 'grid-product-gallery' || component.get('type') === 'slider-product-gallery' || component.get('type') === 'related-products') {
+        if(component.get('type') === 'gridproductgallery' || component.get('type') === 'sliderproductgallery' || component.get('type') === 'relatedproducts') {
           component.set('products', store?.webProducts);
         }
       });
@@ -427,122 +449,138 @@ export default function Editor({
     }
 
     gjsEditor.on('component:add', (component) => {
-      if(component.get('type') === 'grid-product-gallery' || component.get('type') === 'slider-product-gallery' || component.get('type') === 'related-products') {
+      console.log(component.get('tagName'));
+      if (component.get('type') === 'gridproductgallery' || component.get('type') === 'sliderproductgallery' || component.get('type') === 'relatedproducts') {
         setIsStoreLoading(true);
         dispatch(getProductDatasetAction(storeRef.current?.form?._id));
+        const shopPages = storeRef?.current?.form?.formData?.filter((data) => data.type === 'shop');
+        if (shopPages.length == 0) {
+          dispatch(createShopPagesAction({ id: storeRef.current?.form?._id }));
+        }
       }
-      else if(component.get('type') === 'add-to-cart-button') {
+      else if (component.get('type') === 'add-to-cart-button') {
         setCartProductId(storeRef.current?.webProducts?.values[0].id);
         component.set('productId', storeRef.current?.webProducts?.values[0].id);
       }
-      else if(component.get('type') === 'shopping-cart') {
+      else if (component.get('type') === 'shopping-cart') {
         let cartItemCount = 0;
-        
+
       }
-      if (!loadedRef.current && component.get('type') != 'image') {
-        if (compoId == "")
-          compoId = component.ccid;
-        const parentType = component.parent().get('type');
-        
-        if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
-          console.log(component);
-          setIsStoreLoading(true);
-          let numOfItems;
-          if(component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
-            numOfItems = component.parent().parent().get('numOfItems');
-          } else {
-            numOfItems = component.parent().parent().parent().get('numOfItems');
-          }
-          let originalComp = component.parent().clone();
-          let comps = component.parent().parent().get('components');
-          for (let i = comps.models.length - 1; i >= 0; i--) {
-            comps.models[i].remove();
-          }
-
-          for (let i = 0; i < numOfItems; i++) {
-            const item = originalComp.clone();
-
-            setChildIds(originalComp, item, i);
-            comps.push(item);
-          }
-          setIsStoreLoading(false);
-
-          // const parentComponent = component.parent().parent();
-          // const parentChildren = parentComponent.get('components');
-
-          // // Filter out the current component from the children
-          // const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
-          
-          // childrenWithoutCurrent.forEach((child, index) => {
-
-          //   const copiedComponent = component.clone();
-          //   copiedComponent.ccid = compoId + "-" + (index + 2);
-          //   if(component.get('type') == 'text')
-          //     copiedComponent.set('style', { padding: "10px" });
-          //   child.append(copiedComponent);
-          // });
-          // setIsLoading(false);
-        }
-        compoId = "";
-      }
-    });
-    gjsEditor.on('component:remove', (component) => {
-      if (!loadedRef.current && component.changed != {}) {
-        if (compoId == "")
-          compoId = component.ccid.split('-')[0];
-        const parentType = component.parent()?.get('type');
-
-        if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
-          const parentComponent = component.parent().parent();
-          const parentChildren = parentComponent.get('components');
-
-          // Filter out the current component from the children
-          const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
-          setIsStoreLoading(true);
-          childrenWithoutCurrent.forEach((child, index) => {
-            child.get('components').models.forEach((element) => {
-              if (element.ccid.includes(compoId)) {
-                element.remove();
-              }
-            })
-          });
-          setIsStoreLoading(false);
-        }
-        compoId = "";
-      }
-    });
-    gjsEditor.on('component:update', (component) => {
-      if (!loadedRef.current) {
-        try {
-          const parentType = component.parent().get('type');
-
-          if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
-            setIsStoreLoading(true);
-            let numOfItems;
-            if (component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
-              numOfItems = component.parent().parent().get('numOfItems');
-            } else {
-              numOfItems = component.parent().parent().parent().get('numOfItems');
-            }
-            let originalComp = component.parent().clone();
-            let comps = component.parent().parent().get('components');
-            for (let i = comps.models.length - 1; i >= 0; i--) {
-              comps.models[i].remove();
-            }
-
-            for (let i = 0; i < numOfItems; i++) {
-              const item = originalComp.clone();
-
-              setChildIds(originalComp, item, i);
-              comps.push(item);
-            }
-            setIsStoreLoading(false);
-          }
-        } catch (e) {
-
+      else if (component.get('type') === 'productpage') {
+        if (storeRef.current?.selectedProduct == {} && storeRef.current?.webProducts.length > 0) {
+          dispatch(updateSelectedProductAction(storeRef.current?.webProducts[0]));
+          component.set('product', storeRef.current?.webProducts[0]);
+        } else {
+          component.set('product', storeRef.current?.selectedProduct);
         }
       }
+      else if (component.get('type') === 'cartpage') {
+        component.set('cartProducts', storeRef.current?.cartProducts);
+      }
+      // if (!loadedRef.current && component.get('type') != 'image') {
+      //   if (compoId == "")
+      //     compoId = component.ccid;
+      //   const parentType = component.parent().get('type');
+
+      //   if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
+      //     console.log(component);
+      //     setIsStoreLoading(true);
+      //     let numOfItems;
+      //     if(component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
+      //       numOfItems = component.parent().parent().get('numOfItems');
+      //     } else {
+      //       numOfItems = component.parent().parent().parent().get('numOfItems');
+      //     }
+      //     let originalComp = component.parent().clone();
+      //     let comps = component.parent().parent().get('components');
+      //     for (let i = comps.models.length - 1; i >= 0; i--) {
+      //       comps.models[i].remove();
+      //     }
+
+      //     for (let i = 0; i < numOfItems; i++) {
+      //       const item = originalComp.clone();
+
+      //       setChildIds(originalComp, item, i);
+      //       comps.push(item);
+      //     }
+      //     setIsStoreLoading(false);
+
+      //     // const parentComponent = component.parent().parent();
+      //     // const parentChildren = parentComponent.get('components');
+
+      //     // // Filter out the current component from the children
+      //     // const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
+
+      //     // childrenWithoutCurrent.forEach((child, index) => {
+
+      //     //   const copiedComponent = component.clone();
+      //     //   copiedComponent.ccid = compoId + "-" + (index + 2);
+      //     //   if(component.get('type') == 'text')
+      //     //     copiedComponent.set('style', { padding: "10px" });
+      //     //   child.append(copiedComponent);
+      //     // });
+      //     // setIsLoading(false);
+      //   }
+      //   compoId = "";
+      // }
     });
+    // gjsEditor.on('component:remove', (component) => {
+    //   if (!loadedRef.current && component.changed != {}) {
+    //     if (compoId == "")
+    //       compoId = component.ccid.split('-')[0];
+    //     const parentType = component.parent()?.get('type');
+
+    //     if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
+    //       const parentComponent = component.parent().parent();
+    //       const parentChildren = parentComponent.get('components');
+
+    //       // Filter out the current component from the children
+    //       const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
+    //       setIsStoreLoading(true);
+    //       childrenWithoutCurrent.forEach((child, index) => {
+    //         child.get('components').models.forEach((element) => {
+    //           if (element.ccid.includes(compoId)) {
+    //             element.remove();
+    //           }
+    //         })
+    //       });
+    //       setIsStoreLoading(false);
+    //     }
+    //     compoId = "";
+    //   }
+    // });
+    // gjsEditor.on('component:update', (component) => {
+    //   if (!loadedRef.current) {
+    //     try {
+    //       const parentType = component.parent().get('type');
+
+    //       if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
+    //         setIsStoreLoading(true);
+    //         let numOfItems;
+    //         if (component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
+    //           numOfItems = component.parent().parent().get('numOfItems');
+    //         } else {
+    //           numOfItems = component.parent().parent().parent().get('numOfItems');
+    //         }
+    //         let originalComp = component.parent().clone();
+    //         let comps = component.parent().parent().get('components');
+    //         for (let i = comps.models.length - 1; i >= 0; i--) {
+    //           comps.models[i].remove();
+    //         }
+
+    //         for (let i = 0; i < numOfItems; i++) {
+    //           const item = originalComp.clone();
+
+    //           setChildIds(originalComp, item, i);
+    //           comps.push(item);
+    //         }
+    //         setIsStoreLoading(false);
+    //       }
+    //     } catch (e) {
+
+    //     }
+    //   }
+    // });
     gjsEditor.on('block:drag:start', function (model) {
       setSidebarData({
         ...sidebarData,
@@ -570,10 +608,10 @@ export default function Editor({
     });
     gjsEditor.on('component:selected', (cmp) => {
       setSelectedCmp(cmp);
-      if (cmp.attributes.type === 'grid-product-gallery' || cmp.attributes.type === 'slider-product-gallery' || cmp.attributes.type === 'related-products') {
+      if (cmp.attributes.type === 'gridproductgallery' || cmp.attributes.type === 'sliderproductgallery' || cmp.attributes.type === 'relatedproducts') {
         setSelectedDataSet(cmp.get('selectedDataset'));
         setDatasetConnect(cmp.get('datasetConnect'));
-        if(cmp.attributes.type === 'slider-product-gallery' || cmp.attributes.type === 'related-products')
+        if(cmp.attributes.type === 'sliderproductgallery' || cmp.attributes.type === 'relatedproducts')
           setConnectModel(cmp.getChildAt(0), cmp.get('datasetConnect'));
         else
           setConnectModel(cmp, cmp.get('datasetConnect'));
@@ -782,12 +820,12 @@ export default function Editor({
                     label: connectionLabel
                   });
                 }
-                if (elType.id === 'grid-product-gallery' || elType.id === 'slider-product-gallery' || elType.id === 'related-products') {
-                  toolbar.unshift({
-                    id: 'connect-product-dataset',
-                    command: 'connect-product-dataset',
-                    label: connectionLabel
-                  });
+                if (elType.id === 'gridproductgallery' || elType.id === 'sliderproductgallery' || elType.id === 'relatedproducts') {
+                  // toolbar.unshift({
+                  //   id: 'connect-product-dataset',
+                  //   command: 'connect-product-dataset',
+                  //   label: connectionLabel
+                  // });
                   toolbar.unshift({
                     id: 'setting-product',
                     command: 'setting-product',

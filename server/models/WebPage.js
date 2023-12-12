@@ -18,6 +18,9 @@ const WebPageSchema = new mongoose.Schema(
       ref: "web-builders",
       required: true,
     },
+    type: {
+      type: mongoose.Schema.Types.String,
+    },
     name: {
       type: String,
       required: true,

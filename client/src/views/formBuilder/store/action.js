@@ -17,6 +17,8 @@ import {
   setWebStoreReducer,
   setCartProductsReducer,
   setWebConnectionsReducer,
+  setSelectedProductReducer,
+  setThankyouProductsReducer,
 } from './reducer';
 import * as api from './api';
 import { toast } from 'react-toastify';
@@ -252,6 +254,19 @@ export const createPageAction = (payload) => async (dispatch) => {
       toast.error('Something went wrong! please try again');
     }
     return data.data;
+  } catch (error) { }
+};
+
+export const createShopPagesAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createShopPages(payload);
+    if (data?.success === true) {
+      await dispatch(getWebsiteAction(payload.id));
+      // toast.success('Page created successfully');
+    } else {
+      // toast.error('Something went wrong! please try again');
+    }
+    // return data.data;
   } catch (error) { }
 };
 
@@ -822,6 +837,22 @@ export const updateProductDatasetAction = (id, payload) => async (dispatch) => {
 export const updateCartProductsAction = (payload) => async (dispatch) => {
   try {
     dispatch(setCartProductsReducer(payload));
+  } catch (err) {
+
+  }
+}
+
+export const updateSelectedProductAction = (payload) => async (dispatch) => {
+  try {
+    dispatch(setSelectedProductReducer(payload));
+  } catch (err) {
+
+  }
+}
+
+export const updateThankyouProductsAction = (payload) => async (dispatch) => {
+  try {
+    dispatch(setThankyouProductsReducer(payload));
   } catch (err) {
 
   }
