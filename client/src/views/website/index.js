@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
-import { Input } from 'reactstrap'
+import { Input, Spinner } from 'reactstrap'
 import { Modal } from 'reactstrap';
-import { getPreviewPageAction, getPublishPageAction, getPreviewBlogPageAction, getPublishBlogPageAction } from "../formBuilder/store/action";
+import { getPreviewPageAction, getPublishPageAction, getPreviewBlogPageAction, getPublishBlogPageAction, updateThankyouProductsAction, updateSelectedProductAction } from "../formBuilder/store/action";
 import renderHTML from 'react-render-html';
 import { BiMobile } from 'react-icons/bi';
 import {
@@ -36,10 +36,178 @@ export default function Index() {
   const dispatch = useDispatch();
   const [width, setWidth] = useState(window.innerWidth);
   const [showCartSidebar, setShowCartSidebar] = useState(false);
+  const [cartLink, setCartLink] = useState("");
+  const [thankyouLink, setThankyouLink] = useState("");
+  const [productLink, setProductLink] = useState("");
+  const [isPageLoading, setIsPageLoading] = useState(false);
   const store = useSelector((state) => state.formEditor);
   const iframeRef = useRef(null);
   const storeRef = useRef(null);
   storeRef.current = store;
+
+  const setThankyouProducts = () => {
+    const iframe = iframeRef.current;
+    if (!iframe || !pageContent) return;
+    const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+    const cartItems = iframeDocument.querySelector('.product-lit');
+    if(!cartItems) return;
+    if (cartItems.childNodes.length > 0) {
+      while (cartItems.firstChild) {
+        cartItems.removeChild(cartItems.firstChild);
+      }
+    }
+    let sum = 0;
+    storeRef.current?.thankyouProducts?.forEach((item) => {
+      sum += item.product.price * item.count;
+      const cartItem = document.createElement('div');
+      cartItem.classList.add('product-item');
+      // cartItem.setAttribute('productid', item.product.id);
+      // Generate the HTML structure for the cart item
+      cartItem.innerHTML = `
+          <div class="product-img">
+            <img src=${item.product.url} width="100" height="100" />
+          </div>
+          <div class="product-detail">
+            <div class="product-name">${item.product.name}</div>
+            <div class="product-price">${item.product.currency} ${item.product.price}</div>
+          </div>
+          <div class="product-qty">Qty: ${item.count}</div>
+          <div class="product-total">${item.product.currency} ${item.product.price * item.count}</div>
+        
+        
+      `;
+      cartItems.appendChild(cartItem);
+    });
+    iframeDocument.querySelector('.subtotal-price').innerHTML = "USD " + sum;
+    iframeDocument.querySelector('.total-price').innerHTML = "USD " + sum;
+  }
+
+  const setCartProducts = () => {
+    const iframe = iframeRef.current;
+    if (!iframe || !pageContent) return;
+    const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+    const cartItems = iframeDocument.querySelector('.cart-items');
+    if(!cartItems) return;
+    if (cartItems.childNodes.length > 0) {
+      while (cartItems.firstChild) {
+        cartItems.removeChild(cartItems.firstChild);
+      }
+    }
+    let sum = 0;
+    storeRef.current?.cartProducts?.forEach((item) => {
+      sum += item.product.price * item.count;
+      const cartItem = document.createElement('div');
+      cartItem.classList.add('cart-item');
+      cartItem.setAttribute('productid', item.product.id);
+      // Generate the HTML structure for the cart item
+      cartItem.innerHTML = `
+        <img src="${item.product.url}" alt="Product" width="100" height="100">
+        <div class="cart-item-details">
+            <h3 class="product-name">${item.product.name}</h3>
+            <p class="product-price">${item.product.currency}${item.product.price}</p>
+        </div>
+        <div class="cart-item-quantity">
+            <button class="decrement">-</button>
+            <input type="text" class="quantity-input" value="${item.count}">
+            <button class="increment">+</button>
+        </div>
+        <div class="cart-item-total">
+            <p class="total-price">${item.product.currency}${(item.product.price * item.count).toString()}</p>
+            <button class="remove-item">Remove</button>
+        </div>
+        <style>
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            padding-bottom: 1rem;
+        }
+        
+        .cart-item img {
+            max-width: 100px;
+            height: auto;
+            margin-right: 1rem;
+        }
+        
+        .product-name {
+            font-size: 1.2rem;
+            color: #333;
+        }
+        
+        .product-price {
+            font-size: 1rem;
+            color: #333;
+        }
+        
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+        
+        .quantity-input {
+            width: 40px;
+            text-align: center;
+            border: 1px solid #333;
+            border-radius: 4px;
+            margin: 0 0.5rem;
+            padding: 0.2rem;
+            font-size: 1rem;
+        }
+        
+        .increment,
+        .decrement {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            font-size: 1rem;
+            border-radius: 4px;
+        }
+        
+        .cart-item-total {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            margin-left: 1rem;
+        }
+        </style>
+      `;
+      cartItems.appendChild(cartItem);
+    });
+    iframeDocument.querySelector('.item-value').innerHTML = "USD " + sum;
+    iframeDocument.querySelector('.total-value').innerHTML = "USD " + sum;
+  }
+
+  const setProduct = () => {
+    const iframe = iframeRef.current;
+    if (!iframe || !pageContent) return;
+    const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+    const productName = iframeDocument.querySelector('.product-name');
+    productName.innerHTML = storeRef.current?.selectedProduct.name;
+    const productPrice = iframeDocument.querySelector('.product-price');
+    productPrice.innerHTML = storeRef.current?.selectedProduct.currency + " " + storeRef.current?.selectedProduct.price;
+    const imgElement = iframeDocument.querySelector('.product-img');
+    imgElement.setAttribute("src", storeRef.current?.selectedProduct.url);
+  }
+
+  const updateCart = (productId, value, remove = false) => {
+    console.log(productId);
+    let cartProducts = [];
+    const index = storeRef.current?.cartProducts.findIndex((element) => element.product.id === productId);
+    if (storeRef.current?.cartProducts[index].count == 1 && value == -1) return;
+    if (remove) {
+      cartProducts = [...store?.cartProducts?.slice(0, index), ...store?.cartProducts?.slice(index + 1)];
+      dispatch(updateCartProductsAction(cartProducts));
+    } else {
+      cartProducts = store?.cartProducts.map((item, idx) => idx === index ? { ...item, count: (storeRef.current?.cartProducts[index].count + value) } : item);
+      dispatch(updateCartProductsAction(cartProducts));
+    }
+  };
+  
   useEffect(() => {
     dispatch(getProductDatasetAction(id));
     let name;
@@ -54,11 +222,17 @@ export default function Index() {
     if (!linkUrl || linkUrl === 'website') {
       if (blogId) {
         const payload = { id, blogId };
+        setIsPageLoading(true);
         dispatch(getPublishBlogPageAction(payload)).then((res) => {
           setPageContent(res);
+          setIsPageLoading(false);
         });
       }
       else {
+        setCartLink(`/website/${id}/Cart%20Page`);
+        setThankyouLink(`/website/${id}/Thankyou%20Page`);
+        setProductLink(`/website/${id}/Product%20Page`);
+        setIsPageLoading(true);
         dispatch(getPublishPageAction(payload)).then((res) => {
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(res.data, 'text/html');
@@ -74,6 +248,7 @@ export default function Index() {
           var tmp = document.createElement("div");
           tmp.append(htmlCmp.body)
           setPageContent(tmp.innerHTML);
+          setIsPageLoading(false);
           setPageInfo(res.pageInfo);
           setPopupData(res.pageInfo.popups || []);
         });
@@ -82,11 +257,17 @@ export default function Index() {
     if (linkUrl === 'preview') {
       if (blogId) {
         const payload = { id, blogId };
+        setIsPageLoading(true);
         dispatch(getPreviewBlogPageAction(payload)).then((res) => {
           setPageContent(res);
+          setIsPageLoading(false);
         })
       }
       else {
+        setCartLink(`/preview/${id}/Cart%20Page`);
+        setThankyouLink(`/preview/${id}/Thankyou%20Page`);
+        setProductLink(`/website/${id}/Product%20Page`);
+        setIsPageLoading(true);
         dispatch(getPreviewPageAction(payload)).then((res) => {
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(res.data, 'text/html');
@@ -102,15 +283,23 @@ export default function Index() {
           var tmp = document.createElement("div");
           tmp.append(htmlCmp.body);
           setPageContent(tmp.innerHTML);
+          setIsPageLoading(false);
           setPageInfo(res.pageInfo);
           setPopupData(res.pageInfo.popups || []);
         })
       }
     };
 
-  }, []);
+  }, [id, pageName, blogId]);
 
   useEffect(() => {
+    if(pageName === "Cart%20Page" || pageName === "Cart Page") {
+      setCartProducts();
+    } else if(pageName === "Thankyou%20Page" || pageName === "Thankyou Page") {
+      setThankyouProducts();
+    } else if(pageName === "Product%20Page" || pageName === "Product Page") {
+      setProduct();
+    }
     if (store && iframeRef.current) {
       let iframe = iframeRef.current;
       if (iframe && iframe.contentDocument) {
@@ -123,7 +312,8 @@ export default function Index() {
           // Elements found. Iterate over NodeList
           shoppingCartElements.forEach(element => {
             let itemsCountElement = element.querySelector('.items-count');
-            itemsCountElement.innerHTML = sum;
+            if(itemsCountElement)
+              itemsCountElement.innerHTML = sum;
             // Do something with each element
           });
         }
@@ -141,6 +331,7 @@ export default function Index() {
       const second = currentDate.getSeconds();
       const currentSecondTime = hour * 3600 + min * 60 + second;
       let scriptContent = '';
+      setIsPageLoading(true);
       popupData.map((e, i) => {
         if (e.isTimer) {
           scriptContent = scriptContent + `
@@ -225,8 +416,13 @@ export default function Index() {
         }
       });
       setPageContent(`${pageContent}<script>${scriptContent}</script>`);
+      setIsPageLoading(false);
     }
   }, [popupData]);
+
+  useEffect(() => {
+    dispatch(getProductDatasetAction(id));
+  }, [id]);
 
   useEffect(() => {
     const iframe = iframeRef.current;
@@ -235,10 +431,18 @@ export default function Index() {
     const onLoad = () => {
       const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
 
+      if(pageName === "Cart%20Page" || pageName === "Cart Page") {
+        setCartProducts();
+      } else if(pageName === "Thankyou%20Page" || pageName === "Thankyou Page") {
+        setThankyouProducts();
+      } else if(pageName === "Product%20Page" || pageName === "Product Page") {
+        setProduct();
+      }
+
       // Event handler
       const clickHandler = (event) => {
         let target = event.target;
-
+        // console.log(target);
         // Check if the clicked element is your specific element
         if (target.matches('.addtocartbutton')) {
           // Handle the click event
@@ -253,9 +457,46 @@ export default function Index() {
           }
           dispatch(updateCartProductsAction(cartProducts));
           setShowCartSidebar(true);
+        } else if(target.matches('.product-item-cart')) {
+          const quantity = parseInt(iframeDocument.querySelector('.product-quantity').value);
+          let cartProducts = [];
+          const existingItem = storeRef.current?.cartProducts.find(item => item.product.id === storeRef.current?.selectedProduct.id);
+          if (existingItem) {
+            cartProducts = storeRef.current?.cartProducts.map(item => item.product.id === storeRef.current?.selectedProduct.id ? { ...item, count: parseInt(item.count) + parseInt(quantity) } : item);
+          } else {
+            cartProducts = [...storeRef.current?.cartProducts, { product: storeRef.current?.selectedProduct, count: quantity }];
+          }
+          dispatch(updateCartProductsAction(cartProducts));
+          setShowCartSidebar(true);
+        } else if(target.matches('.product-cart')) {
+          let cartProducts = [];
+          const newItem = storeRef.current?.webProducts?.values.find(item => item.id === target.parentElement.parentElement.getAttribute('productid'))
+          const existingItem = storeRef.current?.cartProducts.find(item => item.product.id === newItem.id);
+          if (existingItem) {
+            cartProducts = storeRef.current?.cartProducts.map(item => item.product.id === newItem.id ? { ...item, count: item.count + 1 } : item);
+          } else {
+            cartProducts = [...storeRef.current?.cartProducts, { product: newItem, count: 1 }];
+          }
+          dispatch(updateCartProductsAction(cartProducts));
+          setShowCartSidebar(true);
         }
         else if (target.matches('.shoppingcart') || target.matches('.shoppingcartDiv')) {
           setShowCartSidebar(true);
+        }
+        else if(target.matches('.increment')) {
+          updateCart(target.parentElement.parentElement.getAttribute('productid'), 1, false);
+        } else if(target.matches('.decrement')) {
+          updateCart(target.parentElement.parentElement.getAttribute('productid'), -1, false);
+        } else if(target.matches('.remove-item')) {
+          updateCart(target.parentElement.parentElement.getAttribute('productid'), 0, true);
+        } else if(target.matches('.checkout-button')) {
+          dispatch(updateThankyouProductsAction(storeRef.current?.cartProducts));
+          dispatch(updateCartProductsAction([]));
+          history.push(thankyouLink);
+        } else if(target.matches('.product-img2') || target.matches('.quick-view')) {
+          const selectedProduct = storeRef.current?.webProducts?.values?.find((element) => element.id === target.parentElement.parentElement.parentElement.parentElement.getAttribute('productid'));
+          dispatch(updateSelectedProductAction(selectedProduct));
+          history.push(productLink);
         }
       };
 
@@ -312,11 +553,16 @@ export default function Index() {
           )
         }
       </Helmet>
+      {isPageLoading ? <div className='loadingLayer'>
+        <div className="d-flex  justify-content-center mb-2 mt-2" style={{ position: 'absolute', top: "50%", left: "50%", zIndex: 10 }}>
+          <Spinner color="secondary">Loading...</Spinner>
+        </div>
+      </div> : <></>}
       <div className='main'>
         {(!store.linkUrl || store.linkUrl === 'website') && pageContent &&
           <iframe srcDoc={pageContent} width={window.innerWidth} height={window.innerHeight} ref={iframeRef} />
         }
-        <Cartsidebar store={store} showCartSidebar={showCartSidebar} setShowCartSidebar={setShowCartSidebar} />
+        <Cartsidebar store={store} showCartSidebar={showCartSidebar} setShowCartSidebar={setShowCartSidebar} cartLink={cartLink} />
         {store.linkUrl === 'preview' &&
           <div>
             <div className="down-navbar d-flex align-items-center justify-content-between bg-black" style={{ height: "50px", paddingLeft: '40%', paddingRight: "30px" }}>

@@ -4,6 +4,7 @@ import {
   setFormContacts,
   setFormReducer,
   setChildFormReducer,
+  setChildFormsReducer,
   setFormRuleReducer,
   setTemplatesReducer,
   setImageLibraryReducer,
@@ -17,6 +18,8 @@ import {
   setWebStoreReducer,
   setCartProductsReducer,
   setWebConnectionsReducer,
+  setSelectedProductReducer,
+  setThankyouProductsReducer,
 } from './reducer';
 import * as api from './api';
 import { toast } from 'react-toastify';
@@ -50,11 +53,32 @@ export const editChildFormAction =(id, payload) =>async(dispatch) =>{
   } catch (error) { }
 }
 
+export const getChildFormsAction=() =>async(dispatch) =>{
+  try{
+    const {data}=await api.getChildForms();
+    dispatch(setChildFormsReducer(data.data));
+  }
+  catch(error){
+  }
+}
+
+export const getChildFormPageAction =(id, payload) =>async(dispatch) =>{
+  try {
+    const {data} = await api.getChildFormPage(id, payload);
+    if (data?.success === true) {
+      return data.page
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+  } catch (error) { }
+
+}
+
 export const getChildPreviewFormPageAction =(payload) =>async(dispatch) =>{
   try{
     const {data} = await api.getChildFormPreviewPage(payload);
     if(data?.success === true){
-      return data.data
+      return data.page
     }
     else{
       toast.error('Something went wrong! please try again');
@@ -252,6 +276,19 @@ export const createPageAction = (payload) => async (dispatch) => {
       toast.error('Something went wrong! please try again');
     }
     return data.data;
+  } catch (error) { }
+};
+
+export const createShopPagesAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createShopPages(payload);
+    if (data?.success === true) {
+      await dispatch(getWebsiteAction(payload.id));
+      // toast.success('Page created successfully');
+    } else {
+      // toast.error('Something went wrong! please try again');
+    }
+    // return data.data;
   } catch (error) { }
 };
 
@@ -822,6 +859,22 @@ export const updateProductDatasetAction = (id, payload) => async (dispatch) => {
 export const updateCartProductsAction = (payload) => async (dispatch) => {
   try {
     dispatch(setCartProductsReducer(payload));
+  } catch (err) {
+
+  }
+}
+
+export const updateSelectedProductAction = (payload) => async (dispatch) => {
+  try {
+    dispatch(setSelectedProductReducer(payload));
+  } catch (err) {
+
+  }
+}
+
+export const updateThankyouProductsAction = (payload) => async (dispatch) => {
+  try {
+    dispatch(setThankyouProductsReducer(payload));
   } catch (err) {
 
   }

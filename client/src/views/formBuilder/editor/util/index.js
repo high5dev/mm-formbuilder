@@ -264,7 +264,7 @@ export const menu = [
         menu: 'Grid Product Gallery',
         data: [
           {
-            id: 'grid-product-gallery',
+            id: 'gridproductgallery',
             title: 'Grid Product Gallery',
             description: 'Display multiple products in a grid layout.',
           }
@@ -274,7 +274,7 @@ export const menu = [
         menu: 'Slider Product Gallery',
         data: [
           {
-            id: 'slider-product-gallery',
+            id: 'sliderproductgallery',
             title: 'Slider Product Gallery',
             description: 'Let customers browse products in a compact gallery.',
           }
@@ -284,7 +284,7 @@ export const menu = [
         menu: 'Related Products',
         data: [
           {
-            id: 'related-products',
+            id: 'relatedproducts',
             title: 'Related Products',
             description: 'Increase sales by adding a slider gallery with recommended products for your customers.',
           }
@@ -316,6 +316,36 @@ export const menu = [
           {
             id: 'currency-converter',
             title: 'Currency Converter',
+            description: 'Make shopping easier by letting customers shop products in their currency.',
+          }
+        ]
+      },
+      {
+        menu: 'Product Page',
+        data: [
+          {
+            id: 'productpage',
+            title: 'Product Page',
+            description: 'Make shopping easier by letting customers shop products in their currency.',
+          }
+        ]
+      },
+      {
+        menu: 'Cart Page',
+        data: [
+          {
+            id: 'cartpage',
+            title: 'Cart Page',
+            description: 'Make shopping easier by letting customers shop products in their currency.',
+          }
+        ]
+      },
+      {
+        menu: 'Thankyou Page',
+        data: [
+          {
+            id: 'thankyoupage',
+            title: 'Thankyou Page',
             description: 'Make shopping easier by letting customers shop products in their currency.',
           }
         ]

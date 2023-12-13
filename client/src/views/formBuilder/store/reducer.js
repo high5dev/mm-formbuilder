@@ -18,6 +18,7 @@ export const formEditor = createSlice({
     },
     childForm:{
     },
+    childForms:[],
     formRules:[],
     linkUrl:'website',
     formOrderElements:{},
@@ -35,6 +36,8 @@ export const formEditor = createSlice({
     webConnections: [],
     webProducts: {},
     cartProducts: [],
+    selectedProduct: {},
+    thankyouProducts: []
   },
   reducers: {
     setLinkUrlReducer: (state, action) => {
@@ -44,7 +47,10 @@ export const formEditor = createSlice({
       state.form = action?.payload;
     },
     setChildFormReducer: (state,action) =>{
-      state.childForm=action?.payload
+      state.childForm=action?.payload;
+    },
+    setChildFormsReducer:(state,action) =>{
+      state.childForms=action?.payload;
     },
     setWebStoreReducer: (state, action) => {
       state.webProducts = action?.payload;
@@ -125,6 +131,12 @@ export const formEditor = createSlice({
     },
     setCartProductsReducer: (state, action) => {
       state.cartProducts = action?.payload;
+    },
+    setSelectedProductReducer: (state, action) => {
+      state.selectedProduct = action?.payload;
+    },
+    setThankyouProductsReducer: (state, action) => {
+      state.thankyouProducts = action?.payload;
     }
   }
 });
@@ -134,6 +146,7 @@ export const {
   setFormReducer,
   setFormRuleReducer,
   setChildFormReducer,
+  setChildFormsReducer,
   setToDefaultReducer,
   setAllFormsReducer,
   setFormCategoriesReducer,
@@ -149,6 +162,8 @@ export const {
   setWebBlogsReducer,
   setWebConnectionsReducer,
   setWebStoreReducer,
-  setCartProductsReducer
+  setCartProductsReducer,
+  setSelectedProductReducer,
+  setThankyouProductsReducer
 } = formEditor.actions;
 export default formEditor.reducer;

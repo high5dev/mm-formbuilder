@@ -5,6 +5,7 @@ import basicBlockPlugin from 'grapesjs-blocks-basic';
 import {useDispatch, useSelector} from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { selectThemeColors } from '@utils';
+import { toast } from 'react-toastify';
 import {
   Collapse,
   Button,
@@ -21,7 +22,6 @@ import {
   UncontrolledDropdown,
   Col
 } from 'reactstrap';
-import { toast } from 'react-toastify';
 import { Plus, PlusCircle, X, Trash2, Command, Book, ArrowLeft, Trash, Edit, MoreVertical} from 'react-feather';
 import '@src/assets/styles/web-builder.scss';
 import 'grapesjs/dist/css/grapes.min.css';
@@ -35,7 +35,7 @@ import RuleItem from '../form/rules/RuleItem';
 import OperatorItem from '../form/rules/OperatorItem';
 import PreviewFormModal from './PreviewFormModal';
 import {setChildFormReducer, setFormRuleReducer} from '../../../store/reducer'
-import {createFormRuleAction, updateFormRuleAction, deleteFormRuleAction, editChildFormAction, uploadFileAction,createFormPageAction, removeFormPageAction, getFormPageAction} from '../../../store/action';
+import {createFormRuleAction, updateFormRuleAction, deleteFormRuleAction, editChildFormAction, uploadFileAction,createFormPageAction, removeFormPageAction, getFormPageAction, getChildFormsAction} from '../../../store/action';
 export default function Index({store, toggle, page, saveFormBlock}) {
   const dispatch=useDispatch();
   const history=useHistory();
@@ -48,6 +48,7 @@ export default function Index({store, toggle, page, saveFormBlock}) {
   const [sidebarItem, setSidebarItem]=useState();
   const [rules,setRules]=useState([]);
   const [selectedRule, setSelectedRule]=useState();
+  const [name, setName]=useState('My Form');
   const [ruleEditing, setRuleEditing]=useState(false);
   const [components, setComponents]=useState([]);
   const [previewMdl, setPreviewMdl]=useState(false);
@@ -76,112 +77,138 @@ export default function Index({store, toggle, page, saveFormBlock}) {
     })
   })
   const saveForm = () => {
-    if(formEditor){
-      const _components=formEditor.getWrapper().components().models;
-      let elements=[];
-      for(let i=0; i<_components.length;i++){
-        const _component=_components[i];
-        const elementType=_component.get('type');
-        if(elementType){
-          const inputElements=_component.get('elProps').map((item)=>{
-            return{
-              id:item.id,
-              name:item.name,
-              type:item.type
+    if(name!=''){
+      const filteredForms=store.childForms && store.childForms.filter((_childForm)=>_childForm.name===name);
+      if(filteredForms.length>0){
+        toast.error('Please input another form name')
+      }
+      else{
+        if(formEditor){
+          const _components=formEditor.getWrapper().components().models;
+          let elements=[];
+          for(let i=0; i<_components.length;i++){
+            const _component=_components[i];
+            const elementType=_component.get('type');
+            if(elementType){
+              const inputElements=_component.get('elProps') && _component.get('elProps').map((item)=>{
+                return{
+                  id:item.id,
+                  name:item.name,
+                  type:item.type
+                }
+              });
+              const _element={
+                elementType,
+                inputElements
+              };
+              elements.push(_element);
             }
-          });
-          const _element={
-            elementType,
-            inputElements
           };
-          elements.push(_element);
-        }
-      };
-      const current_page=formEditor.Pages.getSelected();
-      const websiteId=store.form._id;
-      const pageId=page._id;
-      const id=store.childForm._id;
-      const html = formEditor.getHtml({ current_page });
-      const css = formEditor.getCss({ current_page });
-      const currentPage=currentFormPage?._id;
-      const payload={
-        websiteId,
-        pageId,
-        html,
-        css,
-        currentPage,
-        elements
-      };
-      dispatch(editChildFormAction(id, payload)).then((res)=>{
-        if(res){
-           let formPages=store.childForm.formPages;
-           formPages=formPages?.map((_formPage)=>{
-            if(_formPage._id===currentPage){
-              return {
-                ..._formPage,
-                html,
-                css
-              }
+          const current_page=formEditor.Pages.getSelected();
+          const websiteId=store.form._id;
+          const pageId=page._id;
+          const id=store.childForm._id;
+          const html = formEditor.getHtml({ current_page });
+          const css = formEditor.getCss({ current_page });
+          const currentPage=currentFormPage?._id;
+          const payload={
+            name,
+            websiteId,
+            pageId,
+            html,
+            css,
+            currentPage,
+            elements
+          };
+          dispatch(editChildFormAction(id, payload)).then((res)=>{
+            if(res){
+               let formPages=store.childForm.formPages;
+               formPages=formPages?.map((_formPage)=>{
+                if(_formPage._id===currentPage){
+                  return {
+                    ..._formPage,
+                    html,
+                    css
+                  }
+                }
+                else{
+                  return _formPage;
+                }
+               });
+    
+               const newForm={...res.data, formPages};
+               dispatch(getChildFormsAction());
+               dispatch(setChildFormReducer(newForm));
+               saveFormBlock(res.page);
             }
-            else{
-              return _formPage;
-            }
-           });
-
-           const newForm={...res.data, formPages};
-           dispatch(setChildFormReducer(newForm));
-           saveFormBlock(res.page);
+          })
         }
-      })
+      }
+    }
+    else{
+      toast.error('Please input form name.')
     }
   };
 
   const previewForm = () => {
-    if(formEditor){
-      const _components=formEditor.getWrapper().components().models;
-      let elements=[];
-      for(let i=0; i<_components.length;i++){
-        const _component=_components[i];
-        const elementType=_component.get('type');
-        if(elementType){
-          const inputElements=_component?.get('elProps')?.map((item)=>{
-            return{
-              id:item.id,
-              name:item.name,
-              type:item.type
+    if(name!=''){
+      const filteredForms=store.childForms && store.childForms.filter((_childForm)=>_childForm.name=name);
+      if(filteredForms.length){
+        toast.error('Please input another form name.')
+      }
+      else{
+        if(formEditor){
+          const _components=formEditor.getWrapper().components().models;
+          let elements=[];
+          for(let i=0; i<_components.length;i++){
+            const _component=_components[i];
+            const elementType=_component.get('type');
+            if(elementType){
+              const inputElements=_component?.get('elProps')?.map((item)=>{
+                return{
+                  id:item.id,
+                  name:item.name,
+                  type:item.type
+                }
+              });
+              const _element={
+                elementType,
+                inputElements
+              };
+              elements.push(_element);
             }
-          });
-          const _element={
-            elementType,
-            inputElements
           };
-          elements.push(_element);
+          const current_page=formEditor.Pages.getSelected();
+          const websiteId=store.form._id;
+          const pageId=page?._id;
+          const id=store.childForm._id;
+          const html = formEditor.getHtml({ current_page });
+          const css = formEditor.getCss({ current_page });
+          const currentPage=currentFormPage?._id;
+          const payload={
+            name,
+            websiteId,
+            pageId,
+            html,
+            css,
+            currentPage,
+            elements
+          };
+          dispatch(editChildFormAction(id, payload)).then((res)=>{
+            if(res){
+               let formPages=store.childForm.formPages;
+               const newForm={...res, formPages};
+               dispatch(setChildFormReducer(newForm));
+               setPreviewMdl(true);
+            }
+          })
         }
-      };
-      const current_page=formEditor.Pages.getSelected();
-      const websiteId=store.form._id;
-      const pageId=page?._id;
-      const id=store.childForm._id;
-      const html = formEditor.getHtml({ current_page });
-      const css = formEditor.getCss({ current_page });
-      const currentPage=currentFormPage?._id;
-      const payload={
-        websiteId,
-        pageId,
-        html,
-        css,
-        currentPage,
-        elements
-      };
-      dispatch(editChildFormAction(id, payload)).then((res)=>{
-        if(res){
-           let formPages=store.childForm.formPages;
-           const newForm={...res, formPages};
-           dispatch(setChildFormReducer(newForm));
-           setPreviewMdl(true);
-        }
-      })
+      }
     }
+    else{
+      toast.error('Please input form name');
+    }
+
   };
 
   const clearEditor = () =>{
@@ -335,7 +362,6 @@ export default function Index({store, toggle, page, saveFormBlock}) {
    }
    else{
     payload={...payload, formId:formId};
-    console.log('payload==========', payload);
     dispatch(createFormRuleAction(payload)).then((res)=>{
       if(res){
         let formRules=store.formRules;
@@ -631,23 +657,27 @@ export default function Index({store, toggle, page, saveFormBlock}) {
 
   return (
     <div>
-      <div className="form-builder-navbar d-flex justify-content-end align-items-center p-1">
-        <Trash2 size={24} color={'white'} onClick={(e) =>{clearEditor()}}/>
-        <Button
-          className='ms-3'
-          color="primary"
-          outline
-          onClick={(e) => previewForm()}
-          style={{ width: '100px', color:'white' }}
-        >
-          Preview
-        </Button>
-        <Button color="primary ms-3" onClick={(e) => saveForm()} style={{ width: '100px' }}>
-          Save
-        </Button>
-        <div className="ms-1">
+      <div className="form-builder-navbar d-flex justify-content-between align-items-center p-1">
+        <Input type='text' value={name} onChange={(e)=>{setName(e.target.value)}} style={{width:'100px', marginLeft:'100px'}}/>
+        <div className='d-flex align-items-center'>
+          <Trash2 size={24} color={'white'} onClick={(e) =>{clearEditor()}}/>
+          <Button
+            className='ms-3'
+            color="primary"
+            outline
+            onClick={(e) => previewForm()}
+            style={{ width: '100px', color:'white' }}
+          >
+            Preview
+          </Button>
+          <Button color="primary ms-3" onClick={(e) => saveForm()} style={{ width: '100px' }}>
+            Save
+          </Button>
+          <div className="ms-1">
             <X size={24} onClick={(e)=>toggle(false)}/>
         </div>
+        </div>
+
 
       </div>
       <div className="form-builder-body d-flex justify-content-between">

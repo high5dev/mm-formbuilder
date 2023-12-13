@@ -33,7 +33,7 @@ import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
 import { setChildFormReducer, setFormReducer } from '../store/reducer';
-import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, createChildFormAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction, getConnectionsByWebsiteAction} from '../store/action'
+import {getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, createChildFormAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction, getConnectionsByWebsiteAction, getChildFormsAction} from '../store/action'
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
@@ -50,6 +50,7 @@ import CreateFormModal from '../createForm/CreateFormModal';
 import DuplicateModal from './topNav/duplicate/duplicateModal';
 import InvitationModal from './topNav/invite/invitationModal';
 import FormEditorModal from './leftSidebar/form/FormEditorModal';
+import SelectFormModal from './leftSidebar/form/SelectFormModal';
 import cmsimg from '../../../assets/img/cms-img.png'
 import { CiCircleChevRight, CiCirclePlus } from 'react-icons/ci';
 import CreateCollectionModal from './cms/collection/CreateCollectionModal';
@@ -116,6 +117,7 @@ export default function Editor({
   const [openCreateColMdl, setOpenCreateColMdl] = useState(false);
   const [openEditCollection, setOpenEditCollection] = useState({isOpen: false, data: {}});
   const [openCreateDatasetMdl, setOpenCreateDatasetMdl] = useState({isOpen: false, data: {}});
+  const [addFormMdl, setAddFormMdl]=useState(false);
   const [connectData, setConnectData] = useState({isOpen: false, data: {}});
   const [modelsToConnect, setModelsToConnect] = useState([]);
   const [isinvite, setIsInvite] = useState(false);
@@ -204,7 +206,7 @@ export default function Editor({
      const pageId=page?._id;
      const websiteId=form?._id;
      const elements=[];
-     const name="Page1";
+     const name="My Form";
      const payload={
       websiteId,
       pageId,
@@ -226,6 +228,11 @@ export default function Editor({
   const scrollToTarget =(_target) =>{
     document.getElementById(_target).scrollIntoView(true);
   } 
+
+  const selectFormToggle=(_open)=>{
+    setAddFormMdl(_open);
+  }
+
 
   const getProductDataset = (collectionId) => {
     // setIsStoreLoading(true);
@@ -301,8 +308,7 @@ export default function Editor({
     while (comps.length > 0) {
       comps.pop();
     };
-    comps.push(html)
-    
+    comps.push(html);
   }
 
   // useEffect(() =>{
@@ -346,6 +352,7 @@ export default function Editor({
 
   useEffect(() => {
     dispatch(getWebElementsAction());
+    dispatch(getChildFormsAction());
     dispatch(getBlogsAction(store?.form?._id));
     dispatch(getWebsiteAction(id)).then(res=>{
       if(res){
@@ -978,6 +985,36 @@ export default function Editor({
             submenu:el.category[0].subMenu,
           });
         }
+        else if(el.category[0].name==='Add Existing Form'){
+          let formItem = {
+            isComponent: el => (el.tagName === 'DIV' && el.classList.contains('add-form')),
+            model: {
+              defaults: {
+                tagName: 'div',
+                draggable: true,
+                droppable: true,
+                selectable: false,
+                components: (props)=>{
+                  return <div></div>
+                },
+                attributes: { class: 'add-form' },
+                styles: `.new-form {min-height: 300px;}`,
+                stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
+              },
+            },
+          };
+          editor.DomComponents.addType('add-form', formItem);
+          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
+            label: el.category[0].name,
+            content: {type:'add-form'},
+            media: el.imageUrl,
+            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
+            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+            mainMenu:`${el.category[0].mainMenu}`,
+            refcategory:`${el.category[0].name}`,
+            submenu:el.category[0].subMenu,
+          });
+        }
         else{
           editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
             label: el.category[0].name,
@@ -1187,6 +1224,10 @@ export default function Editor({
                                       e.stopPropagation();
                                       if(b.get('label')==='New Form'){
                                         createForm();
+                                        blockManager.dragStop(false);
+                                      }
+                                      if(b.get('label')==='Add Existing Form'){
+                                        setAddFormMdl(true);
                                         blockManager.dragStop(false);
                                       }
                                    
@@ -1486,6 +1527,7 @@ export default function Editor({
       <AddElementModal editor={editor} setEditor={setEditor} openAddElementMdl={openAddElementMdl} setOpenAddElementMdl={setOpenAddElementMdl} />
       <RenameModal store={store} isOpen={renameMdl} toggle={_toggleRename}/>
       <CreateFormModal open={createMdl} store={store} dispatch={dispatch}/>
+      <SelectFormModal open={addFormMdl} store={store} toggle={selectFormToggle} saveFormBlock={saveFormBlock}/>
       <DuplicateModal store={store} isOpen={duplicateMdl} toggle={_toggleDuplicate}/>
       <InvitationModal store={store} isOpen={isinvite} toggle={setIsInvite}/>
       <Modal isOpen={formeditorMdl} centered className='form-builder-modal' fullscreen scrollable style={{ overflowX: 'hidden' }}>

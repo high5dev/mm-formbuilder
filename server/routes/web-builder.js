@@ -14,6 +14,7 @@ const {
   getPublishPage,
   getPreviewPage,
   createPage,
+  createShopPages,
   updatePage,
   updatePageName,
   deletePage,
@@ -33,6 +34,7 @@ router.get("/publish-page/", getPublishPage);
 router.get("/preview-page/",  isAuthenticated, getPreviewPage);
 //page
 router.post("/create-page", isAuthenticated, createPage);
+router.post("/create-shop-pages", isAuthenticated, createShopPages);
 router.put("/update/:id", isAuthenticated, updatePage);
 router.put("/publish/:id", isAuthenticated, publishWebsite);
 router.put("/update-page/:id", isAuthenticated, updatePageName);

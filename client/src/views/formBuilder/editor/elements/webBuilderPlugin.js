@@ -29,8 +29,12 @@ import shoppingcart from "./shoppingcart/shoppingcart";
 import addtocartbutton from "./addtocartbutton/addtocartbutton";
 import currencyconverter from "./currencyconverter/currencyconverter";
 import productItem from "./gridproductgallery/productItem";
+import productpage from "./productpage/productpage";
+import cartpage from "./cartpage/cartpage";
+import thankyoupage from "./thankyoupage/thankyoupage";
 
-
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 const testImageUrls = [
   'https://i.ibb.co/ZWnZPqr/tiktok.png',
   'https://i.ibb.co/tm0rJ2c/youtube-1.png',
@@ -222,14 +226,16 @@ export const webBuilderPlugin = (editor) => {
   });
   editor.DomComponents.addType('iframe-element', iframe);
   editor.DomComponents.addType('social-bar', socialBar);
-  editor.DomComponents.addType('grid-product-gallery', gridproductgallery);
-  editor.DomComponents.addType('slider-product-gallery', sliderproductgallery);
-  editor.DomComponents.addType('related-products', relatedproducts);
+  editor.DomComponents.addType('gridproductgallery', gridproductgallery);
+  editor.DomComponents.addType('sliderproductgallery', sliderproductgallery);
+  editor.DomComponents.addType('relatedproducts', relatedproducts);
   editor.DomComponents.addType('shopping-cart', shoppingcart);
   editor.DomComponents.addType('add-to-cart-button', addtocartbutton);
   editor.DomComponents.addType('currency-converter', currencyconverter);
   editor.DomComponents.addType('product-item', productItem);
-
+  editor.DomComponents.addType('productpage', productpage);
+  editor.DomComponents.addType('cartpage', cartpage);
+  editor.DomComponents.addType('thankyoupage', thankyoupage);
   editor.TraitManager.addType('social-link', {
     noLabel: true,
     // Expects as return a simple HTML string or an HTML element
@@ -464,122 +470,238 @@ export const webBuilderPlugin = (editor) => {
   editor.TraitManager.addType('date', {
     noLabel: true,
     // Expects as return a simple HTML string or an HTML element
-    createInput({ trait, component }) {
-      const dateTrait = component.props().date;
-      const dateStr = dateTrait.split('T')[0];
-      const timeStr = dateTrait.split('T')[1];
+    createInput({trait, component}) {
       const traitName = trait.get('name');
       const traitLabel = trait.get('label');
-      let year = dateStr.split('-')[0];;
-      let month = dateStr.split('-')[1];;
-      let date = dateStr.split('-')[2];
-      let hour = timeStr.split(':')[0];
-      let min = timeStr.split(':')[1];
-      let sec = timeStr.split(':')[2];
-
+      const time = component.props()[traitName];
+      
       const el = document.createElement('div');
       el.className = 'trait-date';
       el.innerHTML = `<h6>${traitLabel}</h6>`;
+  
+      const startElement = document.createElement('div');
+      startElement.className = 'trait-date-flatpicker';
+      
+      const flatpickrElStart = document.createElement('input');
+      flatpickrElStart.className = 'flatpickr-input'
+      flatpickr(flatpickrElStart, {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+      });
+      flatpickrElStart.value = time;
+  
+      startElement.appendChild(flatpickrElStart);
+      el.appendChild(startElement);
 
-      const dateElement = document.createElement('div');
-      dateElement.className = 'trait-date-date';
-      dateElement.innerHTML = `
-        &nbsp; Date &nbsp;
-        <div><input type="number" class="trait-date-input-year" value=${year} placeholder="year" /></div>
-        -
-        <div><input type="number" class="trait-date-input-month" value=${month} placeholder="month" /></div>
-        -
-        <div><input type="number" class="trait-date-input-date" value=${date} placeholder="date" /></div>
-      `;
-      const timeElement = document.createElement('div');
-      timeElement.className = 'trait-date-time';
-      timeElement.innerHTML = `
-        &nbsp; Time &nbsp;
-        <div><input type="number" class="trait-date-input-hour" value=${hour} placeholder="hour" /></div>
-        :
-        <div><input type="number" class="trait-date-input-min" value=${min} placeholder="minute" /></div>
-        :
-        <div><input type="number" class="trait-date-input-sec" value=${sec} placeholder="second" /></div>
-      `;
-
-      el.appendChild(dateElement);
-      el.appendChild(timeElement);
-
-      // Let's make our content interactive
-      const yearEl = el.querySelector('.trait-date-input-year');
-      const monthEl = el.querySelector('.trait-date-input-month');
-      const dateEl = el.querySelector('.trait-date-input-date');
-      const hourEl = el.querySelector('.trait-date-input-hour');
-      const minEl = el.querySelector('.trait-date-input-min');
-      const secEl = el.querySelector('.trait-date-input-sec');
-
-      yearEl.addEventListener('change', ev => {
-        year = ev.target.value;
-        component.set(traitName, `${('0000' + year.toString()).slice(-4)}-${('00' + month.toString()).slice(-2)}-${('00' + date.toString()).slice(-2)}T${('00' + hour.toString()).slice(-2)}:${('00' + min.toString()).slice(-2)}:${('00' + sec.toString()).slice(-2)}`);
+      flatpickrElStart.addEventListener('input', e=> {
+        component.set(traitName, e.target.value);
       })
-
-      monthEl.addEventListener('change', ev => {
-        month = ev.target.value;
-        if (parseInt(month, 10) > 12) month = '12';
-        if (parseInt(month, 10) < 1) month = '01';
-        component.set(traitName, `${('0000' + year.toString()).slice(-4)}-${('00' + month.toString()).slice(-2)}-${('00' + date.toString()).slice(-2)}T${('00' + hour.toString()).slice(-2)}:${('00' + min.toString()).slice(-2)}:${('00' + sec.toString()).slice(-2)}`);
-      })
-
-      dateEl.addEventListener('change', ev => {
-        date = ev.target.value;
-        if (parseInt(date, 10) > 31) date = '31';
-        if (parseInt(date, 10) < 1) date = '01';
-        component.set(traitName, `${('0000' + year.toString()).slice(-4)}-${('00' + month.toString()).slice(-2)}-${('00' + date.toString()).slice(-2)}T${('00' + hour.toString()).slice(-2)}:${('00' + min.toString()).slice(-2)}:${('00' + sec.toString()).slice(-2)}`);
-      })
-
-      hourEl.addEventListener('change', ev => {
-        hour = ev.target.value;
-        if (parseInt(hour, 10) > 23) hour = '23';
-        if (parseInt(hour, 10) < 0) hour = '00';
-        component.set(traitName, `${('0000' + year.toString()).slice(-4)}-${('00' + month.toString()).slice(-2)}-${('00' + date.toString()).slice(-2)}T${('00' + hour.toString()).slice(-2)}:${('00' + min.toString()).slice(-2)}:${('00' + sec.toString()).slice(-2)}`);
-      })
-
-      minEl.addEventListener('change', ev => {
-        min = ev.target.value;
-        if (parseInt(min, 10) > 59) min = '59';
-        if (parseInt(min, 10) < 0) min = '00';
-        component.set(traitName, `${('0000' + year.toString()).slice(-4)}-${('00' + month.toString()).slice(-2)}-${('00' + date.toString()).slice(-2)}T${('00' + hour.toString()).slice(-2)}:${('00' + min.toString()).slice(-2)}:${('00' + sec.toString()).slice(-2)}`);
-      })
-
-      secEl.addEventListener('change', ev => {
-        sec = ev.target.value;
-        if (parseInt(sec, 10) > 59) sec = '59';
-        if (parseInt(sec, 10) < 0) sec = '00';
-        component.set(traitName, `${('0000' + year.toString()).slice(-4)}-${('00' + month.toString()).slice(-2)}-${('00' + date.toString()).slice(-2)}T${('00' + hour.toString()).slice(-2)}:${('00' + min.toString()).slice(-2)}:${('00' + sec.toString()).slice(-2)}`);
-      })
-
+  
       return el;
-    },
-    onUpdate({ elInput, component }) {
-      const dateTrait = component.props().date;
-      const dateStr = dateTrait.split('T')[0];
-      const timeStr = dateTrait.split('T')[1];
-      let year = dateStr.split('-')[0];;
-      let month = dateStr.split('-')[1];;
-      let date = dateStr.split('-')[2];
-      let hour = timeStr.split(':')[0];
-      let min = timeStr.split(':')[1];
-      let sec = timeStr.split(':')[2];
-      const yearEl = elInput.querySelector('.trait-date-input-year');
-      const monthEl = elInput.querySelector('.trait-date-input-month');
-      const dateEl = elInput.querySelector('.trait-date-input-date');
-      const hourEl = elInput.querySelector('.trait-date-input-hour');
-      const minEl = elInput.querySelector('.trait-date-input-min');
-      const secEl = elInput.querySelector('.trait-date-input-sec');
-      yearEl.value = year;
-      monthEl.value = month;
-      dateEl.value = date;
-      hourEl.value = hour;
-      minEl.value = min;
-      secEl.value = sec;
     },
   });
 
+  editor.TraitManager.addType('count-down-view-items', {
+    noLabel: true,
+    // Expects as return a simple HTML string or an HTML element
+    createInput({trait, component}) {
+      const traitName = trait.get('name');
+      const traitLabel = trait.get('label');
+      const viewItems = component.props()[traitName];
+      
+      const el = document.createElement('div');
+      el.className = 'trait-count-down-items';
+
+      el.innerHTML = `
+        <h6>${traitLabel}</h6>
+        <div class="form-check d-flex align-items-center">
+          <input class="form-check-input border-primary me-1" type="checkbox" value="" id="dayCheck" style="width: 20px; height: 20px" ${viewItems.days && 'checked'}>
+          <label class="form-check-label" for="dayCheck">
+            Days
+          </label>
+        </div>
+        <div class="form-check d-flex align-items-center">
+          <input class="form-check-input border-primary me-1" type="checkbox" value="" id="hourCheck" style="width: 20px; height: 20px" ${viewItems.hours && 'checked'}>
+          <label class="form-check-label" for="hourCheck">
+            Hours
+          </label>
+        </div>
+        <div class="form-check d-flex align-items-center">
+          <input class="form-check-input border-primary me-1" type="checkbox" value="" id="minCheck" style="width: 20px; height: 20px" ${viewItems.mins && 'checked'}>
+          <label class="form-check-label" for="minCheck">
+            Minutes
+          </label>
+        </div>
+        <div class="form-check d-flex align-items-center">
+          <input class="form-check-input border-primary me-1" type="checkbox" value="" id="secCheck" style="width: 20px; height: 20px" ${viewItems.secs && 'checked'}>
+          <label class="form-check-label" for="secCheck">
+            Seconds
+          </label>
+        </div>`;
+
+      return el;
+    },
+    onUpdate({elInput, component}) {
+      const viewItems = component.props().viewItems;
+      const dayEl = elInput.querySelector('#dayCheck');
+      dayEl.addEventListener('click', e => {
+        if (e.target.checked) {
+          component.set('viewItems', {...viewItems, days: true});
+        } else {
+          component.set('viewItems', {...viewItems, days: false});
+        } 
+      })
+
+      const hourEl = elInput.querySelector('#hourCheck');
+      hourEl.addEventListener('click', e => {
+        if (e.target.checked) {
+          component.set('viewItems', {...viewItems, hours: true});
+        } else {
+          component.set('viewItems', {...viewItems, hours: false});
+        } 
+      })
+
+      const minEl = elInput.querySelector('#minCheck');
+      minEl.addEventListener('click', e => {
+        if (e.target.checked) {
+          component.set('viewItems', {...viewItems, mins: true});
+        } else {
+          component.set('viewItems', {...viewItems, mins: false});
+        } 
+      })
+
+      const secEl = elInput.querySelector('#secCheck');
+      secEl.addEventListener('click', e => {
+        if (e.target.checked) {
+          component.set('viewItems', {...viewItems, secs: true});
+        } else {
+          component.set('viewItems', {...viewItems, secs: false});
+        } 
+      })
+    }
+  });
+
+  editor.TraitManager.addType('count-down-rules', {
+    noLabel: true,
+    // Expects as return a simple HTML string or an HTML element
+    createInput({trait, component}) {
+      const traitName = trait.get('name');
+      const traitLabel = trait.get('label');
+      const rules = component.props()[traitName];
+      
+      const el = document.createElement('div');
+      el.className = 'trait-count-down-rules';
+
+      el.innerHTML = `
+        <h6>${traitLabel}</h6>
+        <div class="form-check d-flex align-items-center">
+          <input class="form-check-input border-primary me-1" type="radio" name="flexRadioDefault" id="hideCountDown"  style="width: 15px; height: 15px" ${rules.hideCountDown && 'checked'}>
+          <label class="form-check-label" for="hideCountDown">
+            Hide countdown
+          </label>
+        </div>
+        <div class="form-check d-flex align-items-center">
+          <input class="form-check-input border-primary me-1" type="radio" name="flexRadioDefault" id="closeForm"  style="width: 15px; height: 15px" ${rules.closeForm && 'checked'}>
+          <label class="form-check-label" for="closeForm">
+            Close form
+          </label>
+        </div>
+      `;
+
+      // el.innerHTML = `
+      //   <h6>${traitLabel}</h6>
+      //   <div class="form-check d-flex align-items-center">
+      //     <input class="form-check-input border-primary me-1" type="radio" name="flexRadioDefault" id="hideCountDown"  style="width: 15px; height: 15px" ${rules.hideCountDown && 'checked'}>
+      //     <label class="form-check-label" for="hideCountDown">
+      //       Hide countdown
+      //     </label>
+      //   </div>
+      //   <div class="form-check d-flex align-items-center">
+      //     <input class="form-check-input border-primary me-1" type="radio" name="flexRadioDefault" id="closeForm"  style="width: 15px; height: 15px" ${rules.closeForm && 'checked'}>
+      //     <label class="form-check-label" for="closeForm">
+      //       Close form
+      //     </label>
+      //   </div>
+      //   <div class="form-check d-flex align-items-center">
+      //     <input class="form-check-input border-primary me-1" type="radio" name="flexRadioDefault" id="hidePage"  style="width: 15px; height: 15px" ${rules.hidePage && 'checked'}>
+      //     <label class="form-check-label" for="hidePage">
+      //       Hide page
+      //     </label>
+      //   </div>
+      //   <div class="form-check d-flex align-items-center">
+      //     <input class="form-check-input border-primary me-1" type="radio" name="flexRadioDefault" id="showOtherPage"  style="width: 15px; height: 15px" ${rules.showOtherPage && 'checked'}>
+      //     <label class="form-check-label" for="showOtherPage">
+      //       Show other page
+      //     </label>
+      //   </div>
+      //   <div class="form-check d-flex align-items-center">
+      //     <input class="form-check-input border-primary me-1" type="radio" name="flexRadioDefault" id="showOtherElement"  style="width: 15px; height: 15px" ${rules.showOtherElement && 'checked'}>
+      //     <label class="form-check-label" for="showOtherElement">
+      //       Show other element
+      //     </label>
+      //   </div>
+      // `;
+
+      return el;
+    },
+    onUpdate({elInput, component}) {
+      const viewItems = component.props().viewItems;
+      const hideCountDownEl = elInput.querySelector('#hideCountDown');
+      hideCountDownEl.addEventListener('click', e => {
+        component.set('rules', {
+          hideCountDown: true,
+          closeForm: false,
+          hidePage: false,
+          showOtherPage: false,
+          showOtherElement: false,
+        });
+      })
+
+      const closeFormEl = elInput.querySelector('#closeForm');
+      closeFormEl.addEventListener('click', e => {
+        component.set('rules', {
+          hideCountDown: false,
+          closeForm: true,
+          hidePage: false,
+          showOtherPage: false,
+          showOtherElement: false,
+        });
+      })
+
+      // const hidePageEl = elInput.querySelector('#hidePage');
+      // hidePageEl.addEventListener('click', e => {
+      //   component.set('rules', {
+      //     hideCountDown: false,
+      //     closeForm: false,
+      //     hidePage: true,
+      //     showOtherPage: false,
+      //     showOtherElement: false,
+      //   });
+      // })
+
+      // const showOtherPageEl = elInput.querySelector('#showOtherPage');
+      // showOtherPageEl.addEventListener('click', e => {
+      //   component.set('rules', {
+      //     hideCountDown: false,
+      //     closeForm: false,
+      //     hidePage: false,
+      //     showOtherPage: true,
+      //     showOtherElement: false,
+      //   });
+      // })
+
+      // const showOtherElementEl = elInput.querySelector('#showOtherElement');
+      // showOtherElementEl.addEventListener('click', e => {
+      //   component.set('rules', {
+      //     hideCountDown: false,
+      //     closeForm: false,
+      //     hidePage: false,
+      //     showOtherPage: false,
+      //     showOtherElement: true,
+      //   });
+      // })
+    }
+  });
 
   blocks.forEach(block => {
     editor.Blocks.add(block.id, block);
@@ -594,7 +716,7 @@ export const webBuilderPlugin = (editor) => {
   })
 
   editor.on('canvas:drop', (DataTransfer, component) => {
-    if (component && component.isChildOf('repeater-item')) {
+    if (component && !Array.isArray(component) && component.isChildOf('repeater-item')) {
       const index = component.index();
       const parentElements = component.parents();
       const parentIndexes = [];
