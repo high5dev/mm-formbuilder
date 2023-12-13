@@ -7,6 +7,7 @@ import FieldTypeModal from './FieldTypeModal';
 import AddFieldModal from './AddFieldModal';
 import AddItemField from './addItemFields';
 import { updateProductDatasetAction } from '../../store/action';
+import { setWebStoreReducer } from '../../store/reducer';
 
 const EditProductsModal = ({ store, showEditProductsModal, setShowEditProductsModal }) => {
   const [name, setName] = useState('');
@@ -26,9 +27,30 @@ const EditProductsModal = ({ store, showEditProductsModal, setShowEditProductsMo
     setOpenAddFieldModal(!openAddFieldModal);
   };
 
-  const onChange = (fieldName, changedValue) => {
-
+  const onChange = (fieldName, changedValue, index) => {
+    let updatedWebProducts = { ...store?.webProducts };
+    let updatedValues = [...updatedWebProducts.values];
+    updatedValues[index] = { ...updatedValues[index], [fieldName]: changedValue };
+    updatedWebProducts.values = updatedValues;
+    dispatch(setWebStoreReducer(updatedWebProducts));
+    // console.log(fieldName);
   };
+
+  const onBlur = (fieldName, changedValue, index) => {
+    if (store?.webProducts.values[index][fieldName] == undefined || store?.webProducts.values[index][fieldName] == null || store?.webProducts.values[index][fieldName] == changedValue) return;
+    let updatedWebProducts = { ...store?.webProducts };
+    let updatedValues = [...updatedWebProducts.values];
+    updatedValues[index] = { ...updatedValues[index], [fieldName]: changedValue };
+    updatedWebProducts.values = updatedValues;
+    dispatch(updateProductDatasetAction(store?.form?._id, { values: updatedValues }));
+    // console.log(fieldName);
+  };
+
+  const removeProduct = (index) => {
+    let updatedValues = [...store?.webProducts.values];
+    updatedValues.splice(index, 1);
+    dispatch(updateProductDatasetAction(store?.form?._id, { values: updatedValues }));
+  }
 
   const onChangeAddItem = (valueObj) => {
     setNewItemToAdd({ ...newItemToAdd, ...valueObj });
@@ -109,6 +131,7 @@ const EditProductsModal = ({ store, showEditProductsModal, setShowEditProductsMo
                               }
                             })
                           }
+                          <th style={{ padding: '8px 10px 8px 10px', borderRight: '1px solid #cbdfff', borderBottom: '1px solid #cbdfff', backgroundColor: '#e7f0ff' }}></th>
                           <th style={{ padding: '8px 20px 8px 20px', borderRight: '1px solid #cbdfff', borderBottom: '1px solid #cbdfff', backgroundColor: '#e7f0ff', color: '#7caeff' }}><a onClick={fieldTypeToggle}>+ Add Field</a></th>
                         </thead>
                         <tbody>
@@ -118,16 +141,19 @@ const EditProductsModal = ({ store, showEditProductsModal, setShowEditProductsMo
                                 <tr>
                                   <td style={{ padding: '8px 10px 8px 10px', borderRight: '1px solid #cbdfff', borderBottom: '1px solid #cbdfff', color: '#7caeff' }}>{idx + 1}</td>
                                   {
-                                    store?.webProducts.fields?.length > 0 && store?.webProducts.fields.map(f => {
+                                    store?.webProducts.fields?.length > 0 && store?.webProducts.fields.map((f, index) => {
                                       if (!f.default) {
                                         return (
                                           <td style={{ borderRight: '1px solid #cbdfff', borderBottom: '1px solid #cbdfff' }}>
-                                            <CollectionField field={f.name} type={f.type} value={e[f.name] || null} onChange={onChange} isDefault={f.default} />
+                                            <CollectionField field={f.name} type={f.type} value={e[f.name] || null} onChange={onChange} isDefault={f.default} index={idx} onBlur={onBlur} />
                                           </td>
                                         );
                                       }
                                     })
                                   }
+                                  <td style={{ padding: '8px 10px 8px 10px', borderRight: '1px solid #cbdfff', borderBottom: '1px solid #cbdfff', color: '#7caeff' }}>
+                                    <svg viewBox="0 0 24 24" style={{ width: "24px", cursor: "pointer" }} onClick={() => removeProduct(idx)}><path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"></path></svg>
+                                  </td>
                                 </tr>
                               )
                             })
@@ -203,6 +229,7 @@ const EditProductsModal = ({ store, showEditProductsModal, setShowEditProductsMo
         collection={store?.webProducts}
         openCollection={showEditProductsModal}
         setOpenEditCollection={setShowEditProductsModal}
+        store={store}
       />
     </>
   );

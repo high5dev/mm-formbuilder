@@ -449,7 +449,6 @@ export default function Editor({
     }
 
     gjsEditor.on('component:add', (component) => {
-      console.log(component.get('tagName'));
       if (component.get('type') === 'gridproductgallery' || component.get('type') === 'sliderproductgallery' || component.get('type') === 'relatedproducts') {
         setIsStoreLoading(true);
         dispatch(getProductDatasetAction(storeRef.current?.form?._id));
@@ -462,7 +461,7 @@ export default function Editor({
         setCartProductId(storeRef.current?.webProducts?.values[0].id);
         component.set('productId', storeRef.current?.webProducts?.values[0].id);
       }
-      else if (component.get('type') === 'shopping-cart') {
+      else if (component.get('type') === 'shoppingcart') {
         let cartItemCount = 0;
 
       }

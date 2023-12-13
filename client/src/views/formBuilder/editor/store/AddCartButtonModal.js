@@ -18,7 +18,9 @@ const AddCartButtonModal = ({ store, showAddCartButtonModal, setShowAddCartButto
 
   useEffect(() => {
     if (store?.webProducts?.values?.length > 0) {
-      setProducts(store?.webProducts?.values?.filter(item => item.name.toLowerCase().includes(searchText.toLowerCase())));
+      setProducts(store?.webProducts?.values?.filter(item => {
+        return item.name.toLowerCase().includes(searchText.toLowerCase())
+      }));
     }
   }, [store?.webProducts, searchText]);
 
