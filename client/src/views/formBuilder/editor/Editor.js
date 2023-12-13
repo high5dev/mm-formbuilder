@@ -120,6 +120,7 @@ export default function Editor({
   const [modelsToConnect, setModelsToConnect] = useState([]);
   const [isinvite, setIsInvite] = useState(false);
   const [selectedCollection, setSelectedCollection] = useState(null);
+  const [selectedFormBlock, setSelectedFormBlock]=useState(null);
 
   useEffect(() => {
     if (store.form._id) {
@@ -220,7 +221,8 @@ export default function Editor({
         setFormEditorMdl(true);
       }
      })
-    }
+  }
+
   const scrollToTarget =(_target) =>{
     document.getElementById(_target).scrollIntoView(true);
   } 
@@ -292,6 +294,15 @@ export default function Editor({
   const handleChangeProductId = (id) => {
     setCartProductId(id);
     selectedCmp.set('productId', id);
+  }
+
+  const saveFormBlock=(html)=>{
+    let comps=selectedFormBlock.get('components');
+    while (comps.length > 0) {
+      comps.pop();
+    };
+    comps.push(html)
+    
   }
 
   // useEffect(() =>{
@@ -425,6 +436,9 @@ export default function Editor({
         }
       });
     }
+    gjsEditor.on('canvas:drop', (data, component)=>{
+      setSelectedFormBlock(component);
+    })
 
     gjsEditor.on('component:add', (component) => {
       if(component.get('type') === 'grid-product-gallery' || component.get('type') === 'slider-product-gallery' || component.get('type') === 'related-products') {
@@ -934,16 +948,48 @@ export default function Editor({
   useEffect(() => {
     if (editor) {
       store.webElements.map((el, idx) => {
-        editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
-          label: el.category[0].name,
-          content: el.html,
-          media: el.imageUrl,
-          category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
-          menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
-          mainMenu:`${el.category[0].mainMenu}`,
-          refcategory:`${el.category[0].name}`,
-          submenu:el.category[0].subMenu,
-        });
+        if(el.category[0].name==='New Form'){
+          let formItem = {
+            isComponent: el => (el.tagName === 'DIV' && el.classList.contains('new-form')),
+            model: {
+              defaults: {
+                tagName: 'div',
+                draggable: true,
+                droppable: true,
+                selectable: false,
+                components: (props)=>{
+                  return <div></div>
+                },
+                attributes: { class: 'new-form' },
+                styles: `.new-form {min-height: 300px;}`,
+                stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
+              },
+            },
+          };
+          editor.DomComponents.addType('new-form', formItem);
+          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
+            label: el.category[0].name,
+            content: {type:'new-form'},
+            media: el.imageUrl,
+            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
+            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+            mainMenu:`${el.category[0].mainMenu}`,
+            refcategory:`${el.category[0].name}`,
+            submenu:el.category[0].subMenu,
+          });
+        }
+        else{
+          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
+            label: el.category[0].name,
+            content: el.html,
+            media: el.imageUrl,
+            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
+            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+            mainMenu:`${el.category[0].mainMenu}`,
+            refcategory:`${el.category[0].name}`,
+            submenu:el.category[0].subMenu,
+          });
+        }
       });
     }
   }, [store.webElements, editor]);
@@ -1443,7 +1489,7 @@ export default function Editor({
       <DuplicateModal store={store} isOpen={duplicateMdl} toggle={_toggleDuplicate}/>
       <InvitationModal store={store} isOpen={isinvite} toggle={setIsInvite}/>
       <Modal isOpen={formeditorMdl} centered className='form-builder-modal' fullscreen scrollable style={{ overflowX: 'hidden' }}>
-        <FormEditorModal toggle={(e)=>setFormEditorMdl(e)} store={store} page={page}/>
+        <FormEditorModal toggle={(e)=>setFormEditorMdl(e)} store={store} page={page} saveFormBlock={saveFormBlock}/>
       </Modal>
       <CreateCollectionModal store={store} open={openCreateColMdl} toggle={createColMdlToggle} editCollectionToggle={toggleOpenEditCollection}/>
       <CreateDatasetModal store={store} mdlData={openCreateDatasetMdl} toggle={createDatasetToggle} />

@@ -36,7 +36,7 @@ import OperatorItem from '../form/rules/OperatorItem';
 import PreviewFormModal from './PreviewFormModal';
 import {setChildFormReducer, setFormRuleReducer} from '../../../store/reducer'
 import {createFormRuleAction, updateFormRuleAction, deleteFormRuleAction, editChildFormAction, uploadFileAction,createFormPageAction, removeFormPageAction, getFormPageAction} from '../../../store/action';
-export default function Index({store, toggle, page}) {
+export default function Index({store, toggle, page, saveFormBlock}) {
   const dispatch=useDispatch();
   const history=useHistory();
   const [currentFormPage, setCurrentFormPage]=useState();
@@ -127,8 +127,10 @@ export default function Index({store, toggle, page}) {
               return _formPage;
             }
            });
-           const newForm={...res, formPages};
+
+           const newForm={...res.data, formPages};
            dispatch(setChildFormReducer(newForm));
+           saveFormBlock(res.page);
         }
       })
     }

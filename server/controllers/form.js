@@ -99,10 +99,12 @@ exports.editForm = asyncHandler(async (req, res) => {
     const _page=await FormPage.findOne({_id: currentPage});
     const data = await Form.findOneAndUpdate({ _id: id}, Obj, {new:true});
     await googleCloudStorageWebBuilder.createAndUpdatePage(`${data._id}/${_page._id}`, `${html} <style>${css}</style>`);
+    const page=await googleCloudStorageWebBuilder.readPage(`${data._id}/${_page._id}`);
     if (data) {
       return res.send({ 
         success: true, 
-        data
+        data,
+        page
      });
     }
     else{

@@ -43,7 +43,7 @@ export const editChildFormAction =(id, payload) =>async(dispatch) =>{
     dispatch(setChildFormReducer(data.data));
     if (data?.success === true) {
       toast.success('Form saved successfully');
-      return data.data
+      return data
     } else {
       toast.error('Something went wrong! please try again');
     }
