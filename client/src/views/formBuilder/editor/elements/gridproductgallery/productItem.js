@@ -1,14 +1,15 @@
 let productItem = {
-  isComponent: el => el.tagName === 'div',
+  isComponent: el => el.tagName === 'div' && el.classList.contains('product-item'),
   model: {
     defaults: {
       tagName: 'div',
       draggable: false,
       droppable: false,
+      selectable: false,
       attributes: { class: 'product-item', productId: "" },
       components: (props) => {
         return `
-        <div class="bg-image hover-overlay ripple shadow-1-strong rounded" data-mdb-ripple-color="light" style="max-width: 22rem;">
+        <div class="bg-image hover-overlay ripple shadow-1-strong rounded" data-gjs-selectable="false" data-mdb-ripple-color="light" style="max-width: 22rem;">
           <img src="https://mdbcdn.b-cdn.net/img/new/fluid/city/113.webp" class="product-img1" alt="Louvre" />
           <a href="#!">
             <div class="mask">
@@ -16,9 +17,9 @@ let productItem = {
               <div class="quick-view">Quick View</div>
             </div>
           </a>
-          <div class="product-name">Product 1</div>
-          <div class="product-price">USD 100</div>
-          <div class="product-cart">Add to cart</div>
+          <div class="product-name" data-gjs-selectable="false">Product 1</div>
+          <div class="product-price" data-gjs-selectable="false">USD 100</div>
+          <div class="product-cart" data-gjs-selectable="false">Add to cart</div>
         </div>`;
       },
       styles: `
@@ -113,17 +114,17 @@ let productItem = {
         comps.pop();
       }
       const comp = (
-        <div class="bg-image hover-overlay ripple shadow-1-strong rounded" data-mdb-ripple-color="light" style="max-width: 22rem;">
-          <img src={product.url ? product.url : "https://i.ibb.co/6br0NxL/1.png"} class="product-img1" alt="Louvre" />
-          <div class="product-hover">
-            <div class="mask">
-              <img src={product.url1 ? product.url1 : "https://i.ibb.co/6br0NxL/1.png"} class="product-img2" />
-              <div class="quick-view">Quick View</div>
+        <div class="bg-image hover-overlay ripple shadow-1-strong rounded" data-gjs-selectable="false" data-mdb-ripple-color="light" style="max-width: 22rem;" draggable="false">
+          <img src={product.url ? product.url : "https://i.ibb.co/6br0NxL/1.png"} class="product-img1" alt="Louvre" data-gjs-selectable="false" draggable="false" />
+          <div class="product-hover" data-gjs-selectable="false" draggable="false">
+            <div class="mask" data-gjs-selectable="false" draggable="false">
+              <img src={product.url1 ? product.url1 : "https://i.ibb.co/6br0NxL/1.png"} class="product-img2" draggable="false" data-gjs-selectable="false" />
+              <div class="quick-view" draggable="false" data-gjs-selectable="false">Quick View</div>
             </div>
           </div>
-          <div class="product-name">{product.name}</div>
-          <div class="product-price">{product.currency} {product.price}</div>
-          <div class="product-cart">Add to cart</div>
+          <div class="product-name" data-gjs-selectable="false" draggable="false">{product.name}</div>
+          <div class="product-price" data-gjs-selectable="false" draggable="false">{product.currency} {product.price}</div>
+          <div class="product-cart" data-gjs-selectable="false" draggable="false">Add to cart</div>
         </div>
       )
       comps.push(comp);
