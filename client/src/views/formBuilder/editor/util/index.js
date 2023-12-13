@@ -294,7 +294,7 @@ export const menu = [
         menu: 'Shopping Cart',
         data: [
           {
-            id: 'shopping-cart',
+            id: 'shoppingcart',
             title: 'Shopping Cart',
             description: 'Add a shortcut to your shopping cart anywhere on your site.',
           }

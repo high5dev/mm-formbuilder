@@ -154,7 +154,7 @@ export const blocks = [
     id: 'shopping-cart',
     label: 'Shopping Cart',
     attributes: { class: 'fa fa-text' },
-    content: { type: 'shopping-cart', text: 'Add a shortcut to your shopping cart anywhere on your site.' },
+    content: { type: 'shoppingcart', text: 'Add a shortcut to your shopping cart anywhere on your site.' },
     media: 'shoppingBags',
     category: 'Store',
   },

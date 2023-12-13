@@ -461,7 +461,7 @@ export default function Editor({
         setCartProductId(storeRef.current?.webProducts?.values[0].id);
         component.set('productId', storeRef.current?.webProducts?.values[0].id);
       }
-      else if (component.get('type') === 'shopping-cart') {
+      else if (component.get('type') === 'shoppingcart') {
         let cartItemCount = 0;
 
       }
