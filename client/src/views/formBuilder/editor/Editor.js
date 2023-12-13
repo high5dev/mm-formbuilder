@@ -449,7 +449,6 @@ export default function Editor({
     }
 
     gjsEditor.on('component:add', (component) => {
-      console.log(component.get('tagName'));
       if (component.get('type') === 'gridproductgallery' || component.get('type') === 'sliderproductgallery' || component.get('type') === 'relatedproducts') {
         setIsStoreLoading(true);
         dispatch(getProductDatasetAction(storeRef.current?.form?._id));

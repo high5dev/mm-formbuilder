@@ -174,28 +174,28 @@ export const blocks = [
     media: 'currencyConverter',
     category: 'Store',
   },
-  {
-    id: 'productpage',
-    label: 'Currency Converter',
-    attributes: { class: 'fa fa-text' },
-    content: { type: 'productpage', text: 'Make shopping easier by letting customers shop products in their currency.' },
-    media: 'productpage',
-    category: 'Store',
-  },
-  {
-    id: 'cartpage',
-    label: 'Currency Converter',
-    attributes: { class: 'fa fa-text' },
-    content: { type: 'cartpage', text: 'Make shopping easier by letting customers shop products in their currency.' },
-    media: 'cartpage',
-    category: 'Store',
-  },
-  {
-    id: 'thankyoupage',
-    label: 'Currency Converter',
-    attributes: { class: 'fa fa-text' },
-    content: { type: 'thankyoupage', text: 'Make shopping easier by letting customers shop products in their currency.' },
-    media: 'thankyoupage',
-    category: 'Store',
-  }
+  // {
+  //   id: 'productpage',
+  //   label: 'Currency Converter',
+  //   attributes: { class: 'fa fa-text' },
+  //   content: { type: 'productpage', text: 'Make shopping easier by letting customers shop products in their currency.' },
+  //   media: 'productpage',
+  //   category: 'Store',
+  // },
+  // {
+  //   id: 'cartpage',
+  //   label: 'Currency Converter',
+  //   attributes: { class: 'fa fa-text' },
+  //   content: { type: 'cartpage', text: 'Make shopping easier by letting customers shop products in their currency.' },
+  //   media: 'cartpage',
+  //   category: 'Store',
+  // },
+  // {
+  //   id: 'thankyoupage',
+  //   label: 'Currency Converter',
+  //   attributes: { class: 'fa fa-text' },
+  //   content: { type: 'thankyoupage', text: 'Make shopping easier by letting customers shop products in their currency.' },
+  //   media: 'thankyoupage',
+  //   category: 'Store',
+  // }
 ];
