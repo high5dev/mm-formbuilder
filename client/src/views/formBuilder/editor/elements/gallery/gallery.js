@@ -5,7 +5,7 @@ let gallery = {
         // script,
         tagName: 'div',
         draggable: '*',
-        droppable: true,
+        droppable: false,
         attributes: { class: 'gallery' },
         components: (props) => {
           const numOfItems = props.attributes.numOfItems;

@@ -5,7 +5,7 @@ let galleryItem = {
       defaults: {
         tagName: 'div',
         draggable: false,
-        droppable: true,
+        droppable: false,
         attributes: { class: 'gallery-item'},
         components:(props) =>{
           return(
