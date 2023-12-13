@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Modal, ModalBody, ModalHeader, Spinner } from 'reactstrap';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-// import {
-//   createStripePaymentIntentAction,
-//   getStripeConfigAction,
-//   getStripeCustomerAction
-// } from '../../../../finance/invoice/store/action';
+import {
+  createStripePaymentIntentAction,
+  getStripeConfigAction,
+  getStripeCustomerAction
+} from '../../../finance/invoice/store/action';
 import Checkout from './Checkout';
 //import PaymentTextImage from '../../../../finance/components/PaymentTextImage';
 
@@ -18,62 +18,62 @@ export default function PaymentModal({ open, toggle, form, formEntry, dispatch }
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     if (formEntry) {
-      // dispatch(getStripeConfigAction({ type: 'form', id: form._id })).then((res) => {
-      //   if (res.accountId) {
-      //     setAccountId(true);
+      dispatch(getStripeConfigAction({ type: 'form', id: form._id })).then((res) => {
+        if (res.accountId) {
+          setAccountId(true);
           
-      //     setStripePromise(loadStripe(res.pk, { stripeAccount: res.accountId }));
-      //     dispatch(
-      //       getStripeCustomerAction({
-      //         name: formEntry?.fullName,
-      //         email: formEntry?.email,
-      //         stripeAccountId: res.accountId,
-      //         addToContact: false
-      //       })
-      //     ).then((stripeCustomer) => {
-      //       console.log("customer",stripeCustomer)
-      //       if (stripeCustomer.data) {
-      //         const payload = {
-      //           amount: formEntry?.order?.total,
-      //           currency: 'usd',
-      //           customer: stripeCustomer.data.customerId,
-      //           accountId: res.accountId
-      //         };
-      //         setPayment({
-      //           amount: formEntry.order.total,
-      //           currency: 'usd',
-      //           customerId: stripeCustomer.data.customerId,
-      //           accountId: res.accountId
-      //         });
-      //         dispatch(createStripePaymentIntentAction(payload)).then((result) => {
-      //           setClientSecret(result);
-      //           setIsLoading(false);
-      //         });
+          setStripePromise(loadStripe(res.pk, { stripeAccount: res.accountId }));
+          dispatch(
+            getStripeCustomerAction({
+              name: formEntry?.fullName,
+              email: formEntry?.email,
+              stripeAccountId: res.accountId,
+              addToContact: false
+            })
+          ).then((stripeCustomer) => {
+            console.log("customer",stripeCustomer)
+            if (stripeCustomer.data) {
+              const payload = {
+                amount: formEntry?.order?.total,
+                currency: 'usd',
+                customer: stripeCustomer.data.customerId,
+                accountId: res.accountId
+              };
+              setPayment({
+                amount: formEntry.order.total,
+                currency: 'usd',
+                customerId: stripeCustomer.data.customerId,
+                accountId: res.accountId
+              });
+              dispatch(createStripePaymentIntentAction(payload)).then((result) => {
+                setClientSecret(result);
+                setIsLoading(false);
+              });
               
              
-      //       }
-      //       else{
-      //         const payload = {
-      //           amount: formEntry?.order?.total,
-      //           currency: 'usd',
-      //           accountId: res.accountId
-      //         };
-      //         setPayment({
-      //           amount: formEntry.order.total,
-      //           currency: 'usd',
-      //           accountId: res.accountId
-      //         });
-      //         dispatch(createStripePaymentIntentAction(payload)).then((result) => {
-      //           setClientSecret(result);
-      //           setIsLoading(false);
-      //         });
-      //       }
-      //     });
-      //   } else {
-      //     setAccountId(false);
-      //     setIsLoading(false);
-      //   }
-      // });
+            }
+            else{
+              const payload = {
+                amount: formEntry?.order?.total,
+                currency: 'usd',
+                accountId: res.accountId
+              };
+              setPayment({
+                amount: formEntry.order.total,
+                currency: 'usd',
+                accountId: res.accountId
+              });
+              dispatch(createStripePaymentIntentAction(payload)).then((result) => {
+                setClientSecret(result);
+                setIsLoading(false);
+              });
+            }
+          });
+        } else {
+          setAccountId(false);
+          setIsLoading(false);
+        }
+      });
     }
   }, [formEntry]);
   return (
