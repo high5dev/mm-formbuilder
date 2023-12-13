@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Text from './Text';
 
-const CollectionField = ({field, type, value, onChange, isDefault}) => {
+const CollectionField = ({ field, type, value, onChange, onBlur, isDefault, index }) => {
   switch (type) {
     case 'text':
-      return <Text field={field} value={value} onChange={onChange} isDefault={isDefault}/>;
+      return <Text field={field} value={value} onChange={onChange} onBlur={onBlur} isDefault={isDefault} index={index} />;
     default:
-      return <Text field={field} value={value} onChange={onChange} isDefault={isDefault}/>;
+      return <Text field={field} value={value} onChange={onChange} onBlur={onBlur} isDefault={isDefault} index={index} />;
   }
 }
 

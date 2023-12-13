@@ -1,8 +1,8 @@
 let shoppingcart = {
-  isComponent: el => el.tagName === 'shoppingcart',
+  isComponent: el => el.tagName === 'DIV' && el.classList.contains('shoppingcart'),
   model: {
     defaults: {
-      tagName: 'shoppingcart',
+      tagName: 'div',
       draggable: '*',
       droppable: false,
       attributes: { class: 'shoppingcart' },
@@ -20,27 +20,13 @@ let shoppingcart = {
       // viewSplit: 'true',
       // viewLabel: 'true',
       traits: [
-        // {
-        //   type: 'checkbox',
-        //   name: 'viewSplit',
-        //   changeProp: true,
-        //   valueTrue: 'YES',
-        //   valueFalse: 'NO',
-        // },
-        // {
-        //   type: 'checkbox',
-        //   name: 'viewLabel',
-        //   changeProp: true,
-        //   valueTrue: 'YES',
-        //   valueFalse: 'NO',
-        // },
+        {
+          type: 'string',
+          name: 'size',
+          changeProp: true,
+          min: 1,
+        }
       ],
-      styles: `
-        .shoppingcart {
-          width: 29%;
-          display: block;
-        },
-      `,
       script: function () {
 
       }
@@ -49,10 +35,23 @@ let shoppingcart = {
   view: {
     init() {
       this.listenTo(this.model, 'change:cartItemCount', this.handleChangeCartItemCount);
+      this.listenTo(this.model, 'change:size', this.handleChangeSize);
     },
 
     handleChangeCartItemCount(e) {
       this.model.get('components').find('.items-count')[0].innerText = this.model.get('cartItemCount');
+    },
+
+    handleChangeSize(e) {
+      const newSize = this.model.get('size');
+
+      // Update the width of the shoppingcart element based on the new size
+      // const shoppingcartElement = this.el.querySelector('.shoppingcart');
+      // if (shoppingcartElement) {
+      // this.el.style.width = `${newSize}px`;
+      // }
+      this.model.setAttributes({ class: 'shoppingcart', style: `width: ${newSize}px;display: block;` })
+      this.render();
     }
   }
 };
