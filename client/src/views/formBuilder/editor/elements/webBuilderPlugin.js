@@ -74,7 +74,7 @@ export const webBuilderPlugin = (editor) => {
       let selected_index;
       const trait_name = trait.get('name');
       let images = component.get('images');
-      const src = component.getAttributes().src;
+      let src='';
       const newLinkElement = document.createElement('div');
       newLinkElement.className = 'trait-image-url';
       newLinkElement.innerHTML = `

@@ -36,7 +36,7 @@ let gallery = {
             min: 1,
           }
         ],
-        styles: `.gallery {display: grid; grid-template-columns: repeat(4, 2fr); column-gap: 0px; row-gap: 0px;width:40%}`,
+        styles: `.gallery {display: grid; grid-template-columns: repeat(4, 2fr); column-gap: 0px; row-gap: 0px;width:40%; padding:3px}`,
       },
 
     },
@@ -55,17 +55,17 @@ let gallery = {
 
       handleChangeNumOfItems(e){
         let comps=this.model.get('components');
-        while (comps.length > 0) {
-          comps.pop();
-        };
-        const item = {
-          type: 'gallery-item',
-        };
+        // while (comps.length > 0) {
+        //   comps.pop();
+        // };
+        // const item = {
+        //   type: 'gallery-item',
+        // };
         const numOfItems = this.model.get('numOfItems');
         const numPerRow = this.model.get('numPerRow');
-        for(let i=0; i<numOfItems;i++){
-          comps.push(item)
-        }
+        // for(let i=0; i<numOfItems;i++){
+        //   comps.push(item)
+        // }
         comps.parent.addStyle({ 'grid-template-columns': `repeat(${numPerRow}, 1fr)` });
         this.render();
       }
