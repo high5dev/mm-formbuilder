@@ -240,7 +240,6 @@ export const webBuilderPlugin = (editor) => {
     noLabel: true,
     // Expects as return a simple HTML string or an HTML element
     createInput({ trait, component }) {
-      const socialList = component.props().socialList;
       const traitName = trait.get('name');
       let newName = '';
       let newUrl = '';
@@ -259,6 +258,8 @@ export const webBuilderPlugin = (editor) => {
 
       const containerElement = document.createElement('div');
       containerElement.className = 'trait-social-items-container';
+     
+      const socialList = component.props().socialList;
       const socialItems = [];
       socialList.forEach((item, index) => {
         socialItems.push(`
@@ -738,6 +739,18 @@ export const webBuilderPlugin = (editor) => {
         }
         tempCpt.append(component.clone(), {at: index})
       }
+    }
+    if(component && component.get('type')==='social-bar'){
+      let parentElement=component.getEl();
+      let imageElements=parentElement.getElementsByTagName('img');
+      let linkElements=parentElement.getElementsByTagName('a');
+      let tempList=[];
+      for(let i=0; i<imageElements.length;i++){
+          const _imageEl=imageElements[i]; 
+          const item={name:_imageEl.alt, url:linkElements[i].href, image:_imageEl.src, type:'webaddress'};
+          tempList.push(item);
+      }
+      component.set('socialList', tempList);
     }
   })
 
