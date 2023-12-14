@@ -44,7 +44,7 @@ export default function Index() {
   const [toggleOpenPayment, setToggleOpenPayment] = useState(false);
   const [openPayment, setOpenPayment] = useState(false);
   const [formEntry, setFormEntry] = useState();
-  const store = useSelector((state) => state.formEditor);
+  const store = useSelector((state) => state.websiteEditor);
   const iframeRef = useRef(null);
   const storeRef = useRef(null);
   storeRef.current = store;
@@ -223,6 +223,9 @@ export default function Index() {
     };
     const payload = { id, pageName: name };
     const linkUrl = store.linkUrl;
+
+    console.log('linkUrl-----------------------------------', linkUrl, payload);
+
     if (!linkUrl || linkUrl === 'website') {
       if (blogId) {
         const payload = { id, blogId };
