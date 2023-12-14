@@ -41,7 +41,7 @@ export default function Index({ editor, selectedCmp, setEditor, setTraitTab, cha
             > 
       <div className="trait-sidebar">
         <div className='sidebar-header'>
-            <span className='px-1 fs-5 fw-bolder text-black'>Traits</span>
+            <span className='px-1 fs-5 fw-bolder text-black'>Settings</span>
             <span><X size={20} onClick={(e)=>{setTraitTab(false)}}/></span>
           </div>
           <div className='bg-white'>
