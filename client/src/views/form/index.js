@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
-import {getChildPreviewFormPageAction} from "../formBuilder/store/action";
+import {getChildPreviewFormPageAction} from "../webBuilder/store/action";
 
 
 export default function Index() {
