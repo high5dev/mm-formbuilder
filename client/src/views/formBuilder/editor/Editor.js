@@ -19,6 +19,7 @@ import {
   Modal
 } from 'reactstrap';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import ReactHtmlParser from 'react-html-parser';
 import websitePlugin from 'grapesjs-preset-webpage';
 import basicBlockPlugin from 'grapesjs-blocks-basic';
 import formPlugin from 'grapesjs-plugin-forms';
@@ -41,7 +42,7 @@ import { webBuilderPlugin } from './elements/webBuilderPlugin';
 import PublishModal from './topNav/publish/publishModal';
 import { getWebElementsAction, createWebElementAction, getBlogsAction, getProductDatasetAction } from '../store/action';
 import { menu } from './util';
-import { getCategoriesByMenu, createWebElement } from '../store/api';
+import { getCategoriesByMenu, createWebElement,getImageLibrary} from '../store/api';
 import * as htmlToImage from 'html-to-image';
 import html2canvas from 'html2canvas';
 import AddElementModal from './topNav/import/AddElementModal';
@@ -62,6 +63,7 @@ import AddCartButtonModal from './store/AddCartButtonModal';
 import BlogModal from './topNav/blog/BlogModal'
 import { GiConsoleController } from 'react-icons/gi';
 import Sidebar from './Sidebar';
+import { element } from 'prop-types';
 export default function Editor({
   isblog,
   setIsBlog,
@@ -975,16 +977,136 @@ export default function Editor({
   useEffect(() => {
     if (editor) {
       store.webElements.map((el, idx) => {
-        editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
-          label: el.category[0].name,
-          content: el.html,
-          media: el.imageUrl,
-          category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
-          menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
-          mainMenu:`${el.category[0].mainMenu}`,
-          refcategory:`${el.category[0].name}`,
-          submenu:el.category[0].subMenu,
-        });
+        if(el.category[0].subMenu==='repeater'){
+          const parser = new DOMParser();
+          let htmlCmp = parser.parseFromString(el.html, 'text/html');
+          const style=htmlCmp.head;
+          const firstChild=htmlCmp.body.firstChild;
+          if(firstChild.className){
+            firstChild.className+=' repeater';
+          }
+          else{
+            firstChild.className+='repeater';
+          }
+          if(firstChild.style.display!='grid'){
+            firstChild.style.display='grid';
+          }
+          const elements=firstChild.children;
+          if(elements && elements.length>0){
+            for(let i=0; i<elements.length;i++){
+              if(elements[i].className){
+                elements[i].className+=' repeater-item';
+              }
+              else{
+                elements[i].className+='repeater-item';
+              }
+              elements[i].style.backgroundColor='white';
+              elements[i].style.minHeight='0px';
+            }
+          };
+          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
+            label: el.category[0].name,
+            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
+            media: el.imageUrl,
+            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
+            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+            mainMenu:`${el.category[0].mainMenu}`,
+            refcategory:`${el.category[0].name}`,
+            submenu:el.category[0].subMenu,
+          });
+        }
+        else if(el.category[0].subMenu==='iframe'){
+          const parser = new DOMParser();
+          let htmlCmp = parser.parseFromString(el.html, 'text/html');
+          const firstChild=htmlCmp.body.firstChild;
+          if(firstChild.className){
+            firstChild.className+=' iframe-element';
+          }
+          else{
+            firstChild.className+='iframe-element';
+          }
+          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
+            label: el.category[0].name,
+            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
+            media: el.imageUrl,
+            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
+            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+            mainMenu:`${el.category[0].mainMenu}`,
+            refcategory:`${el.category[0].name}`,
+            submenu:el.category[0].subMenu,
+          });
+        }
+        else if(el.category[0].subMenu==='social-bar'){
+          const parser = new DOMParser();
+          let htmlCmp = parser.parseFromString(el.html, 'text/html');
+          const firstChild=htmlCmp.body.firstChild;
+          if(firstChild.className){
+            firstChild.className+=' social-bar';
+          }
+          else{
+            firstChild.className='social-bar';
+          }
+          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
+            label: el.category[0].name,
+            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
+            media: el.imageUrl,
+            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
+            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+            mainMenu:`${el.category[0].mainMenu}`,
+            refcategory:`${el.category[0].name}`,
+            submenu:el.category[0].subMenu,
+          });
+        }
+        else if(el.category[0].subMenu==='gallery'){
+          const parser = new DOMParser();
+          let htmlCmp = parser.parseFromString(el.html, 'text/html');
+          const firstChild=htmlCmp.body.firstChild;
+          if(firstChild.className){
+            firstChild.className+=' gallery';
+          }
+          else{
+            firstChild.className='gallery';
+          }
+          if(firstChild.style.display!='grid'){
+            firstChild.style.display='grid';
+          }
+          const elements=firstChild.children;
+          if(elements && elements.length>0){
+            for(let i=0; i<elements.length;i++){
+              if(elements[i].className){
+                elements[i].className+=' gallery-item';
+              }
+              else{
+                elements[i].className='gallery-item';
+              }
+              elements[i].style.backgroundColor='white';
+              elements[i].style.height='auto';
+            }
+          };
+          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
+            label: el.category[0].name,
+            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
+            media: el.imageUrl,
+            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
+            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+            mainMenu:`${el.category[0].mainMenu}`,
+            refcategory:`${el.category[0].name}`,
+            submenu:el.category[0].subMenu,
+          });
+
+        }
+        else{
+          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
+            label: el.category[0].name,
+            content: el.html,
+            media: el.imageUrl,
+            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
+            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+            mainMenu:`${el.category[0].mainMenu}`,
+            refcategory:`${el.category[0].name}`,
+            submenu:el.category[0].subMenu,
+          });
+        }
       });
     }
   }, [store.webElements, editor]);
