@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
 import { Button, Form } from 'reactstrap';
-import { addFormEntryAction, sendEmailToUserAction, sendInvoiceAction } from '../../../store/action';
+import { addFormEntryAction, sendEmailToUserAction, sendInvoiceAction } from '../../store/action';
 import { toast } from 'react-toastify';
-import { SocketContext } from '../../../../../utility/context/Socket';
+import { SocketContext } from '../../../../utility/context/Socket';
 
 export default function Checkout({ form, formEntry, dispatch, toggle , payment}) {
   const socket = useContext(SocketContext)

@@ -4,6 +4,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { Input, Spinner } from 'reactstrap'
 import { Modal } from 'reactstrap';
 import { getPreviewPageAction, getPublishPageAction, getPreviewBlogPageAction, getPublishBlogPageAction, updateThankyouProductsAction, updateSelectedProductAction } from "../formBuilder/store/action";
+import PaymentModal from '../formBuilder/editor/stripePayment/PaymentModal';
 import renderHTML from 'react-render-html';
 import { BiMobile } from 'react-icons/bi';
 import {
@@ -40,6 +41,9 @@ export default function Index() {
   const [thankyouLink, setThankyouLink] = useState("");
   const [productLink, setProductLink] = useState("");
   const [isPageLoading, setIsPageLoading] = useState(false);
+  const [toggleOpenPayment, setToggleOpenPayment] = useState(false);
+  const [openPayment, setOpenPayment] = useState(false);
+  const [formEntry, setFormEntry] = useState();
   const store = useSelector((state) => state.formEditor);
   const iframeRef = useRef(null);
   const storeRef = useRef(null);
@@ -491,8 +495,9 @@ export default function Index() {
           updateCart(target.parentElement.parentElement.getAttribute('productid'), 0, true);
         } else if(target.matches('.checkout-button')) {
           dispatch(updateThankyouProductsAction(storeRef.current?.cartProducts));
-          dispatch(updateCartProductsAction([]));
-          history.push(thankyouLink);
+          // dispatch(updateCartProductsAction([]));
+          setOpenPayment(true);
+          // history.push(thankyouLink);
         } else if(target.matches('.product-img2') || target.matches('.quick-view')) {
           const selectedProduct = storeRef.current?.webProducts?.values?.find((element) => element.id === target.parentElement.parentElement.parentElement.parentElement.getAttribute('productid'));
           dispatch(updateSelectedProductAction(selectedProduct));
@@ -594,6 +599,13 @@ export default function Index() {
         }
       </div>
       {pageInfo?.seoDetails?.bodyCode}
+      <PaymentModal
+        form={store.form}
+        formEntry={formEntry}
+        toggle={toggleOpenPayment}
+        open={openPayment}
+        dispatch={dispatch}
+      />
     </>
 
   );

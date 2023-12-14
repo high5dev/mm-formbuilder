@@ -37,7 +37,7 @@ const EditProductsModal = ({ store, showEditProductsModal, setShowEditProductsMo
   };
 
   const onBlur = (fieldName, changedValue, index) => {
-    if (store?.webProducts.values[index][fieldName] == undefined || store?.webProducts.values[index][fieldName] == null || store?.webProducts.values[index][fieldName] == changedValue) return;
+    if (((store?.webProducts.values[index][fieldName] == undefined || store?.webProducts.values[index][fieldName] == null) && (changedValue == null || changedValue == undefined || changedValue == "")) || store?.webProducts.values[index][fieldName] == changedValue) return;
     let updatedWebProducts = { ...store?.webProducts };
     let updatedValues = [...updatedWebProducts.values];
     updatedValues[index] = { ...updatedValues[index], [fieldName]: changedValue };
