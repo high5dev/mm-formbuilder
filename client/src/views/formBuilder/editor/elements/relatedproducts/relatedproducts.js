@@ -100,7 +100,7 @@ let relatedproducts = {
                 /* Ensures only the part of .slides within the container is visible */
               }
 
-              .slides {
+              .slides { 
                 width: 100%;
                 display: flex;
                 /* Lays out the images in a horizontal row */

@@ -36,7 +36,20 @@ const script = function(props) {
       init() {
         this.listenTo(this.model, 'change:url', this.handleChangeUrl);
       },
-      handleChangeSocialList() {
+      handleChangeUrl() {
+        const comps=this.model.get('components');
+        const _element=comps.parent.getEl();
+        const url=this.model.get('url');
+        let iframes=_element.getElementsByTagName('iframe');
+        for(let i=0; i<iframes.length;i++){
+          const iframe=iframes[i];
+          iframe.setAttribute('src', url);
+        }
+        const item=_element.innerHTML;
+        while (comps.length > 0) {
+          comps.pop();
+        };
+        comps.push(item)
         this.render();
       },
     }

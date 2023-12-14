@@ -3,11 +3,18 @@ let galleryItem = {
     isComponent: el => (el.tagName === 'DIV' && el.classList.contains('gallery-item')),
     model: {
       defaults: {
-        tagName: 'img',
+        tagName: 'div',
         draggable: false,
-        droppable: true,
-        attributes: { class: 'gallery-item', src:'https://i.ibb.co/xM56xB3/image-large-3.png' },
-        styles: `.gallery-item {background-color: #b9dbcb;width:100px;height:100px}`,
+        droppable: false,
+        attributes: { class: 'gallery-item'},
+        components:(props) =>{
+          return(
+            <a target="_blank" href="https://i.ibb.co/xM56xB3/image-large-3.png">
+               <img src="https://i.ibb.co/xM56xB3/image-large-3.png" width='100' height='100'/>
+            </a>
+          )
+        },
+        styles: `.gallery-item {background-color: #b9dbcb;width:100px;height:100px; padding:3px}`,
         stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
         images:[],
         traits: [
@@ -41,8 +48,25 @@ let galleryItem = {
         this.listenTo(this.model, 'change:images', this.handleChangeImages);
       },
       handleChangeUrl(e) {
+        const comps=this.model.get('components');
+        const _element=comps.parent.getEl();
         const url=this.model.get('url');
-        this.model.setAttributes({ src: url });
+        let images=_element.getElementsByTagName('img');
+        let links=_element.getElementsByTagName('a');
+        for(let i=0; i<images.length;i++){
+          const image=images[i];
+          image.setAttribute('src', url);
+        }
+        for(let i=0; i<links.length;i++){
+          const link=links[i];
+          link.setAttribute('href', url);
+        };
+        const item=_element.innerHTML;
+        console.log('item', item);
+        while (comps.length > 0) {
+          comps.pop();
+        };
+        comps.push(item)
         this.render();
       },
       async handleChangeImages(e){

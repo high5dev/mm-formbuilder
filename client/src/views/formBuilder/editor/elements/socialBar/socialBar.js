@@ -9,35 +9,22 @@ let socialBar = {
       components: (props) => {
         const socialList = props.attributes.socialList;
         const components = [];
-
-        for (let i = 0; i < socialList.length; i++) {
-          const socialItem = socialList[i];
-
-          components.push(
+        return (
+          <div class="social-bar-container">
             {
-              tagName: 'a',
-              draggable: false,
-              droppable: false,
-              hoverable: false,
-              attributes: { href: `${socialItem.url}`, target: '_parent' },
-              selectable: false,
-              components: [
-                {
-                  tagName: 'img',
-                  draggable: false,
-                  droppable: false,
-                  hoverable: false,
-                  selectable: false,
-                  attributes: {
-                    class: 'social-icon',
-                    src: socialItem.image || `https://i.ibb.co/YZX14HG/image33.png`,
-                    alt: socialItem.name,
-                  },
-                },
-              ],
+              socialList && socialList.map((socialItem)=>{
+                return(
+                  `
+                  <a href=${socialItem.url} target='_parent'>
+                    <img src=${socialItem.image} class="social-icon" alt=${socialItem.name}>
+                  </a>
+                  `
+                )
+              })
             }
-          );
-        }
+          </div>
+        )
+
         return components;
       },
       socialList: [
@@ -88,7 +75,8 @@ let socialBar = {
       ],
       
       styles: `
-        .social-bar {display: flex; flex-direction: row; width: fit-content;}
+        .social-bar {display: flex; flex-direction: row; width: fit-content;padding:5px}
+        .social-bar-container{display:flex}
         .social-icon {width: 40px; height: 40px; margin: 5px; border-radius: 5px;}
       `,
       stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius'],
@@ -101,35 +89,24 @@ let socialBar = {
     handleChangeSocialList() {
       const comps = this.model.get('components');
       const socialList = this.model.get('socialList');
-      comps.reset();
-      
-      for (let i = 0; i < socialList.length; i++) {
-          const socialItem = socialList[i];
-
-          comps.add(
-            {
-              tagName: 'a',
-              draggable: false,
-              droppable: false,
-              hoverable: false,
-              attributes: { href: `${socialItem.url}` },
-              components: [
-                {
-                  tagName: 'img',
-                  draggable: false,
-                  droppable: false,
-                  hoverable: false,
-                  attributes: {
-                    class: 'social-icon',
-                    src: socialItem.image || `https://i.ibb.co/1Q0tjDs/image-7.png`,
-                    alt: socialItem.name
-                  }
-                },
-              ],
-            }
-          );
-        }
-
+      while (comps.length > 0) {
+        comps.pop();
+      };
+      comps.push(
+        <div class="social-bar-container">
+          {
+            socialList && socialList.map((socialItem)=>{
+              return(
+                `
+                <a href=${socialItem.url} target='_parent'>
+                  <img src=${socialItem.image} alt=${socialItem.name} class='social-icon'>
+                </a>
+                `
+              )
+            })
+          }
+        </div>
+      );
       this.render();
     },
   }
