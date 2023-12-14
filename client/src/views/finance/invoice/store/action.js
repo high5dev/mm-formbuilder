@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify';
 import * as api from './api';
 import { setInvoiceListReducer } from './reducer';
-import { updateMembershipBuy } from '../../../shops/store/api';
+// import { updateMembershipBuy } from '../../../shops/store/api';
 
 /// ** PAYMENT ACTIONS
 export const getStripeConfigAction = (payload) => async (dispatch) => {
@@ -127,7 +127,7 @@ export const addInvoiceAction = (payload) => async (dispatch) => {
     const { data } = await api.addInvoice(payload);
     if (payload.isMembership && payload.isMembership === true) {
       //save invoiceId
-      await updateMembershipBuy(payload.items[0].itemId, { invoiceId: data?.data?._id })
+      // await updateMembershipBuy(payload.items[0].itemId, { invoiceId: data?.data?._id })
     }
     if (payload.sendInvoice === true) {
       let p = { title: '', message: '', invoiceId: data?.data?._id, recipient: payload.recipient }

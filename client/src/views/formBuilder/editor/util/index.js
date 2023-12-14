@@ -66,6 +66,29 @@ export const menu = [
     subMenu: [],
   },
   {
+    id: 'Blocks',
+    name: 'Blocks',
+    icon: <FaRegSquare size={24} color={'#585858'} />,
+    subMenu: [
+      {
+        id: 'repeater',
+        name: 'Repeater',
+      },
+      {
+        id: 'gallery',
+        name: 'Gallery'
+      },
+      {
+        id:'iframe',
+        name:'Iframe'
+      },
+      {
+        id:'social-bar',
+        name:'SocialBar'
+      }
+    ],
+  },
+  {
     id: 'assets',
     name: 'Assets',
     icon: <MdOutlineBrokenImage size={24} color={'#585858'} />,
@@ -113,23 +136,6 @@ export const menu = [
       {
         id: 'containers',
         name: 'Containers',
-      },
-    ],
-  },
-  {
-    id: 'text',
-    name: 'Text',
-    icon: <MdTextFormat size={24} color={'#585858'} />,
-    subMenu: [],
-  },
-  {
-    id: 'buttons',
-    name: 'Buttons',
-    icon: <FaRegSquare size={24} color={'#585858'} />,
-    subMenu: [
-      {
-        id: 'buttons',
-        name: 'Buttons',
       },
     ],
   },

@@ -19,6 +19,7 @@ import {
   Modal
 } from 'reactstrap';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import ReactHtmlParser from 'react-html-parser';
 import websitePlugin from 'grapesjs-preset-webpage';
 import basicBlockPlugin from 'grapesjs-blocks-basic';
 import formPlugin from 'grapesjs-plugin-forms';
@@ -41,7 +42,7 @@ import { webBuilderPlugin } from './elements/webBuilderPlugin';
 import PublishModal from './topNav/publish/publishModal';
 import { getWebElementsAction, createWebElementAction, getBlogsAction, getProductDatasetAction } from '../store/action';
 import { menu } from './util';
-import { getCategoriesByMenu, createWebElement } from '../store/api';
+import { getCategoriesByMenu, createWebElement,getImageLibrary} from '../store/api';
 import * as htmlToImage from 'html-to-image';
 import html2canvas from 'html2canvas';
 import AddElementModal from './topNav/import/AddElementModal';
@@ -63,6 +64,7 @@ import AddCartButtonModal from './store/AddCartButtonModal';
 import BlogModal from './topNav/blog/BlogModal'
 import { GiConsoleController } from 'react-icons/gi';
 import Sidebar from './Sidebar';
+import { element } from 'prop-types';
 export default function Editor({
   isblog,
   setIsBlog,
@@ -332,12 +334,26 @@ export default function Editor({
   useEffect(() => {
     if(editor) {
       setIsStoreLoading(true);
+      function updateComponentsAndChildren(components, webProducts) {
+        components.forEach((component) => {
+          if (component.get('type') === 'gridproductgallery' || component.get('type') === 'sliderproductgallery' || component.get('type') === 'relatedproducts') {
+            component.set('products', webProducts);
+          }
+
+          // Recursively update children
+          if (component.components) {
+            updateComponentsAndChildren(component.components().models, webProducts);
+          }
+        });
+      }
+
       const components = editor.getWrapper().components().models;
       components.forEach((component) => {
         if(component.get('type') === 'grid-product-gallery' || component.get('type') === 'slider-product-gallery' || component.get('type') === 'related-products') {
           component.set('products', store?.webProducts);
         }
       });
+      updateComponentsAndChildren(components, store?.webProducts);
       setIsStoreLoading(false);
     }
   }, [store?.webProducts]);
@@ -458,7 +474,21 @@ export default function Editor({
       }
       else if (component.get('type') === 'shoppingcart') {
         let cartItemCount = 0;
-        
+      }
+      else if (component.get('type') === 'productpage') {
+        if (storeRef.current?.selectedProduct == {} && storeRef.current?.webProducts.length > 0) {
+          dispatch(updateSelectedProductAction(storeRef.current?.webProducts[0]));
+          component.set('product', storeRef.current?.webProducts[0]);
+        } else {
+          component.set('product', storeRef.current?.selectedProduct);
+        }
+      }
+      else if (component.get('type') === 'cartpage') {
+        component.set('cartProducts', storeRef.current?.cartProducts);
+      } else if(component.get('type') === 'iframe-element') {
+        component.set('url', component.getAttributes().url);
+      } else if(component.get('type') === 'count-down') {
+        component.set('template', component.getAttributes().template);
       }
       if (!loadedRef.current && component.get('type') != 'image') {
         if (compoId == "")
@@ -982,6 +1012,44 @@ export default function Editor({
             menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
             mainMenu:`${el.category[0].mainMenu}`,
             refcategory:`${el.category[0].name}`,
+            submenu:el.category[0].subMenu
+          })
+        }
+        if(el.category[0].subMenu==='repeater'){
+          const parser = new DOMParser();
+          let htmlCmp = parser.parseFromString(el.html, 'text/html');
+          const style=htmlCmp.head;
+          const firstChild=htmlCmp.body.firstChild;
+          if(firstChild.className){
+            firstChild.className+=' repeater';
+          }
+          else{
+            firstChild.className+='repeater';
+          }
+          if(firstChild.style.display!='grid'){
+            firstChild.style.display='grid';
+          }
+          const elements=firstChild.children;
+          if(elements && elements.length>0){
+            for(let i=0; i<elements.length;i++){
+              if(elements[i].className){
+                elements[i].className+=' repeater-item';
+              }
+              else{
+                elements[i].className+='repeater-item';
+              }
+              elements[i].style.backgroundColor='white';
+              elements[i].style.minHeight='0px';
+            }
+          };
+          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
+            label: el.category[0].name,
+            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
+            media: el.imageUrl,
+            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
+            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+            mainMenu:`${el.category[0].mainMenu}`,
+            refcategory:`${el.category[0].name}`,
             submenu:el.category[0].subMenu,
           });
         }
@@ -1007,6 +1075,85 @@ export default function Editor({
           editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
             label: el.category[0].name,
             content: {type:'add-form'},
+            media: el.imageUrl,
+            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
+            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+            mainMenu:`${el.category[0].mainMenu}`,
+            refcategory:`${el.category[0].name}`,
+            submenu:el.category[0].subMenu
+          })
+        }
+        else if(el.category[0].subMenu==='iframe'){
+          const parser = new DOMParser();
+          let htmlCmp = parser.parseFromString(el.html, 'text/html');
+          const firstChild=htmlCmp.body.firstChild;
+          if(firstChild.className){
+            firstChild.className+=' iframe-element';
+          }
+          else{
+            firstChild.className+='iframe-element';
+          }
+          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
+            label: el.category[0].name,
+            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
+            media: el.imageUrl,
+            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
+            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+            mainMenu:`${el.category[0].mainMenu}`,
+            refcategory:`${el.category[0].name}`,
+            submenu:el.category[0].subMenu,
+          });
+        }
+        else if(el.category[0].subMenu==='social-bar'){
+          const parser = new DOMParser();
+          let htmlCmp = parser.parseFromString(el.html, 'text/html');
+          const firstChild=htmlCmp.body.firstChild;
+          if(firstChild.className){
+            firstChild.className+=' social-bar';
+          }
+          else{
+            firstChild.className='social-bar';
+          }
+          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
+            label: el.category[0].name,
+            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
+            media: el.imageUrl,
+            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
+            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+            mainMenu:`${el.category[0].mainMenu}`,
+            refcategory:`${el.category[0].name}`,
+            submenu:el.category[0].subMenu,
+          });
+        }
+        else if(el.category[0].subMenu==='gallery'){
+          const parser = new DOMParser();
+          let htmlCmp = parser.parseFromString(el.html, 'text/html');
+          const firstChild=htmlCmp.body.firstChild;
+          if(firstChild.className){
+            firstChild.className+=' gallery';
+          }
+          else{
+            firstChild.className='gallery';
+          }
+          if(firstChild.style.display!='grid'){
+            firstChild.style.display='grid';
+          }
+          const elements=firstChild.children;
+          if(elements && elements.length>0){
+            for(let i=0; i<elements.length;i++){
+              if(elements[i].className){
+                elements[i].className+=' gallery-item';
+              }
+              else{
+                elements[i].className='gallery-item';
+              }
+              elements[i].style.backgroundColor='white';
+              elements[i].style.height='auto';
+            }
+          };
+          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
+            label: el.category[0].name,
+            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
             media: el.imageUrl,
             category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
             menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
@@ -1517,7 +1664,7 @@ export default function Editor({
           <div style={{display:tab==='Layers'?'block':'none'}}>
             <div id="layer-manager-container" />  
           </div>
-          <div style={{display:tab==='Traits'?'block':'none'}}>
+          <div style={{display:tab==='Settings'?'block':'none'}}>
             <div id="trait-manager-container" />
           </div>
         </PerfectScrollbar>
