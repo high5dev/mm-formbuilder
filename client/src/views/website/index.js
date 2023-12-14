@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { Input, Spinner } from 'reactstrap'
 import { Modal } from 'reactstrap';
-import { getPreviewPageAction, getPublishPageAction, getPreviewBlogPageAction, getPublishBlogPageAction, updateThankyouProductsAction, updateSelectedProductAction } from "../formBuilder/store/action";
-import PaymentModal from '../formBuilder/editor/stripePayment/PaymentModal';
+import { getPreviewPageAction, getPublishPageAction, getPreviewBlogPageAction, getPublishBlogPageAction, updateThankyouProductsAction, updateSelectedProductAction } from "../webBuilder/store/action";
+import PaymentModal from '../webBuilder/editor/stripePayment/PaymentModal';
 import renderHTML from 'react-render-html';
 import { BiMobile } from 'react-icons/bi';
 import {
@@ -21,7 +21,7 @@ import {
   MdOutlineInsertComment,
   MdOutlineLensBlur
 } from 'react-icons/md';
-import { updateCartProductsAction, getProductDatasetAction } from '../formBuilder/store/action';
+import { updateCartProductsAction, getProductDatasetAction } from '../webBuilder/store/action';
 const days = [
   'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'
 ];

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Label, Input } from 'reactstrap';
-import { updateCartProductsAction } from '../../formBuilder/store/action';
+import { updateCartProductsAction } from '../../webBuilder/store/action';
 import logo from '@src/assets/images/logo/logo.png'
 import { Link } from 'react-router-dom';
 
 const Checkout = () => {
     const [totalPrice, setTotalPrice] = useState(0);
     const dispatch = useDispatch();
-    const store = useSelector((state) => state.formEditor);
+    const store = useSelector((state) => state.websiteEditor);
 
     useEffect(() => {
         if (store?.cartProducts) {
