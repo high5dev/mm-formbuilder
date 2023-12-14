@@ -475,8 +475,10 @@ export default function Editor({
       }
       else if (component.get('type') === 'cartpage') {
         component.set('cartProducts', storeRef.current?.cartProducts);
-      } else if(component.get('type') == 'iframe-element') {
+      } else if(component.get('type') === 'iframe-element') {
         component.set('url', component.getAttributes().url);
+      } else if(component.get('type') === 'count-down') {
+        component.set('template', component.getAttributes().template);
       }
       // if (!loadedRef.current && component.get('type') != 'image') {
       //   if (compoId == "")

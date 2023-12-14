@@ -1,6 +1,6 @@
 import { components } from "react-select";
 
-const script = function(props) {
+const script = function (props) {
   const now1 = new Date().getTime();
   const start1 = new Date(props.startDate).getTime();
   const end1 = new Date(props.endDate).getTime();
@@ -73,7 +73,7 @@ const script = function(props) {
     const start = new Date(props.startDate).getTime();
     const end = new Date(props.endDate).getTime();
     let distance = 0;
-  
+
     if (start <= now) {
       distance = end - now;
     } else {
@@ -95,20 +95,20 @@ const script = function(props) {
         this.style.display = 'none';
       }
       if (rules.closeForm) {
-  
+
       }
       if (rules.hidePage) {
-  
+
       }
       if (rules.showOtherPage) {
-  
+
       }
       if (rules.showOtherElement) {
-  
-      } 
+
+      }
     }
   }, 1000);
-  
+
   if (distance1 <= 0) {
     clearInterval(interval);
     if (rules.hideCountDown) {
@@ -125,7 +125,7 @@ const script = function(props) {
     }
     if (rules.showOtherElement) {
 
-    } 
+    }
   }
   return;
 };
@@ -138,8 +138,8 @@ let countDown = {
       tagName: 'div',
       draggable: '*',
       droppable: false,
-      attributes: { class: 'count-down' },
-      components:[
+      attributes: { class: 'count-down', template: '' },
+      components: [
         {
           tagName: 'div',
           components: [
@@ -320,7 +320,7 @@ let countDown = {
         mins: true,
         secs: true,
       },
-      template: 'template1',
+      template: '',
       traits: [
         {
           type: 'date',
@@ -350,9 +350,9 @@ let countDown = {
           type: 'select',
           name: 'template',
           options: [
-            { id: 'template1', name: 'Countdown 1'},
-            { id: 'template2', name: 'Countdown 2'},
-            { id: 'template3', name: 'Countdown 3'},
+            { id: 'template1', name: 'Countdown 1' },
+            { id: 'template2', name: 'Countdown 2' },
+            { id: 'template3', name: 'Countdown 3' },
           ],
           changeProp: true,
         }
@@ -361,10 +361,11 @@ let countDown = {
     },
   },
   view: {
-    init(){
+    init() {
       this.listenTo(this.model, 'change:template', this.changeTemplate);
     },
     changeTemplate() {
+      this.model.setAttributes({ class: 'count-down', template: this.model.get('template') });
       const comps = this.model.get('components');
       comps.reset();
       const template = this.model.get('template');
@@ -532,6 +533,11 @@ let countDown = {
             .count-item {text-align: center; font-size: 50px;}
             .item-label {text-align: center; font-size: 20px;}
             .split-dots {align-self: start; font-size: 50px; padding-right: 10px; padding-left: 10px;}
+            @media (max-width: 400px) {
+              .count-item {
+                font-size: 30px !important;
+              }
+            }
             `,
           }
         ]);
@@ -664,11 +670,19 @@ let countDown = {
         {
           tagName: 'style',
           components: `
-            .days, .hours, .mins, .secs {padding-right: 10px; padding-left: 10px; padding-bottom: 5px; border: none; color: #000; background-image: linear-gradient(45deg, blue, red); align-items: center; justify-content: center; color: #fff; width: 100px; height: 100px; border-radius: 50%; margin-right: 10px; margin-left: 10px}
-            .count-down {padding: 10px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold;}
-            .count-item {text-align: center; font-size: 50px;}
-            .item-label {text-align: center; font-size: 20px;}
-            .split-dots {align-self: start; font-size: 50px; padding-right: 10px; padding-left: 10px;}
+            .days, .hours, .mins, .secs {padding-right: 10px !important; padding-left: 10px !important; padding-bottom: 5px !important; border: none !important; color: #000 !important; background-image: linear-gradient(45deg, blue, red) !important; align-items: center !important; justify-content: center !important; color: #fff !important; width: 100px !important; height: 100px !important; border-radius: 50% !important; margin-right: 10px !important; margin-left: 10px}
+            .count-down {padding: 10px !important; display: flex !important; align-items: center !important; justify-content: center !important; color: #000 !important; font-weight: bold !important;}
+            .count-item {text-align: center !important; font-size: 50px !important;}
+            .item-label {text-align: center !important; font-size: 20px !important;}
+            .split-dots {align-self: start !important; font-size: 50px !important; padding-right: 10px !important; padding-left: 10px !important;}
+            @media (max-width: 400px) {
+              .count-item {
+                font-size: 30px !important;
+              }
+              .split-dots {
+                font-size: 30px !important;
+              }
+            }
           `,
         }]);
       }
@@ -800,10 +814,19 @@ let countDown = {
         {
           tagName: 'style',
           components: `
-            .days, .hours, .mins, .secs {padding-right: 15px; padding-left: 15px; padding-bottom: 5px; border-radius: 5px; margin-right: 10px; margin-left: 10px; background-image: linear-gradient(in hsl longer #12a689, black); color: #fff;}
-            .count-down {padding: 10px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold;}
-            .count-item {text-align: center; font-size: 50px;}
-            .item-label {text-align: center; font-size: 20px;}
+            .days, .hours, .mins, .secs {padding-right: 15px !important; padding-left: 15px !important; padding-bottom: 5px !important; border-radius: 5px !important; margin-right: 10px !important; margin-left: 10px !important; background-image: linear-gradient(in hsl longer #12a689, black) !important; color: #fff !important;}
+            .count-down {padding: 10px !important; display: flex !important; align-items: center !important; justify-content: center !important; color: #000 !important; font-weight: bold !important;}
+            .count-item {text-align: center !important; font-size: 50px !important;}
+            .item-label {text-align: center !important; font-size: 20px !important;}
+            @media (max-width: 400px) {
+              .days, .hours, .mins, .secs {padding-right: 10px !important; padding-left: 10px !important;}
+              .count-item {
+                font-size: 30px !important;
+              }
+              .split-dots {
+                font-size: 30px !important;
+              }
+            }
           `,
         }]);
       }
