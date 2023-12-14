@@ -534,6 +534,7 @@ let countDown = {
             .item-label {text-align: center; font-size: 20px;}
             .split-dots {align-self: start; font-size: 50px; padding-right: 10px; padding-left: 10px;}
             @media (max-width: 400px) {
+              .days, .hours, .mins, .secs {padding-right: 0px !important; padding-left: 0px !important;}
               .count-item {
                 font-size: 30px !important;
               }
@@ -676,6 +677,7 @@ let countDown = {
             .item-label {text-align: center !important; font-size: 20px !important;}
             .split-dots {align-self: start !important; font-size: 50px !important; padding-right: 10px !important; padding-left: 10px !important;}
             @media (max-width: 400px) {
+              .days, .hours, .mins, .secs {padding-right: 0px !important; padding-left: 0px !important;}
               .count-item {
                 font-size: 30px !important;
               }
@@ -819,7 +821,7 @@ let countDown = {
             .count-item {text-align: center !important; font-size: 50px !important;}
             .item-label {text-align: center !important; font-size: 20px !important;}
             @media (max-width: 400px) {
-              .days, .hours, .mins, .secs {padding-right: 10px !important; padding-left: 10px !important;}
+              .days, .hours, .mins, .secs {padding-right: 0px !important; padding-left: 0px !important;}
               .count-item {
                 font-size: 30px !important;
               }
