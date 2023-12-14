@@ -4,7 +4,6 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { Input, Spinner } from 'reactstrap'
 import { Modal } from 'reactstrap';
 import { getPreviewPageAction, getPublishPageAction, getPreviewBlogPageAction, getPublishBlogPageAction, updateThankyouProductsAction, updateSelectedProductAction } from "../webBuilder/store/action";
-import PaymentModal from '../webBuilder/editor/stripePayment/PaymentModal';
 import renderHTML from 'react-render-html';
 import { BiMobile } from 'react-icons/bi';
 import {
@@ -21,7 +20,8 @@ import {
   MdOutlineInsertComment,
   MdOutlineLensBlur
 } from 'react-icons/md';
-import { updateCartProductsAction, getProductDatasetAction } from '../webBuilder/store/action';
+import { updateCartProductsAction, getProductDatasetAction, createDatasetAction } from '../webBuilder/store/action';
+import {setFormDatasetReducer} from '../webBuilder/store/reducer';
 const days = [
   'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'
 ];
@@ -41,9 +41,6 @@ export default function Index() {
   const [thankyouLink, setThankyouLink] = useState("");
   const [productLink, setProductLink] = useState("");
   const [isPageLoading, setIsPageLoading] = useState(false);
-  const [toggleOpenPayment, setToggleOpenPayment] = useState(false);
-  const [openPayment, setOpenPayment] = useState(false);
-  const [formEntry, setFormEntry] = useState();
   const store = useSelector((state) => state.websiteEditor);
   const iframeRef = useRef(null);
   const storeRef = useRef(null);
@@ -223,9 +220,6 @@ export default function Index() {
     };
     const payload = { id, pageName: name };
     const linkUrl = store.linkUrl;
-
-    console.log('linkUrl-----------------------------------', linkUrl, payload);
-
     if (!linkUrl || linkUrl === 'website') {
       if (blogId) {
         const payload = { id, blogId };
@@ -446,6 +440,28 @@ export default function Index() {
         setProduct();
       }
 
+      const formHandler=(_fields, _values)=>{
+        let name;
+        if (pageName) {
+          name = pageName;
+        }
+        else {
+          name = "Home";
+        };
+        const payload={
+          websiteId:id,
+          pageName:name,
+          fields:_fields,
+          values:_values
+        };
+        dispatch(createDatasetAction(payload)).then((res)=>{
+          if(res){
+            let tempDataset=store.formDataset;
+            tempDataset=[...tempDataset, res];
+            dispatch(setFormDatasetReducer(tempDataset));
+          }
+        })
+      }
       // Event handler
       const clickHandler = (event) => {
         let target = event.target;
@@ -498,13 +514,168 @@ export default function Index() {
           updateCart(target.parentElement.parentElement.getAttribute('productid'), 0, true);
         } else if(target.matches('.checkout-button')) {
           dispatch(updateThankyouProductsAction(storeRef.current?.cartProducts));
-          // dispatch(updateCartProductsAction([]));
-          setOpenPayment(true);
-          // history.push(thankyouLink);
+          dispatch(updateCartProductsAction([]));
+          history.push(thankyouLink);
         } else if(target.matches('.product-img2') || target.matches('.quick-view')) {
           const selectedProduct = storeRef.current?.webProducts?.values?.find((element) => element.id === target.parentElement.parentElement.parentElement.parentElement.getAttribute('productid'));
           dispatch(updateSelectedProductAction(selectedProduct));
           history.push(productLink);
+        }
+        else if(target.matches('.input-submit-element')){
+          const parentContainer=target.parentElement.parentElement.parentElement.parentElement;
+          const childrenEls=parentContainer.children;
+          let fields=[];
+          let values=[];
+          if(childrenEls.length>0){
+             for(let i=0; i<childrenEls.length;i++){
+              const childEl=childrenEls[i];
+              if(!childEl.matches('.submit-element')){
+                if(childEl.matches('.birthday-element')){
+                  const _selectEl=childEl.getElementsByTagName('select')[0];
+                  const inputEls=childEl.getElementsByTagName('input');
+                  const month=_selectEl.value;
+                  const day=inputEls[0].value;
+                  const year=inputEls[1].value;
+                  const value=new Date(year, month-1, day);
+                  const name='birthday';
+                  const type='date';
+                  const required=true;
+                  fields.push({
+                    type,
+                    name,
+                    required
+                  });
+                  values.push({
+                    name,
+                    value
+                  })
+                }
+                else if(childEl.matches('.dropdown-element')){
+                  const _selectEl=childEl.getElementsByTagName('select')[0];
+                  const id=_selectEl.id;
+                  const name=_selectEl.name;
+                  const type='select';
+                  const value=_selectEl.value;
+                  const required=_selectEl.required?true:false;
+                  fields.push({
+                    id,
+                    type,
+                    name,
+                    required
+                  });
+                  values.push({
+                    id,
+                    name,
+                    value
+                  })
+  
+                }
+                else if(childEl.matches('.single-choice-element')){
+                  const inputElements=childEl.getElementsByTagName('input');
+                  for(let j=0; j<inputElements.length;j++){
+                    const _inputEl=inputElements[j];
+                    if(_inputEl.checked){
+                      const id=_inputEl.id;
+                      const type=_inputEl.type;
+                      const name=_inputEl.name;
+                      const value=_inputEl.value;
+                      fields.push({
+                        id,
+                        type,
+                        name,
+                      });
+                      values.push({
+                        id,
+                        name,
+                        value
+                      })
+                    }
+                  }
+                }
+                else if(childEl.matches('.multi-choice-element')){
+                  const inputElements=childEl.getElementsByTagName('input');
+                  let _values=[];
+                  let _names=[];
+                  let _ids=[];
+                  let _types=[];
+                  for(let j=0; j<inputElements.length;j++){
+                    const _inputEl=inputElements[j];
+                    if(_inputEl.checked){
+                      const id=_inputEl.id;
+                      const type=_inputEl.type;
+                      const name=_inputEl.name;
+                      const value=_inputEl.value;
+                      _values.push(value);
+                      _ids.push(id);
+                      _names.push(name);
+                      _types.push(type);
+                    }
+                  }
+                  fields.push({
+                    id:_ids,
+                    type:_types,
+                    name:_names
+                  });
+                  values.push({
+                    id:_ids,
+                    name:_names,
+                    value:_values
+                  })
+                }
+                else{
+                  const inputElements=childEl.getElementsByTagName('input');
+                  if(inputElements.length>0){
+                    const _inputEl=inputElements[0];
+                    const id=_inputEl.id;
+                    const value=_inputEl.value;
+                    const type=_inputEl.type;
+                    const name=_inputEl.name;
+                    const placeholder=_inputEl.placeholder;
+                    const required=_inputEl.required;
+                    fields.push({
+                      id,
+                      type,
+                      name,
+                      placeholder,
+                      required
+                    });
+                    values.push({
+                      id,
+                      name,
+                      value
+                    })
+                  }
+                }
+              }
+             }
+          }
+          
+          // const inputElements=formContainer.getElementsByTagName('input');
+
+          // for(let j=0; j<inputElements.length;j++){
+          //   const _inputEl=inputElements[j];
+          //   if(!_inputEl.matches('.input-submit-element')){
+          //     const id=_inputEl.id;
+          //     const value=_inputEl.value;
+          //     const type=_inputEl.type;
+          //     const name=_inputEl.name;
+          //     const placeholder=_inputEl.placeholder;
+          //     const required=_inputEl.required;
+          //     fields.push({
+          //       id,
+          //       type,
+          //       name,
+          //       placeholder,
+          //       required
+          //     });
+          //     values.push({
+          //       id,
+          //       name,
+          //       value
+          //     })
+          //   }
+          // }
+          formHandler(fields, values);
         }
       };
 
@@ -512,18 +683,19 @@ export default function Index() {
       iframeDocument.addEventListener('click', clickHandler);
 
       // Cleanup
-      return () => {
-        iframeDocument.removeEventListener('click', clickHandler);
-      };
+      // return () => {
+      //   iframeDocument.removeEventListener('click', clickHandler);
+      // };
     };
 
     iframe.addEventListener('load', onLoad);
 
     // Cleanup
-    return () => {
-      iframe.removeEventListener('load', onLoad);
-    };
+    // return () => {
+    //   iframe.removeEventListener('load', onLoad);
+    // };
   }, [pageContent]);
+
 
   return (
     <>
@@ -602,13 +774,6 @@ export default function Index() {
         }
       </div>
       {pageInfo?.seoDetails?.bodyCode}
-      <PaymentModal
-        form={store.form}
-        formEntry={formEntry}
-        toggle={toggleOpenPayment}
-        open={openPayment}
-        dispatch={dispatch}
-      />
     </>
 
   );

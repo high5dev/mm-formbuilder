@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 
 //form data
-export const websiteEditor = createSlice({
+export const formEditor = createSlice({
   name: 'websiteEditor',
   initialState: {
     form: {
@@ -20,6 +20,7 @@ export const websiteEditor = createSlice({
     },
     childForms:[],
     formRules:[],
+    formDataset:[],
     linkUrl:'website',
     formOrderElements:{},
     formSalesType:'',
@@ -57,6 +58,9 @@ export const websiteEditor = createSlice({
     },
     setFormRuleReducer: (state,action) =>{
       state.formRules=action?.payload;
+    },
+    setFormDatasetReducer:(state, action) =>{
+      state.formDataset=action?.payload;
     },
     setWebBlogsReducer: (state, action) =>{
       state.webBlogs= action?.payload;
@@ -147,6 +151,7 @@ export const {
   setFormRuleReducer,
   setChildFormReducer,
   setChildFormsReducer,
+  setFormDatasetReducer,
   setToDefaultReducer,
   setAllFormsReducer,
   setFormCategoriesReducer,
@@ -165,5 +170,5 @@ export const {
   setCartProductsReducer,
   setSelectedProductReducer,
   setThankyouProductsReducer
-} = websiteEditor.actions;
-export default websiteEditor.reducer;
+} = formEditor.actions;
+export default formEditor.reducer;

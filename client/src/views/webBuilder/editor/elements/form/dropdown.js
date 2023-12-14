@@ -55,7 +55,7 @@ let dropdownEl = {
 
       ],
       styles: `
-      .dropdown-element {padding:10px; width:450px; margin-left:45px;}
+      .dropdown-element {padding:10px; display:flex; justify-content:space-around}
       .select-dropdown-element {fontSize:16px; padding:10px; width:200px}
     `,
       stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius'],

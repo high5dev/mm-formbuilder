@@ -8,9 +8,9 @@ const {
  editFormRule,
  deleteFormRule
 } = require("../controllers/formRule");
-//form builder
+//form rule
 router.get("/rule/:id", isAuthenticated, getFormRule);
-router.get("/ruless/", isAuthenticated, getFormRules);
+router.get("/rules/", isAuthenticated, getFormRules);
 router.post("/create", isAuthenticated, createFormRule);
 router.put("/edit/:id", isAuthenticated,  editFormRule);
 router.delete("/delete/:id", isAuthenticated, deleteFormRule);

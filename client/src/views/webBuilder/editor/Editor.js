@@ -305,13 +305,14 @@ export default function Editor({
   }
 
   const saveFormBlock=(html)=>{
-    let comps=selectedFormBlock.get('components');
-    while (comps.length > 0) {
-      comps.pop();
-    };
-    comps.push(html);
+    if(selectedFormBlock.get('type')==='new-form'){
+      let comps=selectedFormBlock.get('components');
+      while (comps.length > 0) {
+        comps.pop();
+      };
+      comps.push(html);
   }
-
+  }
   // useEffect(() =>{
   //   let interval;
   //     if(editor && !form.isPublish){
@@ -997,7 +998,7 @@ export default function Editor({
                   return <div></div>
                 },
                 attributes: { class: 'new-form' },
-                styles: `.new-form {min-height: 300px;}`,
+                styles: `.new-form {height:fit-content}`,
                 stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
               },
             },
