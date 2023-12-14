@@ -717,7 +717,7 @@ export const webBuilderPlugin = (editor) => {
   })
 
   editor.on('canvas:drop', (DataTransfer, component) => {
-    if (component && component.isChildOf('repeater-item')) {
+    if (component && !Array.isArray(component) && component.isChildOf('repeater-item')) {
       const index = component.index();
       const parentElements = component.parents();
       const parentIndexes = [];

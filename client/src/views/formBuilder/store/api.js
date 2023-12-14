@@ -16,6 +16,13 @@ export const updateChildForm =(id, payload) =>{
   return API.put('/form/edit/'+id, payload)
 }
 
+export const getChildFormPage=(id, payload)=>{
+  return API.get('/form/page/'+id, {params:payload})
+}
+
+export const getChildForms =() =>{
+  return API.get('/form/forms/');
+}
 export const getChildFormPreviewPage =(payload) =>{
   return API.get('/form/preview-page/',{params:payload});
 }

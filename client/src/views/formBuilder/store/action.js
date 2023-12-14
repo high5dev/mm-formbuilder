@@ -4,6 +4,7 @@ import {
   setFormContacts,
   setFormReducer,
   setChildFormReducer,
+  setChildFormsReducer,
   setFormRuleReducer,
   setTemplatesReducer,
   setImageLibraryReducer,
@@ -45,18 +46,39 @@ export const editChildFormAction =(id, payload) =>async(dispatch) =>{
     dispatch(setChildFormReducer(data.data));
     if (data?.success === true) {
       toast.success('Form saved successfully');
-      return data.data
+      return data
     } else {
       toast.error('Something went wrong! please try again');
     }
   } catch (error) { }
 }
 
+export const getChildFormsAction=() =>async(dispatch) =>{
+  try{
+    const {data}=await api.getChildForms();
+    dispatch(setChildFormsReducer(data.data));
+  }
+  catch(error){
+  }
+}
+
+export const getChildFormPageAction =(id, payload) =>async(dispatch) =>{
+  try {
+    const {data} = await api.getChildFormPage(id, payload);
+    if (data?.success === true) {
+      return data.page
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+  } catch (error) { }
+
+}
+
 export const getChildPreviewFormPageAction =(payload) =>async(dispatch) =>{
   try{
     const {data} = await api.getChildFormPreviewPage(payload);
     if(data?.success === true){
-      return data.data
+      return data.page
     }
     else{
       toast.error('Something went wrong! please try again');
