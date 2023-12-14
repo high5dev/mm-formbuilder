@@ -27,25 +27,26 @@ let gridproductgallery = {
       selectedDataset: {},
       cloning: false,
       traits: [
-        {
-          type: 'number',
-          name: 'numPerRow',
-          changeProp: true,
-          min: 1,
-        },
-        {
-          type: 'number',
-          name: 'numOfItems',
-          changeProp: true,
-          min: 1,
-        }
+        // {
+        //   type: 'number',
+        //   name: 'numPerRow',
+        //   changeProp: true,
+        //   min: 1,
+        // },
+        // {
+        //   type: 'number',
+        //   name: 'numOfItems',
+        //   changeProp: true,
+        //   min: 1,
+        // }
       ],
       styles: `.gridproductgallery {
         display: grid; 
         column-gap: 15px; 
         row-gap: 15px;
-        width:80%;
+        width: 100%;
         grid-template-columns: repeat(auto-fit, minmax(min(100%, 240 * 1px), 1fr));
+        justify-items: center;
       }`,
     },
 
@@ -124,7 +125,7 @@ let gridproductgallery = {
         // });
         m.set('product', this.model.get('products').values[index]);
       });
-      comps.parent.addStyle({ 'grid-template-columns': `repeat(${numPerRow}, 1fr)` });
+      // comps.parent.addStyle({ 'grid-template-columns': `repeat(${numPerRow}, 1fr)` });
       this.render();
       this.model.set('cloning', false);
     }

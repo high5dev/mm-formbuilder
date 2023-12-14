@@ -12,17 +12,30 @@ let relatedproducts = {
           type: 'div',
           draggable: false,
           droppable: false,
-          attributes: { class: 'slides', 'data-gjs-selectable': false },
+          selectable: false,
+          hoverable: false,
+          attributes: { class: 'slider' },
           components: [
             {
-              type: 'product-item',
-            },
-            {
-              type: 'product-item',
-            },
-            {
-              type: 'product-item',
-            },
+              type: 'div',
+              draggable: false,
+              droppable: false,
+              selectable: false,
+              hoverable: false,
+              attributes: { class: 'slides' },
+              components: [
+                {
+                  type: 'product-item',
+                },
+                {
+                  type: 'product-item',
+                },
+                {
+                  type: 'product-item',
+                }
+              ]
+            }
+
             // Add more product-item components as needed
           ],
         },
@@ -30,14 +43,18 @@ let relatedproducts = {
           type: 'button',
           draggable: false,
           droppable: false,
-          attributes: { class: 'prev', 'data-gjs-selectable': false },
+          selectable: false,
+          hoverable: false,
+          attributes: { class: 'prev' },
           content: '&#10094;'
         },
         {
           type: 'button',
           draggable: false,
           droppable: false,
-          attributes: { class: 'next', 'data-gjs-selectable': false },
+          selectable: false,
+          hoverable: false,
+          attributes: { class: 'next' },
           content: '&#10095;'
         },
       ],
@@ -80,7 +97,8 @@ let relatedproducts = {
         function moveSlide(step) {
           var totalImages = getNumOfItems() - 2;
           if (totalImages <= 0) return;
-          var imagesToShow = 3;
+          const slidesWidth = document.querySelector('.slides').clientWidth;
+          var imagesToShow = slidesWidth % 265 == 0 ? slidesWidth / 265 : (slidesWidth / 265 + 1);
           slideIndex = (slideIndex + step + totalImages) % totalImages; // ensures the index loops around
           console.log(slideIndex);
           var offset = -(slideIndex * 100) / imagesToShow; // calculates the percentage to move
@@ -92,7 +110,7 @@ let relatedproducts = {
       },
       styles: `.relatedproducts {
                 position: relative;
-                width: 1010px;
+                width: 100%;
                 /* Adjust this width based on your layout */
                 overflow: hidden;
                 display: block;
@@ -100,7 +118,12 @@ let relatedproducts = {
                 /* Ensures only the part of .slides within the container is visible */
               }
 
-              .slides { 
+              .slider {
+                width: 100%;
+                overflow: hidden;
+              }
+
+              .slides {
                 width: 100%;
                 display: flex;
                 /* Lays out the images in a horizontal row */
@@ -187,7 +210,7 @@ let relatedproducts = {
       this.model.set('cloning', true);
       const numOfItems = this.model.get('numOfItems');
       this.model.setAttributes({ class: 'relatedproducts', 'data-num-of-items': numOfItems });
-      var slidesComponent = this.model.components().find(comp => comp.getAttributes().class === 'slides');
+      var slidesComponent = this.model.components().models[0].components().find(comp => comp.getAttributes().class === 'slides');
 
       if (slidesComponent) {
         // Remove all existing 'product-item' components
@@ -199,7 +222,7 @@ let relatedproducts = {
         const item = {
           type: 'product-item',
         };
-  
+
         for (let i = 0; i < numOfItems; i++) {
           slidesComponent.components().push(item);
         }
