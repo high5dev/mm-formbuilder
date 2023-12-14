@@ -50,13 +50,13 @@ let productItem = {
         }
 
         .product-img1 {
-          width: 240px;
-          height: 240px;
+          width: 240px !important;
+          height: 240px !important;
         }
 
         .product-img2 {
-          width: 240px;
-          height: 240px;
+          width: 240px !important;
+          height: 240px !important;
         }
         
         .w-100 {

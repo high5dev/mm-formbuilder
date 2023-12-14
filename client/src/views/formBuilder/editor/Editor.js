@@ -339,12 +339,21 @@ export default function Editor({
   useEffect(() => {
     if(editor) {
       setIsStoreLoading(true);
+      function updateComponentsAndChildren(components, webProducts) {
+        components.forEach((component) => {
+          if (component.get('type') === 'gridproductgallery' || component.get('type') === 'sliderproductgallery' || component.get('type') === 'relatedproducts') {
+            component.set('products', webProducts);
+          }
+
+          // Recursively update children
+          if (component.components) {
+            updateComponentsAndChildren(component.components().models, webProducts);
+          }
+        });
+      }
+
       const components = editor.getWrapper().components().models;
-      components.forEach((component) => {
-        if(component.get('type') === 'gridproductgallery' || component.get('type') === 'sliderproductgallery' || component.get('type') === 'relatedproducts') {
-          component.set('products', store?.webProducts);
-        }
-      });
+      updateComponentsAndChildren(components, store?.webProducts);
       setIsStoreLoading(false);
     }
   }, [store?.webProducts]);
@@ -1593,7 +1602,7 @@ export default function Editor({
           <div style={{display:tab==='Layers'?'block':'none'}}>
             <div id="layer-manager-container" />  
           </div>
-          <div style={{display:tab==='Traits'?'block':'none'}}>
+          <div style={{display:tab==='Settings'?'block':'none'}}>
             <div id="trait-manager-container" />
           </div>
         </PerfectScrollbar>

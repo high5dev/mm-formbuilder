@@ -490,7 +490,7 @@ export default function MainNav({
               </span>
               <span className="menu-icon">
                 <FiSettings size={24} color={'black'} id="traits" onClick={(e) => {
-                  setTab('Traits');
+                  setTab('Settings');
                   setRSidebarOpen(true);
                 }} />
                 <UncontrolledTooltip placement="bottom" target="traits">
