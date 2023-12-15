@@ -219,28 +219,43 @@ export default function Index({store, toggle, page, saveFormBlock}) {
 
   const addRuleCondition = (e) => {
     let newRuleConditions=ruleConditions;
-    newRuleConditions=[...newRuleConditions, {
+    let newRuleCondition=newRuleConditions[newRuleConditions.length-1];
+    const condition=newRuleCondition.condition;
+    const field=newRuleCondition.field;
+    if(condition.value!='' && field.value!=''){
+      newRuleConditions=[...newRuleConditions, {
       field:{label:'', value:''},
       condition:{label:'', value:''},
       value:''
-    }];
-    let newRuleOperators=ruleOperators;
-    newRuleOperators=[...newRuleOperators, {
-      label:'And',
-      value:'and',
-    }];
-    setRuleOperators([...newRuleOperators]);
-    setRuleConditions([...newRuleConditions]);
+      }];
+      let newRuleOperators=ruleOperators;
+      newRuleOperators=[...newRuleOperators, {
+        label:'And',
+        value:'and',
+      }];
+      setRuleOperators([...newRuleOperators]);
+      setRuleConditions([...newRuleConditions]);
+    }
+    else{
+      toast.error('Please input condition correctly');
+    }
   };
 
   const addRuleResult= (e) =>{
-    let newRuleResult=ruleResults;
-    newRuleResult=[...newRuleResult, {
-      field:[{label:'', value:''}],
-      value:{label:'', value:''}
-    }];
-    setRuleResults([...newRuleResult]);
-
+    let newRuleResults=ruleResults;
+    const newRuleResult=newRuleResults[newRuleResults.length-1];
+    const outputIds=newRuleResult.outputIds;
+    const value=newRuleResult.value;
+    if(outputIds.length>0 && value.value!=''){
+      newRuleResults=[...newRuleResults, {
+        field:[{label:'', value:''}],
+        value:{label:'', value:''}
+      }];
+      setRuleResults([...newRuleResults]);
+    }
+    else{
+      toast.error('Please input rule correctly');
+    }
   }
 
   const addNewOption =(e) =>{
@@ -293,12 +308,24 @@ export default function Index({store, toggle, page, saveFormBlock}) {
   } 
 
   const removeCondition=(index)=>{
-    let newRuleConditons=ruleConditions;
-    newRuleConditons.splice(index, 1);
+    let newRuleConditions=ruleConditions;
     let newRuleOperators=ruleOperators;
-    newRuleOperators.splice(index, 1);
-    setRuleOperators([...newRuleOperators]);
-    setRuleConditions([...newRuleConditons]);
+    if(newRuleConditions.length>1){
+      if(index===0){
+        newRuleConditions.splice(index, 1);
+        newRuleOperators.splice(index+1, 1);
+      }
+      else{
+        newRuleConditions.splice(index, 1);
+        newRuleOperators.splice(index-1, 1);
+      }
+      
+      setRuleOperators([...newRuleOperators]);
+      setRuleConditions([...newRuleConditions]);
+    }
+    else{
+      setRuleOperators([]);
+    }
   }
 
   const changeRuleResult =(index, result) =>{
@@ -308,9 +335,11 @@ export default function Index({store, toggle, page, saveFormBlock}) {
   }
 
   const removeRule=(index) =>{
-    let newRuleResult=ruleResults;
-    newRuleResult.splice(index, 1);
-    setRuleResults([...newRuleResult]);
+    let newRuleResults=ruleResults;
+    if(newRuleResults.length>0){
+      newRuleResults.splice(index, 1);
+      setRuleResults([...newRuleResults]);
+    }
   }
 
   const onChangeOperator=(index, operator) =>{
@@ -654,7 +683,6 @@ export default function Index({store, toggle, page, saveFormBlock}) {
       })
     }
   }, [currentFormPage?._id])
-
   return (
     <div>
       <div className="form-builder-navbar d-flex justify-content-between align-items-center p-1">

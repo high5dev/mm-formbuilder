@@ -188,7 +188,6 @@ export default function ConditionItem({formEditor, ruleCondition, index, compone
             {
               ruleCondition.condition.label!='is empty' && ruleCondition.condition.label!='is filled' && ruleCondition.condition.label!='is checked' && ruleCondition.condition.label!='is not checked' &&          
               <div className='input-value-element'>
-                {console.log('values========', ruleCondition.value)}
                 {
                   ruleCondition.field.label==='Birthday' && <Input type='date' className='my-1' value={ruleCondition.value.inputValue} onChange={(e)=>onChangeValue(e.target.value)} placeholder='Enter a value.' style={{width:'200px'}}/>
                 }
