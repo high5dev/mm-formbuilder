@@ -111,6 +111,7 @@ const FormEntry = require("../FormEntry");
 const Form = require("../Form");
 const FormRule=require("../FormRule");
 const FormPage=require("../FormPage");
+const FormDataset=require("../FormDataset");
 const ImageLibrary = require("../ImageLibrary");
 
 // const Tag = require("../Tag");
@@ -272,6 +273,7 @@ const models = {
   FormRule,
   FormPage,
   FormEntry,
+  FormDataset,
   ImageLibrary,
   // ActionPlans,
   // Video,

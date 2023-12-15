@@ -124,6 +124,20 @@ export const updateFormRuleAction =(id, payload) =>async(dispatch) =>{
   }
 }
 
+export const createDatasetAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createDataset(payload);
+    if (data?.success === true) {
+      toast.success('Data created successfully');
+      return data.data;
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+
+    return data.data
+  } catch (error) { }
+};
+
 export const createFormAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.createForm(payload);

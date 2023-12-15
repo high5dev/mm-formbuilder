@@ -22,7 +22,7 @@ let multiChoiceEl = {
               elProps && elProps.map((elProp)=>{
                 return(
                       <div>
-                         <label><input type={elProp.type} class="input-single-choice-item"  id={elProp.id} name={elProp.name}/>{elProp.label}</label>
+                         <label><input type={elProp.type} class="input-single-choice-item"  id={elProp.id} name={elProp.name} value={elProp.label}/>{elProp.label}</label>
                       </div>
                 )
   
@@ -35,21 +35,21 @@ let multiChoiceEl = {
           {   
               id: 'multi_choice'+ new Date().getTime(),
               label:'Option1',
-              type:'radio',
+              type:'checkbox',
               name:'option',
               checked:true
           },
           {   
             id: 'multi_choice'+ new Date().getTime(),
             label:'Option2',
-            type:'radio',
+            type:'checkbox',
             name:'option',
             checked:false
           },
           {   
             id: 'multi_choice'+new Date().getTime(),
             label:'Option3',
-            type:'radio',
+            type:'checkbox',
             name:'option',
             checked:false
           }
@@ -78,7 +78,7 @@ let multiChoiceEl = {
             elProps && elProps.map((elProp)=>{
               return(
                     <div>
-                      <label><input type={elProp.type} id={elProp.id} name={elProp.name} checked={elProp.checked}/>{elProp.label}</label>
+                      <label><input type={elProp.type} id={elProp.id} name={elProp.name} checked={elProp.checked} value={elProp.label}/>{elProp.label}</label>
                     </div>
               )
     

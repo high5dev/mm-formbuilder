@@ -57,6 +57,9 @@ export const updateFormRule =(id, payload) =>{
   return API.put('/form-rule/edit/' + id, payload);
 }
 
+export const createDataset=(payload)=>{
+  return API.post('/form-dataset/create', payload);
+}
 //create webbuilder
 
 export const createWebBuilder=(payload) => {
