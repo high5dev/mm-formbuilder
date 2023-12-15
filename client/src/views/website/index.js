@@ -240,7 +240,7 @@ export default function Index() {
           let linkElements = htmlCmp.getElementsByTagName('a');
           for (let i = 0; i < linkElements.length; i++) {
             let link_href = linkElements[i].getAttribute('href');
-            if (link_href && !link_href.includes('https') && !link_href.includes('http') && !link_href.includes('preview') && !link_href.includes('website')) {
+            if (link_href && !link_href.includes('mailto:') && !link_href.includes('tel:') && !link_href.includes('https') && !link_href.includes('http') && !link_href.includes('preview') && !link_href.includes('website')) {
               link_href = '/website' + link_href;
             }
             linkElements[i].setAttribute('href', link_href);
@@ -440,7 +440,7 @@ export default function Index() {
         setProduct();
       }
 
-      const formHandler=(_fields, _values)=>{
+      const formHandler=(_fields, _values, messageContainer)=>{
         let name;
         if (pageName) {
           name = pageName;
@@ -459,6 +459,9 @@ export default function Index() {
             let tempDataset=store.formDataset;
             tempDataset=[...tempDataset, res];
             dispatch(setFormDatasetReducer(tempDataset));
+            if(messageContainer){
+              messageContainer.style.display='block';
+            }
           }
         })
       }
@@ -522,6 +525,8 @@ export default function Index() {
           history.push(productLink);
         }
         else if(target.matches('.input-submit-element')){
+          const submitContainer=target.parentElement.parentElement;
+          const messageContainer=submitContainer.querySelector('.message');
           const parentContainer=target.parentElement.parentElement.parentElement.parentElement;
           const childrenEls=parentContainer.children;
           let fields=[];
@@ -675,7 +680,7 @@ export default function Index() {
           //     })
           //   }
           // }
-          formHandler(fields, values);
+          formHandler(fields, values, messageContainer);
         }
       };
 
