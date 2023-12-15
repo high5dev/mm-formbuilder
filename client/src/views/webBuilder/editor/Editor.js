@@ -313,23 +313,6 @@ export default function Editor({
       comps.push(html);
   }
   }
-  // useEffect(() =>{
-  //   let interval;
-  //     if(editor && !form.isPublish){
-  //       interval=setInterval(() =>{
-  //         const current_page=editor.Pages.getSelected();
-  //         const html = editor.getHtml({ current_page });
-  //         const css = editor.getCss({ current_page });
-  //         const payload={
-  //           page:page?._id,
-  //           html:html,
-  //           css:css,
-  //         };
-  //         dispatch(updatePageAction(id, payload));
-  //       }, 2000);
-  //       return () => clearInterval(interval);
-  //     }
-  // }, [editor?.getHtml(editor?.Pages.getSelected()), editor?.getCss(editor?.Pages.getSelected()), form, page])
 
   useEffect(() => {
     if(editor) {
@@ -860,7 +843,7 @@ export default function Editor({
       });
       // gjsEditor.BlockManager.remove('link');
       // gjsEditor.BlockManager.remove('link-block');
-    setEditor(gjsEditor);
+      setEditor(gjsEditor);
   }, []);
 
   useEffect(()=>{
@@ -889,14 +872,6 @@ export default function Editor({
       }
     }
   }, [customwidth])
-
-  // editor?.on('component:selected', (cmp) => {
-  //   dispatch(getWebsiteAction(id)).then(res=>{
-  //     if(res){
-  //       setPage(res[0]);
-  //     }
-  //   })
-  // }, []);
 
   useEffect(() =>{
     if(isclear){
@@ -978,7 +953,23 @@ export default function Editor({
           setIsLoading(false);
           setIsStoreLoading(false);
         }
-      })
+      });
+      const interval = setInterval(() => {
+        if(editor){
+          const current_page=editor.Pages.getSelected();
+          const html = editor.getHtml({ current_page });
+          const css = editor.getCss({ current_page });
+          const payload={
+            page:page?._id,
+            html:html,
+            css:css,
+          };
+          dispatch(updatePageAction(id, payload));
+        }
+    }, 1000*30);
+
+    //Clearing the interval
+    return () => clearInterval(interval);
     }
   }, [page?._id]);
 
