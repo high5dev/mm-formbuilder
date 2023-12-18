@@ -21,7 +21,7 @@ let linkButton = {
                 type:'button',
                 name:'link_'+ new Date().getTime(),
                 linkType:'button',
-                isNewTab:true,
+                tab:'_blank',
                 Url:''
             }
         ],
@@ -34,9 +34,10 @@ let linkButton = {
             },
           ],
         styles: `
-        .link-element {padding:10px; width:450px}
+        .link-element {padding:5px; width:120px}
         .link-parent-element {display:flex; justify-content:space-around}
         .input-link-element {padding:10px; font-size:14px; width:100px; background-color:#174ae7; color:white; border:1px solid}
+        .link-submit-element{text-decoration:none}
       `,
         stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius'],
       },
@@ -48,6 +49,7 @@ let linkButton = {
       handleChangeProps(e) {
         const comps=this.model.get('components');
         const elProp=this.model.get('elProps')[0];
+        console.log('elProp', elProp)
         while (comps.length > 0) {
           comps.pop();
         };
@@ -55,46 +57,43 @@ let linkButton = {
         if(elProp.linkType==='button'){
             item=
               <div class="link-parent-element">
-                <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
+                <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-link-element" value={elProp.label}/> 
               </div>;
         }
         else{
-            let target='_blank';
-            if(_isNewTab){
-                target='_parent';
-            }
+            const target=elProp.tab;
             if(elProp.linkType==='external link'){
                 const _href=elProp.Url;
                 item=
-                <a href={_href} class="submit-link-element" target={target}>
+                <a href={_href} class="link-submit-element" target={target}>
                     <div class="link-parent-element">
-                    <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
+                    <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-link-element" value={elProp.label}/> 
                     </div>
                 </a>
             }
             if(elProp.linkType==='mail'){
                 const mail_href='mailto:'+elProp.Url;
                 item=
-                <a href={mail_href} class="submit-link-element" target={target}>
+                <a href={mail_href} class="link-submit-element" target={target}>
                     <div class="link-parent-element">
-                        <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
+                        <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-link-element" value={elProp.label}/> 
                     </div>
                 </a>
             }
             if(elProp.linkType==='pages'){
                 item=
-                    <a href={elProp.Url} class="submit-link-element" target={target}>
+                    <a href={elProp.Url} class="link-submit-element" target={target}>
                         <div class="link-parent-element">
-                        <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
+                        <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-link-element" value={elProp.label}/> 
                         </div>
                     </a>
             }
             if(elProp.linkType==='phone'){
                 const tel_href='tel:'+elProp.Url;
                 item=
-                <a href={tel_href} class="submit-link-element" target={target}>
+                <a href={tel_href} class="link-submit-element" target={target}>
                     <div class="link-parent-element">
-                        <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
+                        <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-link-element" value={elProp.label}/> 
                     </div>
                 </a>
             }

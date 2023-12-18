@@ -40,7 +40,7 @@ export default function Index({ page, setPage, id, store, editor, setEditor, set
   const [seoModalData, setSeoModalData] = useState({isOpen: false, data: null});
   const addNewPage = () => {
       const pageNum=form.formData.length;
-      const name=`Page ${pageNum}`;
+      const name=`Page${pageNum}`;
       const path='/'+form?._id+'/'+name;
       const payload={
         id,
