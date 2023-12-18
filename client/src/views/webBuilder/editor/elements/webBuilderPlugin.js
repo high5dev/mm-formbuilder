@@ -792,16 +792,24 @@ export const webBuilderPlugin = (editor) => {
           }
           el.querySelector('.trait-input-address').style.display='block';
           el.querySelector(".trait-pages").innerHTML=``;
+          let tempElProps = [];
           const value=ev.target.value;
           elProp={...elProp, linkType:value};
           tempElProps.push(elProp);
           component.set('elProps', tempElProps);
         }
+        if(ev.target.value==='button'){
+          el.querySelector('.trait-input-address').style.display='none';
+          el.querySelector('.trait-tab-selection').style.display='none';
+        }
+        else{
+          el.querySelector('.trait-tab-selection').style.display='block';
+        }
       });
       el.querySelector('.trait-tab-selection').addEventListener('change', (ev)=>{
         let tempElProps=[];
         const value=ev.target.value;
-        elProp={...elProp, isNewTab:value};
+        elProp={...elProp, tab:value};
         tempElProps.push(elProp);
         component.set('elProps', tempElProps);
       });

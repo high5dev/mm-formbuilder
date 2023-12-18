@@ -245,7 +245,6 @@ export default function Index() {
                 link_href = '/website' + link_href;
               }
               linkElements[i].setAttribute('href', link_href);
-              linkElements[i].setAttribute('target', '_parent');
             };
             var tmp = document.createElement("div");
             tmp.append(htmlCmp.body)
