@@ -137,7 +137,8 @@ export default function Index({store, toggle, page, saveFormBlock}) {
                });
     
                const newForm={...res.data, formPages};
-               dispatch(getChildFormsAction());
+               dispatch(getChildFormsAction(newForm.websiteId
+                ));
                dispatch(setChildFormReducer(newForm));
                saveFormBlock(res.page);
             }

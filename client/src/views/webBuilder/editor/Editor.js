@@ -315,13 +315,13 @@ export default function Editor({
   }
 
   const saveFormBlock=(html)=>{
-    if(selectedFormBlock.get('type')==='new-form'){
+    if(selectedFormBlock.get('type')==='new-form' || selectedFormBlock.get('type')==='add-form'){
       let comps=selectedFormBlock.get('components');
       while (comps.length > 0) {
         comps.pop();
       };
       comps.push(html);
-  }
+    }
   }
 
   useEffect(() => {
@@ -353,7 +353,7 @@ export default function Editor({
 
   useEffect(() => {
     dispatch(getWebElementsAction());
-    dispatch(getChildFormsAction());
+    dispatch(getChildFormsAction(store?.form?._id));
     dispatch(getBlogsAction(store?.form?._id));
     dispatch(getWebsiteAction(id)).then(res=>{
       if(res){
@@ -986,7 +986,7 @@ export default function Editor({
                 tagName: 'div',
                 draggable: true,
                 droppable: true,
-                selectable: false,
+                selectable: true,
                 components: (props)=>{
                   return <div></div>
                 },
@@ -1000,6 +1000,36 @@ export default function Editor({
           editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
             label: el.category[0].name,
             content: {type:'new-form'},
+            media: el.imageUrl,
+            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
+            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
+            mainMenu:`${el.category[0].mainMenu}`,
+            refcategory:`${el.category[0].name}`,
+            submenu:el.category[0].subMenu
+          })
+        }
+        if(el.category[0].name==='Add Existing Form'){
+          let formItem = {
+            isComponent: el => (el.tagName === 'DIV' && el.classList.contains('add-form')),
+            model: {
+              defaults: {
+                tagName: 'div',
+                draggable: true,
+                droppable: true,
+                selectable: true,
+                components: (props)=>{
+                  return <div></div>
+                },
+                attributes: { class: 'add-form' },
+                styles: `.add-form {min-height: 300px;}`,
+                stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
+              },
+            },
+          };
+          editor.DomComponents.addType('add-form', formItem);
+          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
+            label: el.category[0].name,
+            content: {type:'add-form'},
             media: el.imageUrl,
             category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
             menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
@@ -1046,37 +1076,7 @@ export default function Editor({
             submenu:el.category[0].subMenu,
           });
         }
-        else if(el.category[0].name==='Add Existing Form'){
-          let formItem = {
-            isComponent: el => (el.tagName === 'DIV' && el.classList.contains('add-form')),
-            model: {
-              defaults: {
-                tagName: 'div',
-                draggable: true,
-                droppable: true,
-                selectable: false,
-                components: (props)=>{
-                  return <div></div>
-                },
-                attributes: { class: 'add-form' },
-                styles: `.new-form {min-height: 300px;}`,
-                stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
-              },
-            },
-          };
-          editor.DomComponents.addType('add-form', formItem);
-          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
-            label: el.category[0].name,
-            content: {type:'add-form'},
-            media: el.imageUrl,
-            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
-            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
-            mainMenu:`${el.category[0].mainMenu}`,
-            refcategory:`${el.category[0].name}`,
-            submenu:el.category[0].subMenu
-          })
-        }
-        else if(el.category[0].subMenu==='iframe'){
+        if(el.category[0].subMenu==='iframe'){
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
           const firstChild=htmlCmp.body.firstChild;
@@ -1097,7 +1097,7 @@ export default function Editor({
             submenu:el.category[0].subMenu,
           });
         }
-        else if(el.category[0].subMenu==='social-bar'){
+        if(el.category[0].subMenu==='social-bar'){
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
           const firstChild=htmlCmp.body.firstChild;
@@ -1118,7 +1118,7 @@ export default function Editor({
             submenu:el.category[0].subMenu,
           });
         }
-        else if(el.category[0].subMenu==='gallery'){
+        if(el.category[0].subMenu==='gallery'){
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
           const firstChild=htmlCmp.body.firstChild;

@@ -53,9 +53,11 @@ exports.createForm = asyncHandler(async (req, res) => {
 exports.getForms = asyncHandler(async (req, res) => {
     try {
       const { organization } = req.headers;
+      const {id} =req.params;
       const user = req.user;
       let query = {
           userId: mongoose.Types.ObjectId(user._id),
+          websiteId: mongoose.Types.ObjectId(id),
           organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
           isDelete: false,
       };
