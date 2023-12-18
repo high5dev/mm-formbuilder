@@ -853,7 +853,7 @@ export const webBuilderPlugin = (editor) => {
         tempCpt.append(component.clone(), {at: index})
       }
     }
-    if(component && component.get('type')==='social-bar'){
+    if(component && !Array.isArray(component) && component.get('type')==='social-bar'){
       let parentElement=component.getEl();
       let imageElements=parentElement.getElementsByTagName('img');
       let linkElements=parentElement.getElementsByTagName('a');

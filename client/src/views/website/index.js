@@ -235,23 +235,25 @@ export default function Index() {
         setProductLink(`/website/${id}/Product%20Page`);
         setIsPageLoading(true);
         dispatch(getPublishPageAction(payload)).then((res) => {
-          const parser = new DOMParser();
-          let htmlCmp = parser.parseFromString(res.data, 'text/html');
-          let linkElements = htmlCmp.getElementsByTagName('a');
-          for (let i = 0; i < linkElements.length; i++) {
-            let link_href = linkElements[i].getAttribute('href');
-            if (link_href && !link_href.includes('mailto:') && !link_href.includes('tel:') && !link_href.includes('https') && !link_href.includes('http') && !link_href.includes('preview') && !link_href.includes('website')) {
-              link_href = '/website' + link_href;
-            }
-            linkElements[i].setAttribute('href', link_href);
-            linkElements[i].setAttribute('target', '_parent');
-          };
-          var tmp = document.createElement("div");
-          tmp.append(htmlCmp.body)
-          setPageContent(tmp.innerHTML);
-          setIsPageLoading(false);
-          setPageInfo(res.pageInfo);
-          setPopupData(res.pageInfo.popups || []);
+          if(res){
+            const parser = new DOMParser();
+            let htmlCmp = parser.parseFromString(res.data, 'text/html');
+            let linkElements = htmlCmp.getElementsByTagName('a');
+            for (let i = 0; i < linkElements.length; i++) {
+              let link_href = linkElements[i].getAttribute('href');
+              if (link_href && !link_href.includes('mailto:') && !link_href.includes('tel:') && !link_href.includes('https') && !link_href.includes('http') && !link_href.includes('preview') && !link_href.includes('website')) {
+                link_href = '/website' + link_href;
+              }
+              linkElements[i].setAttribute('href', link_href);
+              linkElements[i].setAttribute('target', '_parent');
+            };
+            var tmp = document.createElement("div");
+            tmp.append(htmlCmp.body)
+            setPageContent(tmp.innerHTML);
+            setIsPageLoading(false);
+            setPageInfo(res.pageInfo);
+            setPopupData(res.pageInfo.popups || []);
+          }
         });
       }
     }
