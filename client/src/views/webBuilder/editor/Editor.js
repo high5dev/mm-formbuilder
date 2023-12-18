@@ -1291,8 +1291,10 @@ export default function Editor({
                     {
                       sidebarData.menu.id === 'quick-add' && (
                         <div className="quick-add">
-                          {editor?.BlockManager.blocks.filter(e => e.get('category') === 'Basic').map((block) => (
-                            <div
+                          {editor?.BlockManager.blocks.filter(e => e.get('category') === 'Basic').map((block) => {
+                            if(block.getLabel()!='Link' && block.getLabel()!='Link Block')
+                            return(
+                              <div
                               key={block.getId()}
                               draggable
                               className='d-flex flex-column align-items-center border border-secondary rounded cursor-pointer py-2 px-1 transition-colors mt-1 mb-1'
@@ -1316,7 +1318,8 @@ export default function Editor({
                                 {block.getLabel()}
                               </div>
                             </div>
-                          ))}
+                            )
+                          })}
                         </div>
                       )
                     }

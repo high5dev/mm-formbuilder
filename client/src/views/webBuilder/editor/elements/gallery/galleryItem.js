@@ -14,7 +14,7 @@ let galleryItem = {
             </a>
           )
         },
-        styles: `.gallery-item {background-color: #b9dbcb;width:100px;height:100px; padding:3px}`,
+        styles: `.gallery-item {width:100px;height:100px; padding:3px}`,
         stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
         images:[],
         traits: [
