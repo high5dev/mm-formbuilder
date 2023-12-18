@@ -9,6 +9,7 @@ import { customSectors, customProperties } from "./CustomStyles";
 import * as api from '../../store/api'
 import socialBar from "./socialBar/socialBar";
 import socialLink from "./traits/socialLink";
+import linkButton from "../elements/button/button";
 import postLarge from "../elements/blog/postlarge/postlarge";
 import postCard from "../elements/blog/postcard/postcard";
 import postSidebar from "../elements/blog/postsidebar/postsidebar";
@@ -45,7 +46,6 @@ const testImageUrls = [
   'https://i.ibb.co/XLK7HJx/image-5.png',
 ];
 
-
 export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('repeater-item', repeaterItem);
   editor.DomComponents.addType('repeater', repeater);
@@ -63,6 +63,7 @@ export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('rss-outline-black-button', blackoutlineButton);
   editor.DomComponents.addType('rss-outline-gray-button', grayoutlineButton);
   editor.DomComponents.addType('count-down', countDown);
+  editor.DomComponents.addType('button', linkButton);
   editor.DomComponents.addType('popup', popup);
   editor.TraitManager.addType('image-url', {
     createInput({ trait, component }) {
@@ -592,7 +593,6 @@ export const webBuilderPlugin = (editor) => {
       
       const el = document.createElement('div');
       el.className = 'trait-count-down-rules';
-
       el.innerHTML = `
         <h6>${traitLabel}</h6>
         <div class="form-check d-flex align-items-center">
@@ -703,6 +703,119 @@ export const webBuilderPlugin = (editor) => {
       // })
     }
   });
+
+  editor.TraitManager.addType('page-link', {
+    noLabel: true,
+    createInput({trait, component}) { 
+      let elProp=component.get('elProps')[0];
+      const el = document.createElement('div');
+      el.className = 'trait-link-element-container';
+      const link=window.location.href;
+      const websiteId=link.split('/').slice(-1)[0];
+      el.innerHTML = `
+            <div>
+                <label>Label</label>
+                <input type="text" class="trait-link-element-label" value=${elProp.label}>
+            </div>
+            <div>
+              <label>Link Setting</label>
+              <select id='trait-page-setting' class='trait-page-setting'>
+                <option value='button'>Button</option>
+                <option value='external link'>External Link</option>
+                <option value='pages'>Pages</option>
+                <option value='mail'>Email</option>
+                <option value='phone'>Call</option>
+              </select>
+            </div>
+            <div class='trait-pages'>
+            </div>
+            <div>
+              <select id='trait-tab-selection' class='trait-tab-selection'>
+                  <option value='_blank'>New Tab</option>
+                  <option value='_parent'>Current Tab</option>
+              </select>
+            </div>
+            <div>
+              <input type='text' class='trait-input-address' placeholder="please input link information"/>
+            </div>
+      `;
+      el.querySelector('.trait-link-element-label').addEventListener('change', (ev)=>{
+        let tempElProps=[];
+        const label=ev.target.value;
+        elProp={...elProp, label:label};
+        tempElProps.push(elProp);
+        component.set('elProps', tempElProps);
+      })
+      el.querySelector('.trait-page-setting').addEventListener('change', (ev)=>{
+        if(ev.target.value==='pages'){
+          api.getWebBuilder(websiteId).then(res=>{
+            if(res && res.data){
+              const {formData, websiteData}=res.data.data;
+              const pages=formData && formData.map((pageInfo)=>{
+                return({
+                  label:pageInfo.name,
+                  value:'/website/'+websiteId+'/'+pageInfo.name
+                })
+              });
+              el.querySelector(".trait-pages").innerHTML=
+              `
+                <select class="trait-pages-selection">
+                  ${pages && pages.map((_page, i)=>{
+                    return(
+                      `<option value=${_page.value}>
+                        ${_page.label}
+                      </option>`
+                    )
+                  })}
+                </select>
+              `;
+              el.querySelector('.trait-pages-selection').addEventListener('change', (ev)=>{
+                let tempElProps=[];
+                const url=ev.target.value;
+                elProp={...elProp, Url:url};
+                tempElProps.push(elProp);
+                component.set('elProps', tempElProps);
+              })
+              el.querySelector('.trait-input-address').style.display='none';
+            }
+          })
+        }
+        else{
+          if(ev.target.value==='external link'){
+            el.querySelector('.trait-input-address').placeholder='ex:https://mymanager.com';
+          }
+          else if(ev.target.value ==='phone'){
+            el.querySelector('.trait-input-address').placeholder='ex:111-111-111';
+          }
+          else if(ev.target.value==='mail'){
+            el.querySelector('.trait-input-address').placeholder='ex:superadmin@outlook.com';
+          }
+          el.querySelector('.trait-input-address').style.display='block';
+          el.querySelector(".trait-pages").innerHTML=``;
+          const value=ev.target.value;
+          elProp={...elProp, linkType:value};
+          tempElProps.push(elProp);
+          component.set('elProps', tempElProps);
+        }
+      });
+      el.querySelector('.trait-tab-selection').addEventListener('change', (ev)=>{
+        let tempElProps=[];
+        const value=ev.target.value;
+        elProp={...elProp, isNewTab:value};
+        tempElProps.push(elProp);
+        component.set('elProps', tempElProps);
+      });
+      el.querySelector('.trait-input-address').addEventListener('change', (ev)=>{
+        let tempElProps=[];
+        const url=ev.target.value;
+        elProp={...elProp, Url:url};
+        tempElProps.push(elProp);
+        component.set('elProps', tempElProps);
+      })
+      return el;
+    },
+
+  })
 
   blocks.forEach(block => {
     editor.Blocks.add(block.id, block);

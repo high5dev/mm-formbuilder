@@ -174,28 +174,12 @@ export const blocks = [
     media: 'currencyConverter',
     category: 'Store',
   },
-  // {
-  //   id: 'productpage',
-  //   label: 'Currency Converter',
-  //   attributes: { class: 'fa fa-text' },
-  //   content: { type: 'productpage', text: 'Make shopping easier by letting customers shop products in their currency.' },
-  //   media: 'productpage',
-  //   category: 'Store',
-  // },
-  // {
-  //   id: 'cartpage',
-  //   label: 'Currency Converter',
-  //   attributes: { class: 'fa fa-text' },
-  //   content: { type: 'cartpage', text: 'Make shopping easier by letting customers shop products in their currency.' },
-  //   media: 'cartpage',
-  //   category: 'Store',
-  // },
-  // {
-  //   id: 'thankyoupage',
-  //   label: 'Currency Converter',
-  //   attributes: { class: 'fa fa-text' },
-  //   content: { type: 'thankyoupage', text: 'Make shopping easier by letting customers shop products in their currency.' },
-  //   media: 'thankyoupage',
-  //   category: 'Store',
-  // }
+  {
+    id:'button',
+    label:'Button',
+    attributes:{ class:'fa fa-text'},
+    content:{type:'button'},
+    media:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="rectangle"><path d="M23.5 4.5H.5A.5.5 0 0 0 0 5v14a.5.5 0 0 0 .5.5h23a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5zm-.5 14H1v-13h22v13z"></path></svg>`,
+    category:'Basic'
+  },
 ];
