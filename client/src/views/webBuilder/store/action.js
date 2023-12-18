@@ -20,6 +20,7 @@ import {
   setWebConnectionsReducer,
   setSelectedProductReducer,
   setThankyouProductsReducer,
+  setWebRolesReducer,
 } from './reducer';
 import * as api from './api';
 import { toast } from 'react-toastify';
@@ -813,6 +814,29 @@ export const createWebDatasetAction = (payload) => async (dispatch) => {
     const { data } = await api.createWebDataset(payload);
     if (data.success)
       dispatch(getWebDatasetsAction(data.data.collectionId));
+    return data;
+  } catch (error) { }
+};
+
+export const getWebsiteRolesAction = (websiteId) => async (dispatch) => {
+  try {
+    const { data } = await api.getWebsiteRoles(websiteId);
+    if (data.success) {
+      dispatch(setWebRolesReducer(data.data));
+    }
+    return data;
+  } catch (error) { }
+};
+
+export const createWebsiteRoleAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createWebsiteRole(payload);
+    if (data.success) {
+      dispatch(getWebsiteRolesAction(data.data.websiteId));
+      toast.success('Website role created successfully');
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
     return data;
   } catch (error) { }
 };

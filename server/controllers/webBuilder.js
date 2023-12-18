@@ -9,7 +9,8 @@ const {
   WebPage,
   WebBlog,
   WebBuilderElementCategory,
-  WebBuilderElement
+  WebBuilderElement,
+  WebSiteRole,
   //Income,
   //Contact,
 } = require("../models/index/index");
@@ -23,6 +24,7 @@ const { getContactTypesHelper } = require("../helper/contacts");
 const {postMoment}=require('../Utilities/timeHandler');
 
 const googleCloudStorageWebBuilder = require("../Utilities/googleCloudStorageWebBuilder");
+const { defaultRoles } = require('../constants/defaultRoles');
 
 /**
  *
@@ -303,6 +305,20 @@ exports.createWebsite = asyncHandler(async (req, res) => {
           });
         }
       }
+
+      //create default roles related to website
+      const defaultRoleDocs = [];
+      defaultRoles.map(r => {
+        defaultRoleDocs.push({
+          ...r,
+          userId: mongoose.Types.ObjectId(req.user._id),
+          organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+          websiteId: mongoose.Types.ObjectId(websiteData._id),
+          isDelete: false,
+        });
+      });
+      await WebSiteRole.insertMany(defaultRoleDocs);
+
       return res.send({
         success: true,
         message: "Website created successfully",
@@ -354,6 +370,19 @@ exports.createWebsite = asyncHandler(async (req, res) => {
         });
       }
       
+      //create default roles related to website
+      const defaultRoleDocs = [];
+      defaultRoles.map(r => {
+        defaultRoleDocs.push({
+          ...r,
+          userId: mongoose.Types.ObjectId(req.user._id),
+          organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+          websiteId: mongoose.Types.ObjectId(data._id),
+          isDelete: false,
+        });
+      });
+      await WebSiteRole.insertMany(defaultRoleDocs);
+
       return res.send({
         success: true,
         message: "Website created successfully",
@@ -395,6 +424,19 @@ exports.createWebsite = asyncHandler(async (req, res) => {
         const tempData = await googleCloudStorageWebBuilder.copyPage(`${webToClone._id}/${page._id}`, `${data._id}/${page._id}`);
         pageData.push({[page._id]: tempData.toString()});
       }
+
+      //create default roles related to website
+      const defaultRoleDocs = [];
+      defaultRoles.map(r => {
+        defaultRoleDocs.push({
+          ...r,
+          userId: mongoose.Types.ObjectId(req.user._id),
+          organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+          websiteId: mongoose.Types.ObjectId(data._id),
+          isDelete: false,
+        });
+      });
+      await WebSiteRole.insertMany(defaultRoleDocs);
 
       return res.send({
         success: true,
@@ -458,6 +500,20 @@ exports.duplicateWebsite = asyncHandler (async(req, res) => {
       await googleCloudStorageWebBuilder.createAndUpdatePage(`${websiteData._id}/${pageData[i]._id}`, result);
     };
     // console.log('website ===== >data', websiteData);
+
+    //create default roles related to website
+    const defaultRoleDocs = [];
+    defaultRoles.map(r => {
+      defaultRoleDocs.push({
+        ...r,
+        userId: mongoose.Types.ObjectId(req.user._id),
+        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+        websiteId: mongoose.Types.ObjectId(websiteData._id),
+        isDelete: false,
+      });
+    });
+    await WebSiteRole.insertMany(defaultRoleDocs);
+
     return res.send({
       success: true,
       message: "Website duplicated successfully",
@@ -573,11 +629,14 @@ exports.deleteWebsite = asyncHandler(async (req, res) => {
     await WebPage.updateMany({websiteId: id}, { isDelete: true });
     await googleCloudStorageWebBuilder.deleteWeb(webToDelete._id);
 
+    //delete default roles related to website
+    await WebSiteRole.updateMany({websiteId: id}, { isDelete: true });
+
     res.status(200).json({ success: true });
   } catch (err) {
     res.send({ msg: err.message.replace(/\'/g, ""), success: false });
   }
-});///////////////////////////////////////////////////////////////////
+});
 
 exports.renameWebsite =asyncHandler(async (req, res) =>{
   let {id} =req.params;

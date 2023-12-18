@@ -301,6 +301,14 @@ export const getWebAllDataset = (id) => {
   return API.get(`/web-builder-cms/all-datasets/${id}`);
 }
 
+export const getWebsiteRoles = (id) => {
+  return API.get(`/web-builder-role/role/${id}`);
+}
+
+export const createWebsiteRole = (payload) => {
+  return API.post(`/web-builder-role/create`, payload);
+}
+
 export const getConnectsByWebsite = (id) => {
   return API.get(`/web-builder-cms/connections-of-website/${id}`);
 }

@@ -33,7 +33,7 @@ import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
 import { setChildFormReducer, setFormReducer } from '../store/reducer';
-import { getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, createChildFormAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction, getConnectionsByWebsiteAction, updateSelectedProductAction, getChildFormsAction } from '../store/action'
+import { getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, createChildFormAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction, getConnectionsByWebsiteAction, updateSelectedProductAction, getChildFormsAction, getWebsiteRolesAction } from '../store/action'
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
@@ -63,6 +63,7 @@ import AddCartButtonModal from './store/AddCartButtonModal';
 import BlogModal from './topNav/blog/BlogModal'
 import { GiConsoleController } from 'react-icons/gi';
 import Sidebar from './Sidebar';
+import RoleModal from './topNav/role';
 
 export default function Editor({
   isblog,
@@ -99,6 +100,8 @@ export default function Editor({
   addSideBarOpen,
   setAddSideBarOpen,
   selectedMainNav,
+  roleMdl,
+  setRoleMdl,
 }) {
   const [openCreateForm, setOpenCreateForm] = useState();
   const { id } = useParams();
@@ -126,11 +129,14 @@ export default function Editor({
   const [selectedFormBlock, setSelectedFormBlock]=useState(null);
 
   useEffect(() => {
-    if (store.form._id) {
-      dispatch(getConnectionsByWebsiteAction(store.form._id));
+    if (store?.form?._id) {
       dispatch(getWebsiteAllDatasetsAction(store.form._id));
+      dispatch(getWebCollectionsAction(store.form._id));
+      dispatch(getProductDatasetAction(store.form._id));
+      dispatch(getConnectionsByWebsiteAction(store.form._id));
+      dispatch(getWebsiteRolesAction(store.form._id));
     }
-  }, [store.form._id]);
+  }, [store?.form?._id]);
   
   const [productDataset, setProductDataset] = useState({});
   const [datasetConnect, setDatasetConnect] = useState([]);
@@ -190,6 +196,10 @@ export default function Editor({
   };
   const toggleBlog =(_open) =>{
     setIsBlog(_open);
+  }
+
+  const toggleRoleMdl =(_open) =>{
+    setRoleMdl(!roleMdl);
   }
 
   const handleSidebarOpen = (e) => {
@@ -357,14 +367,6 @@ export default function Editor({
       setIsStoreLoading(false);
     }
   }, [store?.webProducts]);
-
-  useEffect(() => {
-    if (store?.form?._id) {
-      dispatch(getWebsiteAllDatasetsAction(store?.form?._id));
-      dispatch(getWebCollectionsAction(store?.form?._id));
-      dispatch(getProductDatasetAction(store?.form?._id));
-    }
-  }, [store?.form?._id]);
 
   useEffect(() => {
     dispatch(getWebElementsAction());
@@ -1688,6 +1690,7 @@ export default function Editor({
       <ConnectProductDataSetModal store={store} showProductDataSetModal={showProductDataSetModal} setShowProductDataSetModal={setShowProductDataSetModal} modelsToConnect={modelsToConnect} datasetConnect={datasetConnect} setDatasetFields={setDatasetFields} />
       <AddCartButtonModal store={store} showAddCartButtonModal={showAddCartButtonModal} setShowAddCartButtonModal={setShowAddCartButtonModal} productId={cartProductId} handleChangeProductId={handleChangeProductId} />
       <BlogModal store ={store} isOpen={isblog} toggle={toggleBlog}/>
+      <RoleModal store ={store} isOpen={roleMdl} toggle={toggleRoleMdl}/>
     </div>
   )
 }
