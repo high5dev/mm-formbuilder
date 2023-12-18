@@ -75,6 +75,7 @@ export default function MainNav({
   setSidebarData,
   selectedMainNav,
   setSelectedMainNav,
+  setRoleMdl,
 }) {
   const dispatch = useDispatch();
   const [width, setWidth] = useState(1280);
@@ -185,6 +186,10 @@ export default function MainNav({
                 <DropdownItem tag="span" className="w-100" onClick={(e) => setDuplicateMdl(true)}>
                   {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
                   <span className="align-middle">Duplicate Site</span>
+                </DropdownItem>
+                <DropdownItem tag="span" className="w-100" onClick={(e) => setRoleMdl(true)}>
+                  {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
+                  <span className="align-middle">Role & Permissions</span>
                 </DropdownItem>
               </DropdownMenu>
               {/* <div className="menu-item">

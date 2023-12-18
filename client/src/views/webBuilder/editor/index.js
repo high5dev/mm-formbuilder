@@ -30,6 +30,7 @@ export default function Index() {
   const { stepId } = useParams();
   const [openAddElementMdl, setOpenAddElementMdl] = useState(false);
   const [selectedMainNav, setSelectedMainNav] = useState('elements');
+  const [roleMdl, setRoleMdl] = useState(false);
   const store = useSelector((state) => {
     return {
       ...state.websiteEditor
@@ -74,6 +75,7 @@ export default function Index() {
             setSidebarData={setSidebarData}
             selectedMainNav={selectedMainNav}
             setSelectedMainNav={setSelectedMainNav}
+            setRoleMdl={setRoleMdl}
           />
         </div>
         <div className="land-body d-flex">
@@ -123,6 +125,8 @@ export default function Index() {
               addSideBarOpen={addSideBarOpen}
               setAddSideBarOpen={setAddSideBarOpen}
               selectedMainNav={selectedMainNav}
+              roleMdl={roleMdl}
+              setRoleMdl={setRoleMdl}
             />
           </div>
         </div>

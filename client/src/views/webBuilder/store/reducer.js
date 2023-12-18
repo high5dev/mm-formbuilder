@@ -38,7 +38,8 @@ export const formEditor = createSlice({
     webProducts: {},
     cartProducts: [],
     selectedProduct: {},
-    thankyouProducts: []
+    thankyouProducts: [],
+    webRoles: [],
   },
   reducers: {
     setLinkUrlReducer: (state, action) => {
@@ -130,6 +131,9 @@ export const formEditor = createSlice({
     setWebDatasetsReducer: (state, action) => {
       state.webDatasets = action?.payload;
     },
+    setWebRolesReducer: (state, action) => {
+      state.webRoles = action?.payload;
+    },
     setWebConnectionsReducer: (state, action) => {
       state.webConnections = action?.payload;
     },
@@ -164,6 +168,7 @@ export const {
   setWebElementsReducer,
   setWebCollectionsReducer,
   setWebDatasetsReducer,
+  setWebRolesReducer,
   setWebBlogsReducer,
   setWebConnectionsReducer,
   setWebStoreReducer,
