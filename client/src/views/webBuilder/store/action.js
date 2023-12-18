@@ -54,9 +54,9 @@ export const editChildFormAction =(id, payload) =>async(dispatch) =>{
   } catch (error) { }
 }
 
-export const getChildFormsAction=() =>async(dispatch) =>{
+export const getChildFormsAction=(id) =>async(dispatch) =>{
   try{
-    const {data}=await api.getChildForms();
+    const {data}=await api.getChildForms(id);
     dispatch(setChildFormsReducer(data.data));
   }
   catch(error){

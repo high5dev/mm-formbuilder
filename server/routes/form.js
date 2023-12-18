@@ -17,7 +17,7 @@ const {
 //form builder
 router.get("/form/:id", isAuthenticated, getForm);
 router.post('/fileupload/', isAuthenticated, singleUploadControl, uploadFile);
-router.get("/forms/", isAuthenticated, getForms);
+router.get("/forms/:id", isAuthenticated, getForms);
 router.get("/preview-page", isAuthenticated, getFormPreviewPage)
 router.post("/create", isAuthenticated, createForm);
 router.post("/create-page", isAuthenticated, createFormPage);
