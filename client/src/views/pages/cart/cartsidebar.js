@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ChevronRight } from 'react-feather';
 import { Link } from 'react-router-dom';
 import { Input, Label } from 'reactstrap';
-import { updateCartProductsAction } from '../../formBuilder/store/action';
+import { updateCartProductsAction } from '../../webBuilder/store/action';
 import { useDispatch } from 'react-redux';
 
 function Cartsidebar({ store, showCartSidebar, setShowCartSidebar, cartLink }) {

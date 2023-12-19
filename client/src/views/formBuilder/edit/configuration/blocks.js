@@ -9,7 +9,7 @@ let blocksJson = [
   </svg>`,
     content: {
       type: 'section-wide',
-      name: 'Section' 
+      name: 'Section'
     },
 
     category: 'Layout'

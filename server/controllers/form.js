@@ -53,9 +53,11 @@ exports.createForm = asyncHandler(async (req, res) => {
 exports.getForms = asyncHandler(async (req, res) => {
     try {
       const { organization } = req.headers;
+      const {id} =req.params;
       const user = req.user;
       let query = {
           userId: mongoose.Types.ObjectId(user._id),
+          websiteId: mongoose.Types.ObjectId(id),
           organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
           isDelete: false,
       };
@@ -63,10 +65,10 @@ exports.getForms = asyncHandler(async (req, res) => {
         {$match: query},
         {
           $lookup: {
-            from: "entrys",
+            from: "form-pages",
             localField: "_id",
             foreignField: "formId",
-            as: "entryInfo",
+            as: "pageInfo",
           }
         }
       ]);
@@ -99,10 +101,12 @@ exports.editForm = asyncHandler(async (req, res) => {
     const _page=await FormPage.findOne({_id: currentPage});
     const data = await Form.findOneAndUpdate({ _id: id}, Obj, {new:true});
     await googleCloudStorageWebBuilder.createAndUpdatePage(`${data._id}/${_page._id}`, `${html} <style>${css}</style>`);
+    const page=await googleCloudStorageWebBuilder.readPage(`${data._id}/${_page._id}`);
     if (data) {
       return res.send({ 
         success: true, 
-        data
+        data,
+        page
      });
     }
     else{
@@ -112,6 +116,32 @@ exports.editForm = asyncHandler(async (req, res) => {
     return res.status(400).send({ msg: error.message.replace(/"/g, ""), success: false });
   }
 });
+
+exports.getFormPage = asyncHandler(async (req, res) => {
+  let { id } = req.params;
+  try {
+    let {currentPage}=req.query;
+    id = mongoose.Types.ObjectId(id);
+    currentPage=mongoose.Types.ObjectId(currentPage);
+    console.log('id', id);
+    console.log('currentPage', currentPage);
+    const _page=await FormPage.findOne({_id: currentPage});
+    const data = await Form.findOne({_id:id});
+    const page=await googleCloudStorageWebBuilder.readPage(`${data._id}/${_page._id}`);
+    if (data) {
+      return res.send({ 
+        success: true, 
+        page
+     });
+    }
+    else{
+      return res.status(404).json({ success: false, message: `website with id: ${id} not found` });
+    }
+  } catch (error) {
+    return res.status(400).send({ msg: error.message.replace(/"/g, ""), success: false });
+  }
+});
+
 
 exports.getForm= asyncHandler(async(req, res) =>{
     const {id} =req.params;
@@ -177,17 +207,6 @@ exports.deleteFormPage =asyncHandler(async(req, res) =>{
   }
 })
 
-exports.getFormPage = asyncHandler(async (req, res) => {
-  let { id } = req.params;
-  try {
-    const page = await FormPage.findOne({_id: mongoose.Types.ObjectId(id)});
-    const data = await Form.findOne({_id: page.formId});
-    const result=await googleCloudStorageWebBuilder.readPage(`${data._id}/${page._id}`);
-    return res.status(200).json({ success: true, data:result });
-  } catch (err) {
-    res.send({ msg: "error" });
-  }
-});
 exports.uploadFile = asyncHandler(async (req, res) => {
   try {
     let url = "";

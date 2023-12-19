@@ -59,6 +59,7 @@ exports.getAllElements = asyncHandler(async (req, res) => {
       {
         $match: {
           isDelete: false,
+          userId: mongoose.Types.ObjectId(userId)
           // $or: [
           //   {
           //     userId: mongoose.Types.ObjectId(userId),

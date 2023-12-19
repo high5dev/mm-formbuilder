@@ -13,7 +13,7 @@ import {
 
 import 'grapesjs/dist/css/grapes.min.css';
 import '../../../assets/scss/form-builder/style.scss';
-import '../../../assets/scss/form-builder/main.scss';
+import '../../../assets/scss/form-builder/form_builder_main.scss';
 
 import grapesjs from 'grapesjs';
 // import gjsBlocksBasic from 'grapesjs-blocks-basic';
@@ -600,6 +600,7 @@ export default function Editor({
           }
 
           if (element.classList.contains('section-column-child')) {
+            console.log(element.children.length);
             if (element.children.length <= 2) {
               element.classList.remove('non-empty');
             }

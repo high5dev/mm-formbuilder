@@ -711,3 +711,21 @@
   padding: 10px;
   border: 1px solid lightgray;
 }
+.gjs-field-page-link{
+  .trait-link-element-label,
+  .trait-page-setting,
+  .trait-tab-selection,
+  .trait-pages-selection
+  {
+    margin-bottom:10px;
+    border: 1px solid lightgrey;
+  }
+  .trait-input-address{
+    display:none;
+    border: 1px solid lightgrey;
+  }
+  .trait-tab-selection{
+    display: none;
+  }
+}
+

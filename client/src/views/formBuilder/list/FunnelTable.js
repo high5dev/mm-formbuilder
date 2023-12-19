@@ -67,6 +67,7 @@ export default function FunnelTable({
   checkedCategoryData
 }) {
   const ability = useContext(AbilityContext);
+
   // ** STATES
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -89,11 +90,8 @@ export default function FunnelTable({
 
   // ** FUNCTIONS
 
-  const handleEdit = (row) => {
-    history.push(`/pages/editor/${row._id}`);
-  };
   const handleDetails = (row) => {
-    history.push(`/pages/editor/${row._id}`);
+    history.push('/form-funnel/form-setting/' + row._id);
   };
   useEffect(() => {
     if (tableData && tableData?.length > 0 && rowsPerPage) {
@@ -269,13 +267,13 @@ export default function FunnelTable({
         <>
           {row.userId === user.id ? (
             <div className="column-action">
-              <UncontrolledDropdown >
+              <UncontrolledDropdown>
                 <DropdownToggle tag="div" className="btn btn-sm">
                   <MoreVertical size={14} className="cursor-pointer" />
                 </DropdownToggle>
                 <DropdownMenu>
                   {ability.can('update', 'business/formsFunnels') ? (
-                    <DropdownItem tag="span" className="w-100" onClick={() => handleEdit(row)}>
+                    <DropdownItem tag="span" className="w-100" onClick={() => handleDetails(row)}>
                       <Edit size={14} className="me-50" />
                       <span className="align-middle">Edit</span>
                     </DropdownItem>
@@ -351,7 +349,7 @@ export default function FunnelTable({
                       </div>
                       <div className="d-flex">
                         {ability.can('update', 'business/formsFunnels') ? (
-                          <div tag="span" className="w-100" onClick={() => handleEdit(item)}>
+                          <div tag="span" className="w-100" onClick={() => handleDetails(item)}>
                             <Edit size={14} className="me-50" />
                           </div>
                         ) : (
@@ -519,7 +517,7 @@ export default function FunnelTable({
                                 {item?.formType}
                               </Badge>
                               <Badge color="light-primary" style={{ paddingTop: '6px' }}>
-                                {moment(item.updatedAt).format("MM/DD/yyyy")}
+                                {convertDate(item.updatedAt)}
                               </Badge>
                             </span>
                           </div>
@@ -539,23 +537,20 @@ export default function FunnelTable({
                                 height: `${collapse === true ? '200px' : '180px'}`
                               }}
                             >
-                              {
-                                    item?.formData?.[0] &&              
-                                    <iframe
-                                        style={{ borderRadius: '12px' }}
-                                        scrolling="no"
-                                        width="100%"
-                                        height="100%"
-                                        srcDoc={
-                                          bootstrapClass +
-                                          item?.formData?.[0].html +
-                                          '<style>' +
-                                          item?.formData?.[0].css +
-                                          '</style>'
-                                        }
-                                        title="Customized Form"
-                                      ></iframe>
-                              }
+                              <iframe
+                                style={{ borderRadius: '12px' }}
+                                scrolling="no"
+                                width="100%"
+                                height="100%"
+                                srcDoc={
+                                  bootstrapClass +
+                                  item?.formData?.[0].html +
+                                  '<style>' +
+                                  item?.formData?.[0].css +
+                                  '</style>'
+                                }
+                                title="Customized Form"
+                              ></iframe>
                             </div>
                           </div>
                           <div className="template-btn-group p-1">
@@ -566,7 +561,7 @@ export default function FunnelTable({
                                     <Button
                                       color="success"
                                       className="text-capitalize"
-                                      onClick={() => handleEdit(item)}
+                                      onClick={() => handleDetails(item)}
                                     >
                                       <FaEdit size={18} />
                                       &nbsp;&nbsp; Edit

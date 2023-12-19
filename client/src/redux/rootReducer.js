@@ -49,7 +49,7 @@ import totalContacts from '../views/contacts/store/reducer';
 // import course from '../views/mycma/usercourses/store/reducer';
 // import projectManagement from '../views/business/projects/store/reducer';
 import formEditor from '../views/formBuilder/store/reducer';
-
+import websiteEditor from '../views/webBuilder/store/reducer';
 // import employeeTasks from '../views/contacts/tasks/view/rolesPermission/store/employee/reducer';
 // import userSignatureStampInitial from '../views/contacts/settings/view/rolesPermission/store/signsAndStamps/reducer';
 //import myGoals from '../views/goals/store/reducer';
@@ -118,6 +118,7 @@ const rootReducer = {
   // progression,
   // course,
   formEditor,
+  websiteEditor,
   // employeeTasks,
   // userSignatureStampInitial,
   // myGoals,

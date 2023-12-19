@@ -5,7 +5,8 @@ import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { Nav, NavItem, TabContent, TabPane, NavLink } from 'reactstrap';
 import BreadCrumbs from '../../@core/components/breadcrumbs';
 
-import FormBuilder from '../formBuilder';
+// import FormBuilder from '../formBuilder';
+import FormBuilder from '../webBuilder';
 //import QRBarcode from '../tasks/setting';
 import { useLocation } from 'react-router-dom';
 

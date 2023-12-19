@@ -36,7 +36,7 @@ const FunnelSettings = () => {
   const [title, setTitle] = useState('Step');
   const contactTypes = useSelector((state) => state.totalContacts.contactTypeList);
   const [contactTypeOptions, setContactTypeOptions] = useState([]);
-
+  
   const history = useHistory();
 
   const user = getUserData();
@@ -51,7 +51,7 @@ const FunnelSettings = () => {
 
   useEffect(() => {
     dispatch(getFormDataAction(id));
-    // dispatch(getFormsEntryAction(id));
+    dispatch(getFormsEntryAction(id));
   }, []);
   useEffect(() => {
     if (contactTypes && contactTypes.length > 0) {
@@ -59,7 +59,7 @@ const FunnelSettings = () => {
       for (const c of contactTypes) {
         temp.push({ ...c, value: c._id, label: c.name });
       }
-      setContactTypeOptions(temp.filter((x) => x.type !== 'employee'));
+      setContactTypeOptions(temp.filter(x=>x.type!=='employee'));
     }
   }, [contactTypes]);
 
@@ -149,6 +149,8 @@ const FunnelSettings = () => {
                     <span className="fs-6">SALES</span>
                   </NavLink>
                 </NavItem>
+
+                
               </>
             )}
             {/* <NavItem style={{ width: isMobileView ? '50%' : '' }}>

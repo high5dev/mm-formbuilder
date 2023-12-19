@@ -12,8 +12,8 @@ const PagesRoutes = [
     }
   },
   {
-    path: '/pages/editor/:id',
-    component: lazy(() => import('../../views/formBuilder/editor')),
+    path: '/webpages/editor/:id',
+    component: lazy(() => import('../../views/webBuilder/editor')),
     layout: 'BlankLayout',
     exact: true
   },

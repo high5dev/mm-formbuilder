@@ -8,6 +8,9 @@ const {
   Authenticate,
   WebPage,
   WebBlog,
+  WebBuilderElementCategory,
+  WebBuilderElement,
+  WebSiteRole,
   //Income,
   //Contact,
 } = require("../models/index/index");
@@ -21,6 +24,7 @@ const { getContactTypesHelper } = require("../helper/contacts");
 const {postMoment}=require('../Utilities/timeHandler');
 
 const googleCloudStorageWebBuilder = require("../Utilities/googleCloudStorageWebBuilder");
+const { defaultRoles } = require('../constants/defaultRoles');
 
 /**
  *
@@ -148,6 +152,172 @@ exports.createWebsite = asyncHandler(async (req, res) => {
           `
         await googleCloudStorageWebBuilder.createAndUpdatePage(`${websiteData._id}/${data._id}`, pageData);
       }
+      const formElements=[
+        {
+          mainMenu:'contact-forms',
+          subMenu:'forms',
+          category:'New Form',
+          html:`<div></div>`,
+          imageUrl:'https://i.ibb.co/zPyYX5q/1.png'
+        },
+        {
+          mainMenu:'contact-forms',
+          subMenu:'forms',
+          category:'Add Existing Form',
+          html:`<div></div>`,
+          imageUrl:'https://i.ibb.co/6F2Z94x/2.png'
+        },
+        {
+          mainMenu:'contact-forms',
+          subMenu:'forms',
+          category:'Contact Form',
+          html:`<head>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        </head>
+        <body>
+        <div class="container p-3" style="background:lightgray; width:500px">
+          <h5>Contact us</h5>
+          <form>
+             <div class="form-group">
+              <label for="email">First name:</label>
+              <input type="text" class="form-control" id="firstName" placeholder="Enter First Name" name="firstName">
+            </div>
+            <div class="form-group mt-2">
+              <label for="email">Last name:</label>
+              <input type="text" class="form-control" id="lastName" placeholder="Enter Last Name" name="lastName">
+            </div>
+            <div class="form-group mt-2">
+              <label for="email">Email:</label>
+              <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+            </div>
+            <div class="form-group mt-2">
+              <label for="textarea">Message:</label>
+              <input type="textarea" class="form-control" id="textarea" placeholder="" name="textarea">
+            </div>
+            <div class="d-flex mb-3">
+             <button type="submit" class="btn btn-primary mt-3 mb-3">Submit</button>
+            </div>
+          </form>
+        </div>
+        </body>
+        </html>
+        `,
+          imageUrl:'https://i.ibb.co/X7SCHDd/3.png'
+        },
+        {
+          mainMenu:'contact-forms',
+          subMenu:'forms',
+          category:'Subscribe',
+          html:`<head>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        </head>
+        <body>
+        <div class="container p-3" style="background:lightgray; width:500px">
+          <h5>Subscribe to our newspaper</h5>
+          <form>
+             <div class="form-group">
+              <label for="email">Email:</label>
+              <input type="email" class="form-control" id="email" placeholder="Enter your email" name="email">
+            </div>
+            <div class="form-check mb-3 mt-2">
+              <label class="form-check-label">
+              <input class="form-check-input" type="checkbox" name="remember">Yes, subscribe me to your newletter.
+            </label>
+          </div>
+            <div class="row p-2">
+             <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            </div>
+          </form>
+        </div>
+        </body>
+        
+        `,
+          imageUrl:'https://i.ibb.co/7g6NjBM/4.png'
+        },
+        {
+          mainMenu:'contact-forms',
+          subMenu:'forms',
+          category:'Order Form',
+          html:`<head>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        </head>
+        <body>
+        <div class="container p-3" style="width:500px">
+          <h5>Online Order Form</h5>
+          <form>
+             <div class="form-group mt-2">
+              <label for="email">First name:</label>
+              <input type="text" class="form-control" id="firstName" placeholder="Enter First Name" name="firstName">
+            </div>
+            <div class="form-group mt-2">
+              <label for="email">Last name:</label>
+              <input type="text" class="form-control" id="lastName" placeholder="Enter Last Name" name="lastName">
+            </div>
+            <div class="form-group mt-2">
+              <label for="email">Email:</label>
+              <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+            </div>
+            <div class="form-group mt-2">
+              <label for="shipto">ShipTo</label>
+              <input type="email" class="form-control" id="pwd" placeholder="Enter email" name="shipto">
+            </div>
+             <div class="form-group mt-2 mb-4">
+              <label for="instruction">Special Instruction</label>
+              <input type="text" class="form-control" id="instruction" placeholder="Enter text" name="instruction">
+            </div>
+            <button type="submit" class="btn btn-primary bt-3">Process to Checkout</button>
+          </form>
+        </div>
+        </body>
+        </html>
+        `,
+          imageUrl:'https://i.ibb.co/KGy7Zxn/5.png'
+        }
+      ];
+      for (let i=0; i<formElements.length;i++){
+        const mainMenu=formElements[i].mainMenu;
+        const subMenu=formElements[i].subMenu;
+        const category=formElements[i].category;
+        const html=formElements[i].html;
+        const imageUrl=formElements[i].imageUrl;
+        const selectedCategory = await WebBuilderElementCategory.findOne({
+          mainMenu,
+          subMenu: subMenu || '',
+          name: category,
+        });
+        if(!selectedCategory){
+          const newCategory = await WebBuilderElementCategory.create({
+            mainMenu,
+            subMenu: subMenu || '',
+            name: category,
+          });
+          const newElement = await WebBuilderElement.create({
+            userId: mongoose.Types.ObjectId(req.user._id),
+            category: newCategory._id,
+            html,
+            imageUrl,
+          });
+        }
+      }
+
+      //create default roles related to website
+      const defaultRoleDocs = [];
+      defaultRoles.map(r => {
+        defaultRoleDocs.push({
+          ...r,
+          userId: mongoose.Types.ObjectId(req.user._id),
+          organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+          websiteId: mongoose.Types.ObjectId(websiteData._id),
+          isDelete: false,
+        });
+      });
+      await WebSiteRole.insertMany(defaultRoleDocs);
 
       return res.send({
         success: true,
@@ -200,6 +370,19 @@ exports.createWebsite = asyncHandler(async (req, res) => {
         });
       }
       
+      //create default roles related to website
+      const defaultRoleDocs = [];
+      defaultRoles.map(r => {
+        defaultRoleDocs.push({
+          ...r,
+          userId: mongoose.Types.ObjectId(req.user._id),
+          organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+          websiteId: mongoose.Types.ObjectId(data._id),
+          isDelete: false,
+        });
+      });
+      await WebSiteRole.insertMany(defaultRoleDocs);
+
       return res.send({
         success: true,
         message: "Website created successfully",
@@ -241,6 +424,19 @@ exports.createWebsite = asyncHandler(async (req, res) => {
         const tempData = await googleCloudStorageWebBuilder.copyPage(`${webToClone._id}/${page._id}`, `${data._id}/${page._id}`);
         pageData.push({[page._id]: tempData.toString()});
       }
+
+      //create default roles related to website
+      const defaultRoleDocs = [];
+      defaultRoles.map(r => {
+        defaultRoleDocs.push({
+          ...r,
+          userId: mongoose.Types.ObjectId(req.user._id),
+          organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+          websiteId: mongoose.Types.ObjectId(data._id),
+          isDelete: false,
+        });
+      });
+      await WebSiteRole.insertMany(defaultRoleDocs);
 
       return res.send({
         success: true,
@@ -304,6 +500,20 @@ exports.duplicateWebsite = asyncHandler (async(req, res) => {
       await googleCloudStorageWebBuilder.createAndUpdatePage(`${websiteData._id}/${pageData[i]._id}`, result);
     };
     // console.log('website ===== >data', websiteData);
+
+    //create default roles related to website
+    const defaultRoleDocs = [];
+    defaultRoles.map(r => {
+      defaultRoleDocs.push({
+        ...r,
+        userId: mongoose.Types.ObjectId(req.user._id),
+        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+        websiteId: mongoose.Types.ObjectId(websiteData._id),
+        isDelete: false,
+      });
+    });
+    await WebSiteRole.insertMany(defaultRoleDocs);
+
     return res.send({
       success: true,
       message: "Website duplicated successfully",
@@ -419,11 +629,14 @@ exports.deleteWebsite = asyncHandler(async (req, res) => {
     await WebPage.updateMany({websiteId: id}, { isDelete: true });
     await googleCloudStorageWebBuilder.deleteWeb(webToDelete._id);
 
+    //delete default roles related to website
+    await WebSiteRole.updateMany({websiteId: id}, { isDelete: true });
+
     res.status(200).json({ success: true });
   } catch (err) {
     res.send({ msg: err.message.replace(/\'/g, ""), success: false });
   }
-});///////////////////////////////////////////////////////////////////
+});
 
 exports.renameWebsite =asyncHandler(async (req, res) =>{
   let {id} =req.params;

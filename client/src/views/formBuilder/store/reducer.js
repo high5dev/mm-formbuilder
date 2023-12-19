@@ -6,20 +6,17 @@ export const formEditor = createSlice({
   name: 'formEditor',
   initialState: {
     form: {
+
       name: '',
       memberType: '',
       smartList: '',
       subCategory: null,
       formType: 'leads',
-      formData: [{ id: '', step: '1', name: 'Home', css: '', html: '', path: 'Home' }],
+      formData: [{ id: '', step: '1', name: '', css: '', html: '', path: '' }],
       automateEntry: false,
       status: '',
       isTemplate: false
     },
-    childForm:{
-    },
-    formRules:[],
-    linkUrl:'website',
     formOrderElements:{},
     formSalesType:'',
     formProducts:[],
@@ -28,11 +25,6 @@ export const formEditor = createSlice({
     templates: [],
     imageLibrary: [],
     formCategories: [],
-    webElements: [],
-    webCollections: [],
-    webDatasets: [],
-    webBlogs:[],
-    webConnections: [],
     categories: [],
     webProducts: {},
     cartProducts: [],
@@ -40,14 +32,8 @@ export const formEditor = createSlice({
     thankyouProducts: []
   },
   reducers: {
-    setLinkUrlReducer: (state, action) => {
-      state.linkUrl = action?.payload;
-    },
     setFormReducer: (state, action) => {
       state.form = action?.payload;
-    },
-    setChildFormReducer: (state,action) =>{
-      state.childForm=action?.payload
     },
     setCategoriesReducer: (state, action) => {
       state.categories = action?.payload;
@@ -55,19 +41,8 @@ export const formEditor = createSlice({
     setWebStoreReducer: (state, action) => {
       state.webProducts = action?.payload;
     },
-    setFormRuleReducer: (state,action) =>{
-      state.formRules=action?.payload;
-    },
-    setWebBlogsReducer: (state, action) =>{
-      state.webBlogs= action?.payload;
-    },
-    setFormSalesTypeReducer: (state, action) => {
-      state.formSalesType = action?.payload;
-    },
-    setFormOrderElementsReducer: (state, action) => {
-      state.formOrderElements = action?.payload;
-    },
-
+    
+    
     setToDefaultReducer: (state, action) => {
       if (action?.payload?.isTemplate && action?.payload?.isTemplate === true) {
         state.form = {
@@ -114,38 +89,14 @@ export const formEditor = createSlice({
     setImageLibraryReducer: (state, action) => {
       state.imageLibrary = action?.payload;
     },
-    setFormCategoriesReducer: (state, action) => {
+    setFormCategoriesReducer:(state,action) =>{
       state.formCategories = action?.payload
-    },
-    setWebElementsReducer: (state, action) => {
-      state.webElements = action?.payload;
-    },
-    setWebCollectionsReducer: (state, action) => {
-      state.webCollections = action?.payload;
-    },
-    setWebDatasetsReducer: (state, action) => {
-      state.webDatasets = action?.payload;
-    },
-    setWebConnectionsReducer: (state, action) => {
-      state.webConnections = action?.payload;
-    },
-    setCartProductsReducer: (state, action) => {
-      state.cartProducts = action?.payload;
-    },
-    setSelectedProductReducer: (state, action) => {
-      state.selectedProduct = action?.payload;
-    },
-    setThankyouProductsReducer: (state, action) => {
-      state.thankyouProducts = action?.payload;
     }
   }
 });
 
 export const {
-  setLinkUrlReducer,
   setFormReducer,
-  setFormRuleReducer,
-  setChildFormReducer,
   setToDefaultReducer,
   setAllFormsReducer,
   setFormCategoriesReducer,
@@ -155,11 +106,6 @@ export const {
   setFormOrderElementsReducer,
   setFormProductsReducer,
   setFormSalesTypeReducer,
-  setWebElementsReducer,
-  setWebCollectionsReducer,
-  setWebDatasetsReducer,
-  setWebBlogsReducer,
-  setWebConnectionsReducer,
   setCategoriesReducer,
   setWebStoreReducer,
   setCartProductsReducer,

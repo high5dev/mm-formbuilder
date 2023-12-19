@@ -111,6 +111,7 @@ const FormEntry = require("../FormEntry");
 const Form = require("../Form");
 const FormRule=require("../FormRule");
 const FormPage=require("../FormPage");
+const FormDataset=require("../FormDataset");
 const ImageLibrary = require("../ImageLibrary");
 
 // const Tag = require("../Tag");
@@ -183,6 +184,8 @@ const WebSiteDataSet = require("../WebSiteDataSet");
 const WebSiteConnection = require("../WebSiteConnection");
 const ProductDataSet = require("../ProductDataSet");
 const ProductCategory = require("../ProductCategory");
+const WebSiteRole = require("../WebSiteRole");
+const WebSiteInvite = require("../WebSiteInvite");
 const models = {
   Authenticate,
   User,
@@ -273,6 +276,7 @@ const models = {
   FormRule,
   FormPage,
   FormEntry,
+  FormDataset,
   ImageLibrary,
   // ActionPlans,
   // Video,
@@ -353,7 +357,9 @@ const models = {
   WebSiteDataSet,
   WebSiteConnection,
   ProductDataSet,
-  ProductCategory
+  ProductCategory,
+  WebSiteRole,
+  WebSiteInvite,
 };
 
 module.exports = models;
