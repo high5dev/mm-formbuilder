@@ -3,7 +3,7 @@ import { Copy } from 'react-feather';
 import { BsFillEyeFill } from 'react-icons/bs';
 import { Button, Card, CardBody, Col, Input, InputGroup, InputGroupText, Row } from 'reactstrap';
 import { useHistory } from 'react-router-dom';
-import { cloneFormAction, createFormAction, deleteFormAction } from '../../../store/action';
+import { cloneFormAction, createFormAction, deleteFormAction, getChildFormsAction } from '../../../store/action';
 
 import { toast } from 'react-toastify';
 import withReactContent from 'sweetalert2-react-content';
@@ -27,9 +27,6 @@ export default function StepTab({ store, step, dispatch, isMobileView, isTabletV
     toast.success('URL copied!');
   };
 
-  const handleViewUrl = () => {
-    window.open(`/web-preview/${store.form._id}&path=${step.path}`);
-  };
   const history = useHistory();
   // ** Toggle
   const toggleEditor = () => {
@@ -75,12 +72,56 @@ export default function StepTab({ store, step, dispatch, isMobileView, isTabletV
     }
   };
 
-  // useEffect(() => {
-  //   dispatch(getShopByUserAction());
-  // }, []);
+  useEffect(() => {
+    dispatch(getChildFormsAction(store?.form?._id));
+  }, []);
   return (
     <Fragment>
+      <div className="m-1">
+        <div className='form-data-table' style={{minHeight:'500px'}}>
+        </div>
+        <Row>
+          <Col className="d-flex flex-row-reverse">
+            {user.id === store?.form?.userId ? (
+              <Button
+                color="danger"
+                onClick={handleDeleteForm}
+                disabled={isMobileView || isTabletView}
+              >
+                REMOVE
+              </Button>
+            ) : null}
 
+            <Button
+              color="outline-primary"
+              className="me-2"
+              onClick={handleClone}
+              disabled={isMobileView || isTabletView}
+            >
+              CLONE
+            </Button>
+            {user.id === store?.form?.userId ? (
+              <Button
+                color="primary"
+                className="me-2"
+                onClick={toggleEditor}
+                disabled={isMobileView || isTabletView}
+              >
+                EDIT PAGE
+              </Button>
+            ) : null}
+          </Col>
+        </Row>
+      </div>
+      {store && step && openEditor && (
+        <EditModal
+          toggle={toggleEditor}
+          open={openEditor}
+          store={store}
+          dispatch={dispatch}
+          step={step}
+        />
+      )}
     </Fragment>
   );
 }

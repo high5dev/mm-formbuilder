@@ -32,7 +32,7 @@ const FormStep = ({ dispatch, store, isMobileView,
                 dispatch={dispatch}
                 store={store}
               />
-              <div className="tasks-area" style={{ maxWidth: '100%', width: '100%' }}>
+              <div className="tasks-area">
                 <TabContent activeTab={activeStep}>
                   {store.form &&  store?.form?.formData?.map((x) => {
                     return (

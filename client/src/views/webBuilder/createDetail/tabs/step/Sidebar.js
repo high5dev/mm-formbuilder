@@ -44,20 +44,9 @@ export default function Sidebar({ active, setActive, dispatch, store }) {
   return (
     <div style={{ minWidth: '260px', height: 'calc(100vh - 2rem)' }}>
       <div className="sidebar-content task-sidebar">
-        {/* <div className="task-app-menu">
-          <ListGroup className="sidebar-menu-list" options={{ wheelPropagation: false }}>
-            {user?.id === store?.form?.userId && store?.form?.formType !== 'email' ? (
-              <div className="create-workspace-btn my-1">
-                <Button color="primary" block outline onClick={toggleNewStep}>
-                  <Plus size={14} className="me-25" />
-                  New Step
-                </Button>
-              </div>
-            ) : null}
-
             <ListGroup options={{ wheelPropagation: false }}>
-              {store.form &&
-                store?.form?.formData?.map((x, idx) => {
+              {
+                store?.childForms?.map((x, idx) => {
                   return (
                     <ListGroupItem
                       key={idx}
@@ -72,7 +61,7 @@ export default function Sidebar({ active, setActive, dispatch, store }) {
                       style={{ cursor: 'pointer' }}
                     >
                       <div
-                        className={`d-flex justify-content-between align-middle px-2 py-1 ${
+                        className={`d-flex justify-content-between align-middle px-2 ${
                           active === x.id ? ' border-start-primary border-2' : ' border-none'
                         }`}
                       >
@@ -91,10 +80,7 @@ export default function Sidebar({ active, setActive, dispatch, store }) {
                   );
                 })}
             </ListGroup>
-          </ListGroup>
-        </div> */}
       </div>
-      {/* <NewStepModal toggle={toggleNewStep} open={openNewStep} store={store} dispatch={dispatch} /> */}
     </div>
   );
 }
