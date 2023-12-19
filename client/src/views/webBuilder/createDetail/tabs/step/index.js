@@ -38,7 +38,7 @@ const FormStep = ({ dispatch, store, isMobileView,
                     return (
                       <TabPane tabId={x.id}>
                         <StepTab store={store} step={x} dispatch={dispatch}  isMobileView={isMobileView}
-                  isTabletView={isTabletView}/>
+                          isTabletView={isTabletView}/>
                       </TabPane>
                     );
                   })}

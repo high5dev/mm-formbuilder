@@ -110,38 +110,25 @@ const FunnelSettings = () => {
         </Col>
         <Col xl="12" xs={{ order: 0 }} md={{ order: 1, size: 12 }} style={{ padding: '0px' }}>
           <Nav pills className="mb-2">
-            <NavItem style={{ width: isMobileView ? '50%' : '' }}>
-              <NavLink
-                active={active === '1'}
-                onClick={() => {
-                  setActive('1');
-                  setTitle('Step');
-                }}
-              >
-                <FiSettings className="font-medium-1 me-50" />
-                <span className="fs-6">STEP</span>
-              </NavLink>
-            </NavItem>
-            {store?.form?.isTemplate === true ? null : (
               <>
                 <NavItem style={{ width: isMobileView ? '50%' : '' }}>
                   <NavLink
-                    active={active === '2'}
+                    active={active === '1'}
                     onClick={() => {
-                      setActive('2');
-                      setTitle('Contact');
+                      setActive('1');
+                      setTitle('Forms');
                     }}
                   >
                     <GiRank2 className="font-medium-1 me-50" />
-                    <span className="fs-6">CONTACT</span>
+                    <span className="fs-6">Forms</span>
                   </NavLink>
                 </NavItem>
 
                 <NavItem style={{ width: isMobileView ? '50%' : '' }}>
                   <NavLink
-                    active={active === '3'}
+                    active={active === '2'}
                     onClick={() => {
-                      setActive('3');
+                      setActive('2');
                       setTitle('Sales');
                     }}
                   >
@@ -150,24 +137,11 @@ const FunnelSettings = () => {
                   </NavLink>
                 </NavItem>
               </>
-            )}
-            {/* <NavItem style={{ width: isMobileView ? '50%' : '' }}>
-              <NavLink
-                active={active === '4'}
-                onClick={() => {
-                  setActive('4');
-                  setTitle('Automations');
-                }}
-              >
-                <BsListCheck className="font-medium-1 me-50" />
-                <span className="fs-6">AUTOMATIONS</span>
-              </NavLink>
-            </NavItem> */}
             <NavItem style={{ width: isMobileView ? '50%' : '' }}>
               <NavLink
-                active={active === '5'}
+                active={active === '3'}
                 onClick={() => {
-                  setActive('5');
+                  setActive('3');
                   setTitle('Settings');
                 }}
               >
@@ -187,13 +161,6 @@ const FunnelSettings = () => {
                 />
               </TabPane>
               <TabPane tabId="2">
-                <Contact
-                  dispatch={dispatch}
-                  store={store}
-                  contactTypeOptions={contactTypeOptions}
-                />
-              </TabPane>
-              <TabPane tabId="3">
                 <Sales
                   dispatch={dispatch}
                   store={store}
@@ -202,14 +169,7 @@ const FunnelSettings = () => {
                   isDesktopView={isDesktopView}
                 />
               </TabPane>
-              {/* <TabPane tabId="4">
-                <Automation
-                  isMobileView={isMobileView}
-                  isTabletView={isTabletView}
-                  isDesktopView={isDesktopView}
-                />
-              </TabPane> */}
-              <TabPane tabId="5">
+              <TabPane tabId="3">
                 <Settings
                   store={store}
                   dispatch={dispatch}

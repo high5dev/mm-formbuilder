@@ -42,9 +42,9 @@ export default function Sidebar({ active, setActive, dispatch, store }) {
     }
   };
   return (
-    <div className="sidebar" style={{ maxWidth: '260px', height: 'calc(100vh - 2rem)' }}>
+    <div style={{ minWidth: '260px', height: 'calc(100vh - 2rem)' }}>
       <div className="sidebar-content task-sidebar">
-        <div className="task-app-menu">
+        {/* <div className="task-app-menu">
           <ListGroup className="sidebar-menu-list" options={{ wheelPropagation: false }}>
             {user?.id === store?.form?.userId && store?.form?.formType !== 'email' ? (
               <div className="create-workspace-btn my-1">
@@ -92,9 +92,9 @@ export default function Sidebar({ active, setActive, dispatch, store }) {
                 })}
             </ListGroup>
           </ListGroup>
-        </div>
+        </div> */}
       </div>
-      <NewStepModal toggle={toggleNewStep} open={openNewStep} store={store} dispatch={dispatch} />
+      {/* <NewStepModal toggle={toggleNewStep} open={openNewStep} store={store} dispatch={dispatch} /> */}
     </div>
   );
 }

@@ -32,7 +32,7 @@ import '@src/assets/styles/toggle-switch.scss';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
-import { deleteFormAction, getWebBuildersAction } from '../store/action';
+import { deleteFormAction, getWebBuildersAction, getWebsiteAction } from '../store/action';
 import '../../../assets/scss/style.css';
 import ReactPaginate from 'react-paginate';
 import { getUserData } from '../../../auth/utils';
@@ -92,7 +92,13 @@ export default function FunnelTable({
     history.push(`/webpages/editor/${row._id}`);
   };
   const handleDetails = (row) => {
-    history.push(`/webpages/editor/${row._id}`);
+    dispatch(getWebsiteAction(row?._id)).then((res)=>{
+      if(res){
+        history.push(`/form-funnel/form-setting/${row._id}`)
+      }
+    })
+
+    // history.push(`/webpages/editor/${row._id}`);
   };
 
   useEffect(()=>{
