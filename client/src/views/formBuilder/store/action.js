@@ -10,7 +10,6 @@ import {
   setCategoriesReducer,
   setWebStoreReducer,
   setCartProductsReducer,
-  setWebConnectionsReducer,
   setSelectedProductReducer,
   setThankyouProductsReducer,
 } from './reducer';
@@ -258,106 +257,6 @@ export const sendInvoiceAction = (payload) => async (dispatch) => {
 export const sendEmailToUserAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.sendEmailToUser(payload);
-    return data;
-  } catch (error) { }
-};
-
-export const getWebElementsAction = () => async (dispatch) => {
-  try {
-    const { data } = await api.getWebElements();
-    dispatch(setWebElementsReducer(data.data));
-    return data;
-  } catch (error) { }
-};
-
-export const createWebElementAction = (payload) => async (dispatch) => {
-  try {
-    const { data } = await api.createWebElement(payload);
-    if (data.success)
-      dispatch(getWebElementsAction(data.data));
-    return data;
-  } catch (error) { }
-};
-
-export const getWebCollectionsAction = (websiteId) => async (dispatch) => {
-  try {
-    const { data } = await api.getWebCollection(websiteId);
-    dispatch(setWebCollectionsReducer(data.data));
-    return data;
-  } catch (error) { }
-};
-
-export const createWebCollectionAction = (payload) => async (dispatch) => {
-  try {
-    const { data } = await api.createWebCollection(payload);
-    if (data.success)
-      dispatch(getWebCollectionsAction(data.data.websiteId));
-    return data;
-  } catch (error) { }
-};
-
-export const updateWebCollectionAction = (id, payload) => async (dispatch) => {
-  try {
-    const { data } = await api.updateWebCollection(id, payload);
-    if (data.success)
-      dispatch(getWebCollectionsAction(data.data.websiteId));
-    return data;
-  } catch (error) { }
-};
-
-export const getWebDatasetsAction = (collectionId) => async (dispatch) => {
-  try {
-    const { data } = await api.getWebDataset(collectionId);
-    dispatch(setWebDatasetsReducer(data.data));
-    return data;
-  } catch (error) { }
-};
-
-export const getWebsiteAllDatasetsAction = (websiteId) => async (dispatch) => {
-  try {
-    const { data } = await api.getWebAllDataset(websiteId);
-    dispatch(setWebDatasetsReducer(data.data));
-    return data;
-  } catch (error) { }
-};
-
-export const createWebDatasetAction = (payload) => async (dispatch) => {
-  try {
-    const { data } = await api.createWebDataset(payload);
-    if (data.success)
-      dispatch(getWebDatasetsAction(data.data.collectionId));
-    return data;
-  } catch (error) { }
-};
-
-export const getConnectionsByWebsiteAction = (websiteId) => async (dispatch) => {
-  try {
-    const { data } = await api.getConnectsByWebsite(websiteId);
-    dispatch(setWebConnectionsReducer(data.data));
-    return data;
-  } catch (error) { }
-};
-
-export const createOrUpdateConnectionAction = (payload) => async (dispatch) => {
-  try {
-    const { data } = await api.createOrUpdateConnect(payload);
-    dispatch(getConnectionsByWebsiteAction(data.data.websiteId));
-    return data;
-  } catch (error) { }
-};
-
-export const deleteWebConnectionAction = (id) => async (dispatch) => {
-  try {
-    const { data } = await api.deleteConnect(id);
-    dispatch(getConnectionsByWebsiteAction(data.data.websiteId));
-    return data;
-  } catch (error) { }
-};
-
-export const deleteMultipleWebConnectionAction = (payload) => async (dispatch) => {
-  try {
-    const { data } = await api.deleteMultipleConnects(payload);
-    dispatch(getConnectionsByWebsiteAction(data.data.websiteId));
     return data;
   } catch (error) { }
 };
