@@ -505,7 +505,7 @@ export const getWebBuildersAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.getWebBuilders(payload);
     dispatch(setAllFormsReducer(data.data));
-    return data?.data;
+    return data;
   } catch (error) { }
 };
 

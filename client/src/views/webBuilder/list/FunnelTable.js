@@ -32,7 +32,7 @@ import '@src/assets/styles/toggle-switch.scss';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
-import { deleteFormAction } from '../store/action';
+import { deleteFormAction, getWebBuildersAction } from '../store/action';
 import '../../../assets/scss/style.css';
 import ReactPaginate from 'react-paginate';
 import { getUserData } from '../../../auth/utils';
@@ -56,7 +56,6 @@ const label = {
 };
 export default function FunnelTable({
   categoryData,
-  tableData,
   active,
   dispatch,
   collapse,
@@ -95,19 +94,25 @@ export default function FunnelTable({
   const handleDetails = (row) => {
     history.push(`/webpages/editor/${row._id}`);
   };
-  useEffect(() => {
-    if (tableData && tableData?.length > 0 && rowsPerPage) {
-      setCount(Math.ceil(tableData.length / rowsPerPage));
-    }
-  }, [tableData, rowsPerPage]);
-  useEffect(() => {
-    if (tableData && tableData?.length > 0 && currentPage && rowsPerPage) {
-      setDisplayData(tableData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage));
-    }
-  }, [tableData, currentPage, rowsPerPage]);
+
+  useEffect(()=>{
+    const payload={
+      currentPage,
+      rowsPerPage,
+      template:false
+    };
+    dispatch(getWebBuildersAction(payload)).then(res=>{
+      if(res && res.data){
+        setDisplayData([...res.data]);
+        setCount(Math.ceil(res.count / rowsPerPage))
+      }
+    })
+  }, [currentPage]);
+
+
   useEffect(() => {
     setCurrentPage(1);
-  }, [checkedCategoryData]);
+  }, [checkedCategoryData, rowsPerPage]);
 
   const CustomPagination = () => {
     return (
@@ -460,7 +465,7 @@ export default function FunnelTable({
           </Row>
           {toggleListOrBoard ? (
             <>
-              {tableData && tableData?.length ? (
+              {displayData && displayData?.length ? (
                 <DataTable
                   header
                   sortServer
@@ -490,9 +495,9 @@ export default function FunnelTable({
             </>
           ) : (
             <Row spacing={2} className="p-0 m-0 mt-3">
-              {tableData && tableData?.length ? (
+              {displayData && displayData?.length ? (
                 <>
-                  {tableData?.map((item) => {
+                  {displayData?.map((item) => {
                     const categoryName = getCategoryName(item.subCategory);
                     return (
                       <Col key={item._id} sm={12} md={4} lg={4}>
