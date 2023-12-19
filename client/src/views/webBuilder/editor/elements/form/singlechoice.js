@@ -16,10 +16,15 @@ let singleChoiceEl = {
       attributes: { class: 'single-choice-element', id:'single-choice-element'+new Date().getTime() },
       components: (props) => {
           const elProps = props.attributes.elProps;
+          const elProp=props.attributes.elProps[0];
           return(
             <div class="single-choice-container">
+              <div class='single-choice-title'>
+                <label for={elProp.name}>{elProp.name}</label>
+              </div>
+              <div>
               {
-              elProps && elProps.map((elProp)=>{
+                elProps && elProps.map((elProp)=>{
                 return(
                       <div>
                          <label><input class="input-single-choice-item" type={elProp.type} id={elProp.id} name={elProp.name} value={elProp.label}/>{elProp.label}</label>
@@ -28,6 +33,8 @@ let singleChoiceEl = {
   
               })
               }
+              </div>
+
             </div>
           )
 
@@ -57,6 +64,7 @@ let singleChoiceEl = {
       ],
       styles: `
       .single-choice-element {padding:10px; margin-left:40px; display:flex; justify-content:space-around}
+      .single-choice-title {margin-bottom:10px}
       .single-choice-container{width:480px}
       .input-single-choice-item {padding:5px;}
     `,
@@ -70,21 +78,27 @@ let singleChoiceEl = {
     handleChangeProps(e) {
       const comps=this.model.get('components');
       const elProps=this.model.get('elProps');
+      const elProp=elProps[0];
       while (comps.length > 0) {
         comps.pop();
       };
       comps.push(
         <div class="single-choice-container">
+            <div class='single-choice-title'>
+              <label for={elProp.name}>{elProp.name}</label>
+            </div>
+            <div>
             {
-            elProps && elProps.map((elProp)=>{
-              return(
-                    <div>
-                      <label><input type={elProp.type} class="input-single-choice-item" id={elProp.id} name={elProp.name} checked={elProp.checked} value={elProp.value}/>{elProp.label}</label>
-                    </div>
-              )
-    
-            })
+              elProps && elProps.map((elProp)=>{
+                return(
+                      <div>
+                        <label><input type={elProp.type} class="input-single-choice-item" id={elProp.id} name={elProp.name} checked={elProp.checked} value={elProp.value}/>{elProp.label}</label>
+                      </div>
+                )
+      
+              })
             }
+            </div>
         </div>
       );
       this.render();
