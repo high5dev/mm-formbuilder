@@ -12,7 +12,7 @@ const {
   getInvitesByWebsite,
 } = require("../controllers/webBuilderRole");
 
-router.post("/update", isAuthenticated, updateRole);
+router.post("/update/:id", isAuthenticated, updateRole);
 router.post("/create", isAuthenticated, createRole);
 router.delete("/delete/:id", isAuthenticated, deleteRole);
 router.get("/role/:id", isAuthenticated, getRolesByWebsite);
