@@ -307,6 +307,14 @@ export const deleteMultipleConnects = (payload) => {
   return API.post(`/web-builder-cms/connection/multiple-delete`, payload);
 }
 
+export const getProductCategory = (id) => {
+  return API.get(`/web-builder-store/category/${id}`);
+}
+
+export const updateCategory = (id, payload) => {
+  return API.post(`/web-builder-store/category/update/${id}`, payload);
+};
+
 export const getProductDataset = (id) => {
   return API.get(`/web-builder-store/dataset/${id}`);
 }

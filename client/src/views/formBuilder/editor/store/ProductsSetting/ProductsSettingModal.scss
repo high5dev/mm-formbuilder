@@ -1,0 +1,135 @@
+.products-setting {
+  width: 420px !important;
+
+  .modal-header {
+    background-color: white;
+  }
+
+  .modal-body {
+    padding: 0px;
+    height: 500px;
+  }
+
+  .cursor-hand {
+    cursor: pointer;
+  }
+
+  .type-list {
+    padding: 12px;
+    background-color: #f7f8f8;
+
+    > div {
+      padding: 2px 10px;
+      margin-bottom: 10px;
+      color: black;
+      user-select: none;
+    }
+
+    .type-selected {
+      color: #0057e1;
+      background-color: #d6e6fe;
+      border-radius: 20px;
+      display: inline-block;
+    }
+  }
+
+  .type-content {
+    .category-item {
+      background-image: linear-gradient(233deg, #ebdce1, #aae0eb 71%, #ece1d8);
+      width: 114px;
+      height: 114px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: black;
+    }
+
+    .category-content {
+      .category-selected {
+        border: 2px solid #116dff;
+      }
+
+      .category-add {
+        background-image: none;
+        border: 1px dashed #7fccf7;
+        height: 140px;
+        font-size: 70px;
+        color: #0057e1;
+
+        &:hover {
+          background-color: #e7f0ff;
+        }
+      }
+
+      .category-manage {
+        border-radius: 30px;
+        padding: 0 24px;
+        background-color: #e7f0ff;
+        color: #116dff;
+        height: 35px;
+
+        &:hover {
+          background-color: #d6e6fe;
+        }
+      }
+    }
+
+    .product-list {
+      overflow: scroll;
+      flex: 1;
+    }
+  }
+
+  .settings-content {
+    .settings-title {
+      width: 270px;
+      height: 40px;
+      background-color: #f7f8f8;
+    }
+
+    .hover-list {
+      grid-template-columns: repeat(3, 1fr);
+
+      .hover-item {
+        width: 70px;
+
+        .item-bg {
+          border-radius: 4px;
+          background-color: #e7f0ff;
+          overflow: hidden;
+          width: 100%;
+          height: 100%;
+          &.selected {
+            background-color: #116dff;
+          }
+        }
+
+        &:hover {
+          .item-bg {
+            background-color: #d6e6fe;
+            &.selected {
+              background-color: #116dff;
+            }
+          }
+        }
+      }
+    }
+
+    .align-list {
+      .hover-item {
+        width: 35px;
+        height: 35px;
+      }
+    }
+
+    .button-style-list {
+      grid-template-columns: repeat(4, 1fr);
+
+      .hover-item {
+        width: 42px;
+        height: 50px;
+      }
+    }
+  }
+}

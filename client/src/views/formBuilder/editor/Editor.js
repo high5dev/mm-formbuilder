@@ -34,7 +34,7 @@ import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
 import { setChildFormReducer, setFormReducer } from '../store/reducer';
-import { getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, createChildFormAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction, getConnectionsByWebsiteAction, createShopPagesAction, updateSelectedProductAction } from '../store/action'
+import { getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, createChildFormAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction, getConnectionsByWebsiteAction, createShopPagesAction, updateSelectedProductAction, getProductCategoryAction } from '../store/action'
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
@@ -64,6 +64,7 @@ import BlogModal from './topNav/blog/BlogModal'
 import { GiConsoleController } from 'react-icons/gi';
 import Sidebar from './Sidebar';
 import { element } from 'prop-types';
+import ProductsSettingModal from './store/ProductsSetting/ProductsSettingModal';
 export default function Editor({
   isblog,
   setIsBlog,
@@ -122,6 +123,7 @@ export default function Editor({
   const [modelsToConnect, setModelsToConnect] = useState([]);
   const [isinvite, setIsInvite] = useState(false);
   const [selectedCollection, setSelectedCollection] = useState(null);
+  const [selectedProductCategory, setSelectedProductCategory] = useState({});
 
   useEffect(() => {
     if (store.form._id) {
@@ -135,6 +137,7 @@ export default function Editor({
   const [selectedDataSet, setSelectedDataSet] = useState({});
   const [showProductDataSetModal, setShowProductDataSetModal] = useState(false);
   const [showEditProductsModal, setShowEditProductsModal] = useState(false);
+  const [showProductsSettingModal, setShowProductsSettingModal] = useState(false);
   const [showAddCartButtonModal, setShowAddCartButtonModal] = useState(false);
   const [cartProductId, setCartProductId] = useState("");
   const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
@@ -296,6 +299,11 @@ export default function Editor({
     selectedCmp.set('productId', id);
   }
 
+  const handleChangeSelectedProductCategory = (category) => {
+    setSelectedProductCategory(category);
+    selectedCmp.set('category', category);
+  }
+
   // useEffect(() =>{
   //   let interval;
   //     if(editor && !form.isPublish){
@@ -339,30 +347,38 @@ export default function Editor({
   useEffect(() => {
     if(editor) {
       setIsStoreLoading(true);
-      function updateComponentsAndChildren(components, webProducts) {
+      function updateComponentsAndChildren(components, webProducts, categories) {
         components.forEach((component) => {
           if (component.get('type') === 'gridproductgallery' || component.get('type') === 'sliderproductgallery' || component.get('type') === 'relatedproducts') {
             component.set('products', webProducts);
+            const categoryId = component.getAttributes().categoryid;
+            const category = categories.find((item) => item._id === categoryId);
+            if(category != undefined && category != null)
+              component.set('category', category);
+            else if(categories.length > 0) {
+              component.set('category', categories[0]);
+            }
           }
 
           // Recursively update children
           if (component.components) {
-            updateComponentsAndChildren(component.components().models, webProducts);
+            updateComponentsAndChildren(component.components().models, webProducts, categories);
           }
         });
       }
 
       const components = editor.getWrapper().components().models;
-      updateComponentsAndChildren(components, store?.webProducts);
+      updateComponentsAndChildren(components, store?.webProducts, store?.categories);
       setIsStoreLoading(false);
     }
-  }, [store?.webProducts]);
+  }, [store?.webProducts, store?.categories]);
 
   useEffect(() => {
     if (store?.form?._id) {
       dispatch(getWebsiteAllDatasetsAction(store?.form?._id));
       dispatch(getWebCollectionsAction(store?.form?._id));
       dispatch(getProductDatasetAction(store?.form?._id));
+      dispatch(getProductCategoryAction(store?.form?._id));
     }
   }, [store?.form?._id]);
 
@@ -467,6 +483,26 @@ export default function Editor({
         if (shopPages.length == 0) {
           dispatch(createShopPagesAction({ id: storeRef.current?.form?._id }));
         }
+        const categoryId = component.getAttributes().categoryid;
+        const category = storeRef.current?.categories.find((item) => item._id === categoryId);
+        if (category != undefined && category != null)
+          component.set('category', category);
+        else if (storeRef.current?.categories.length > 0) {
+          component.set('category', storeRef.current?.categories[0]);
+        }
+        component.set('fieldnames', component.getAttributes().fieldnames);
+        component.set('hovereffect', component.getAttributes().hovereffect);
+        component.set('showcartbutton', component.getAttributes().showcartbutton);
+        component.set('displaystyle', component.getAttributes().displaystyle);
+        component.set('alignstyle', component.getAttributes().alignstyle);
+        component.set('sidepadding', component.getAttributes().sidepadding);
+        component.set('tppadding', component.getAttributes().tppadding);
+        component.set('cornerradius', component.getAttributes().cornerradius);
+        component.set('buttontext', component.getAttributes().buttontext);
+        component.set('buttonstyle', component.getAttributes().buttonstyle);
+        component.set('fillopacity', component.getAttributes().fillopacity);
+        component.set('borderwidth', component.getAttributes().borderwidth);
+        component.set('buttoncornerradius', component.getAttributes().buttoncornerradius);
       }
       else if (component.get('type') === 'add-to-cart-button') {
         setCartProductId(storeRef.current?.webProducts?.values[0].id);
@@ -625,6 +661,7 @@ export default function Editor({
       if (cmp.attributes.type === 'gridproductgallery' || cmp.attributes.type === 'sliderproductgallery' || cmp.attributes.type === 'relatedproducts') {
         setSelectedDataSet(cmp.get('selectedDataset'));
         setDatasetConnect(cmp.get('datasetConnect'));
+        setSelectedProductCategory(cmp.get('category'));
         if(cmp.attributes.type === 'sliderproductgallery' || cmp.attributes.type === 'relatedproducts')
           setConnectModel(cmp.getChildAt(0), cmp.get('datasetConnect'));
         else
@@ -782,12 +819,12 @@ export default function Editor({
         setIsBlog(true);
       })
 
-      gjsEditor.Commands.add('connect-product-dataset', geditor => {
-        setShowProductDataSetModal({ isOpen: true, data: {} });
+      gjsEditor.Commands.add('manage-products', geditor => {
+        setShowEditProductsModal(true);
       });
 
       gjsEditor.Commands.add('setting-product', gjsEditor => {
-        setShowEditProductsModal(true);
+        setShowProductsSettingModal(true);
       });
 
       gjsEditor.Commands.add('setting-addcartbutton', gjsEditor => {
@@ -835,15 +872,15 @@ export default function Editor({
                   });
                 }
                 if (elType.id === 'gridproductgallery' || elType.id === 'sliderproductgallery' || elType.id === 'relatedproducts') {
-                  // toolbar.unshift({
-                  //   id: 'connect-product-dataset',
-                  //   command: 'connect-product-dataset',
-                  //   label: connectionLabel
-                  // });
                   toolbar.unshift({
                     id: 'setting-product',
                     command: 'setting-product',
                     label: settingLabel
+                  });
+                  toolbar.unshift({
+                    id: 'manage-products',
+                    command: 'manage-products',
+                    label: connectionLabel
                   })
                 }
                 if (elType.id === 'add-to-cart-button') {
@@ -1622,6 +1659,14 @@ export default function Editor({
       <EditCollectionModal store={store} openCollection={openEditCollection} setOpenEditCollection={setOpenEditCollection} toggle={toggleOpenEditCollection} />
       <ConnectCollectionModal store={store} connectData={connectData} setConnectData={setConnectData} getProductDataset={getProductDataset} datasetConnect={datasetConnect} setDatasetConnect={setDatasetFields} handleSelectChangeDataSet={handleSelectChangeDataSet} selectedDataSet={selectedDataSet} setSelectedDataSet={setSelectedDataSet} selectedCmp={selectedCmp} selectedCollection={selectedCollection} setSelectedCollection={setSelectedCollection} createDatasetToggle={createDatasetToggle} />
       <EditProductsModal store={store} showEditProductsModal={showEditProductsModal} setShowEditProductsModal={setShowEditProductsModal} />
+      <ProductsSettingModal
+        store={store}
+        showProductsSettingModal={showProductsSettingModal}
+        setShowProductsSettingModal={setShowProductsSettingModal}
+        selectedProductCategory={selectedProductCategory}
+        handleChangeSelectedProductCategory={handleChangeSelectedProductCategory}
+        selectedCmp={selectedCmp}
+      />
       <ConnectProductDataSetModal store={store} showProductDataSetModal={showProductDataSetModal} setShowProductDataSetModal={setShowProductDataSetModal} modelsToConnect={modelsToConnect} datasetConnect={datasetConnect} setDatasetFields={setDatasetFields} />
       <AddCartButtonModal store={store} showAddCartButtonModal={showAddCartButtonModal} setShowAddCartButtonModal={setShowAddCartButtonModal} productId={cartProductId} handleChangeProductId={handleChangeProductId} />
       <BlogModal store ={store} isOpen={isblog} toggle={toggleBlog}/>
