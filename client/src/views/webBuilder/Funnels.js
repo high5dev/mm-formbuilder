@@ -83,9 +83,6 @@ export default function Funnels({
       case '1':
         setTableData([]);
         dispatch(setAllFormsReducer([]));
-        dispatch(getWebBuildersAction({ template: false, isDelete: false })).then((res)=>{
-          setTableData(res);
-        })
         break;
       case '2':
         setTableData([]);
@@ -145,8 +142,8 @@ export default function Funnels({
           </Collapse>
         )}
         <FunnelTable
-        categoryData={categoryData}
-        checkedCategoryData={checkedCategoryData}
+          categoryData={categoryData}
+          checkedCategoryData={checkedCategoryData}
           tableData={tableData}
           active={active}
           dispatch={dispatch}

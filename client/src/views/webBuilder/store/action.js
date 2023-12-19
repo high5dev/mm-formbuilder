@@ -58,6 +58,7 @@ export const getChildFormsAction=(id) =>async(dispatch) =>{
   try{
     const {data}=await api.getChildForms(id);
     dispatch(setChildFormsReducer(data.data));
+    return data.data
   }
   catch(error){
   }
@@ -505,7 +506,7 @@ export const getWebBuildersAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.getWebBuilders(payload);
     dispatch(setAllFormsReducer(data.data));
-    return data?.data;
+    return data;
   } catch (error) { }
 };
 

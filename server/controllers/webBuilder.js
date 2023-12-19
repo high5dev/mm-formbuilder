@@ -575,15 +575,25 @@ exports.getWebSites = asyncHandler(async (req, res) => {
   try {
     const { organization } = req.headers;
     const user = req.user;
-    const { template } = req.query;
+    const { template, currentPage, rowsPerPage } = req.query;
+    let _currentPage=parseInt(currentPage);
+    let _rowsPerPage=parseInt(rowsPerPage);
+    let  skip=(_currentPage-1)*_rowsPerPage;
     let query = {
         userId: mongoose.Types.ObjectId(user._id),
         organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
         isTemplate: template === "true" ? true : false,
         isDelete: false,
     };
+    const count = await WebBuilder.find(query).count();
     const data = await WebBuilder.aggregate([
       {$match: query},
+      {
+        $skip:skip
+      },
+      {
+        $limit:_rowsPerPage
+      },
       {
         $lookup: {
           from: "web-pages",
@@ -594,7 +604,7 @@ exports.getWebSites = asyncHandler(async (req, res) => {
       }
     ]);
 
-    return res.status(200).json({ success: true, data: data});
+    return res.status(200).json({ success: true, data: data, count:count});
   } catch (err) {
     res.status(500).send({ msg: err.message });
   }

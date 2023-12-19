@@ -1373,7 +1373,6 @@ export default function Editor({
                                         setAddFormMdl(true);
                                         blockManager.dragStop(false);
                                       }
-                                   
                                     }}
                                   >
                                   </div>

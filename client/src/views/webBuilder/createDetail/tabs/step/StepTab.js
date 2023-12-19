@@ -3,7 +3,7 @@ import { Copy } from 'react-feather';
 import { BsFillEyeFill } from 'react-icons/bs';
 import { Button, Card, CardBody, Col, Input, InputGroup, InputGroupText, Row } from 'reactstrap';
 import { useHistory } from 'react-router-dom';
-import { cloneFormAction, createFormAction, deleteFormAction } from '../../../store/action';
+import { cloneFormAction, createFormAction, deleteFormAction, getChildFormsAction } from '../../../store/action';
 
 import { toast } from 'react-toastify';
 import withReactContent from 'sweetalert2-react-content';
@@ -27,9 +27,6 @@ export default function StepTab({ store, step, dispatch, isMobileView, isTabletV
     toast.success('URL copied!');
   };
 
-  const handleViewUrl = () => {
-    window.open(`/web-preview/${store.form._id}&path=${step.path}`);
-  };
   const history = useHistory();
   // ** Toggle
   const toggleEditor = () => {
@@ -75,57 +72,14 @@ export default function StepTab({ store, step, dispatch, isMobileView, isTabletV
     }
   };
 
-  // useEffect(() => {
-  //   dispatch(getShopByUserAction());
-  // }, []);
+  useEffect(() => {
+    dispatch(getChildFormsAction(store?.form?._id));
+  }, []);
   return (
     <Fragment>
       <div className="m-1">
-        <div className="d-flex justify-content-between">
-          <InputGroup size="md">
-            <Input
-              value={`https://${organization ? organization.path : 'me'
-                }.mymanager.com/web-preview/${store.form._id}&path=${step.path}`}
-              disabled="true"
-            />
-            <InputGroupText>
-              <Button color="link" className="p-0" onClick={handleCopyUrl}>
-                <Copy />
-              </Button>
-            </InputGroupText>
-          </InputGroup>
-          <Button
-            color="primary"
-            className="ms-2"
-            style={{ minWidth: '120px' }}
-            onClick={handleViewUrl}
-          >
-            <BsFillEyeFill className="me-1" />
-            View
-          </Button>
+        <div className='form-data-table' style={{minHeight:'500px'}}>
         </div>
-        <Card style={{ height: '100%', borderRadius: 10, marginTop: '1em' }} className={`shadow`}>
-          <CardBody>
-            <iframe
-              scrolling="no"
-              className="shadow-sm"
-              style={{
-                position: 'relative',
-                overflow: 'hidden',
-                width: '100%',
-                border: 'none',
-                height: '400px',
-                borderRadius: 10
-              }}
-              key={step.html?.length}
-              src={
-                step.html !== ''
-                  ? `/web-preview/${store.form._id}&path=${step.path}`
-                  : `/logo.html`
-              }
-            />
-          </CardBody>
-        </Card>
         <Row>
           <Col className="d-flex flex-row-reverse">
             {user.id === store?.form?.userId ? (
