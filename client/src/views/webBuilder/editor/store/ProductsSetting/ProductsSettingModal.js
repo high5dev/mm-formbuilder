@@ -126,7 +126,7 @@ const ProductsSettingModal = ({
                 <div className="p-1 mt-1 product-list w-100">
                   <div>Choose Category</div>
                   <div className="d-grid mt-1 w-100 " style={{ gridTemplateColumns: '1fr 1fr' }}>
-                    {store.categories.map((category) => {
+                    {store.categories?.map((category) => {
                       return (
                         <div
                           className={

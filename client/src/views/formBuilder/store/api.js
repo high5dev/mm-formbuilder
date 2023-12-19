@@ -101,19 +101,3 @@ export async function sendEmailToUser(payload) {
 export const searchDomain = (domain) =>{
   return API.get(`/form-builder/search/domain/${domain}`);
 }
-
-export const getProductCategory = (id) => {
-  return API.get(`/web-builder-store/category/${id}`);
-}
-
-export const updateCategory = (id, payload) => {
-  return API.post(`/web-builder-store/category/update/${id}`, payload);
-};
-
-export const getProductDataset = (id) => {
-  return API.get(`/web-builder-store/dataset/${id}`);
-}
-
-export const updateProductDataset = (id, payload) => {
-  return API.post(`/web-builder-store/dataset/update/${id}`, payload);
-}

@@ -19,6 +19,7 @@ import {
   Modal
 } from 'reactstrap';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import ReactHtmlParser from 'react-html-parser';
 import websitePlugin from 'grapesjs-preset-webpage';
 import basicBlockPlugin from 'grapesjs-blocks-basic';
 import formPlugin from 'grapesjs-plugin-forms';
@@ -33,7 +34,7 @@ import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
 import { setChildFormReducer, setFormReducer } from '../store/reducer';
-import { getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, createChildFormAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction, getConnectionsByWebsiteAction, createShopPagesAction, updateSelectedProductAction, getProductCategoryAction, getChildFormsAction, getWebsiteRolesAction } from '../store/action'
+import { getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, createChildFormAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction, getConnectionsByWebsiteAction, createShopPagesAction, updateSelectedProductAction, getProductCategoryAction } from '../store/action'
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
@@ -50,7 +51,6 @@ import CreateFormModal from '../createForm/CreateFormModal';
 import DuplicateModal from './topNav/duplicate/duplicateModal';
 import InvitationModal from './topNav/invite/invitationModal';
 import FormEditorModal from './leftSidebar/form/FormEditorModal';
-import SelectFormModal from './leftSidebar/form/SelectFormModal';
 import cmsimg from '../../../assets/img/cms-img.png'
 import { CiCircleChevRight, CiCirclePlus } from 'react-icons/ci';
 import CreateCollectionModal from './cms/collection/CreateCollectionModal';
@@ -64,8 +64,7 @@ import BlogModal from './topNav/blog/BlogModal'
 import { GiConsoleController } from 'react-icons/gi';
 import Sidebar from './Sidebar';
 import { element } from 'prop-types';
-import ProductsSettingModal from './store/ProductsSetting/ProductsSettingModal';
-import RoleModal from './topNav/role';
+import ProductsSettingModal from '../../webBuilder/editor/store/ProductsSetting/ProductsSettingModal';
 export default function Editor({
   isblog,
   setIsBlog,
@@ -101,8 +100,6 @@ export default function Editor({
   addSideBarOpen,
   setAddSideBarOpen,
   selectedMainNav,
-  roleMdl,
-  setRoleMdl,
 }) {
   const [openCreateForm, setOpenCreateForm] = useState();
   const { id } = useParams();
@@ -122,23 +119,18 @@ export default function Editor({
   const [openCreateColMdl, setOpenCreateColMdl] = useState(false);
   const [openEditCollection, setOpenEditCollection] = useState({isOpen: false, data: {}});
   const [openCreateDatasetMdl, setOpenCreateDatasetMdl] = useState({isOpen: false, data: {}});
-  const [addFormMdl, setAddFormMdl]=useState(false);
   const [connectData, setConnectData] = useState({isOpen: false, data: {}});
   const [modelsToConnect, setModelsToConnect] = useState([]);
   const [isinvite, setIsInvite] = useState(false);
   const [selectedCollection, setSelectedCollection] = useState(null);
   const [selectedProductCategory, setSelectedProductCategory] = useState({});
-  const [selectedFormBlock, setSelectedFormBlock]=useState(null);
 
   useEffect(() => {
-    if (store?.form?._id) {
-      dispatch(getWebsiteAllDatasetsAction(store.form._id));
-      dispatch(getWebCollectionsAction(store.form._id));
-      dispatch(getProductDatasetAction(store.form._id));
+    if (store.form._id) {
       dispatch(getConnectionsByWebsiteAction(store.form._id));
-      dispatch(getWebsiteRolesAction(store.form._id));
+      dispatch(getWebsiteAllDatasetsAction(store.form._id));
     }
-  }, [store?.form?._id]);
+  }, [store.form._id]);
   
   const [productDataset, setProductDataset] = useState({});
   const [datasetConnect, setDatasetConnect] = useState([]);
@@ -201,10 +193,6 @@ export default function Editor({
     setIsBlog(_open);
   }
 
-  const toggleRoleMdl =(_open) =>{
-    setRoleMdl(!roleMdl);
-  }
-
   const handleSidebarOpen = (e) => {
     setSidebarData({
       ...sidebarData,
@@ -220,7 +208,7 @@ export default function Editor({
      const pageId=page?._id;
      const websiteId=form?._id;
      const elements=[];
-     const name="My Form";
+     const name="Page1";
      const payload={
       websiteId,
       pageId,
@@ -237,16 +225,10 @@ export default function Editor({
         setFormEditorMdl(true);
       }
      })
-  }
-
+    }
   const scrollToTarget =(_target) =>{
     document.getElementById(_target).scrollIntoView(true);
   } 
-
-  const selectFormToggle=(_open)=>{
-    setAddFormMdl(_open);
-  }
-
 
   const getProductDataset = (collectionId) => {
     // setIsStoreLoading(true);
@@ -316,10 +298,12 @@ export default function Editor({
     setCartProductId(id);
     selectedCmp.set('productId', id);
   }
+
   const handleChangeSelectedProductCategory = (category) => {
     setSelectedProductCategory(category);
     selectedCmp.set('category', category);
   }
+
   // useEffect(() =>{
   //   let interval;
   //     if(editor && !form.isPublish){
@@ -337,6 +321,7 @@ export default function Editor({
   //       return () => clearInterval(interval);
   //     }
   // }, [editor?.getHtml(editor?.Pages.getSelected()), editor?.getCss(editor?.Pages.getSelected()), form, page])
+
   useEffect(() => {
     if(editor && store.selectedProduct) {
       const components = editor.getWrapper().components().models;
@@ -347,6 +332,7 @@ export default function Editor({
       });
     }
   }, [store.selectedProduct]);
+
   useEffect(() => {
     if(editor && store.cartProducts) {
       const components = editor.getWrapper().components().models;
@@ -357,16 +343,6 @@ export default function Editor({
       });
     }
   }, [store.cartProducts]);
-  
-  const saveFormBlock=(html)=>{
-    if(selectedFormBlock.get('type')==='new-form' || selectedFormBlock.get('type')==='add-form'){
-      let comps=selectedFormBlock.get('components');
-      while (comps.length > 0) {
-        comps.pop();
-      };
-      comps.push(html);
-    }
-  }
 
   useEffect(() => {
     if(editor) {
@@ -392,11 +368,6 @@ export default function Editor({
       }
 
       const components = editor.getWrapper().components().models;
-      components.forEach((component) => {
-        if(component.get('type') === 'gridproductgallery' || component.get('type') === 'sliderproductgallery' || component.get('type') === 'relatedproducts') {
-          component.set('products', store?.webProducts);
-        }
-      });
       updateComponentsAndChildren(components, store?.webProducts, store?.categories);
       setIsStoreLoading(false);
     }
@@ -413,7 +384,6 @@ export default function Editor({
 
   useEffect(() => {
     dispatch(getWebElementsAction());
-    dispatch(getChildFormsAction(store?.form?._id));
     dispatch(getBlogsAction(store?.form?._id));
     dispatch(getWebsiteAction(id)).then(res=>{
       if(res){
@@ -504,9 +474,6 @@ export default function Editor({
         }
       });
     }
-    gjsEditor.on('canvas:drop', (data, component)=>{
-      setSelectedFormBlock(component);
-    })
 
     gjsEditor.on('component:add', (component) => {
       if (component.get('type') === 'gridproductgallery' || component.get('type') === 'sliderproductgallery' || component.get('type') === 'relatedproducts') {
@@ -537,12 +504,13 @@ export default function Editor({
         component.set('borderwidth', component.getAttributes().borderwidth);
         component.set('buttoncornerradius', component.getAttributes().buttoncornerradius);
       }
-      else if(component.get('type') === 'addtocartbutton') {
+      else if (component.get('type') === 'addtocartbutton') {
         setCartProductId(storeRef.current?.webProducts?.values[0].id);
         component.set('productId', storeRef.current?.webProducts?.values[0].id);
       }
       else if (component.get('type') === 'shoppingcart') {
         let cartItemCount = 0;
+
       }
       else if (component.get('type') === 'productpage') {
         if (storeRef.current?.selectedProduct == {} && storeRef.current?.webProducts.length > 0) {
@@ -559,110 +527,110 @@ export default function Editor({
       } else if(component.get('type') === 'count-down') {
         component.set('template', component.getAttributes().template);
       }
-      if (!loadedRef.current && component.get('type') != 'image') {
-        if (compoId == "")
-          compoId = component.ccid;
-        const parentType = component.parent().get('type');
-        
-        if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
-          console.log(component);
-          setIsStoreLoading(true);
-          let numOfItems;
-          if(component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
-            numOfItems = component.parent().parent().get('numOfItems');
-          } else {
-            numOfItems = component.parent().parent().parent().get('numOfItems');
-          }
-          let originalComp = component.parent().clone();
-          let comps = component.parent().parent().get('components');
-          for (let i = comps.models.length - 1; i >= 0; i--) {
-            comps.models[i].remove();
-          }
+      // if (!loadedRef.current && component.get('type') != 'image') {
+      //   if (compoId == "")
+      //     compoId = component.ccid;
+      //   const parentType = component.parent().get('type');
 
-          for (let i = 0; i < numOfItems; i++) {
-            const item = originalComp.clone();
+      //   if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
+      //     console.log(component);
+      //     setIsStoreLoading(true);
+      //     let numOfItems;
+      //     if(component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
+      //       numOfItems = component.parent().parent().get('numOfItems');
+      //     } else {
+      //       numOfItems = component.parent().parent().parent().get('numOfItems');
+      //     }
+      //     let originalComp = component.parent().clone();
+      //     let comps = component.parent().parent().get('components');
+      //     for (let i = comps.models.length - 1; i >= 0; i--) {
+      //       comps.models[i].remove();
+      //     }
 
-            setChildIds(originalComp, item, i);
-            comps.push(item);
-          }
-          setIsStoreLoading(false);
+      //     for (let i = 0; i < numOfItems; i++) {
+      //       const item = originalComp.clone();
 
-          // const parentComponent = component.parent().parent();
-          // const parentChildren = parentComponent.get('components');
+      //       setChildIds(originalComp, item, i);
+      //       comps.push(item);
+      //     }
+      //     setIsStoreLoading(false);
 
-          // // Filter out the current component from the children
-          // const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
-          
-          // childrenWithoutCurrent.forEach((child, index) => {
+      //     // const parentComponent = component.parent().parent();
+      //     // const parentChildren = parentComponent.get('components');
 
-          //   const copiedComponent = component.clone();
-          //   copiedComponent.ccid = compoId + "-" + (index + 2);
-          //   if(component.get('type') == 'text')
-          //     copiedComponent.set('style', { padding: "10px" });
-          //   child.append(copiedComponent);
-          // });
-          // setIsLoading(false);
-        }
-        compoId = "";
-      }
+      //     // // Filter out the current component from the children
+      //     // const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
+
+      //     // childrenWithoutCurrent.forEach((child, index) => {
+
+      //     //   const copiedComponent = component.clone();
+      //     //   copiedComponent.ccid = compoId + "-" + (index + 2);
+      //     //   if(component.get('type') == 'text')
+      //     //     copiedComponent.set('style', { padding: "10px" });
+      //     //   child.append(copiedComponent);
+      //     // });
+      //     // setIsLoading(false);
+      //   }
+      //   compoId = "";
+      // }
     });
-    gjsEditor.on('component:remove', (component) => {
-      if (!loadedRef.current && component.changed != {}) {
-        if (compoId == "")
-          compoId = component.ccid.split('-')[0];
-        const parentType = component.parent()?.get('type');
+    // gjsEditor.on('component:remove', (component) => {
+    //   if (!loadedRef.current && component.changed != {}) {
+    //     if (compoId == "")
+    //       compoId = component.ccid.split('-')[0];
+    //     const parentType = component.parent()?.get('type');
 
-        if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
-          const parentComponent = component.parent().parent();
-          const parentChildren = parentComponent.get('components');
+    //     if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
+    //       const parentComponent = component.parent().parent();
+    //       const parentChildren = parentComponent.get('components');
 
-          // Filter out the current component from the children
-          const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
-          setIsStoreLoading(true);
-          childrenWithoutCurrent.forEach((child, index) => {
-            child.get('components').models.forEach((element) => {
-              if (element.ccid.includes(compoId)) {
-                element.remove();
-              }
-            })
-          });
-          setIsStoreLoading(false);
-        }
-        compoId = "";
-      }
-    });
-    gjsEditor.on('component:update', (component) => {
-      if (!loadedRef.current) {
-        try {
-          const parentType = component.parent().get('type');
+    //       // Filter out the current component from the children
+    //       const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
+    //       setIsStoreLoading(true);
+    //       childrenWithoutCurrent.forEach((child, index) => {
+    //         child.get('components').models.forEach((element) => {
+    //           if (element.ccid.includes(compoId)) {
+    //             element.remove();
+    //           }
+    //         })
+    //       });
+    //       setIsStoreLoading(false);
+    //     }
+    //     compoId = "";
+    //   }
+    // });
+    // gjsEditor.on('component:update', (component) => {
+    //   if (!loadedRef.current) {
+    //     try {
+    //       const parentType = component.parent().get('type');
 
-          if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
-            setIsStoreLoading(true);
-            let numOfItems;
-            if (component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
-              numOfItems = component.parent().parent().get('numOfItems');
-            } else {
-              numOfItems = component.parent().parent().parent().get('numOfItems');
-            }
-            let originalComp = component.parent().clone();
-            let comps = component.parent().parent().get('components');
-            for (let i = comps.models.length - 1; i >= 0; i--) {
-              comps.models[i].remove();
-            }
+    //       if ((parentType == 'product-item' || parentType == 'repeat-item') && (component.parent().parent().get('cloning') == false || component.parent().parent().parent().get('cloning') == false)) {
+    //         setIsStoreLoading(true);
+    //         let numOfItems;
+    //         if (component.parent().parent().get('tagName') == 'gridproductgallery' || component.parent().parent().get('tagName') == 'repeater') {
+    //           numOfItems = component.parent().parent().get('numOfItems');
+    //         } else {
+    //           numOfItems = component.parent().parent().parent().get('numOfItems');
+    //         }
+    //         let originalComp = component.parent().clone();
+    //         let comps = component.parent().parent().get('components');
+    //         for (let i = comps.models.length - 1; i >= 0; i--) {
+    //           comps.models[i].remove();
+    //         }
 
-            for (let i = 0; i < numOfItems; i++) {
-              const item = originalComp.clone();
+    //         for (let i = 0; i < numOfItems; i++) {
+    //           const item = originalComp.clone();
 
-              setChildIds(originalComp, item, i);
-              comps.push(item);
-            }
-            setIsStoreLoading(false);
-          }
-        } catch (e) {
+    //           setChildIds(originalComp, item, i);
+    //           comps.push(item);
+    //         }
+    //         setIsStoreLoading(false);
+    //       }
+    //     } catch (e) {
 
-        }
-      }
-    });
+    //     }
+    //   }
+    // });
     gjsEditor.on('block:drag:start', function (model) {
       setSidebarData({
         ...sidebarData,
@@ -694,10 +662,10 @@ export default function Editor({
         setSelectedDataSet(cmp.get('selectedDataset'));
         setDatasetConnect(cmp.get('datasetConnect'));
         setSelectedProductCategory(cmp.get('category'));
-        // if(cmp.attributes.type === 'sliderproductgallery' || cmp.attributes.type === 'relatedproducts')
-        //   setConnectModel(cmp.getChildAt(0), cmp.get('datasetConnect'));
-        // else
-        //   setConnectModel(cmp, cmp.get('datasetConnect'));
+        if(cmp.attributes.type === 'sliderproductgallery' || cmp.attributes.type === 'relatedproducts')
+          setConnectModel(cmp.getChildAt(0), cmp.get('datasetConnect'));
+        else
+          setConnectModel(cmp, cmp.get('datasetConnect'));
       } else if(cmp.attributes.type === 'addtocartbutton') {
         if(cmp.get('productId') != "") {
           setCartProductId(cmp.get('productId'));
@@ -930,7 +898,7 @@ export default function Editor({
       });
       // gjsEditor.BlockManager.remove('link');
       // gjsEditor.BlockManager.remove('link-block');
-      setEditor(gjsEditor);
+    setEditor(gjsEditor);
   }, []);
 
   useEffect(()=>{
@@ -960,6 +928,14 @@ export default function Editor({
     }
   }, [customwidth])
 
+  // editor?.on('component:selected', (cmp) => {
+  //   dispatch(getWebsiteAction(id)).then(res=>{
+  //     if(res){
+  //       setPage(res[0]);
+  //     }
+  //   })
+  // }, []);
+
   useEffect(() =>{
     if(isclear){
       if(editor){
@@ -969,12 +945,12 @@ export default function Editor({
     }
   }, [isclear])
 
-  editor?.on('component:selected', (cmp) => {
-    if(cmp){
-      setSelectedCmp(cmp);
-    }
+  // editor?.on('component:selected', (cmp) => {
+  //   if(cmp){
+  //     setSelectedCmp(cmp);
+  //   }
     
-  });
+  // });
   useEffect(() => {
     if (editor !== null) {
       switch (device) {
@@ -1040,89 +1016,13 @@ export default function Editor({
           setIsLoading(false);
           setIsStoreLoading(false);
         }
-      });
-      const interval = setInterval(() => {
-        if(editor){
-          const current_page=editor.Pages.getSelected();
-          const html = editor.getHtml({ current_page });
-          const css = editor.getCss({ current_page });
-          const payload={
-            page:page?._id,
-            html:html,
-            css:css,
-          };
-          dispatch(updatePageAction(id, payload));
-        }
-    }, 1000*30);
-
-    //Clearing the interval
-    return () => clearInterval(interval);
+      })
     }
   }, [page?._id]);
 
   useEffect(() => {
     if (editor) {
       store.webElements.map((el, idx) => {
-        if(el.category[0].name==='New Form'){
-          let formItem = {
-            isComponent: el => (el.tagName === 'DIV' && el.classList.contains('new-form')),
-            model: {
-              defaults: {
-                tagName: 'div',
-                draggable: true,
-                droppable: true,
-                selectable: true,
-                components: (props)=>{
-                  return <div></div>
-                },
-                attributes: { class: 'new-form' },
-                styles: `.new-form {height:fit-content}`,
-                stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
-              },
-            },
-          };
-          editor.DomComponents.addType('new-form', formItem);
-          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
-            label: el.category[0].name,
-            content: {type:'new-form'},
-            media: el.imageUrl,
-            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
-            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
-            mainMenu:`${el.category[0].mainMenu}`,
-            refcategory:`${el.category[0].name}`,
-            submenu:el.category[0].subMenu
-          })
-        }
-        if(el.category[0].name==='Add Existing Form'){
-          let formItem = {
-            isComponent: el => (el.tagName === 'DIV' && el.classList.contains('add-form')),
-            model: {
-              defaults: {
-                tagName: 'div',
-                draggable: true,
-                droppable: true,
-                selectable: true,
-                components: (props)=>{
-                  return <div></div>
-                },
-                attributes: { class: 'add-form' },
-                styles: `.add-form {min-height: 300px;}`,
-                stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
-              },
-            },
-          };
-          editor.DomComponents.addType('add-form', formItem);
-          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
-            label: el.category[0].name,
-            content: {type:'add-form'},
-            media: el.imageUrl,
-            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
-            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
-            mainMenu:`${el.category[0].mainMenu}`,
-            refcategory:`${el.category[0].name}`,
-            submenu:el.category[0].subMenu
-          })
-        }
         if(el.category[0].subMenu==='repeater'){
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
@@ -1161,7 +1061,7 @@ export default function Editor({
             submenu:el.category[0].subMenu,
           });
         }
-        if(el.category[0].subMenu==='iframe'){
+        else if(el.category[0].subMenu==='iframe'){
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
           const firstChild=htmlCmp.body.firstChild;
@@ -1182,7 +1082,7 @@ export default function Editor({
             submenu:el.category[0].subMenu,
           });
         }
-        if(el.category[0].subMenu==='social-bar'){
+        else if(el.category[0].subMenu==='social-bar'){
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
           const firstChild=htmlCmp.body.firstChild;
@@ -1203,7 +1103,7 @@ export default function Editor({
             submenu:el.category[0].subMenu,
           });
         }
-        if(el.category[0].subMenu==='gallery'){
+        else if(el.category[0].subMenu==='gallery'){
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
           const firstChild=htmlCmp.body.firstChild;
@@ -1239,6 +1139,7 @@ export default function Editor({
             refcategory:`${el.category[0].name}`,
             submenu:el.category[0].subMenu,
           });
+
         }
         else{
           editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
@@ -1369,10 +1270,8 @@ export default function Editor({
                     {
                       sidebarData.menu.id === 'quick-add' && (
                         <div className="quick-add">
-                          {editor?.BlockManager.blocks.filter(e => e.get('category') === 'Basic').map((block) => {
-                            if(block.getLabel()!='Link' && block.getLabel()!='Link Block')
-                            return(
-                              <div
+                          {editor?.BlockManager.blocks.filter(e => e.get('category') === 'Basic').map((block) => (
+                            <div
                               key={block.getId()}
                               draggable
                               className='d-flex flex-column align-items-center border border-secondary rounded cursor-pointer py-2 px-1 transition-colors mt-1 mb-1'
@@ -1396,8 +1295,7 @@ export default function Editor({
                                 {block.getLabel()}
                               </div>
                             </div>
-                            )
-                          })}
+                          ))}
                         </div>
                       )
                     }
@@ -1452,10 +1350,6 @@ export default function Editor({
                                       e.stopPropagation();
                                       if(b.get('label')==='New Form'){
                                         createForm();
-                                        blockManager.dragStop(false);
-                                      }
-                                      if(b.get('label')==='Add Existing Form'){
-                                        setAddFormMdl(true);
                                         blockManager.dragStop(false);
                                       }
                                    
@@ -1755,11 +1649,10 @@ export default function Editor({
       <AddElementModal editor={editor} setEditor={setEditor} openAddElementMdl={openAddElementMdl} setOpenAddElementMdl={setOpenAddElementMdl} />
       <RenameModal store={store} isOpen={renameMdl} toggle={_toggleRename}/>
       <CreateFormModal open={createMdl} store={store} dispatch={dispatch}/>
-      <SelectFormModal open={addFormMdl} store={store} toggle={selectFormToggle} saveFormBlock={saveFormBlock}/>
       <DuplicateModal store={store} isOpen={duplicateMdl} toggle={_toggleDuplicate}/>
       <InvitationModal store={store} isOpen={isinvite} toggle={setIsInvite}/>
       <Modal isOpen={formeditorMdl} centered className='form-builder-modal' fullscreen scrollable style={{ overflowX: 'hidden' }}>
-        <FormEditorModal toggle={(e)=>setFormEditorMdl(e)} store={store} page={page} saveFormBlock={saveFormBlock}/>
+        <FormEditorModal toggle={(e)=>setFormEditorMdl(e)} store={store} page={page}/>
       </Modal>
       <CreateCollectionModal store={store} open={openCreateColMdl} toggle={createColMdlToggle} editCollectionToggle={toggleOpenEditCollection}/>
       <CreateDatasetModal store={store} mdlData={openCreateDatasetMdl} toggle={createDatasetToggle} />
@@ -1777,7 +1670,6 @@ export default function Editor({
       <ConnectProductDataSetModal store={store} showProductDataSetModal={showProductDataSetModal} setShowProductDataSetModal={setShowProductDataSetModal} modelsToConnect={modelsToConnect} datasetConnect={datasetConnect} setDatasetFields={setDatasetFields} />
       <AddCartButtonModal store={store} showAddCartButtonModal={showAddCartButtonModal} setShowAddCartButtonModal={setShowAddCartButtonModal} productId={cartProductId} handleChangeProductId={handleChangeProductId} />
       <BlogModal store ={store} isOpen={isblog} toggle={toggleBlog}/>
-      <RoleModal store ={store} isOpen={roleMdl} toggle={toggleRoleMdl}/>
     </div>
   )
 }

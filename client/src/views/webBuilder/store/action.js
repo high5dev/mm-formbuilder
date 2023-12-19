@@ -21,6 +21,7 @@ import {
   setSelectedProductReducer,
   setThankyouProductsReducer,
   setWebRolesReducer,
+  setCategoriesReducer
 } from './reducer';
 import * as api from './api';
 import { toast } from 'react-toastify';

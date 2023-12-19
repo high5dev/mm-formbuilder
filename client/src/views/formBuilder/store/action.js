@@ -7,11 +7,6 @@ import {
   setFormCategoriesReducer,
   setFormOrderElementsReducer,
   setFormProductsReducer,
-  setCategoriesReducer,
-  setWebStoreReducer,
-  setCartProductsReducer,
-  setSelectedProductReducer,
-  setThankyouProductsReducer,
 } from './reducer';
 import * as api from './api';
 import { toast } from 'react-toastify';
@@ -260,69 +255,3 @@ export const sendEmailToUserAction = (payload) => async (dispatch) => {
     return data;
   } catch (error) { }
 };
-
-export const getProductCategoryAction = (pageId) => async (dispatch) => {
-  try {
-    const { data } = await api.getProductCategory(pageId);
-    if (data.success) {
-      dispatch(setCategoriesReducer(data.data));
-    }
-    return data;
-  } catch (error) {
-
-  }
-}
-
-export const updateProductCategoryAction = (id, payload) => async (dispatch) => {
-  try {
-    const { data } = await api.updateCategory(id, payload);
-    if (data.success) {
-      dispatch(getProductCategoryAction(payload.websiteId));
-    }
-  } catch (error) {}
-};
-
-export const getProductDatasetAction = (pageId) => async (dispatch) => {
-  try {
-    const { data } = await api.getProductDataset(pageId);
-    if (data.success) {
-      dispatch(setWebStoreReducer(data.data[0]));
-    }
-    return data;
-  } catch (error) {
-
-  }
-}
-
-export const updateProductDatasetAction = (id, payload) => async (dispatch) => {
-  try {
-    const { data } = await api.updateProductDataset(id, payload);
-    if (data.success)
-      dispatch(getProductDatasetAction(data.data.websiteId));
-    return data;
-  } catch (error) { }
-};
-
-export const updateCartProductsAction = (payload) => async (dispatch) => {
-  try {
-    dispatch(setCartProductsReducer(payload));
-  } catch (err) {
-
-  }
-}
-
-export const updateSelectedProductAction = (payload) => async (dispatch) => {
-  try {
-    dispatch(setSelectedProductReducer(payload));
-  } catch (err) {
-
-  }
-}
-
-export const updateThankyouProductsAction = (payload) => async (dispatch) => {
-  try {
-    dispatch(setThankyouProductsReducer(payload));
-  } catch (err) {
-
-  }
-}

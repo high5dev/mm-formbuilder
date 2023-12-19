@@ -231,7 +231,7 @@ export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('sliderproductgallery', sliderproductgallery);
   editor.DomComponents.addType('relatedproducts', relatedproducts);
   editor.DomComponents.addType('shoppingcart', shoppingcart);
-  editor.DomComponents.addType('add-to-cart-button', addtocartbutton);
+  editor.DomComponents.addType('addtocartbutton', addtocartbutton);
   editor.DomComponents.addType('currency-converter', currencyconverter);
   editor.DomComponents.addType('product-item', productItem);
   editor.DomComponents.addType('productpage', productpage);

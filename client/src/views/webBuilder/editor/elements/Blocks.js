@@ -159,10 +159,10 @@ export const blocks = [
     category: 'Store',
   },
   {
-    id: 'add-to-cart-button',
+    id: 'addtocartbutton',
     label: 'Add To Cart Button',
     attributes: { class: 'fa fa-text' },
-    content: { type: 'add-to-cart-button', text: 'Place a standalone Add to Cart button anywhere on your site.' },
+    content: { type: 'addtocartbutton', text: 'Place a standalone Add to Cart button anywhere on your site.' },
     media: 'addToCartButton',
     category: 'Store',
   },

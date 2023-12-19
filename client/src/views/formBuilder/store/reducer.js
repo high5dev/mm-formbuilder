@@ -25,21 +25,10 @@ export const formEditor = createSlice({
     templates: [],
     imageLibrary: [],
     formCategories: [],
-    categories: [],
-    webProducts: {},
-    cartProducts: [],
-    selectedProduct: {},
-    thankyouProducts: []
   },
   reducers: {
     setFormReducer: (state, action) => {
       state.form = action?.payload;
-    },
-    setCategoriesReducer: (state, action) => {
-      state.categories = action?.payload;
-    },
-    setWebStoreReducer: (state, action) => {
-      state.webProducts = action?.payload;
     },
     
     
