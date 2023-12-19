@@ -840,7 +840,30 @@ export const createWebsiteRoleAction = (payload) => async (dispatch) => {
     return data;
   } catch (error) { }
 };
-
+export const updateWebsiteRoleAction = (id, payload) => async (dispatch) => {
+  try {
+    const { data } = await api.updateWebsiteRole(id, payload);
+    if (data.success) {
+      dispatch(getWebsiteRolesAction(data.data.websiteId));
+      toast.success('Website role created successfully');
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+    return data;
+  } catch (error) { }
+};
+export const deleteWebsiteRoleAction = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.deleteWebsiteRole(id);
+    if (data.success) {
+      dispatch(getWebsiteRolesAction(data.data.websiteId));
+      toast.success('Website role created successfully');
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+    return data;
+  } catch (error) { }
+};
 export const getConnectionsByWebsiteAction = (websiteId) => async (dispatch) => {
   try {
     const { data } = await api.getConnectsByWebsite(websiteId);
