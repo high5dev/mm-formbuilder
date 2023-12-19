@@ -21,6 +21,7 @@ import {
   setSelectedProductReducer,
   setThankyouProductsReducer,
   setWebRolesReducer,
+  setCategoriesReducer
 } from './reducer';
 import * as api from './api';
 import { toast } from 'react-toastify';
@@ -872,6 +873,26 @@ export const deleteMultipleWebConnectionAction = (payload) => async (dispatch) =
     dispatch(getConnectionsByWebsiteAction(data.data.websiteId));
     return data;
   } catch (error) { }
+};
+
+export const getProductCategoryAction = (pageId) => async (dispatch) => {
+  try {
+    const { data } = await api.getProductCategory(pageId);
+    if (data.success) {
+      dispatch(setCategoriesReducer(data.data));
+    }
+    return data;
+  } catch (error) {
+  }
+}
+
+export const updateProductCategoryAction = (id, payload) => async (dispatch) => {
+  try {
+    const { data } = await api.updateCategory(id, payload);
+    if (data.success) {
+      dispatch(getProductCategoryAction(payload.websiteId));
+    }
+  } catch (error) {}
 };
 
 export const getProductDatasetAction = (pageId) => async (dispatch) => {

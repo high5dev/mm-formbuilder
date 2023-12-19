@@ -24,18 +24,13 @@ export const formEditor = createSlice({
     funnels: [],
     templates: [],
     imageLibrary: [],
-    formCategories:[]
+    formCategories: [],
   },
   reducers: {
     setFormReducer: (state, action) => {
       state.form = action?.payload;
     },
-    setFormSalesTypeReducer: (state, action) => {
-      state.formSalesType = action?.payload;
-    },
-    setFormOrderElementsReducer: (state, action) => {
-      state.formOrderElements = action?.payload;
-    },
+    
     
     setToDefaultReducer: (state, action) => {
       if (action?.payload?.isTemplate && action?.payload?.isTemplate === true) {
@@ -99,6 +94,11 @@ export const {
   setImageLibraryReducer,
   setFormOrderElementsReducer,
   setFormProductsReducer,
-  setFormSalesTypeReducer
+  setFormSalesTypeReducer,
+  setCategoriesReducer,
+  setWebStoreReducer,
+  setCartProductsReducer,
+  setSelectedProductReducer,
+  setThankyouProductsReducer
 } = formEditor.actions;
 export default formEditor.reducer;
