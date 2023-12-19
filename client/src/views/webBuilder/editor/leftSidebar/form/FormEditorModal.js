@@ -88,61 +88,61 @@ export default function Index({store, toggle, page, saveFormBlock}) {
           let elements=[];
           for(let i=0; i<_components.length;i++){
             const _component=_components[i];
-            const elementType=_component.get('type');
-            if(elementType){
-              const inputElements=_component.get('elProps') && _component.get('elProps').map((item)=>{
-                return{
-                  id:item.id,
-                  name:item.name,
-                  type:item.type
-                }
-              });
-              const _element={
-                elementType,
-                inputElements
-              };
-              elements.push(_element);
-            }
+           console.log('&&&&&&&&&&', _component.getEl())
+            // if(elementType){
+            //   const inputElements=_component.get('elProps') && _component.get('elProps').map((item)=>{
+            //     return{
+            //       id:item.id,
+            //       name:item.name,
+            //       type:item.type
+            //     }
+            //   });
+            //   const _element={
+            //     elementType,
+            //     inputElements
+            //   };
+            //   elements.push(_element);
+            // }
           };
-          const current_page=formEditor.Pages.getSelected();
-          const websiteId=store.form._id;
-          const pageId=page._id;
-          const id=store.childForm._id;
-          const html = formEditor.getHtml({ current_page });
-          const css = formEditor.getCss({ current_page });
-          const currentPage=currentFormPage?._id;
-          const payload={
-            name,
-            websiteId,
-            pageId,
-            html,
-            css,
-            currentPage,
-            elements
-          };
-          dispatch(editChildFormAction(id, payload)).then((res)=>{
-            if(res){
-               let formPages=store.childForm.formPages;
-               formPages=formPages?.map((_formPage)=>{
-                if(_formPage._id===currentPage){
-                  return {
-                    ..._formPage,
-                    html,
-                    css
-                  }
-                }
-                else{
-                  return _formPage;
-                }
-               });
+          // const current_page=formEditor.Pages.getSelected();
+          // const websiteId=store.form._id;
+          // const pageId=page._id;
+          // const id=store.childForm._id;
+          // const html = formEditor.getHtml({ current_page });
+          // const css = formEditor.getCss({ current_page });
+          // const currentPage=currentFormPage?._id;
+          // const payload={
+          //   name,
+          //   websiteId,
+          //   pageId,
+          //   html,
+          //   css,
+          //   currentPage,
+          //   elements
+          // };
+          // dispatch(editChildFormAction(id, payload)).then((res)=>{
+          //   if(res){
+          //      let formPages=store.childForm.formPages;
+          //      formPages=formPages?.map((_formPage)=>{
+          //       if(_formPage._id===currentPage){
+          //         return {
+          //           ..._formPage,
+          //           html,
+          //           css
+          //         }
+          //       }
+          //       else{
+          //         return _formPage;
+          //       }
+          //      });
     
-               const newForm={...res.data, formPages};
-               dispatch(getChildFormsAction(newForm.websiteId
-                ));
-               dispatch(setChildFormReducer(newForm));
-               saveFormBlock(res.page);
-            }
-          })
+          //      const newForm={...res.data, formPages};
+          //      dispatch(getChildFormsAction(newForm.websiteId
+          //       ));
+          //      dispatch(setChildFormReducer(newForm));
+          //      saveFormBlock(res.page);
+          //   }
+          // })
         }
       }
     }
@@ -264,7 +264,7 @@ export default function Index({store, toggle, page, saveFormBlock}) {
       const newOption={
         id: "single_choice"+ Math.random().toString(36).substring(2,7),
         label: "Option"+(options.length+1).toString(),
-        name: "Option"+(options.length+1).toString(),
+        name: options[0].name,
         type:'radio',
         checked:false,
       };
@@ -276,7 +276,7 @@ export default function Index({store, toggle, page, saveFormBlock}) {
       const newOption={
         id: "multi_choice"+ Math.random().toString(36).substring(2,7),
         label: "Option"+(options.length+1).toString(),
-        name: "Option"+(options.length+1).toString(),
+        name: options[0].name,
         type:'radio',
         checked:false,
       };
@@ -593,6 +593,14 @@ export default function Index({store, toggle, page, saveFormBlock}) {
         setOptions([]);
         setAttributes(cmp.get('elProps')[0]);
         setTitle(cmp.get('title'));
+        if(cmp.get('type')==='submit'){
+          var obj = {};
+          obj['id'] = store.childForm._id;
+          setAttributes({...cmp.get('elProps')[0], ...obj});
+          let _elProps=[];
+          _elProps.push({...cmp.get('elProps')[0], ...obj});
+          cmp.set('elProps', _elProps);
+        };
         setSelectedComponent(cmp);
       }
       if(cmp && cmp.get('elProps') && cmp.get('elProps').length>1){
@@ -1353,6 +1361,21 @@ export default function Index({store, toggle, page, saveFormBlock}) {
                 { 
                   options && options.length>0 &&(
                     <div>
+                      <div className='mb-2'>
+                        <Label>Name:</Label>
+                        <Input type='text' className='ms-1' value={options[0].name} style={{padding:'5px'}} onChange={(e)=>{
+                              var obj = {};
+                              obj['name'] = e.target.value;
+                              const newOptions=options;
+                              for(let i=0; i<newOptions.length;i++){
+                                const option=newOptions[i];
+                                newOptions[i]={...option, ...obj}; 
+                              };
+                              console.log('newOptions', newOptions)       
+                              setOptions([...newOptions]);
+                              selectedComponent.set('elProps', newOptions);
+                         }}/>
+                      </div>
                       {
                         options && options.length && options.map((option, i) =>{
                           return(
