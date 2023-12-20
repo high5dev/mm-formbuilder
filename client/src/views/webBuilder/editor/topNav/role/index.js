@@ -11,7 +11,11 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  ModalFooter
+  ModalFooter,
+  Form,
+  FormGroup,
+  Col,
+  FormText
 } from 'reactstrap';
 import { useDispatch } from 'react-redux';
 import {
@@ -22,13 +26,26 @@ import {
   MoreHorizontal,
   Plus,
   Settings,
-  Copy
+  Copy,
+  Link
 } from 'react-feather';
 import { BsPersonPlus, BsPersonPlusFill } from 'react-icons/bs';
+
+import Select, {
+  components,
+  MultiValueGenericProps,
+  MultiValueProps,
+  OnChangeValue,
+  Props,
+  setOptions
+} from 'react-select';
+// import AsyncSelect setop from 'react-select/async';
+// import { MultiSelect } from 'react-multi-select-component';
 import {
   createWebsiteRoleAction,
   updateWebsiteRoleAction,
-  deleteWebsiteRoleAction
+  deleteWebsiteRoleAction,
+  createWebsiteInvitationRoleAction
 } from '../../../store/action';
 
 const RoleModal = ({ store, isOpen, toggle }) => {
@@ -40,6 +57,8 @@ const RoleModal = ({ store, isOpen, toggle }) => {
   const [OpenDrop, setOpenDrop] = useState({ id: null, value: false });
   const [Role_id, setRole_id] = useState(null);
   const [modal, setModal] = useState(false);
+  const [selected, setSelected] = useState({ toEmail: null, role: null });
+  const [options, setOptions] = useState([]);
 
   const Toggle = () => setModal(!modal);
   const handleView = (role) => {
@@ -47,6 +66,7 @@ const RoleModal = ({ store, isOpen, toggle }) => {
     setNewRoleDsc(role.description);
     setPermissions(role.permissions);
     setContent('viewRole');
+    setSelected((prevState) => ({ ...prevState, role: role }));
   };
 
   const handleEdit = (role) => {
@@ -57,11 +77,19 @@ const RoleModal = ({ store, isOpen, toggle }) => {
     setContent('editRole');
   };
 
-  const handleDelete = async (id) =>{
+  const handleDelete = async (id) => {
     await dispatch(deleteWebsiteRoleAction(id));
-    Toggle()
-    setRole_id(null)
-  }
+    Toggle();
+    setRole_id(null);
+  };
+  const handleSelectUser = (value) => {
+    if (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
+      setOptions([{ label: value, value: value }]);
+    } else {
+      console.log(false);
+      setOptions([]);
+    }
+  };
   return (
     <>
       <Modal isOpen={isOpen} toggle={toggle} centered size="xl">
@@ -174,6 +202,17 @@ const RoleModal = ({ store, isOpen, toggle }) => {
                         <DropdownMenu flip>
                           <DropdownItem
                             onClick={() => {
+                              setSelected((prevState) => ({
+                                ...prevState,
+                                role: role
+                              }));
+                              setContent('invite');
+                            }}
+                          >
+                            Invite
+                          </DropdownItem>
+                          <DropdownItem
+                            onClick={() => {
                               handleEdit(role);
                             }}
                           >
@@ -181,7 +220,7 @@ const RoleModal = ({ store, isOpen, toggle }) => {
                           </DropdownItem>
                           <DropdownItem
                             onClick={() => {
-                              setRole_id(role._id)
+                              setRole_id(role._id);
                               Toggle();
                             }}
                           >
@@ -197,46 +236,152 @@ const RoleModal = ({ store, isOpen, toggle }) => {
           )}
           {content === 'invite' && (
             <>
-              <div
-                className="px-4 pt-3 pb-2 d-flex align-items-center"
-                style={{ backgroundColor: '#eceff3' }}
-              >
-                <ChevronLeft
-                  size={25}
-                  className="me-1"
-                  onClick={() => {
-                    setContent('roles');
-                  }}
-                />
-                <div>
-                  <h2>Invite Collaborators</h2>
-                  <h5 className="mb-0">
-                    Invite people to collaborate on this site and set their roles and permissions.
-                  </h5>
+              <Form>
+                <div
+                  className="px-4 pt-3 pb-2 d-flex align-items-center"
+                  style={{ backgroundColor: '#eceff3' }}
+                >
+                  <ChevronLeft
+                    size={25}
+                    className="me-1"
+                    onClick={() => {
+                      setContent('roles');
+                    }}
+                  />
+                  <div>
+                    <h2>Invite Collaborators</h2>
+                    <h5 className="mb-0">
+                      Invite people to collaborate on this site and set their roles and permissions.
+                    </h5>
+                  </div>
+                  <Button
+                    color="primary"
+                    outline
+                    className="round ms-auto me-1"
+                    onClick={() => {
+                      setContent('roles');
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    color="primary"
+                    className="d-flex align-items-center round"
+                    onClick={() => {
+                      dispatch(
+                        createWebsiteInvitationRoleAction({
+                          websiteId: store?.form?._id,
+                          role: selected?.role?._id,
+                          toEmail: selected?.toEmail?.map((item) => {
+                            return item.value;
+                          })
+                        })
+                      );
+                    }}
+                    disabled={
+                      !selected.role ? true : false || !selected.toEmail ? true : false
+                    }
+                  >
+                    Send Invite
+                  </Button>
                 </div>
-                <Button
-                  color="primary"
-                  outline
-                  className="round ms-auto me-1"
-                  onClick={() => {
-                    setContent('roles');
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  color="primary"
-                  className="d-flex align-items-center round"
-                  onClick={() => {}}
-                >
-                  Send Invite
-                </Button>
-              </div>
-              <div className="px-5 pb-3" style={{ backgroundColor: '#eceff3' }}>
-                {
-                  // TODO: new invite part
-                }
-              </div>
+                <div className="px-5 pb-3" style={{ backgroundColor: '#eceff3' }}>
+                  <>
+                    <div
+                      className="px-5 pb-3"
+                      style={{
+                        backgroundColor: '#eceff3',
+                        minHeight: '40vh',
+                        maxHeight: '60vh',
+                        overflow: 'scroll'
+                      }}
+                    >
+                      <div className="p-2  bg-white rounded ">
+                        <div className="pt-2 w-50 mb-2">
+                          <p>{'Email(s)*'}</p>
+                          <div className="d-flex justify-content-between">
+                            <div>
+                              {'To add multiple invitees, enter each email separated by a comma.'}
+                            </div>
+                            <div>{'1/10 emails'}</div>
+                          </div>
+                          <div className="pt-1">
+                            <Select
+                              isMulti
+                              components={{
+                                DropdownIndicator: () => null,
+                                IndicatorSeparator: () => null
+                              }}
+                              value={selected.toEmail}
+                              onChange={(selectedOption) => {
+                                setSelected((prevState) => ({
+                                  ...prevState,
+                                  toEmail: selectedOption
+                                }));
+                              }}
+                              onInputChange={(value) => {
+                                handleSelectUser(value);
+                              }}
+                              isClearable={false}
+                              className="multi-select"
+                              options={options}
+                            ></Select>
+                          </div>
+                        </div>
+
+                        <hr className="m-0" />
+                        <div className="p-2  bg-white rounded ">
+                          <div>{'Role(s)*'}</div>
+                          <FormText>
+                            {`Select one or more roles for the people you're inviting. To create roles
+                            or edit permissions, go to `}
+                            <a
+                              href="#"
+                              onClick={() => {
+                                setContent('management');
+                              }}
+                            >
+                              Manage Roles{' '}
+                            </a>
+                          </FormText>
+
+                          {store.webRoles.map((role) => {
+                            return (
+                              <div className="p-2 d-flex align-items-center bg-white rounded ">
+                                <FormGroup check>
+                                  <Input
+                                    id="checkbox2"
+                                    type="checkbox"
+                                    onChange={(e) => {
+                                      setSelected((prevState) => ({ ...prevState, role: role }));
+                                    }}
+                                    checked={selected.role === role}
+                                    required
+                                  />{' '}
+                                  <Label check>
+                                    <h4>{role.name}</h4>
+                                    <h6 className="mb-0">
+                                      {role.description}
+                                      <a
+                                        href="#"
+                                        onClick={() => {
+                                          handleView(role);
+                                        }}
+                                      >
+                                        {' View Role Permissions'}
+                                      </a>
+                                    </h6>
+                                  </Label>
+                                </FormGroup>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                </div>
+              </Form>
             </>
           )}
           {content === 'newRole' && (
@@ -506,14 +651,24 @@ const RoleModal = ({ store, isOpen, toggle }) => {
                 <div>
                   <h2 className="m-0">{newRoleName || 'Untitled Role'}</h2>
                 </div>
-                <Button color="primary" outline className="round ms-auto me-1" onClick={() => {}}>
+                <Button
+                  color="primary"
+                  outline
+                  className="round ms-auto me-1"
+                  onClick={() => {
+                    setContent('newRole');
+                    setNewRoleName('Copy of ' + newRoleName);
+                  }}
+                >
                   <Copy size={20} />
                   {'Duplicate & Edit'}
                 </Button>
                 <Button
                   color="primary"
                   className="d-flex align-items-center round"
-                  disabled={!newRoleName}
+                  onClick={() => {
+                    setContent('invite');
+                  }}
                 >
                   <BsPersonPlusFill size={20} />
                   {'invite People'}
@@ -744,7 +899,7 @@ const RoleModal = ({ store, isOpen, toggle }) => {
                         permissions
                       })
                     );
-                    setRole_id(null)
+                    setRole_id(null);
                     setContent('management');
                   }}
                 >
@@ -965,7 +1120,7 @@ const RoleModal = ({ store, isOpen, toggle }) => {
           )}
         </ModalBody>
       </Modal>
-      <Modal isOpen={modal} toggle={Toggle} centered >
+      <Modal isOpen={modal} toggle={Toggle} centered>
         <ModalHeader toggle={Toggle}>Remove Role</ModalHeader>
         <ModalBody>Are you sure you want to remove website developer role?</ModalBody>
         <ModalFooter>
@@ -977,7 +1132,13 @@ const RoleModal = ({ store, isOpen, toggle }) => {
           >
             Cancel
           </Button>
-          <Button color="danger" className="d-flex align-items-center round " onClick={() =>{ handleDelete(Role_id)}}>
+          <Button
+            color="danger"
+            className="d-flex align-items-center round "
+            onClick={() => {
+              handleDelete(Role_id);
+            }}
+          >
             Remove
           </Button>
         </ModalFooter>

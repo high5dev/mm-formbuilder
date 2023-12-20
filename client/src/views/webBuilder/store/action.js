@@ -864,6 +864,18 @@ export const deleteWebsiteRoleAction = (id) => async (dispatch) => {
     return data;
   } catch (error) { }
 };
+export const createWebsiteInvitationRoleAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createWebsiteInvitationRole(payload);
+    if (data.success) {
+      dispatch(getWebsiteRolesAction(data.data.websiteId));
+      toast.success('Website role invitation created successfully');
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+    return data;
+  } catch (error) { }
+};
 export const getConnectionsByWebsiteAction = (websiteId) => async (dispatch) => {
   try {
     const { data } = await api.getConnectsByWebsite(websiteId);
