@@ -1122,7 +1122,7 @@ export default function Editor({
                   return <div></div>
                 },
                 attributes: { class: 'new-form' },
-                styles: `.new-form {height:fit-content}`,
+                styles: `.new-form {height:fit-content; width:500px; background-color:white}`,
                 stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
               },
             },
@@ -1152,7 +1152,7 @@ export default function Editor({
                   return <div></div>
                 },
                 attributes: { class: 'add-form' },
-                styles: `.add-form {min-height: 300px;}`,
+                styles: `.add-form {min-height: 300px; width:500px; background-color:white}`,
                 stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
               },
             },
