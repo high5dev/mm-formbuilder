@@ -410,22 +410,28 @@ export default function MainNav({
           </UncontrolledDropdown>
         </div>
         <div className="devices-icons d-flex justify-content-around align-items-center">
-          <MdOutlineDesktopMac size={22} color={devicetype === 'desktop' ? '#174ae7' : 'black'} onClick={() => {
-            setWidth(1280);
-            setCustomWidth(1280);
-            setDeviceType('desktop');
-          }} />
-          <MdOutlineTablet size={22} color={devicetype === 'tablet' ? '#174ae7' : 'black'} onClick={() => {
-            setWidth(768);
-            setCustomWidth(768);
-            setDeviceType('tablet');
-          }
-          } />
+          <span>
+            <MdOutlineDesktopMac size={22} color={devicetype === 'desktop' ? '#174ae7' : 'black'} onClick={() => {
+              setWidth(1280);
+              setCustomWidth(1280);
+              setDeviceType('desktop');
+            }} />
+          </span>
+          <span>
+            <MdOutlineTablet size={22} color={devicetype === 'tablet' ? '#174ae7' : 'black'} onClick={() => {
+              setWidth(768);
+              setCustomWidth(768);
+              setDeviceType('tablet');
+            }
+            } />
+          </span>
+          <span>
           <BiMobile size={22} color={devicetype === 'mobile' ? '#174ae7' : 'black'} onClick={() => {
             setWidth(320);
             setCustomWidth(320);
             setDeviceType('mobile');
           }} />
+          </span>
           <UncontrolledDropdown style={{ cursor: 'pointer' }}>
             <DropdownToggle tag="div" className="btn btn-sm hover-effect">
               <MoreHorizontal size={24} color={'black'} />
