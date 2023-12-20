@@ -310,7 +310,7 @@ export const menu = [
         menu: 'Add To Cart Button',
         data: [
           {
-            id: 'add-to-cart-button',
+            id: 'addtocartbutton',
             title: 'Add To Cart Button',
             description: 'Place a standalone Add to Cart button anywhere on your site.',
           }
@@ -326,16 +326,16 @@ export const menu = [
           }
         ]
       },
-      // {
-      //   menu: 'Product Page',
-      //   data: [
-      //     {
-      //       id: 'productpage',
-      //       title: 'Product Page',
-      //       description: 'Make shopping easier by letting customers shop products in their currency.',
-      //     }
-      //   ]
-      // },
+      {
+        menu: 'Product Page',
+        data: [
+          {
+            id: 'productpage',
+            title: 'Product Page',
+            description: 'Make shopping easier by letting customers shop products in their currency.',
+          }
+        ]
+      },
       // {
       //   menu: 'Cart Page',
       //   data: [

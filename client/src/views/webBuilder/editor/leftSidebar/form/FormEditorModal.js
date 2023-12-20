@@ -166,6 +166,7 @@ export default function Index({store, toggle, page, saveFormBlock}) {
     }
   };
 
+
   const previewForm = () => {
     if(name!=''){
       const filteredForms=store.childForms && store.childForms.filter((_childForm)=>_childForm.name=name);
@@ -765,7 +766,7 @@ export default function Index({store, toggle, page, saveFormBlock}) {
               <div className="item-event text-black fw-bolder">Rules</div>
             </div>
             <div
-              className="form-sidebar-action d-flex flex-column align-items-center pt-3"
+              className="form-sidebar-action d-flex flex-column align-items-center pt-3 hidden"
               onClick={(e) => {
                 setSidebarItem('Pages');
                 setSidebarOpen(true)

@@ -101,4 +101,3 @@ export async function sendEmailToUser(payload) {
 export const searchDomain = (domain) =>{
   return API.get(`/form-builder/search/domain/${domain}`);
 }
-

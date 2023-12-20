@@ -21,6 +21,7 @@ import {
   setSelectedProductReducer,
   setThankyouProductsReducer,
   setWebRolesReducer,
+  setCategoriesReducer
 } from './reducer';
 import * as api from './api';
 import { toast } from 'react-toastify';
@@ -888,7 +889,42 @@ export const createWebsiteRoleAction = (payload) => async (dispatch) => {
     return data;
   } catch (error) { }
 };
-
+export const updateWebsiteRoleAction = (id, payload) => async (dispatch) => {
+  try {
+    const { data } = await api.updateWebsiteRole(id, payload);
+    if (data.success) {
+      dispatch(getWebsiteRolesAction(data.data.websiteId));
+      toast.success('Website role created successfully');
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+    return data;
+  } catch (error) { }
+};
+export const deleteWebsiteRoleAction = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.deleteWebsiteRole(id);
+    if (data.success) {
+      dispatch(getWebsiteRolesAction(data.data.websiteId));
+      toast.success('Website role created successfully');
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+    return data;
+  } catch (error) { }
+};
+export const createWebsiteInvitationRoleAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createWebsiteInvitationRole(payload);
+    if (data.success) {
+      dispatch(getWebsiteRolesAction(data.data.websiteId));
+      toast.success('Website role invitation created successfully');
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+    return data;
+  } catch (error) { }
+};
 export const getConnectionsByWebsiteAction = (websiteId) => async (dispatch) => {
   try {
     const { data } = await api.getConnectsByWebsite(websiteId);
@@ -919,6 +955,26 @@ export const deleteMultipleWebConnectionAction = (payload) => async (dispatch) =
     dispatch(getConnectionsByWebsiteAction(data.data.websiteId));
     return data;
   } catch (error) { }
+};
+
+export const getProductCategoryAction = (pageId) => async (dispatch) => {
+  try {
+    const { data } = await api.getProductCategory(pageId);
+    if (data.success) {
+      dispatch(setCategoriesReducer(data.data));
+    }
+    return data;
+  } catch (error) {
+  }
+}
+
+export const updateProductCategoryAction = (id, payload) => async (dispatch) => {
+  try {
+    const { data } = await api.updateCategory(id, payload);
+    if (data.success) {
+      dispatch(getProductCategoryAction(payload.websiteId));
+    }
+  } catch (error) {}
 };
 
 export const getProductDatasetAction = (pageId) => async (dispatch) => {

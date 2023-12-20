@@ -331,6 +331,15 @@ export const getWebsiteRoles = (id) => {
 export const createWebsiteRole = (payload) => {
   return API.post(`/web-builder-role/create`, payload);
 }
+export const updateWebsiteRole = (id, payload) => {
+  return API.post(`/web-builder-role/update/${id}`, payload);
+}
+export const deleteWebsiteRole = (id) => {
+  return API.delete(`/web-builder-role/delete/${id}`);
+}
+export const createWebsiteInvitationRole = (payload) => {
+  return API.post(`/web-builder-role/create-invite`, payload);
+}
 
 export const getConnectsByWebsite = (id) => {
   return API.get(`/web-builder-cms/connections-of-website/${id}`);
@@ -347,6 +356,13 @@ export const deleteConnect = (id) => {
 export const deleteMultipleConnects = (payload) => {
   return API.post(`/web-builder-cms/connection/multiple-delete`, payload);
 }
+
+export const getProductCategory = (id) => {
+  return API.get(`/web-builder-store/category/${id}`);
+}
+export const updateCategory = (id, payload) => {
+  return API.post(`/web-builder-store/category/update/${id}`, payload);
+};
 
 export const getProductDataset = (id) => {
   return API.get(`/web-builder-store/dataset/${id}`);

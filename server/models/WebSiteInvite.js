@@ -23,13 +23,10 @@ const WebSiteInvite = new mongoose.Schema(
       ref: "web-roles",
       required: true,
     },
-    toEmail: {
-      type: String,
-      required: true,
-    },
+    toEmail: { type: [String], required: true },
     status: {
       type: String,
-      default: 'pending',
+      default: "pending",
     },
     isDelete: {
       type: Boolean,

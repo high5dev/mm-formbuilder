@@ -183,6 +183,7 @@ const WebSiteCollection = require("../WebSiteCollection");
 const WebSiteDataSet = require("../WebSiteDataSet");
 const WebSiteConnection = require("../WebSiteConnection");
 const ProductDataSet = require("../ProductDataSet");
+const ProductCategory = require("../ProductCategory");
 const WebSiteRole = require("../WebSiteRole");
 const WebSiteInvite = require("../WebSiteInvite");
 const models = {
@@ -356,6 +357,7 @@ const models = {
   WebSiteDataSet,
   WebSiteConnection,
   ProductDataSet,
+  ProductCategory,
   WebSiteRole,
   WebSiteInvite,
 };

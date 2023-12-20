@@ -6,7 +6,7 @@ import {
   setImageLibraryReducer,
   setFormCategoriesReducer,
   setFormOrderElementsReducer,
-  setFormProductsReducer
+  setFormProductsReducer,
 } from './reducer';
 import * as api from './api';
 import { toast } from 'react-toastify';

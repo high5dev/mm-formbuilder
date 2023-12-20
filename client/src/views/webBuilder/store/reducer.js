@@ -35,6 +35,7 @@ export const formEditor = createSlice({
     webDatasets: [],
     webBlogs:[],
     webConnections: [],
+    categories: [],
     webProducts: {},
     cartProducts: [],
     selectedProduct: {},
@@ -53,6 +54,9 @@ export const formEditor = createSlice({
     },
     setChildFormsReducer:(state,action) =>{
       state.childForms=action?.payload;
+    },
+    setCategoriesReducer: (state, action) => {
+      state.categories = action?.payload;
     },
     setWebStoreReducer: (state, action) => {
       state.webProducts = action?.payload;
@@ -171,6 +175,7 @@ export const {
   setWebRolesReducer,
   setWebBlogsReducer,
   setWebConnectionsReducer,
+  setCategoriesReducer,
   setWebStoreReducer,
   setCartProductsReducer,
   setSelectedProductReducer,
