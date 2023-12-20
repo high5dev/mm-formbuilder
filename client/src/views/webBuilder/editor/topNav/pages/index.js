@@ -135,11 +135,11 @@ export default function Index({ page, setPage, id, store, editor, setEditor, set
                               rename(item);
                             }}>
                               <Edit size={18} className='me-1' />
-                              <span>Edit</span>
+                              <span>Rename</span>
                             </DropdownItem>
                             <DropdownItem className='d-flex w-100 align-items-center' onClick={(e) => {
                                 e.preventDefault();
-                                removePage(page)
+                                removePage(item)
                               }}>
                               <Trash2 size={17} className='me-1' />
                               <span>Delete</span>
