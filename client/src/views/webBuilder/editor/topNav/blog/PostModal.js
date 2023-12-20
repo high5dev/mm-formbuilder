@@ -106,15 +106,12 @@ export default function Index({ blog, store, isOpen, toggle }) {
            {actionType==='Create'? "New Post":"Edit Post"}
         </ModalHeader>
         <ModalBody className="">
-            <div className='d-flex justify-content-end'>
-                <Button color="primary" onClick={()=>publishPost()}>Publish</Button>
-            </div>
             <div className='post-body'>
                <div className='post-title mt-2'>
                   <Label>Title</Label>
                   <Input type="text" value={title} onChange={(e)=>setTitle(e.target.value)}/>
                </div>
-               <div className='post-description mt-2 mb-2'>
+               <div className='mt-2 mb-2'>
                   <Label>Description</Label>
                   <Editor
                       editorState={value}
@@ -235,7 +232,10 @@ export default function Index({ blog, store, isOpen, toggle }) {
             }
            
         </ModalBody>
-        <ModalFooter className="d-flex justify-content-between">
+        <ModalFooter className="d-flex mb-1">
+            <div className='d-flex justify-content-end'>
+                <Button color="primary" onClick={()=>publishPost()}>Publish</Button>
+            </div>
         </ModalFooter>
       </Modal>
     </>
