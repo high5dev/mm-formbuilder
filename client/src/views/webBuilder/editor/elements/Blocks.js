@@ -175,6 +175,14 @@ export const blocks = [
     category: 'Store',
   },
   {
+    id: 'productpage',
+    label: 'Currency Converter',
+    attributes: { class: 'fa fa-text' },
+    content: { type: 'productpage', text: 'Make shopping easier by letting customers shop products in their currency.' },
+    media: 'currencyConverter',
+    category: 'Store',
+  },
+  {
     id:'button',
     label:'Button',
     attributes:{ class:'fa fa-text'},

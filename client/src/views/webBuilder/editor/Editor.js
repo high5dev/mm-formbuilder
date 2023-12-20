@@ -65,6 +65,7 @@ import { GiConsoleController } from 'react-icons/gi';
 import Sidebar from './Sidebar';
 import { element } from 'prop-types';
 import ProductsSettingModal from './store/ProductsSetting/ProductsSettingModal';
+import { ProductPageSettingModal } from './store/ProductPageSetting/ProductPageSettingModal';
 import RoleModal from './topNav/role';
 export default function Editor({
   isblog,
@@ -146,6 +147,7 @@ export default function Editor({
   const [showProductDataSetModal, setShowProductDataSetModal] = useState(false);
   const [showEditProductsModal, setShowEditProductsModal] = useState(false);
   const [showProductsSettingModal, setShowProductsSettingModal] = useState(false);
+  const [showProductPageSettingModal, setShowProductPageSettingModal] = useState(false);
   const [showAddCartButtonModal, setShowAddCartButtonModal] = useState(false);
   const [cartProductId, setCartProductId] = useState("");
   const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
@@ -403,6 +405,31 @@ export default function Editor({
   }, [store?.webProducts, store?.categories]);
 
   useEffect(() => {
+    if(editor) {
+      function updateComponentsAndChildren(components, webProducts, categories) {
+        components.forEach((component) => {
+          if (component.get('type') === 'productpage') {
+            if (Object.keys(storeRef.current?.selectedProduct).length == 0 && storeRef.current?.webProducts?.values.length > 0) {
+              dispatch(updateSelectedProductAction(storeRef.current?.webProducts?.values[0]));
+              component.set('product', storeRef.current?.webProducts?.values[0]);
+            } else {
+              component.set('product', storeRef.current?.selectedProduct);
+            }
+          }
+
+          // Recursively update children
+          if (component.components) {
+            updateComponentsAndChildren(component.components().models, webProducts, categories);
+          }
+        });
+      }
+
+      const components = editor.getWrapper().components().models;
+      updateComponentsAndChildren(components, store?.webProducts);
+    }
+  }, [store?.webProducts])
+
+  useEffect(() => {
     if (store?.form?._id) {
       dispatch(getWebsiteAllDatasetsAction(store?.form?._id));
       dispatch(getWebCollectionsAction(store?.form?._id));
@@ -545,12 +572,20 @@ export default function Editor({
         let cartItemCount = 0;
       }
       else if (component.get('type') === 'productpage') {
-        if (storeRef.current?.selectedProduct == {} && storeRef.current?.webProducts.length > 0) {
-          dispatch(updateSelectedProductAction(storeRef.current?.webProducts[0]));
-          component.set('product', storeRef.current?.webProducts[0]);
+        if (Object.keys(storeRef.current?.selectedProduct).length == 0 && storeRef.current?.webProducts.values.length > 0) {
+          dispatch(updateSelectedProductAction(storeRef.current?.webProducts.values[0]));
+          component.set('product', storeRef.current?.webProducts.values[0]);
         } else {
           component.set('product', storeRef.current?.selectedProduct);
         }
+        component.set('fieldnames', component.getAttributes().fieldnames);
+        component.set('showcartbutton', component.getAttributes().showcartbutton);
+        component.set('alignstyle', component.getAttributes().alignstyle);
+        component.set('buttontext', component.getAttributes().buttontext);
+        component.set('buttonstyle', component.getAttributes().buttonstyle);
+        component.set('fillopacity', component.getAttributes().fillopacity);
+        component.set('borderwidth', component.getAttributes().borderwidth);
+        component.set('buttoncornerradius', component.getAttributes().buttoncornerradius);
       }
       else if (component.get('type') === 'cartpage') {
         component.set('cartProducts', storeRef.current?.cartProducts);
@@ -859,6 +894,10 @@ export default function Editor({
         setShowProductsSettingModal(true);
       });
 
+      gjsEditor.Commands.add('setting-productpage', gjsEditor => {
+        setShowProductPageSettingModal(true);
+      });
+
       gjsEditor.Commands.add('setting-addcartbutton', gjsEditor => {
         setShowAddCartButtonModal(true);
       });
@@ -914,6 +953,13 @@ export default function Editor({
                     command: 'manage-products',
                     label: connectionLabel
                   })
+                }
+                if(elType.id === 'productpage') {
+                  toolbar.unshift({
+                    id: 'setting-productpage',
+                    command: 'setting-productpage',
+                    label: settingLabel
+                  });
                 }
                 if (elType.id === 'addtocartbutton') {
                   toolbar.unshift({
@@ -1771,6 +1817,12 @@ export default function Editor({
         setShowProductsSettingModal={setShowProductsSettingModal}
         selectedProductCategory={selectedProductCategory}
         handleChangeSelectedProductCategory={handleChangeSelectedProductCategory}
+        selectedCmp={selectedCmp}
+      />
+      <ProductPageSettingModal
+        store={store}
+        showProductPageSettingModal={showProductPageSettingModal}
+        setShowProductPageSettingModal={setShowProductPageSettingModal}
         selectedCmp={selectedCmp}
       />
       <ConnectProductDataSetModal store={store} showProductDataSetModal={showProductDataSetModal} setShowProductDataSetModal={setShowProductDataSetModal} modelsToConnect={modelsToConnect} datasetConnect={datasetConnect} setDatasetFields={setDatasetFields} />
