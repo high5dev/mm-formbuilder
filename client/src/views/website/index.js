@@ -441,7 +441,7 @@ export default function Index() {
         setProduct();
       }
 
-      const formHandler=(_fields, _values, messageContainer)=>{
+      const formHandler=(formId, _fields, _values, messageContainer)=>{
         let name;
         if (pageName) {
           name = pageName;
@@ -452,6 +452,7 @@ export default function Index() {
         const payload={
           websiteId:id,
           pageName:name,
+          formId:formId,
           fields:_fields,
           values:_values
         };
@@ -526,6 +527,7 @@ export default function Index() {
           history.push(productLink);
         }
         else if(target.matches('.input-submit-element')){
+          const formId=target.id;
           const submitContainer=target.parentElement.parentElement;
           const messageContainer=submitContainer.querySelector('.message');
           const parentContainer=target.parentElement.parentElement.parentElement.parentElement;
@@ -655,33 +657,7 @@ export default function Index() {
               }
              }
           }
-          
-          // const inputElements=formContainer.getElementsByTagName('input');
-
-          // for(let j=0; j<inputElements.length;j++){
-          //   const _inputEl=inputElements[j];
-          //   if(!_inputEl.matches('.input-submit-element')){
-          //     const id=_inputEl.id;
-          //     const value=_inputEl.value;
-          //     const type=_inputEl.type;
-          //     const name=_inputEl.name;
-          //     const placeholder=_inputEl.placeholder;
-          //     const required=_inputEl.required;
-          //     fields.push({
-          //       id,
-          //       type,
-          //       name,
-          //       placeholder,
-          //       required
-          //     });
-          //     values.push({
-          //       id,
-          //       name,
-          //       value
-          //     })
-          //   }
-          // }
-          formHandler(fields, values, messageContainer);
+          formHandler(formId, fields, values, messageContainer);
         }
       };
 

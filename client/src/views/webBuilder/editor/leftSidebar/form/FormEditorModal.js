@@ -589,18 +589,20 @@ export default function Index({store, toggle, page, saveFormBlock}) {
     });
 
     form_gjsEditor.on('component:selected', (cmp) => {
-        if(cmp && cmp.get('elProps') && cmp.get('elProps').length===1){
+        if(cmp.get('type')!='' && cmp.get('type')!='textnode'){
+          if(cmp && cmp.get('elProps') && cmp.get('elProps').length===1){
           setOptions([]);
           setAttributes(cmp.get('elProps')[0]);
           setTitle(cmp.get('title'));
           setSelectedComponent(cmp);
         }
-        if(cmp && cmp.get('elProps') && cmp.get('elProps').length>1){
+        if(cmp && cmp.get('type')!='' && cmp.get('elProps') && cmp.get('elProps').length>1){
           setAttributes(null);
           const newOptions=[...cmp.get('elProps')];
           setOptions([...newOptions]);
           setTitle(cmp.get('title'));
           setSelectedComponent(cmp);
+        }
         }
     });
 

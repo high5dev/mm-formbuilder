@@ -1,21 +1,15 @@
 // declare mongoose
 const mongoose = require("mongoose");
-
-const FormDatasetSchema = new mongoose.Schema(
+const WebsiteEntrySchema = new mongoose.Schema(
   {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "auths",
-      required: true,
-    },
-    organizationId: {
-      type: mongoose.Types.ObjectId,
-      ref: "organizations",
-      default: null,
-    },
     websiteId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "web-builders",
+      required: true,
+    },
+    formId:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "forms",
       required: true,
     },
     pageName: {
@@ -39,4 +33,4 @@ const FormDatasetSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("form-dataset", FormDatasetSchema);
+module.exports = mongoose.model("website-entry", WebsiteEntrySchema);

@@ -23,6 +23,11 @@ export const getChildFormPage=(id, payload)=>{
 export const getChildForms =(id) =>{
   return API.get(`/form/forms/${id}`);
 }
+
+export const getChildForm =(id) =>{
+  return API.get(`/form/form/${id}`);
+}
+
 export const getChildFormPreviewPage =(payload) =>{
   return API.get('/form/preview-page/',{params:payload});
 }
@@ -58,7 +63,7 @@ export const updateFormRule =(id, payload) =>{
 }
 
 export const createDataset=(payload)=>{
-  return API.post('/form-dataset/create', payload);
+  return API.post('/web-entry/create', payload);
 }
 //create webbuilder
 
@@ -145,6 +150,24 @@ export const getWebBuilder =(id) =>{
 export const addLeads = (id, payload) => {
   return API.post('/form-builder/addleads/' + id, payload);
 };
+
+//web entry
+
+export const getWebsiteEntry =(id) =>{
+  return API.get('/web-entry/dataset/'+id);
+}
+
+export const deleteWebsiteEntry =(id) =>{
+  return API.delete('/web-entry/delete/'+id);
+}
+
+export const editWebsiteEntry =(id, payload) =>{
+  return API.put(`/web-entry/edit/${id}`, payload);
+}
+
+export const getWebsiteEntries =(payload) =>{
+  return API.get('/web-entry/datasets/', {params:payload});
+}
 
 //blog
 

@@ -12,37 +12,22 @@ import StepTab from './StepTab';
 const FormStep = ({ dispatch, store, isMobileView,
   isTabletView }) => {
   // ** States
-  const [activeStep, setActiveStep] = useState();
-
-  useEffect(()=>{
-   if(store &&store.form && store.form._id && store?.form?._id!==''){
-    setActiveStep(store.form.formData[0].id)
-   }
-  },[store?.form])
-  
+  const [active, setActive] = useState();
   return (
     <>
       {store && (
         <Row style={{ width: '100%', margin: '0px', padding: '0px' }}>
           <Col xl="12" xs={{ order: 0 }} md={{ order: 1, size: 12 }} style={{ padding: '0px' }}>
-            <div className="tasks-border">
+            <div className="tasks-border"  style={{ minHeight: '75vh', background: '#fff' }}>
               <Sidebar
-                active={activeStep}
-                setActive={setActiveStep}
+                active={active}
+                setActive={setActive}
                 dispatch={dispatch}
                 store={store}
               />
               <div className="tasks-area">
-                <TabContent activeTab={activeStep}>
-                  {store.form &&  store?.form?.formData?.map((x) => {
-                    return (
-                      <TabPane tabId={x.id}>
-                        <StepTab store={store} step={x} dispatch={dispatch}  isMobileView={isMobileView}
-                          isTabletView={isTabletView}/>
-                      </TabPane>
-                    );
-                  })}
-                </TabContent>
+                  <StepTab store={store} active={active} dispatch={dispatch}  isMobileView={isMobileView}
+                    isTabletView={isTabletView}/>
               </div>
             </div>
           </Col>
