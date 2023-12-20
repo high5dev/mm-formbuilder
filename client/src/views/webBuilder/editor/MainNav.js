@@ -443,12 +443,6 @@ export default function MainNav({
                 </UncontrolledTooltip>
               </span>
               <span className="menu-icon">
-                <MdOutlineFormatColorReset size={24} color={'black'} id="blog" onClick={() => setIsBlog(true)} />
-                <UncontrolledTooltip placement="bottom" target="blog">
-                  Blog
-                </UncontrolledTooltip>
-              </span>
-              <span className="menu-icon">
                 <MdOutlineGridView size={24} color={'black'} id="market" />
                 <UncontrolledTooltip placement="bottom" target="market">
                   App Market
