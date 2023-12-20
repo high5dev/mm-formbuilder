@@ -308,6 +308,15 @@ export const getWebsiteRoles = (id) => {
 export const createWebsiteRole = (payload) => {
   return API.post(`/web-builder-role/create`, payload);
 }
+export const updateWebsiteRole = (id, payload) => {
+  return API.post(`/web-builder-role/update/${id}`, payload);
+}
+export const deleteWebsiteRole = (id) => {
+  return API.delete(`/web-builder-role/delete/${id}`);
+}
+export const createWebsiteInvitationRole = (payload) => {
+  return API.post(`/web-builder-role/create-invite`, payload);
+}
 
 export const getConnectsByWebsite = (id) => {
   return API.get(`/web-builder-cms/connections-of-website/${id}`);

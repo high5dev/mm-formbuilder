@@ -1109,7 +1109,7 @@ export default function Editor({
   useEffect(() => {
     if (editor) {
       store.webElements.map((el, idx) => {
-        if(el.category[0].name==='New Form'){
+        if(el?.category[0]?.name==='New Form'){
           let formItem = {
             isComponent: el => (el.tagName === 'DIV' && el.classList.contains('new-form')),
             model: {
@@ -1128,18 +1128,18 @@ export default function Editor({
             },
           };
           editor.DomComponents.addType('new-form', formItem);
-          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
-            label: el.category[0].name,
+          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
+            label: el?.category[0]?.name,
             content: {type:'new-form'},
             media: el.imageUrl,
-            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
-            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
-            mainMenu:`${el.category[0].mainMenu}`,
-            refcategory:`${el.category[0].name}`,
-            submenu:el.category[0].subMenu
+            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+            mainMenu:`${el?.category[0]?.mainMenu}`,
+            refcategory:`${el?.category[0]?.name}`,
+            submenu:el?.category[0]?.subMenu
           })
         }
-        if(el.category[0].name==='Add Existing Form'){
+        if(el?.category[0]?.name==='Add Existing Form'){
           let formItem = {
             isComponent: el => (el.tagName === 'DIV' && el.classList.contains('add-form')),
             model: {
@@ -1158,18 +1158,18 @@ export default function Editor({
             },
           };
           editor.DomComponents.addType('add-form', formItem);
-          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
-            label: el.category[0].name,
+          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
+            label: el?.category[0]?.name,
             content: {type:'add-form'},
             media: el.imageUrl,
-            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
-            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
-            mainMenu:`${el.category[0].mainMenu}`,
-            refcategory:`${el.category[0].name}`,
-            submenu:el.category[0].subMenu
+            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+            mainMenu:`${el?.category[0]?.mainMenu}`,
+            refcategory:`${el?.category[0]?.name}`,
+            submenu:el?.category[0]?.subMenu
           })
         }
-        if(el.category[0].subMenu==='repeater'){
+        if(el?.category[0]?.subMenu==='repeater'){
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
           const style=htmlCmp.head;
@@ -1196,18 +1196,18 @@ export default function Editor({
               elements[i].style.minHeight='0px';
             }
           };
-          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
-            label: el.category[0].name,
+          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
+            label: el?.category[0]?.name,
             content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
             media: el.imageUrl,
-            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
-            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
-            mainMenu:`${el.category[0].mainMenu}`,
-            refcategory:`${el.category[0].name}`,
-            submenu:el.category[0].subMenu,
+            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+            mainMenu:`${el?.category[0]?.mainMenu}`,
+            refcategory:`${el?.category[0]?.name}`,
+            submenu:el?.category[0]?.subMenu,
           });
         }
-        if(el.category[0].subMenu==='iframe'){
+        if(el?.category[0]?.subMenu==='iframe'){
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
           const firstChild=htmlCmp.body.firstChild;
@@ -1217,18 +1217,18 @@ export default function Editor({
           else{
             firstChild.className+='iframe-element';
           }
-          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
-            label: el.category[0].name,
+          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
+            label: el?.category[0]?.name,
             content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
             media: el.imageUrl,
-            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
-            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
-            mainMenu:`${el.category[0].mainMenu}`,
-            refcategory:`${el.category[0].name}`,
-            submenu:el.category[0].subMenu,
+            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+            mainMenu:`${el?.category[0]?.mainMenu}`,
+            refcategory:`${el?.category[0]?.name}`,
+            submenu:el?.category[0]?.subMenu,
           });
         }
-        if(el.category[0].subMenu==='social-bar'){
+        if(el?.category[0]?.subMenu==='social-bar'){
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
           const firstChild=htmlCmp.body.firstChild;
@@ -1238,18 +1238,18 @@ export default function Editor({
           else{
             firstChild.className='social-bar';
           }
-          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
-            label: el.category[0].name,
+          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
+            label: el?.category[0]?.name,
             content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
             media: el.imageUrl,
-            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
-            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
-            mainMenu:`${el.category[0].mainMenu}`,
-            refcategory:`${el.category[0].name}`,
-            submenu:el.category[0].subMenu,
+            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+            mainMenu:`${el?.category[0]?.mainMenu}`,
+            refcategory:`${el?.category[0]?.name}`,
+            submenu:el?.category[0]?.subMenu,
           });
         }
-        if(el.category[0].subMenu==='gallery'){
+        if(el?.category[0]?.subMenu==='gallery'){
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
           const firstChild=htmlCmp.body.firstChild;
@@ -1275,27 +1275,27 @@ export default function Editor({
               elements[i].style.height='auto';
             }
           };
-          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
-            label: el.category[0].name,
+          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
+            label: el?.category[0]?.name,
             content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
             media: el.imageUrl,
-            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
-            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
-            mainMenu:`${el.category[0].mainMenu}`,
-            refcategory:`${el.category[0].name}`,
-            submenu:el.category[0].subMenu,
+            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+            mainMenu:`${el?.category[0]?.mainMenu}`,
+            refcategory:`${el?.category[0]?.name}`,
+            submenu:el?.category[0]?.subMenu,
           });
         }
         else{
-          editor.BlockManager.add(`${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}-${idx}`, {
-            label: el.category[0].name,
+          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
+            label: el?.category[0]?.name,
             content: el.html,
             media: el.imageUrl,
-            category: `${el.category[0].mainMenu}-${el.category[0].subMenu}-${el.category[0].name}`,
-            menu: `${el.category[0].mainMenu}-${el.category[0].subMenu}`,
-            mainMenu:`${el.category[0].mainMenu}`,
-            refcategory:`${el.category[0].name}`,
-            submenu:el.category[0].subMenu,
+            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+            mainMenu:`${el?.category[0]?.mainMenu}`,
+            refcategory:`${el?.category[0]?.name}`,
+            submenu:el?.category[0]?.subMenu,
           });
         }
       });
