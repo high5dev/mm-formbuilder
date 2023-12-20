@@ -18,12 +18,13 @@ import {
   MdOutlineLensBlur,
 } from 'react-icons/md';
 import { useSelector } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import '@src/assets/styles/web-builder.scss';
 import { useDispatch } from 'react-redux';
 import { setLinkUrlReducer } from '../store/reducer';
-import { updateFormDataAction } from '../store/action';
+import { updateFormDataAction, createPageAction} from '../store/action';
+import {setFormReducer} from '../store/reducer';
 import { BsPlusSquare } from 'react-icons/bs';
 import {
   Button,
@@ -77,6 +78,7 @@ export default function MainNav({
   setSelectedMainNav,
   setRoleMdl,
 }) {
+  const { id } = useParams();
   const dispatch = useDispatch();
   const [width, setWidth] = useState(1280);
   const [devicetype, setDeviceType] = useState('desktop');
@@ -117,6 +119,29 @@ export default function MainNav({
     setWidth(e.target.value);
   }
 
+  const addPage=()=>{
+    const pageNum=form.formData.length;
+    const name=`Page${pageNum}`;
+    const path='/'+form?._id+'/'+name;
+    const payload={
+      id,
+      pageData:{
+        name,
+        path,
+        step:formData.length
+      }
+    };
+    dispatch(createPageAction(payload)).then((res)=>{
+      const formData=[...form.formData, res];
+      const _form={
+        ...form,
+        formData:formData
+      };
+      dispatch(setFormReducer(_form));
+    })
+  }
+
+  
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       if (width > 1280) {
@@ -388,9 +413,13 @@ export default function MainNav({
               </div>
             </DropdownToggle>
             <DropdownMenu container="body">
+              <DropdownItem tag="span" className="w-100" onClick={(e) => addPage()}>
+                  <Plus size={20} color={'#174ae7'} id="add-element" />
+                  <span className="text-primary">Add Page</span>
+              </DropdownItem>
               {formData && formData.map((item) => {
                 return (
-                  <DropdownItem tag="span" className="w-100" onClick={(e) => handlePage(item)}>
+                  <DropdownItem tag="span" className="w-100 text-center" onClick={(e) => handlePage(item)}>
                     <span className="">{item.name}</span>
                   </DropdownItem>);
               })}
