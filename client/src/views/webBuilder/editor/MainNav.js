@@ -302,12 +302,6 @@ export default function MainNav({
                 </UncontrolledTooltip>
               </span>
               <span className="hover-bg">
-                <MdZoomIn size={30} color={'black'} id="zoom" />
-                <UncontrolledTooltip placement="bottom" target="zoom">
-                  Zoom
-                </UncontrolledTooltip>
-              </span>
-              <span className="hover-bg">
                 <Trash2 size={24} color={'black'} id="trash2" onClick={handleClear} />
                 <UncontrolledTooltip placement="bottom" target="trash2">
                   Clear
@@ -356,12 +350,6 @@ export default function MainNav({
             />
             <UncontrolledTooltip placement="bottom" target="import">
               Import
-            </UncontrolledTooltip>
-          </span>
-          <span className="hover-bg feature-hide">
-            <MdZoomIn size={30} color={'black'} id="zoom" />
-            <UncontrolledTooltip placement="bottom" target="zoom">
-              Zoom
             </UncontrolledTooltip>
           </span>
           <span className="hover-bg feature-hide">
@@ -458,12 +446,6 @@ export default function MainNav({
                 <MdWorkspacesOutline size={24} color={'black'} id="global" />
                 <UncontrolledTooltip placement="bottom" target="global">
                   Global Sections
-                </UncontrolledTooltip>
-              </span>
-              <span className="menu-icon">
-                <MdOutlineFormatColorReset size={24} color={'black'} id="blog" onClick={() => setIsBlog(true)} />
-                <UncontrolledTooltip placement="bottom" target="blog">
-                  Blog
                 </UncontrolledTooltip>
               </span>
               <span className="menu-icon">
