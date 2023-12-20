@@ -23,7 +23,7 @@ const script = function(props) {
                           <label for={elProp.id}>{elProp.label}</label>
                         </div>
                         <div class="birthday-container">
-                          <select required class="select-month-element">
+                          <select required class="select-month-element" name='birthday'>
                               {
                                 months && months.map((month, i)=>{
                                   if(i===0){

@@ -342,7 +342,7 @@ export default function FunnelTable({
       {(isMobileView || isTabletView) && (
         <div style={{ padding: '5px', width: isMobileView ? '100%' : '100%' }}>
           <div className="flex-wrap">
-            {tableData?.map((item, index) => {
+            {displayData?.map((item, index) => {
               return (
                 <>
                   <Card

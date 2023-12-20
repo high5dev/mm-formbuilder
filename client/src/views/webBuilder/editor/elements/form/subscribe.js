@@ -18,7 +18,7 @@ const script = function(props) {
             const elProp = props.attributes.elProps[0];
             return(
                     <div class="subscribe-container">
-                        <input type='checkbox' id={elProp.id} required={elProp.required} checked={elProp.checked}/>
+                        <input type='checkbox' id={elProp.id} required={elProp.required} checked={elProp.checked} name='subscribe'/>
                         <label className='ms-1' htmlFor='subscribe-checkbox'>{elProp.label}</label>
                     </div>
                     

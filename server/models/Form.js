@@ -37,11 +37,14 @@ const FormSchema = new mongoose.Schema(
     },
     elements:[
       {
-        elementType:{
+        type:{
           type:String,
           required:true
         },
-        inputElements:[]
+        name:{
+          type:String,
+          required:true
+        }
       }
     ]
   },

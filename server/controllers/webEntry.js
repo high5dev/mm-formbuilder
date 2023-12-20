@@ -2,27 +2,21 @@
 const { default: mongoose } = require("mongoose");
 const asyncHandler = require("express-async-handler");
 const {
-  FormDataset
+  WebsiteEntry, 
+  Form
 } = require("../models/index/index");
 
-exports.createDataset = asyncHandler(async (req, res) => {
+exports.createWebsiteEntry = asyncHandler(async (req, res) => {
   try {
-    const { organization } = req.headers;
-    const user = req.user;
-    const {websiteId, pageName, fields, values} = req.body;
-    const formDataset = {
-        userId: mongoose.Types.ObjectId(req.user._id),
-        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
-        creatorType: organization
-          ? user.organizations.find((x) => x.organizationId.toString() === organization).userType
-          : user.userType,
+    const {websiteId, pageName, formId, fields, values} = req.body;
+    const websiteDataset = {
         websiteId:mongoose.Types.ObjectId(websiteId),
+        formId:mongoose.Types.ObjectId(formId),
         pageName:pageName,
         fields:fields,
         values:values
       };
-    console.log('formDataset', formDataset);
-    const data= await FormDataset.create(formDataset);
+    const data= await WebsiteEntry.create(websiteDataset);
     if(data){
       return res.send({
         success:true,
@@ -39,7 +33,7 @@ exports.createDataset = asyncHandler(async (req, res) => {
   }
 });
 
-exports.getFormDatasets = asyncHandler(async (req, res) => {
+exports.getWebsiteEntries = asyncHandler(async (req, res) => {
     try {
       const { organization } = req.headers;
       const user = req.user;
@@ -48,7 +42,7 @@ exports.getFormDatasets = asyncHandler(async (req, res) => {
           organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
           isDelete: false,
       };
-      const data = await FormDataset.aggregate([
+      const data = await WebsiteEntry.aggregate([
         {$match: query}
       ]);
   
@@ -58,24 +52,22 @@ exports.getFormDatasets = asyncHandler(async (req, res) => {
     }
   });
 
-
-exports.deleteFormDataset = asyncHandler(async (req, res) => {
+exports.deleteWebsiteEntry = asyncHandler(async (req, res) => {
 let { id } = req.params;
 try {
     id = mongoose.Types.ObjectId(id);
-    await FormDataset.findByIdAndUpdate(id, { isDelete: true });
+    await WebsiteEntry.findByIdAndUpdate(id, { isDelete: true });
     res.status(200).json({ success: true});
 } catch (err) {
     res.send({ msg: err.message.replace(/\'/g, ""), success: false });
 }
 });
 
-
-exports.editFormDataset = asyncHandler(async (req, res) => {
+exports.editWebsiteEntry = asyncHandler(async (req, res) => {
   let { id } = req.params;
   try {
     const Obj=req.body;
-    const data=await FormDataset.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, Obj, {new:true});
+    const data=await WebsiteEntry.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, Obj, {new:true});
       return res.send({ 
         success: true, 
         data: data
@@ -87,10 +79,24 @@ exports.editFormDataset = asyncHandler(async (req, res) => {
   }
 });
 
-exports.getFormDataset= asyncHandler(async(req, res) =>{
+exports.getWebsiteEntry= asyncHandler(async(req, res) =>{
     const {id} =req.params;
     try{
-      const data=await FormDataset.findOne({_id:mongoose.Types.ObjectId(id)});
+      let query = {
+        _id: mongoose.Types.ObjectId(id),
+        isDelete: false
+      };
+      const data = await Form.aggregate([
+        {$match: query},
+        {
+          $lookup: {
+            from: "website-entries",
+            localField: "_id",
+            foreignField: "formId",
+            as: "entries",
+          }
+        }
+      ]);
       if(data){
         return res.send({
           success: true,

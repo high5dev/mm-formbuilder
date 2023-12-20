@@ -49,6 +49,9 @@ const FunnelSettings = () => {
   });
   const dispatch = useDispatch();
 
+  const openEditor=()=>{
+    history.push(`/webpages/editor/${store?.form._id}`);
+  }
   useEffect(() => {
     dispatch(getFormDataAction(id));
     // dispatch(getFormsEntryAction(id));
@@ -109,6 +112,7 @@ const FunnelSettings = () => {
           </Button>
         </Col>
         <Col xl="12" xs={{ order: 0 }} md={{ order: 1, size: 12 }} style={{ padding: '0px' }}>
+          <div className='d-flex justify-content-between align-items-center'>
           <Nav pills className="mb-2">
               <>
                 <NavItem style={{ width: isMobileView ? '50%' : '' }}>
@@ -136,20 +140,30 @@ const FunnelSettings = () => {
                     <span className="fs-6">SALES</span>
                   </NavLink>
                 </NavItem>
-              </>
-            <NavItem style={{ width: isMobileView ? '50%' : '' }}>
-              <NavLink
-                active={active === '3'}
-                onClick={() => {
-                  setActive('3');
-                  setTitle('Settings');
-                }}
-              >
-                <MdOutlineNotifications className="font-medium-1 me-50" />
-                <span className="fs-6">SETTINGS</span>
-              </NavLink>
-            </NavItem>
+                <NavItem style={{ width: isMobileView ? '50%' : '' }}>
+                <NavLink
+                  active={active === '3'}
+                  onClick={() => {
+                    setActive('3');
+                    setTitle('Settings');
+                  }}
+                >
+                  <MdOutlineNotifications className="font-medium-1 me-50" />
+                  <span className="fs-6">SETTINGS</span>
+                </NavLink>
+              </NavItem>
+              </> 
           </Nav>
+            <div>
+                <Button
+                  color="primary"
+                  onClick={(e)=>openEditor()}
+                >
+                  Edit Page
+                </Button>
+            </div>
+          </div>
+
           {store?.form?.id !== '' && (
             <TabContent activeTab={active}>
               <TabPane tabId="1">

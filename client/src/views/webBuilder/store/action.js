@@ -64,6 +64,16 @@ export const getChildFormsAction=(id) =>async(dispatch) =>{
   }
 }
 
+export const getChildFormAction=(id) =>async(dispatch) =>{
+  try{
+    const {data}=await api.getChildForm(id);
+    dispatch(setChildFormReducer(data.data));
+    return data.data
+  }
+  catch(error){
+  }
+}
+
 export const getChildFormPageAction =(id, payload) =>async(dispatch) =>{
   try {
     const {data} = await api.getChildFormPage(id, payload);
@@ -205,6 +215,43 @@ export const getFormPageAction =(id) =>async(dispatch) =>{
   } catch (error) { }
 
 }
+
+//web entry
+export const getWebsiteEntryAction =(id) =>async(dispatch) =>{
+  try {
+    const {data} = await api.getWebsiteEntry(id);
+    if (data?.success === true) {
+      return data.data
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+  } catch (error) { }
+}
+
+export const deleteWebsiteEntryAction =(id) =>async(dispatch) =>{
+  try {
+    const {data} = await api.deleteWebsiteEntry(id);
+    if (data?.success === true) {
+      toast.success('Entry deleted successfully');
+      return true;
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+  } catch (error) { }
+}
+
+export const editWebsiteEntryAction =(id, payload) =>async(dispatch) =>{
+  try {
+    const {data} = await api.editWebsiteEntry(id, payload);
+    if (data?.success === true) {
+      toast.success('Entry updated successfully');
+      return true;
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+  } catch (error) { }
+}
+
 
 export const createWebBuilderAction = (payload) => async (dispatch) => {
   try {
