@@ -88,61 +88,76 @@ export default function Index({store, toggle, page, saveFormBlock}) {
           let elements=[];
           for(let i=0; i<_components.length;i++){
             const _component=_components[i];
-           console.log('&&&&&&&&&&', _component.getEl())
-            // if(elementType){
-            //   const inputElements=_component.get('elProps') && _component.get('elProps').map((item)=>{
-            //     return{
-            //       id:item.id,
-            //       name:item.name,
-            //       type:item.type
-            //     }
-            //   });
-            //   const _element={
-            //     elementType,
-            //     inputElements
-            //   };
-            //   elements.push(_element);
-            // }
+            const element=_component.getEl();
+            const type=_component.get('type');
+            if(type!='textnode' && type!='submit'){
+              if(type === 'single-choice'){
+                const inputElements=element.getElementsByTagName('input');
+                const name=inputElements[0].name;
+                elements.push({type:type, name:name});
+              }
+              else if(type === 'multi-choice'){
+                const inputElements=element.getElementsByTagName('input');
+                const name=inputElements[0].name;
+                elements.push({type:type, name:name});
+              }
+              else if(type === 'birthday'){
+                const name='birthday';
+                elements.push({type:type, name:name});
+              }
+              else if(type ==='dropdown'){
+                const selectElements=element.getElementsByTagName('select');
+                const name=selectElements[0].name;
+                elements.push({type:type, name:name});
+              }
+              else{
+                const inputElements=element.getElementsByTagName('input');
+                if(inputElements.length>0){
+                  const name=inputElements[0].name;
+                  elements.push({type:type, name:name});
+                }
+              }
+            }
           };
-          // const current_page=formEditor.Pages.getSelected();
-          // const websiteId=store.form._id;
-          // const pageId=page._id;
-          // const id=store.childForm._id;
-          // const html = formEditor.getHtml({ current_page });
-          // const css = formEditor.getCss({ current_page });
-          // const currentPage=currentFormPage?._id;
-          // const payload={
-          //   name,
-          //   websiteId,
-          //   pageId,
-          //   html,
-          //   css,
-          //   currentPage,
-          //   elements
-          // };
-          // dispatch(editChildFormAction(id, payload)).then((res)=>{
-          //   if(res){
-          //      let formPages=store.childForm.formPages;
-          //      formPages=formPages?.map((_formPage)=>{
-          //       if(_formPage._id===currentPage){
-          //         return {
-          //           ..._formPage,
-          //           html,
-          //           css
-          //         }
-          //       }
-          //       else{
-          //         return _formPage;
-          //       }
-          //      });
+          const current_page=formEditor.Pages.getSelected();
+          const websiteId=store.form._id;
+          const pageId=page._id;
+          const id=store.childForm._id;
+          const html = formEditor.getHtml({ current_page });
+          const css = formEditor.getCss({ current_page });
+          const currentPage=currentFormPage?._id;
+          const payload={
+            name,
+            websiteId,
+            pageId,
+            html,
+            css,
+            currentPage,
+            elements
+          };
+          dispatch(editChildFormAction(id, payload)).then((res)=>{
+            if(res){
+               let formPages=store.childForm.formPages;
+               formPages=formPages?.map((_formPage)=>{
+                if(_formPage._id===currentPage){
+                  return {
+                    ..._formPage,
+                    html,
+                    css
+                  }
+                }
+                else{
+                  return _formPage;
+                }
+               });
     
-          //      const newForm={...res.data, formPages};
-          //      dispatch(getChildFormsAction(newForm.websiteId
-          //       ));
-          //      dispatch(setChildFormReducer(newForm));
-          //      saveFormBlock(res.page);
-          //   }
-          // })
+               const newForm={...res.data, formPages};
+               dispatch(getChildFormsAction(newForm.websiteId
+                ));
+               dispatch(setChildFormReducer(newForm));
+               saveFormBlock(res.page);
+            }
+          })
         }
       }
     }
@@ -150,6 +165,7 @@ export default function Index({store, toggle, page, saveFormBlock}) {
       toast.error('Please input form name.')
     }
   };
+
 
   const previewForm = () => {
     if(name!=''){
@@ -748,7 +764,7 @@ export default function Index({store, toggle, page, saveFormBlock}) {
               <div className="item-event text-black fw-bolder">Rules</div>
             </div>
             <div
-              className="form-sidebar-action d-flex flex-column align-items-center pt-3"
+              className="form-sidebar-action d-flex flex-column align-items-center pt-3 hidden"
               onClick={(e) => {
                 setSidebarItem('Pages');
                 setSidebarOpen(true)
