@@ -118,17 +118,6 @@ export const menu = [
     ],
   },
   {
-    id: 'wireframes',
-    name: 'Wireframes',
-    icon: <MdGrid3X3 size={24} color={'#585858'} />,
-    subMenu: [
-      {
-        id: 'wireframes',
-        name: 'Wireframes',
-      },
-    ],
-  },
-  {
     id: 'layout-tools',
     name: 'Layout Tools',
     icon: <MdOutlineLayers size={24} color={'#585858'} />,
@@ -136,6 +125,29 @@ export const menu = [
       {
         id: 'containers',
         name: 'Containers',
+      },
+    ],
+  },
+  {
+    id: 'text',
+    name: 'Text',
+    icon: <Type size={24} color={'#585858'} />,
+    subMenu: [
+      {
+        id: 'text-themes',
+        name: 'Text Themes',
+      },
+      {
+        id: 'titles',
+        name: 'Titles',
+      },
+      {
+        id: 'collapsible-text',
+        name: 'Collapsible Text',
+      },
+      {
+        id: 'text-mask',
+        name: 'Text Mask',
       },
     ],
   },
@@ -362,13 +374,23 @@ export const menu = [
     id: 'bookings',
     name: 'Bookings',
     icon: <MdBackupTable size={24} color={'#585858'} />,
-    subMenu: [],
+    subMenu: [
+      {
+        id:'bookings',
+        name:'Bookings',
+      }
+    ],
   },
   {
     id: 'events',
     name: 'Events',
     icon: <FaRegCalendarAlt size={24} color={'#585858'} />,
-    subMenu: [],
+    subMenu: [
+      {
+        id:'events',
+        name:'Events',
+      }
+    ],
   },
   {
     id: 'members',
@@ -432,12 +454,6 @@ export const menu = [
         ]
       }
     ],
-  },
-  {
-    id: 'multilingual',
-    name: 'Multilingual',
-    icon: <MdLanguage size={24} color={'#585858'} />,
-    subMenu: [],
   },
 ];
 

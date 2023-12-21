@@ -91,22 +91,24 @@ const AddElementModal = ({ editor, setEditor, openAddElementMdl, setOpenAddEleme
     const editorBody = editor.Canvas.getBody();
     const newElement = document.createElement('div');
     const currentTime = new Date().getTime();
-    newElement.className = `created-new-element-${currentTime}`
+    newElement.className = `created-new-element-${currentTime}`;
     newElement.innerHTML = code;
     editorBody.appendChild(newElement);
     const lastChild = editorBody.lastChild;
-    htmlToImage.toPng(lastChild).then((dataUrl) => {
-      dispatch(createWebElementAction({mainMenu: selectedMenu?.value || '', subMenu: selectedSubMenu?.value || '', category, html: code, imageUrl: dataUrl})).then((res) => {
-        lastChild.remove();
-        setEditor(editor);
-        setOpenAddElementMdl(false);
+    setTimeout(() => {
+      htmlToImage.toPng(lastChild).then((dataUrl) => {
+        dispatch(createWebElementAction({mainMenu: selectedMenu?.value || '', subMenu: selectedSubMenu?.value || '', category, html: code, imageUrl: dataUrl})).then((res) => {
+          lastChild.remove();
+          setEditor(editor);
+          setOpenAddElementMdl(false);
+        });
       });
-    });
+    }, 500);
   };
 
   return (
     <>
-      <Modal isOpen={openAddElementMdl} toggle={() => setOpenAddElementMdl(!openAddElementMdl)} centered size='lg'>
+      <Modal isOpen={openAddElementMdl} toggle={() => setOpenAddElementMdl(!openAddElementMdl)} centered size='xl'>
         <ModalHeader toggle={() => setOpenAddElementMdl(!openAddElementMdl)} className="font-medium-5 px-2 py-1 modal-title text-primary">
           Add Element
         </ModalHeader>
@@ -114,7 +116,7 @@ const AddElementModal = ({ editor, setEditor, openAddElementMdl, setOpenAddEleme
           <div className="code-viewer">
             <CodeMirror
               value={code}
-              width="400px"
+              width="1000px"
               height="500px"
               theme={vscodeDark}
               onChange={handleHtml}
