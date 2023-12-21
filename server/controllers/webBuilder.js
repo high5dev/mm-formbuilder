@@ -166,118 +166,6 @@ exports.createWebsite = asyncHandler(async (req, res) => {
           category:'Add Existing Form',
           html:`<div></div>`,
           imageUrl:'https://i.ibb.co/6F2Z94x/2.png'
-        },
-        {
-          mainMenu:'contact-forms',
-          subMenu:'forms',
-          category:'Contact Form',
-          html:`<head>
-          <meta name="viewport" content="width=device-width, initial-scale=1">
-          <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        </head>
-        <body>
-        <div class="container p-3" style="background:lightgray; width:500px">
-          <h5>Contact us</h5>
-          <form>
-             <div class="form-group">
-              <label for="email">First name:</label>
-              <input type="text" class="form-control" id="firstName" placeholder="Enter First Name" name="firstName">
-            </div>
-            <div class="form-group mt-2">
-              <label for="email">Last name:</label>
-              <input type="text" class="form-control" id="lastName" placeholder="Enter Last Name" name="lastName">
-            </div>
-            <div class="form-group mt-2">
-              <label for="email">Email:</label>
-              <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
-            </div>
-            <div class="form-group mt-2">
-              <label for="textarea">Message:</label>
-              <input type="textarea" class="form-control" id="textarea" placeholder="" name="textarea">
-            </div>
-            <div class="d-flex mb-3">
-             <button type="submit" class="btn btn-primary mt-3 mb-3">Submit</button>
-            </div>
-          </form>
-        </div>
-        </body>
-        </html>
-        `,
-          imageUrl:'https://i.ibb.co/X7SCHDd/3.png'
-        },
-        {
-          mainMenu:'contact-forms',
-          subMenu:'forms',
-          category:'Subscribe',
-          html:`<head>
-          <meta name="viewport" content="width=device-width, initial-scale=1">
-          <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        </head>
-        <body>
-        <div class="container p-3" style="background:lightgray; width:500px">
-          <h5>Subscribe to our newspaper</h5>
-          <form>
-             <div class="form-group">
-              <label for="email">Email:</label>
-              <input type="email" class="form-control" id="email" placeholder="Enter your email" name="email">
-            </div>
-            <div class="form-check mb-3 mt-2">
-              <label class="form-check-label">
-              <input class="form-check-input" type="checkbox" name="remember">Yes, subscribe me to your newletter.
-            </label>
-          </div>
-            <div class="row p-2">
-             <button type="submit" class="btn btn-primary mt-3">Submit</button>
-            </div>
-          </form>
-        </div>
-        </body>
-        
-        `,
-          imageUrl:'https://i.ibb.co/7g6NjBM/4.png'
-        },
-        {
-          mainMenu:'contact-forms',
-          subMenu:'forms',
-          category:'Order Form',
-          html:`<head>
-          <meta name="viewport" content="width=device-width, initial-scale=1">
-          <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        </head>
-        <body>
-        <div class="container p-3" style="width:500px">
-          <h5>Online Order Form</h5>
-          <form>
-             <div class="form-group mt-2">
-              <label for="email">First name:</label>
-              <input type="text" class="form-control" id="firstName" placeholder="Enter First Name" name="firstName">
-            </div>
-            <div class="form-group mt-2">
-              <label for="email">Last name:</label>
-              <input type="text" class="form-control" id="lastName" placeholder="Enter Last Name" name="lastName">
-            </div>
-            <div class="form-group mt-2">
-              <label for="email">Email:</label>
-              <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
-            </div>
-            <div class="form-group mt-2">
-              <label for="shipto">ShipTo</label>
-              <input type="email" class="form-control" id="pwd" placeholder="Enter email" name="shipto">
-            </div>
-             <div class="form-group mt-2 mb-4">
-              <label for="instruction">Special Instruction</label>
-              <input type="text" class="form-control" id="instruction" placeholder="Enter text" name="instruction">
-            </div>
-            <button type="submit" class="btn btn-primary bt-3">Process to Checkout</button>
-          </form>
-        </div>
-        </body>
-        </html>
-        `,
-          imageUrl:'https://i.ibb.co/KGy7Zxn/5.png'
         }
       ];
       for (let i=0; i<formElements.length;i++){
@@ -291,7 +179,7 @@ exports.createWebsite = asyncHandler(async (req, res) => {
           subMenu: subMenu || '',
           name: category,
         });
-        if(!selectedCategory){
+        if(selectedCategory===null){
           const newCategory = await WebBuilderElementCategory.create({
             mainMenu,
             subMenu: subMenu || '',
