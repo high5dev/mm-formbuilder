@@ -9,12 +9,18 @@ let galleryItem = {
         attributes: { class: 'gallery-item'},
         components:(props) =>{
           return(
-            <a target="_blank" href="https://i.ibb.co/xM56xB3/image-large-3.png">
+            <div class="gallery-item-element">
+              <a target="_blank" href="https://i.ibb.co/xM56xB3/image-large-3.png">
                <img src="https://i.ibb.co/xM56xB3/image-large-3.png" width='100' height='100'/>
             </a>
+            </div>
           )
         },
-        styles: `.gallery-item {width:100px;height:100px; padding:3px}`,
+        styles: `
+        .gallery-item {width:110px;height:110px; padding:5px}
+        .gallery-item-element {display:flex; align-items:center; justify-content:space-around}
+        
+        `,
         stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
         images:[],
         traits: [
