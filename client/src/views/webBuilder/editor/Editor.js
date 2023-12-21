@@ -699,6 +699,9 @@ export default function Editor({
       }
     });
     gjsEditor.on('block:drag:start', function (model) {
+
+    });
+    gjsEditor.on('block:drag:stop', function (model) {
       setSidebarData({
         ...sidebarData,
         isOpen: false,
@@ -1498,12 +1501,11 @@ export default function Editor({
                                       e.stopPropagation();
                                       if(b.get('label')==='New Form'){
                                         createForm();
-                                        blockManager.dragStop(false);
                                       }
                                       if(b.get('label')==='Add Existing Form'){
                                         setAddFormMdl(true);
-                                        blockManager.dragStop(false);
                                       }
+                                      blockManager.dragStop(false);
                                     }}
                                   >
                                   </div>
