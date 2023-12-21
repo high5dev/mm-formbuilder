@@ -45,13 +45,17 @@ export default function Index({store, isOpen, toggle}) {
         <ModalBody className="d-flex justify-content-between">
             <Input type='text' value={name} onChange={onChange}/>
         </ModalBody>
-        <ModalFooter className="d-flex justify-content-between">
-          <Button color="primary" className="add-todo-item me-1" onClick={(e)=>renameWebsite()}>
-             Ok
-          </Button>
-          <Button color="success" onClick={(e)=>_toggle()}>
-            Cancel
-          </Button>
+        <ModalFooter className="d-flex">
+          <div>
+            <Button color="btn btn-primary" className="add-todo-item me-1" onClick={(e)=>renameWebsite()}>
+              Save
+            </Button>
+          </div>
+          <div>
+            <Button color="btn btn-outline-danger" onClick={(e)=>_toggle()}>
+              Cancel
+            </Button>
+          </div>
         </ModalFooter>
       </Modal>
     </>

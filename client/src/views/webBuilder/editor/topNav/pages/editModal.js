@@ -62,13 +62,17 @@ export default function Index({ store, isOpen, selectedPage, toggle}) {
         <ModalBody className="d-flex justify-content-between">
             <Input type='text' value={pageName} onChange={onChange}/>
         </ModalBody>
-        <ModalFooter className="d-flex justify-content-between">
-          <Button color="primary" className="add-todo-item me-1" onClick={(e)=>updateName(selectedPage)}>
-             Ok
-          </Button>
-          <Button color="success" onClick={(e)=>_toggle()}>
-            Cancel
-          </Button>
+        <ModalFooter className="d-flex">
+          <div>
+            <Button color="btn btn-primary" className="add-todo-item me-1" onClick={(e)=>updateName(selectedPage)} style={{width:'90px'}}>
+              Save
+            </Button>
+          </div>
+          <div>
+            <Button color="btn btn-outline-danger" onClick={(e)=>_toggle()} style={{width:'90px'}}>
+              Cancel
+            </Button>
+          </div>
         </ModalFooter>
       </Modal>
     </>
