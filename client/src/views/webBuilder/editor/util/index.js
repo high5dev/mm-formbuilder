@@ -326,16 +326,16 @@ export const menu = [
           }
         ]
       },
-      {
-        menu: 'Product Page',
-        data: [
-          {
-            id: 'productpage',
-            title: 'Product Page',
-            description: 'Make shopping easier by letting customers shop products in their currency.',
-          }
-        ]
-      },
+      // {
+      //   menu: 'Product Page',
+      //   data: [
+      //     {
+      //       id: 'productpage',
+      //       title: 'Product Page',
+      //       description: 'Make shopping easier by letting customers shop products in their currency.',
+      //     }
+      //   ]
+      // },
       // {
       //   menu: 'Cart Page',
       //   data: [
