@@ -706,7 +706,18 @@
   border: 1px solid gray !important;
   border-radius: 3px;
 }
-
+.rdw-editor-toolbar {
+  padding: 6px 5px 0;
+  border-radius: 2px;
+  border: 1px solid lightgray;
+  background: white;}
+.rdw-editor-main {
+  height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+  border: 1px solid lightgray;
+  border-top: none;
+}
 .post-description {
   padding: 10px;
   border: 1px solid lightgray;
