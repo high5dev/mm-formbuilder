@@ -3,6 +3,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import { Bold, X, Trash2, Check, ChevronRight} from 'react-feather';
 import { RiQuestionMark } from 'react-icons/ri';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import {
   Button,
@@ -745,142 +746,37 @@ export default function Editor({
 
       // Add custom commands
       gjsEditor.Commands.add('save-component', editor => {
-        const saveModalElement = document.createElement('div');
-        saveModalElement.className = "save-component-modal d-flex flex-column align-items-center";
-  
-        saveModalElement.innerHTML = `
-          <div class="d-flex w-100">
-            <div class="w-50 p-1">
-              <h5>Main menu</h5>
-              <select class="select-main-menu w-100">
-                ${menu.map((e, idx) => {
-        if (idx !== 0)
-          return (
-            `<option class="main-menu-option" value=${e.id}>${e.name}</option>`
-          );
-      })
-        }
-              </select>
-            </div>
-            
-            <div class="w-50  p-1">
-              <h5>Sub menu</h5>
-              <select class="select-sub-menu w-100">
-                ${menu[1].subMenu.map((e, idx) => {
-          return (
-            `<option class="sub-menu-option" value=${e.id}>${e.name}</option>`
-          );
-        })
-        }
-              </select >
-            </div>
-          </div>
-          
-          <div  class="w-100 p-1">
-            <h5>Category</h5>
-            <input class="input-category w-100" type="text" placeholder="Insert category..."/>
-            <div class="category-options"></div>
-          </div>
-  
-          <button class="btn btn-primary mb-1 save-component-btn">Save</button>
-        `;
-  
-        const mainMenuDropDown = saveModalElement.querySelector('.select-main-menu');
-        const subMenuSelect = saveModalElement.querySelector('.select-sub-menu');
-        const categoryInput = saveModalElement.querySelector('.input-category');
-        const saveComponentBtn = saveModalElement.querySelector('.save-component-btn');
-        const categoryOptions = saveModalElement.querySelector('.category-options');
-  
-        let mainMenu = menu[0].id;
-        let subMenu = menu[0].subMenu?.id || '';
-        let category = '';
-        let existedCategories = [];
-        let tempCategories = [];
-  
-        getCategoriesByMenu({mainMenu, subMenu}).then((res) => {
-          existedCategories = res.data.data;
-        });
-  
-        mainMenuDropDown.addEventListener('change', (ev) => {
-          mainMenu = ev.target.value;
-          const submenuData = menu.find(e => e.id === ev.target.value).subMenu;      
-          subMenu = submenuData[0]?.id || '';
-  
-          getCategoriesByMenu({mainMenu, subMenu}).then((res) => {
-            existedCategories = res.data.data;
-          });
-  
-          const childrenLength = subMenuSelect.childNodes.length;
-          for (let i = 0 ; i < childrenLength; i++) {
-            subMenuSelect.removeChild(subMenuSelect.firstChild);
-          }
-  
-          submenuData.map(e => {
-            const newOption = document.createElement('option');
-            newOption.className = "sub-menu-option";
-            newOption.value = e.id;
-            newOption.innerText = e.name;
-            subMenuSelect.append(newOption);
-          })
-        });
-  
-        subMenuSelect.addEventListener('change', (ev) => {
-          subMenu = ev.target.value;
-          getCategoriesByMenu({mainMenu, subMenu}).then((res) => {
-            existedCategories = res.data.data;
-          });
-        });
-  
-        categoryInput.addEventListener('input', (ev) => {
-          category = ev.target.value;
-          tempCategories = [];
-          existedCategories.map((e) => {
-            if (e.name.includes(category)) tempCategories.push(e);
-          });
-  
-          const childrenLength = categoryOptions.childNodes.length;
-          for (let i = 0 ; i < childrenLength; i++) {
-            categoryOptions.removeChild(categoryOptions.firstChild);
-          }
-  
-          tempCategories.map(e => {
-            const newOption = document.createElement('option');
-            newOption.className = "category-option ps-1";
-            newOption.value = e.name;
-            newOption.innerText = e.name;
-            categoryOptions.append(newOption);
-          })
-        });
-  
-        saveComponentBtn.addEventListener('click', () => {
-          if (!mainMenu) {
-            alert('Please select main menu.');
-            return;
-          }
-  
-          if (!category) {
-            alert('Please input or select a category.');
-            return;
-          }
-  
+     
+      Swal.fire({
+        title: 'Save component',
+        text: 'Are you sure you want to save this component into assets?',
+        // icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Save',
+        cancelButtonText: 'Cancel',
+        customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-outline-primary ms-1'
+        },
+        buttonsStyling: false
+      }).then((result) => {
+        if (result.isConfirmed) {
           const selectedCmp = editor.getSelected();
           htmlToImage.toPng(selectedCmp.getEl()).then((dataUrl) => {
             const html = selectedCmp.toHTML();
             const css = editor.CodeManager.getCode(selectedCmp, 'css', { cssc: editor.CssComposer });
-  
+            const mainMenu='assets';
+            const subMenu='assets';
+            const category='assets';
             dispatch(createWebElementAction({mainMenu, subMenu, category, html: `${html}<style>${css}</style>`, imageUrl: dataUrl})).then((res) => {
               editor.Modal.close();
             });
           });
-          
-        });
-  
-        editor.Modal.open({
-          title: 'Save component', // string | HTMLElement
-          content: saveModalElement, // string | HTMLElement
-        });
+        }
       });
-
+    })
       gjsEditor.Commands.add('connect-collection', geditor => {
         setConnectData({...connectData, isOpen: true});
       });
@@ -1183,9 +1079,6 @@ export default function Editor({
           else{
             firstChild.className+='repeater';
           }
-          if(firstChild.style.display!='grid'){
-            firstChild.style.display='grid';
-          }
           const elements=firstChild.children;
           if(elements && elements.length>0){
             for(let i=0; i<elements.length;i++){
@@ -1262,9 +1155,9 @@ export default function Editor({
           else{
             firstChild.className='gallery';
           }
-          if(firstChild.style.display!='grid'){
-            firstChild.style.display='grid';
-          }
+          // if(firstChild.style.display!='grid'){
+          //   firstChild.style.display='grid';
+          // }
           const elements=firstChild.children;
           if(elements && elements.length>0){
             for(let i=0; i<elements.length;i++){
@@ -1459,6 +1352,8 @@ export default function Editor({
                               const categories = [];
                               const tempBlocks = [];
                               editor?.BlockManager.blocks.map((e) => {
+                                console.log('*************', e)
+                                console.log('element========', `${sidebarData.menu.id}-${sub.id}`);
                                 if (e.get('menu') === `${sidebarData.menu.id}-${sub.id}` && categories.findIndex(c => c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`) === -1) {
                                   categories.push(`${sidebarData.menu.id}-${sub.id}-${e.get('label')}`);
                                   tempBlocks.push(e);
