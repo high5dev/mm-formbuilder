@@ -74,6 +74,10 @@ const WebBuilderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "form-automations",
     },
+    addedCms: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

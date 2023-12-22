@@ -20,6 +20,7 @@ const {
   deletePage,
   getPage,
   getTemplates,
+  createDynamicPage,
 } = require("../controllers/webBuilder");
 //web builder
 router.get("/website/:id", isAuthenticated, getWebsite);
@@ -35,6 +36,7 @@ router.get("/preview-page/",  isAuthenticated, getPreviewPage);
 //page
 router.post("/create-page", isAuthenticated, createPage);
 router.post("/create-shop-pages", isAuthenticated, createShopPages);
+router.post("/create-dynamic-page", isAuthenticated, createDynamicPage);
 router.put("/update/:id", isAuthenticated, updatePage);
 router.put("/publish/:id", isAuthenticated, publishWebsite);
 router.put("/update-page/:id", isAuthenticated, updatePageName);

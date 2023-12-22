@@ -29,6 +29,7 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, getProduct
   }, [store.webDatasets]);
 
   useEffect(() => {
+    console.log('ccid------------------', selectedCmp, store.webConnections);
     const connectedCon = store.webConnections.find(c => c.componentId === selectedCmp?.ccid && c.websiteId === store?.form?._id);
     if (connectedCon) {
       const originDataset = store.webDatasets.find(ds => ds._id === connectedCon.datasetId);
@@ -270,6 +271,7 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, getProduct
                               if (selectedCmp?.attributes.type === 'repeater') {
                                 for (let j = 0; j < repeaterChildCmps.length; j++) {
                                   repeaterChildCmps[j][idx].setAttributes({src: selectedCollection.values[j] ? selectedCollection.values[j][connect.connectedField] || '' : ''});
+                                  repeaterChildCmps[j][idx].attributes.src = selectedCollection.values[j] ? selectedCollection.values[j][connect.connectedField] || '' : '';
                                 }
                               } else {
                                 // modelsToConnect[idx].setAttributes({src: 'https://i.ibb.co/tm0rJ2c/youtube-1.png'});

@@ -92,6 +92,10 @@ export const createShopPages=(payload) => {
   return API.post('/web-builder/create-shop-pages', payload);
 }
 
+export const createDynamicPage=(payload) => {
+  return API.post('/web-builder/create-dynamic-page', payload);
+}
+
 export const getPage = (id) => {
   return API.get('/web-builder/page/' + id);  
 };
@@ -296,7 +300,7 @@ export const updateWebCollection = (id, payload) => {
   return API.post(`/web-builder-cms/collection/update/${id}`, payload);
 }
 
-export const deleteWebCollection = (id, payload) => {
+export const deleteWebCollection = (id) => {
   return API.delete(`/web-builder-cms/collection/delete/${id}`);
 }
 
@@ -347,6 +351,10 @@ export const getConnectsByWebsite = (id) => {
 
 export const createOrUpdateConnect = (payload) => {
   return API.post(`/web-builder-cms/connection/create-update`, payload);
+}
+
+export const createMultipleConnects = (payload) => {
+  return API.post(`/web-builder-cms/connection/create-multiple`, payload);
 }
 
 export const deleteConnect = (id) => {

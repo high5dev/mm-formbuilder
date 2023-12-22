@@ -36,6 +36,7 @@ exports.getCollections = asyncHandler(async (req, res) => {
       userId: mongoose.Types.ObjectId(userId),
       organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
       websiteId: mongoose.Types.ObjectId(websiteId),
+      isDelete: false,
     });
 
     res.status(200).json({ success: true, data: collections });
@@ -59,9 +60,8 @@ exports.deleteCollection = asyncHandler(async (req, res) => {
   let { id } = req.params;
   try {
     id = mongoose.Types.ObjectId(id);
-    const deletedCollection = await WebSiteCollection.findByIdAndUpdate(id, { isDelete: true });
-
-    res.status(200).json({ success: true });
+    const deletedCollection = await WebSiteCollection.findByIdAndUpdate(id, { isDelete: true }, {new: true});
+    res.status(200).json({ success: true, data: deletedCollection });
   } catch (err) {
     res.send({ msg: err.message.replace(/\'/g, ""), success: false });
   }
@@ -174,7 +174,15 @@ exports.createOrUpdateConnection = asyncHandler(async (req, res) => {
         userId: mongoose.Types.ObjectId(userId),
         websiteId: mongoose.Types.ObjectId(websiteId),
         componentId,
-      }, payload, {new: true});
+      },
+      {
+        ...payload,
+        userId: mongoose.Types.ObjectId(userId),
+        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+        websiteId: mongoose.Types.ObjectId(websiteId),
+        datasetId: mongoose.Types.ObjectId(datasetId),
+      },
+      {new: true});
     } else {
       connection = await WebSiteConnection.create({
         ...payload,
@@ -186,6 +194,30 @@ exports.createOrUpdateConnection = asyncHandler(async (req, res) => {
     }
 
     res.status(200).json({ success: true, data: connection });
+  } catch (err) {
+    res.send({ msg: err.message.replace(/\'/g, ""), success: false });
+  }
+});
+
+exports.createMultipleConnection = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { organization } = req.headers;
+  const payloads = req.body;
+  const tempPayloads = [];
+  
+  try {
+    payloads.map((payload) => {
+      tempPayloads.push({
+        ...payload,
+        userId: mongoose.Types.ObjectId(userId),
+        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+        websiteId: mongoose.Types.ObjectId(payload.websiteId),
+        datasetId: mongoose.Types.ObjectId(payload.datasetId),
+      })
+    });
+
+    const result = await WebSiteConnection.insertMany(tempPayloads);
+    res.status(200).json({ success: true, data: result });
   } catch (err) {
     res.send({ msg: err.message.replace(/\'/g, ""), success: false });
   }
