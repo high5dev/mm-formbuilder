@@ -92,7 +92,12 @@ export const menu = [
     id: 'assets',
     name: 'Assets',
     icon: <MdOutlineBrokenImage size={24} color={'#585858'} />,
-    subMenu: [],
+    subMenu: [
+      {
+        id:'assets',
+        name:'Assets'
+      }
+    ],
   },
   {
     id: 'compositions',
