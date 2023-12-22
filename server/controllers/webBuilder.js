@@ -422,7 +422,7 @@ exports.editWebsite = asyncHandler(async (req, res) => {
   try {
     const Obj=req.body;
     id = mongoose.Types.ObjectId(id);
-    const data = await WebBuilder.findOneAndUpdate({ _id: id}, Obj);
+    const data = await WebBuilder.findOneAndUpdate({ _id: id}, Obj, {new: true});
     console.log('edited data', data);
     if (data) {
       return res.send({ success: true, data });
@@ -565,6 +565,23 @@ exports.createPage = asyncHandler(async (req, res) => {
     const newPage = await page.save();
     const blankPageData = "<body></body><style></style>"
     await googleCloudStorageWebBuilder.createAndUpdatePage(`${id}/${newPage._id}`, blankPageData);
+    return res.status(200).json({ success: true, data:newPage });
+  } catch (err) {
+    res.send({ msg: "error" });
+  }
+});
+
+exports.createDynamicPage = asyncHandler(async (req, res) => {
+  const {id, pageData, html, style} = req.body;
+  try {
+    const page = new WebPage({
+      ...pageData,
+      userId: mongoose.Types.ObjectId(req.user._id),
+      websiteId: mongoose.Types.ObjectId(id),
+    });
+    const newPage = await page.save();
+    const pageContent = `<body>${html}</body>${style}`;
+    await googleCloudStorageWebBuilder.createAndUpdatePage(`${id}/${newPage._id}`, pageContent);
     return res.status(200).json({ success: true, data:newPage });
   } catch (err) {
     res.send({ msg: "error" });

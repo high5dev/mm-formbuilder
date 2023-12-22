@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Eye, Save, X, ChevronDown, MoreHorizontal, Trash2, PlusSquare, Plus } from 'react-feather';
-import { BiMobile } from 'react-icons/bi';
+import { BiListPlus, BiMobile } from 'react-icons/bi';
 import { FaBox, FaPaintBrush } from 'react-icons/fa';
 import { FiSettings } from 'react-icons/fi';
 import {
@@ -77,6 +77,7 @@ export default function MainNav({
   selectedMainNav,
   setSelectedMainNav,
   setRoleMdl,
+  viewCMSMenu,
 }) {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -310,17 +311,28 @@ export default function MainNav({
                   Pages
                 </UncontrolledTooltip>
               </span>
-              <span className="hover-bg">
-                <MdOutlineDownloading
-                  size={26}
-                  color={'black'}
-                  id="import"
-                  onClick={(e) => handleImport(e)}
-                />
-                <UncontrolledTooltip placement="bottom" target="import">
-                  Import
+              <span className="hover-bg" onClick={(e)=>{
+                  setSelectedMainNav('cms');
+                  setAddSideBarOpen(true);
+               }}>
+                <MdOutlineNewspaper size={24} color={'black'} id="cms" />
+                <UncontrolledTooltip placement="bottom" target="cms">
+                  CMS
                 </UncontrolledTooltip>
               </span>
+              {
+                store?.form?.addedCms && <span className="hover-bg">
+                  <MdOutlineDownloading
+                    size={26}
+                    color={'black'}
+                    id="import"
+                    onClick={(e) => handleImport(e)}
+                  />
+                  <UncontrolledTooltip placement="bottom" target="import">
+                    Import
+                  </UncontrolledTooltip>
+                </span>
+              }
               <span className="hover-bg">
                 <Trash2 size={24} color={'black'} id="trash2" onClick={handleClear} />
                 <UncontrolledTooltip placement="bottom" target="trash2">
@@ -361,6 +373,17 @@ export default function MainNav({
               Pages
             </UncontrolledTooltip>
           </span>
+          {
+            store?.form?.addedCms && <span className="hover-bg" onClick={(e)=>{
+                setSelectedMainNav('cms');
+                setAddSideBarOpen(true);
+              }}>
+              <MdOutlineNewspaper size={24} color={'black'} id="cms" />
+              <UncontrolledTooltip placement="bottom" target="cms">
+                CMS
+              </UncontrolledTooltip>
+            </span>
+          }
           <span className="hover-bg feature-hide">
             <MdOutlineDownloading
               size={26}
@@ -379,7 +402,7 @@ export default function MainNav({
             </UncontrolledTooltip>
           </span>
           <span className="hover-bg feature-hide" onClick={() => { handleAddElement() }}>
-            <PlusSquare size={26} color={'black'} id="add-element" />
+            <BiListPlus size={26} color={'black'} id="add-element" />
             <UncontrolledTooltip placement="bottom" target="add-element">
               Add Element
             </UncontrolledTooltip>
