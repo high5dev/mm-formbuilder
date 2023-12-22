@@ -674,6 +674,9 @@ export default function Index({store, toggle, page, saveFormBlock}) {
       //   }
       // }
     })
+    form_gjsEditor.on('load', (model)=>{
+      form_gjsEditor.Components.clear()
+    })
     if(store.childForm && store.childForm.formPages){
       setCurrentFormPage(store.childForm.formPages[0]);
     }
