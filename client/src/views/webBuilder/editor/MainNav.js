@@ -465,7 +465,7 @@ export default function MainNav({
             </UncontrolledTooltip>
           </span>
           <div className={'w-100 d-flex justify-content-around align-items-center ' + (showZoomIcons ? 'zoom-hide' : '')}>
-            <div className='d-flex'>
+            {/* <div className='d-flex'>
               <span className="menu-icon">
                 <MdWorkspacesOutline size={24} color={'black'} id="global" />
                 <UncontrolledTooltip placement="bottom" target="global">
@@ -484,7 +484,7 @@ export default function MainNav({
                   CMS
                 </UncontrolledTooltip>
               </span>
-            </div>
+            </div> */}
             <div className='d-flex'>
               <span className="menu-icon">
                 <FaPaintBrush size={24} color={'black'} id="styles" onClick={(e) => {
