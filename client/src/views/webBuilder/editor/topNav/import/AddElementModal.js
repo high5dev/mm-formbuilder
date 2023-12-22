@@ -88,22 +88,26 @@ const AddElementModal = ({ editor, setEditor, openAddElementMdl, setOpenAddEleme
   };
 
   const saveNewElement = () => {
-    const editorBody = editor.Canvas.getBody();
-    const newElement = document.createElement('div');
-    const currentTime = new Date().getTime();
-    newElement.className = `created-new-element-${currentTime}`;
-    newElement.innerHTML = code;
-    editorBody.appendChild(newElement);
-    const lastChild = editorBody.lastChild;
-    setTimeout(() => {
-      htmlToImage.toPng(lastChild).then((dataUrl) => {
-        dispatch(createWebElementAction({mainMenu: selectedMenu?.value || '', subMenu: selectedSubMenu?.value || '', category, html: code, imageUrl: dataUrl})).then((res) => {
-          lastChild.remove();
-          setEditor(editor);
-          setOpenAddElementMdl(false);
+      const editorBody = editor.Canvas.getBody();
+      const newElement = document.createElement('div');
+      const currentTime = new Date().getTime();
+      newElement.className = `created-new-element-${currentTime}`;
+      newElement.innerHTML = code;
+      if (selectedMenu?.value === 'decorative') {
+        newElement.style.width = 'fit-content';
+        newElement.style.height = 'fit-content';
+      }
+      editorBody.appendChild(newElement);
+      const lastChild = editorBody.lastChild;
+      setTimeout(() => {
+        htmlToImage.toPng(lastChild).then((dataUrl) => {
+          dispatch(createWebElementAction({mainMenu: selectedMenu?.value || '', subMenu: selectedSubMenu?.value || '', category, html: code, imageUrl: dataUrl})).then((res) => {
+            lastChild.remove();
+            setEditor(editor);
+            setOpenAddElementMdl(false);
+          });
         });
-      });
-    }, 500);
+      }, 500);
   };
 
   return (

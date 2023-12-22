@@ -1344,7 +1344,77 @@ export default function Editor({
                       )
                     }
                     {
-                      sidebarData.menu.id != 'quick-add' && sidebarData.menu.id != 'blog' && sidebarData.menu.id !== 'cms' && sidebarData.menu.id !== 'store' && (
+                      sidebarData.menu.id === 'decorative' && (
+                        <div className='submenu-and-element d-flex'>
+                          <div className="submenu-list">
+                            {
+                              sidebarData?.menu?.subMenu?.map((sub) => {
+                                const categories = [];
+                                const tempBlocks = [];
+                                editor?.BlockManager.blocks.map((e) => {
+                                  if (e.get('menu') === `${sidebarData.menu.id}-${sub.id}` && categories.findIndex(c => c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`) === -1) {
+                                    categories.push(`${sidebarData.menu.id}-${sub.id}-${e.get('label')}`);
+                                    tempBlocks.push(e);
+                                  }
+                                });
+                                
+                                const returnComponent = <>
+                                  <h5 className='submenu-item'>{sub.name}</h5>
+                                  {
+                                    tempBlocks.map((b, ix) => {
+                                      return (
+                                        <div
+                                              key={ix}
+                                          className={selectedCategory === `${sidebarData.menu.id}-${sub.id}-${b.get('label')}` ? 'selected-submenu-category' : 'submenu-category'}
+                                          onClick={() => {setSelectedCategory(`${sidebarData.menu.id}-${sub.id}-${b.get('label')}`)}}
+                                          >
+                                          {b.get('label')}
+                                        </div>
+                                      );
+                                    })
+                                  }
+                                </>
+                                return returnComponent;
+                              })
+                            }
+                          </div>
+                          <div className="element-container">
+                            <div style={{width: 300, display: 'flex', flexWrap: 'wrap'}}>
+                              {
+                                blockManager?.blocks?.filter(e => e.get('category').id === selectedCategory).map((b, ix) => {
+                                  return (
+                                    <div className="element" style={{width: 'fit-content', height: 'fit-content', margin: 0, padding: 5}} key={ix}>
+                                      <img width="50" height="50" src={b.get('media')} />
+                                      <div
+                                        draggable
+                                        onDragStart={(e) => {
+                                          e.stopPropagation();
+                                          blockManager.dragStart(b, e.nativeEvent);
+                                        }}
+                                        onDragEnd={(e) => {
+                                          e.stopPropagation();
+                                          if(b.get('label')==='New Form'){
+                                            createForm();
+                                            blockManager.dragStop(false);
+                                          }
+                                          if(b.get('label')==='Add Existing Form'){
+                                            setAddFormMdl(true);
+                                            blockManager.dragStop(false);
+                                          }
+                                      
+                                        }}
+                                      >
+                                      </div>
+                                    </div>);
+                                })
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    }
+                    {
+                      sidebarData.menu.id !== 'decorative' && sidebarData.menu.id != 'quick-add' && sidebarData.menu.id != 'blog' && sidebarData.menu.id !== 'cms' && sidebarData.menu.id !== 'store' && (
                       <div className='submenu-and-element d-flex'>
                         <div className="submenu-list">
                           {
