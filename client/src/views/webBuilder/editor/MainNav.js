@@ -227,23 +227,18 @@ export default function MainNav({
               </DropdownToggle>
               <DropdownMenu container="body">
                 <DropdownItem tag="span" className="w-100">
-                  {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
                   <div className="d-flex align-items-center">
                     <span className="">Zoom In</span>
                     <span className="ms-3 font-small-2">Ctrl++</span>
                   </div>
                 </DropdownItem>
                 <DropdownItem tag="span" className="w-100">
-                  {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
                   <div className="d-flex align-items-center">
                     <span className="align-middle">Zoom Out</span>
                     <span className="ms-3 font-small-2">Ctrl--</span>
                   </div>
                 </DropdownItem>
               </DropdownMenu>
-              {/* <div className="menu-item">
-                <span>Site</span>
-              </div> */}
             </UncontrolledDropdown>
             <UncontrolledDropdown style={{ cursor: 'pointer' }}>
               <DropdownToggle tag="div" className="btn btn-sm hover-effect text-white">
