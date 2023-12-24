@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const WebBlogSchema = new mongoose.Schema(
+const WebBuilderBlogSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -56,4 +56,4 @@ const WebBlogSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("web-blog", WebBlogSchema);
+module.exports = mongoose.model("webbuilder-blog", WebBuilderBlogSchema);

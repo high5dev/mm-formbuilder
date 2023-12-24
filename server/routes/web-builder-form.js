@@ -13,7 +13,7 @@ const {
  deleteFormPage,
  getFormPage,
  uploadFile
-} = require("../controllers/form");
+} = require("../controllers/webBuilderForm");
 //form builder
 router.get("/form/:id", isAuthenticated, getForm);
 router.post('/fileupload/', isAuthenticated, singleUploadControl, uploadFile);

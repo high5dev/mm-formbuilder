@@ -7,7 +7,7 @@ const {
  getWebsiteEntries,
  editWebsiteEntry,
  deleteWebsiteEntry
-} = require("../controllers/webEntry");
+} = require("../controllers/webBuilderFormEntry");
 //form builder
 router.post("/create", createWebsiteEntry);
 router.get("/dataset/:id", isAuthenticated, getWebsiteEntry);

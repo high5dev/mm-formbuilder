@@ -1,7 +1,7 @@
 // declare mongoose
 const mongoose = require("mongoose");
 
-const FormSchema = new mongoose.Schema(
+const WebBuilderFormSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Types.ObjectId,
@@ -54,4 +54,4 @@ const FormSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("form", FormSchema);
+module.exports = mongoose.model("webbuilderform", WebBuilderFormSchema);

@@ -3,7 +3,7 @@ const { default: mongoose } = require("mongoose");
 const asyncHandler = require("express-async-handler");
 const {
   WebsiteEntry, 
-  Form
+  WebBuilderForm
 } = require("../models/index/index");
 
 exports.createWebsiteEntry = asyncHandler(async (req, res) => {
@@ -86,11 +86,11 @@ exports.getWebsiteEntry= asyncHandler(async(req, res) =>{
         _id: mongoose.Types.ObjectId(id),
         isDelete: false
       };
-      const data = await Form.aggregate([
+      const data = await WebBuilderForm.aggregate([
         {$match: query},
         {
           $lookup: {
-            from: "website-entries",
+            from: "webbuilder-entries",
             localField: "_id",
             foreignField: "formId",
             as: "entries",

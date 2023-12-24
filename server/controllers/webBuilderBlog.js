@@ -3,7 +3,7 @@ const { default: mongoose } = require("mongoose");
 const asyncHandler = require("express-async-handler");
 const GoogleCloudStorage = require("../Utilities/googleCloudStorage");
 const {
- WebBlog,
+ WebBuilderBlog,
  WebBuilder
 } = require("../models/index/index");
 const {postMoment} = require('../Utilities/timeHandler');
@@ -41,7 +41,7 @@ exports.createBlog = asyncHandler(async (req, res) => {
           ? user.organizations.find((x) => x.organizationId.toString() === organization).userType
           : user.userType,
     };
-    const data = await WebBlog.create(blogData);
+    const data = await WebBuilderBlog.create(blogData);
     const blogDate=postMoment(data.createdAt);
     const pageData=`
     <head>
@@ -111,7 +111,7 @@ exports.createBlog = asyncHandler(async (req, res) => {
 exports.getPublishBlogPage = asyncHandler(async (req, res) => {
   let {id, blogId} = req.query;
   try {
-    const page = await WebBlog.findOne({_id: mongoose.Types.ObjectId(blogId)});
+    const page = await WebBuilderBlog.findOne({_id: mongoose.Types.ObjectId(blogId)});
     const data = await WebBuilder.findOne({_id: mongoose.Types.ObjectId(page.websiteId)});
     if(data){
       const result=await googleCloudStorageWebBuilder.readPage(`${data._id}/${page._id}`);
@@ -125,7 +125,7 @@ exports.getPublishBlogPage = asyncHandler(async (req, res) => {
 exports.getPreviewBlogPage = asyncHandler(async (req, res) => {
   let {id, blogId} = req.query;
   try {
-    const page = await WebBlog.findOne({_id: mongoose.Types.ObjectId(blogId)});
+    const page = await WebBuilderBlog.findOne({_id: mongoose.Types.ObjectId(blogId)});
     const data = await WebBuilder.findOne({_id: mongoose.Types.ObjectId(page.websiteId)});
     if(data){
       const result=await googleCloudStorageWebBuilder.readPage(`${data._id}/${page._id}`);
@@ -147,7 +147,7 @@ exports.getBlogs = asyncHandler(async (req, res) => {
           isDelete: false,
           websiteId:mongoose.Types.ObjectId(websiteId)
       };
-      const data = await WebBlog.aggregate([
+      const data = await WebBuilderBlog.aggregate([
         {$match: query},
         {
           $sort: {
@@ -165,7 +165,7 @@ exports.getBlogs = asyncHandler(async (req, res) => {
 exports.getBlog = asyncHandler(async(req, res) => {
   let { id } = req.params;
   try{
-    const data=await WebBlog.findOne({_id:mongoose.Types.ObjectId(id)});
+    const data=await WebBuilderBlog.findOne({_id:mongoose.Types.ObjectId(id)});
     if(data){
       return res.send({
         success:true,
@@ -182,7 +182,7 @@ exports.getBlog = asyncHandler(async(req, res) => {
   exports.deleteBlog = asyncHandler(async (req, res) => {
     let { id } = req.params;
     try{
-        const blogToDelete = await WebBlog.findByIdAndUpdate(id, { isDelete: true });
+        const blogToDelete = await WebBuilderBlog.findByIdAndUpdate(id, { isDelete: true });
         console.log('blogToDelete', blogToDelete);
         if(blogToDelete){
             res.status(200).json({ success: true });
@@ -204,7 +204,7 @@ exports.getBlog = asyncHandler(async(req, res) => {
             imageUrl = await GoogleCloudStorage.upload(req.file);
             payload={...this.deleteBlogpayload, imageUrl:imageUrl};
         };
-        const data = await WebBlog.findByIdAndUpdate({ _id: id}, payload,  {new: true});
+        const data = await WebBuilderBlog.findByIdAndUpdate({ _id: id}, payload,  {new: true});
         if(data){
             res.status(200).json({ success: true, data });
         }

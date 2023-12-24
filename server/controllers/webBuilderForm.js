@@ -3,8 +3,8 @@ const { default: mongoose } = require("mongoose");
 const asyncHandler = require("express-async-handler");
 const {
  Entry,
- Form,
- FormPage
+ WebBuilderForm,
+ WebBuilderFormPage
 } = require("../models/index/index");
 const googleCloudStorageWebBuilder = require("../Utilities/googleCloudStorageWebBuilder");
 
@@ -24,12 +24,12 @@ exports.createForm = asyncHandler(async (req, res) => {
         pageId:mongoose.Types.ObjectId(pageId),
         websiteId:mongoose.Types.ObjectId(websiteId)
       };
-    const form= await Form.create(formData);
+    const form= await WebBuilderForm.create(formData);
     const formPageData={
       formId:form._id,
       userId: mongoose.Types.ObjectId(req.user._id)
     };
-    const formPage=await FormPage.create(formPageData);
+    const formPage=await WebBuilderFormPage.create(formPageData);
     const blankPageData = "<body></body><style></style>"
     await googleCloudStorageWebBuilder.createAndUpdatePage(`${form._id}/${formPage._id}`, blankPageData);
     if(form){
@@ -61,11 +61,11 @@ exports.getForms = asyncHandler(async (req, res) => {
           organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
           isDelete: false,
       };
-      const data = await Form.aggregate([
+      const data = await WebBuilderForm.aggregate([
         {$match: query},
         {
           $lookup: {
-            from: "form-pages",
+            from: "webbuilderform-pages",
             localField: "_id",
             foreignField: "formId",
             as: "pageInfo",
@@ -83,7 +83,7 @@ exports.deleteForm = asyncHandler(async (req, res) => {
 let { id } = req.params;
 try {
     id = mongoose.Types.ObjectId(id);
-    await Form.findByIdAndUpdate(id, { isDelete: true });
+    await WebBuilderForm.findByIdAndUpdate(id, { isDelete: true });
     res.status(200).json({ success: true });
 } catch (err) {
     res.send({ msg: err.message.replace(/\'/g, ""), success: false });
@@ -98,8 +98,8 @@ exports.editForm = asyncHandler(async (req, res) => {
     delete Obj.currentPage;
     id = mongoose.Types.ObjectId(id);
     currentPage=mongoose.Types.ObjectId(currentPage);
-    const _page=await FormPage.findOne({_id: currentPage});
-    const data = await Form.findOneAndUpdate({ _id: id}, Obj, {new:true});
+    const _page=await WebBuilderFormPage.findOne({_id: currentPage});
+    const data = await WebBuilderForm.findOneAndUpdate({ _id: id}, Obj, {new:true});
     await googleCloudStorageWebBuilder.createAndUpdatePage(`${data._id}/${_page._id}`, `${html} <style>${css}</style>`);
     const page=await googleCloudStorageWebBuilder.readPage(`${data._id}/${_page._id}`);
     if (data) {
@@ -123,10 +123,8 @@ exports.getFormPage = asyncHandler(async (req, res) => {
     let {currentPage}=req.query;
     id = mongoose.Types.ObjectId(id);
     currentPage=mongoose.Types.ObjectId(currentPage);
-    console.log('id', id);
-    console.log('currentPage', currentPage);
-    const _page=await FormPage.findOne({_id: currentPage});
-    const data = await Form.findOne({_id:id});
+    const _page=await WebBuilderFormPage.findOne({_id: currentPage});
+    const data = await WebBuilderForm.findOne({_id:id});
     const page=await googleCloudStorageWebBuilder.readPage(`${data._id}/${_page._id}`);
     if (data) {
       return res.send({ 
@@ -146,7 +144,7 @@ exports.getFormPage = asyncHandler(async (req, res) => {
 exports.getForm= asyncHandler(async(req, res) =>{
     const {id} =req.params;
     try{
-      const data=await Form.findOne({_id:mongoose.Types.ObjectId(id)});
+      const data=await WebBuilderForm.findOne({_id:mongoose.Types.ObjectId(id)});
       if(data){
         return res.send({
           success: true,
@@ -162,8 +160,8 @@ exports.getForm= asyncHandler(async(req, res) =>{
 exports.getFormPreviewPage=asyncHandler(async(req, res) =>{
   let {id, pageId} = req.query;
   try {
-    const data = await Form.findOne({_id: id});
-    const page=await FormPage.findOne({_id:mongoose.Types.ObjectId(pageId)});
+    const data = await WebBuilderForm.findOne({_id: id});
+    const page=await WebBuilderFormPage.findOne({_id:mongoose.Types.ObjectId(pageId)});
     if(data){
       const result=await googleCloudStorageWebBuilder.readPage(`${data._id}/${page._id}`);
       return res.status(200).json({ success: true, data:result});
@@ -178,7 +176,7 @@ exports.getFormPreviewPage=asyncHandler(async(req, res) =>{
 exports.createFormPage = asyncHandler(async (req, res) => {
   const {formId} = req.body;
   try {
-    const page=new FormPage({
+    const page=new WebBuilderFormPage({
         formId:mongoose.Types.ObjectId(formId),
         userId: mongoose.Types.ObjectId(req.user._id)
     });
@@ -198,8 +196,8 @@ exports.createFormPage = asyncHandler(async (req, res) => {
 exports.deleteFormPage =asyncHandler(async(req, res) =>{
   let { id } = req.params;
   try {
-    const pageToDelete = await FormPage.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, {isDelete: true});
-    const data = await Form.findOne({_id: pageToDelete.formId});
+    const pageToDelete = await WebBuilderFormPage.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, {isDelete: true});
+    const data = await WebBuilderForm.findOne({_id: pageToDelete.formId});
     await googleCloudStorageWebBuilder.deletePage(`${data._id}/${pageToDelete._id}`);
     return res.status(200).json({ success: true, data:pageToDelete });
   } catch (err) {
