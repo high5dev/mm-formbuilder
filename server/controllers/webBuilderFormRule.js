@@ -2,11 +2,10 @@
 const { default: mongoose } = require("mongoose");
 const asyncHandler = require("express-async-handler");
 const {
- FormRule,
- Form
+ WebBuilderFormRule
 } = require("../models/index/index");
 
-exports.createFormRule = asyncHandler(async (req, res) => {
+exports.createWebBuilderFormRule = asyncHandler(async (req, res) => {
   try {
     const { organization } = req.headers;
     const user = req.user;
@@ -22,7 +21,7 @@ exports.createFormRule = asyncHandler(async (req, res) => {
         operators,
         output
       };
-    const data= await FormRule.create(formRule);
+    const data= await WebBuilderFormRule.create(formRule);
     if(data){
       return res.send({
         success:true,
@@ -39,7 +38,7 @@ exports.createFormRule = asyncHandler(async (req, res) => {
   }
 });
 
-exports.getFormRules = asyncHandler(async (req, res) => {
+exports.getWebBuilderFormRules = asyncHandler(async (req, res) => {
     try {
       const { organization } = req.headers;
       const user = req.user;
@@ -48,7 +47,7 @@ exports.getFormRules = asyncHandler(async (req, res) => {
           organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
           isDelete: false,
       };
-      const data = await FormRule.aggregate([
+      const data = await WebBuilderFormRule.aggregate([
         {$match: query}
       ]);
   
@@ -59,24 +58,22 @@ exports.getFormRules = asyncHandler(async (req, res) => {
   });
 
 
-exports.deleteFormRule = asyncHandler(async (req, res) => {
+exports.deleteWebBuilderFormRule = asyncHandler(async (req, res) => {
 let { id } = req.params;
 try {
     id = mongoose.Types.ObjectId(id);
-    await FormRule.findByIdAndUpdate(id, { isDelete: true });
+    await WebBuilderFormRule.findByIdAndUpdate(id, { isDelete: true });
     res.status(200).json({ success: true});
 } catch (err) {
     res.send({ msg: err.message.replace(/\'/g, ""), success: false });
 }
 });
 
-
-exports.editFormRule = asyncHandler(async (req, res) => {
+exports.editWebBuilderFormRule = asyncHandler(async (req, res) => {
   let { id } = req.params;
   try {
     const Obj=req.body;
-    const data=await FormRule.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, Obj, {new:true});
-    console.log('data', data.input); 
+    const data=await WebBuilderFormRule.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, Obj, {new:true});
       return res.send({ 
         success: true, 
         data: data
@@ -88,10 +85,10 @@ exports.editFormRule = asyncHandler(async (req, res) => {
   }
 });
 
-exports.getFormRule= asyncHandler(async(req, res) =>{
+exports.getWebBuilderFormRule= asyncHandler(async(req, res) =>{
     const {id} =req.params;
     try{
-      const data=await FormRule.findOne({_id:mongoose.Types.ObjectId(id)});
+      const data=await WebBuilderFormRule.findOne({_id:mongoose.Types.ObjectId(id)});
       if(data){
         return res.send({
           success: true,

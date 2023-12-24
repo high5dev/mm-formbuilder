@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const formRuleSchema = new mongoose.Schema(
+const webBuilderFormRuleSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Types.ObjectId,
@@ -18,7 +18,7 @@ const formRuleSchema = new mongoose.Schema(
     formId:{
       type:mongoose.Schema.Types.ObjectId,
       default:null,
-      ref:"forms"
+      ref:"webbuilderforms"
     },
     input: [
       {
@@ -90,4 +90,4 @@ const formRuleSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("form-rule", formRuleSchema);
+module.exports = mongoose.model("webbuilderform-rule", webBuilderFormRuleSchema);

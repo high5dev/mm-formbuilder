@@ -9,7 +9,7 @@ const {
   updateBlog,
   getPreviewBlogPage,
   getPublishBlogPage
-} = require("../controllers/webBlog");
+} = require("../controllers/webBuilderBlog");
 //web builder
 router.post("/create", isAuthenticated, singleUploadControl, createBlog);
 router.get("/blogs/:id", isAuthenticated, getBlogs);
