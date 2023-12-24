@@ -15,6 +15,7 @@ const {
   getConnectionsByWebsiteId,
   deleteConnection,
   multipleDeleteConnection,
+  createMultipleConnection,
 } = require("../controllers/webBuilderCms");
 
 router.post("/collection/create", isAuthenticated, createCollection);
@@ -28,6 +29,7 @@ router.get("/dataset/:id", isAuthenticated, getDatasetsByCollection);
 router.get("/all-datasets/:id", isAuthenticated, getAllDatasets);
 router.get("/connections-of-website/:id", isAuthenticated, getConnectionsByWebsiteId);
 router.post("/connection/create-update", isAuthenticated, createOrUpdateConnection);
+router.post("/connection/create-multiple", isAuthenticated, createMultipleConnection);
 router.delete("/connection/delete/:id", isAuthenticated, deleteConnection);
 router.post("/connection/multiple-delete", isAuthenticated, multipleDeleteConnection)
 

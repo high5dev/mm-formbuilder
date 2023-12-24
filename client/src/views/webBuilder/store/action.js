@@ -343,6 +343,18 @@ export const createPageAction = (payload) => async (dispatch) => {
   } catch (error) { }
 };
 
+export const createDynamicPageAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createDynamicPage(payload);
+    if (data?.success === true) {
+      toast.success('Page created successfully');
+    } else {
+      toast.error('Something went wrong! please try again');
+    }
+    return data.data;
+  } catch (error) { }
+};
+
 export const createShopPagesAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.createShopPages(payload);
@@ -842,6 +854,15 @@ export const updateWebCollectionAction = (id, payload) => async (dispatch) => {
   } catch (error) { }
 };
 
+export const deleteWebCollectionAction = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.deleteWebCollection(id);
+    if (data.success)
+      dispatch(getWebCollectionsAction(data.data.websiteId));
+    return data;
+  } catch (error) { }
+};
+
 export const getWebDatasetsAction = (collectionId) => async (dispatch) => {
   try {
     const { data } = await api.getWebDataset(collectionId);
@@ -937,6 +958,15 @@ export const createOrUpdateConnectionAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.createOrUpdateConnect(payload);
     dispatch(getConnectionsByWebsiteAction(data.data.websiteId));
+    return data;
+  } catch (error) { }
+};
+
+export const createMultiConnectionsAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createMultipleConnects(payload);
+    if (data.success)
+      dispatch(getConnectionsByWebsiteAction(data.data[0].websiteId));
     return data;
   } catch (error) { }
 };

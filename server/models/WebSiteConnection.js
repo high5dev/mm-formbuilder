@@ -35,6 +35,10 @@ const WebSiteConnectionSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    fieldIndex: {
+      type: Number,
+      default: 0,
+    },
     isDelete: {
       type: Boolean,
       default: false,
