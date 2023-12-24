@@ -1336,7 +1336,7 @@ export default function Editor({
               setSelectedCategory={setSelectedCategory}
             />
             <Collapse isOpen={sidebarData.isOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{height: '100%'}}>
-              <div>
+              <div style={{height: '100%', overflow: 'scroll'}}>
                 <div className="expanded-header">
                   <span className='me-1'>{sidebarData.menu.name === 'CMS' ? 'Add Content Elements' : sidebarData.menu.name}</span>
                   <div>
@@ -1744,26 +1744,25 @@ export default function Editor({
           </div>
         }
           
-        {
-          selectedMainNav === 'pages' &&
-          <Collapse isOpen={addSideBarOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{height: '100%'}}>
-            <div style={{height: '100%'}}>
-              <div className="sidebar-header px-1">
-                <span className="px-1 fs-5 fw-bolder text-black">{'Pages'}</span>
-                <span>
-                  <X
-                    size={20}
-                    onClick={(e) => {
-                      setAddSideBarOpen(false);
-                    }}
-                  />
-                </span>
-              </div>
-              <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} page={page} setPage={setPage}/>
+          {
+            selectedMainNav === 'pages' &&
+            <Collapse isOpen={addSideBarOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{height: '100%'}}>
+              <div style={{height: '100%', overflow: 'scroll'}}>
+                <div className="sidebar-header px-1">
+                  <span className="px-1 fs-5 fw-bolder text-black">{'Pages'}</span>
+                  <span>
+                    <X
+                      size={20}
+                      onClick={(e) => {
+                        setAddSideBarOpen(false);
+                      }}
+                    />
+                  </span>
+                </div>
+                <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} page={page} setPage={setPage}/>
             </div>
           </Collapse>
         }
-
         {
           selectedMainNav === 'cms' && 
           <Collapse isOpen={addSideBarOpen} horizontal={true} delay={{ show: 10, hide: 20 }} style={{height: '100%'}}>
