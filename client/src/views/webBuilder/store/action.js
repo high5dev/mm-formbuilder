@@ -223,8 +223,6 @@ export const getWebsiteEntryAction =(id) =>async(dispatch) =>{
     const {data} = await api.getWebsiteEntry(id);
     if (data?.success === true) {
       return data.data
-    } else {
-      toast.error('Something went wrong! please try again');
     }
   } catch (error) { }
 }
