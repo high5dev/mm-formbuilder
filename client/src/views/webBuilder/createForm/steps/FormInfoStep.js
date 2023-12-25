@@ -45,7 +45,7 @@ export default function FormInfoStep({ form, setForm, store, dispatch, stepper }
     dispatch(createWebBuilderAction({...form, clonedFrom: 'blank'})).then(res=>{
       if(res){
         localStorage.setItem('pageNum', 1);
-        history.push(`/form-funnel/create/${form?.formType}/${form.isTemplate===true?"template":"form"}/${res?._id}`);
+        history.push(`/webbuilder-funnel/create/${form?.formType}/${form.isTemplate===true?"template":"form"}/${res?._id}`);
       }
     })
    

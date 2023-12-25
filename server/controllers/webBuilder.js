@@ -7,7 +7,7 @@ const {
   User,
   Authenticate,
   WebPage,
-  WebBlog,
+  WebBuilderBlog,
   WebBuilderElementCategory,
   WebBuilderElement,
   WebSiteRole,
@@ -99,7 +99,7 @@ exports.createWebsite = asyncHandler(async (req, res) => {
               : user.userType,
           isTemplate:true
         };
-        const data = await WebBlog.create(blogData);
+        const data = await WebBuilderBlog.create(blogData);
         const blogDate=postMoment(data.createdAt);
         const pageData=`
           <head>

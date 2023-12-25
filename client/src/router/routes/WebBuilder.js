@@ -1,24 +1,24 @@
 import { lazy } from 'react';
 
-const FormBuilderRoutes = [
+const WebBuilderRoutes = [
   // FromBuilder
   {
-    path: '/form-funnel',
+    path: '/webbuilder-funnel',
     component: lazy(() => import('../../views/webBuilder')),
     exact: true
   },
   {
-    path: '/form-funnel/create/:type/:template/:id',
+    path: '/webbuilder-funnel/create/:type/:template/:id',
     component: lazy(() => import('../../views/webBuilder/createForm/SelectTemplate')),
     exact: true
   },
   {
-    path: '/form-funnel/form-setting/:id',
+    path: '/webbuilder-funnel/form-setting/:id',
     component: lazy(() => import('../../views/webBuilder/createDetail')),
     exact: true,
     appLayout: true,
     meta: {
-      navLink: '/form-funnel/form-setting'
+      navLink: '/webbuilder-funnel/form-setting'
     }
   },
   {
@@ -43,4 +43,4 @@ const FormBuilderRoutes = [
   }
 ];
 
-export default FormBuilderRoutes;
+export default WebBuilderRoutes;
