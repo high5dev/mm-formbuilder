@@ -7,7 +7,7 @@ const {
   User,
   Authenticate,
   WebPage,
-  WebBlog,
+  WebBuilderBlog,
   WebBuilderElementCategory,
   WebBuilderElement,
   WebSiteRole,
@@ -50,6 +50,7 @@ exports.createWebsite = asyncHandler(async (req, res) => {
           ? user.organizations.find((x) => x.organizationId.toString() === organization).userType
           : user.userType,
       };
+      console.log('webData=============', webData);
       const websiteData = await WebBuilder.create(webData);
       const {name, html, css, step, path}=formData[0];
       const page_path="/"+websiteData._id+"/"+name;
@@ -99,7 +100,7 @@ exports.createWebsite = asyncHandler(async (req, res) => {
               : user.userType,
           isTemplate:true
         };
-        const data = await WebBlog.create(blogData);
+        const data = await WebBuilderBlog.create(blogData);
         const blogDate=postMoment(data.createdAt);
         const pageData=`
           <head>
