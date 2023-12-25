@@ -861,17 +861,17 @@ export const webBuilderPlugin = (editor) => {
         tempCpt.append(component.clone(), {at: index})
       }
     }
-    if(component && !Array.isArray(component) && component.get('type')==='social-bar'){
-      let parentElement=component.getEl();
+    if(component && Array.isArray(component) && component[component.length-1].get('type')==='social-bar'){
+      let parentElement=component[component.length-1].getEl();
       let imageElements=parentElement.getElementsByTagName('img');
       let linkElements=parentElement.getElementsByTagName('a');
       let tempList=[];
-      for(let i=0; i<imageElements.length;i++){
+      for(let i=0; i<linkElements.length;i++){
           const _imageEl=imageElements[i]; 
           const item={name:_imageEl.alt, url:linkElements[i].href, image:_imageEl.src, type:'webaddress'};
           tempList.push(item);
       }
-      component.set('socialList', tempList);
+      component[component.length-1].set('socialList', tempList);
     }
   })
 

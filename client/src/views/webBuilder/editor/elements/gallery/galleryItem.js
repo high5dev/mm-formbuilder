@@ -4,17 +4,15 @@ let galleryItem = {
     model: {
       defaults: {
         tagName: 'div',
-        draggable: false,
-        droppable: false,
+        draggable: true,
+        droppable: true,
         attributes: { class: 'gallery-item'},
         components:(props) =>{
           return(
-            <a target="_blank" href="https://i.ibb.co/xM56xB3/image-large-3.png">
                <img src="https://i.ibb.co/xM56xB3/image-large-3.png" width='100' height='100'/>
-            </a>
           )
         },
-        styles: `.gallery-item {width:100px;height:100px; padding:3px}`,
+        styles: `.gallery-item {padding:3px}`,
         stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
         images:[],
         traits: [
@@ -52,17 +50,11 @@ let galleryItem = {
         const _element=comps.parent.getEl();
         const url=this.model.get('url');
         let images=_element.getElementsByTagName('img');
-        let links=_element.getElementsByTagName('a');
         for(let i=0; i<images.length;i++){
           const image=images[i];
           image.setAttribute('src', url);
         }
-        for(let i=0; i<links.length;i++){
-          const link=links[i];
-          link.setAttribute('href', url);
-        };
         const item=_element.innerHTML;
-        console.log('item', item);
         while (comps.length > 0) {
           comps.pop();
         };
