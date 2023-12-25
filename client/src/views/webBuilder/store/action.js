@@ -256,6 +256,7 @@ export const editWebsiteEntryAction =(id, payload) =>async(dispatch) =>{
 
 export const createWebBuilderAction = (payload) => async (dispatch) => {
   try {
+    console.log('payload========', payload)
     const { data } = await api.createWebBuilder(payload);
     const { websiteData, formData } = data.data;
     let _form_data = [];
