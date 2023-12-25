@@ -166,7 +166,7 @@ export default function Templates({
     delete payload.organizationId;
 
     dispatch(updateFormAction(store?.form?._id, payload)).then(res=>{
-      history.push(`/form-funnel/form-setting/${store?.form._id}`);
+      history.push(`/webbuilder-funnel/form-setting/${store?.form._id}`);
     })
     // dispatch(createFormAction(payload)).then((res) => {
     //   if (res._id) {
@@ -177,7 +177,7 @@ export default function Templates({
 
   const handleClickBlankTemplate = () => {
     setSelectedTemplate({ _id: 'blank' });
-    history.push(`/form-funnel/form-setting/${store?.form._id}`);
+    history.push(`/webbuilder-funnel/form-setting/${store?.form._id}`);
   };
 
   const itemAddToFavorite = (templateItem) => {

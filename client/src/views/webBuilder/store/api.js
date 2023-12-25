@@ -242,8 +242,8 @@ export const deleteFormEntry =(id) =>{
 }
 
 // get templates 
-export const getTemplates = () =>{
-  return API.get('/form-builder/templates');
+export const getWebBuilderTemplates = () =>{
+  return API.get('/web-builder/templates');
 }
 
 //form categories

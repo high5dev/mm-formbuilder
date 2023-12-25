@@ -266,11 +266,6 @@ export const createWebBuilderAction = (payload) => async (dispatch) => {
       formData: _form_data
     };
     dispatch(setFormReducer(form_data));
-    if (data?.success === true) {
-      toast.success('Form created successfully');
-    } else {
-      toast.error('Something went wrong! please try again');
-    }
     return form_data
   } catch (error) { }
 };
@@ -750,9 +745,9 @@ export const deleteFormEntryAction = (id, formId) => async (dispatch) => {
 };
 
 //------------ *** templates
-export const getTemplatesAction = () => async (dispatch) => {
+export const getWebBuilderTemplatesAction = () => async (dispatch) => {
   try {
-    const { data } = await api.getTemplates();
+    const { data } = await api.getWebBuilderTemplates();
     dispatch(setTemplatesReducer(data.data));
     return data?.data
   } catch (error) { }

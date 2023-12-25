@@ -8,7 +8,7 @@ import { ChevronRight } from 'react-feather';
 import Templates from './template/Templates';
 import CategorySidebar from '../CategorySidebar';
 
-import {  getFormCategoriesAction, getFormDataAction, getTemplatesAction } from '../store/action';
+import { getWebBuilderTemplatesAction } from '../store/action';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import 'shepherd.js/dist/css/shepherd.css';
@@ -52,21 +52,10 @@ const SelectTemplate = () => {
     }
   }, [tourStarted]);
   useEffect(()=>{
-    dispatch(getTemplatesAction())
-    dispatch(getFormCategoriesAction())
+    dispatch(getWebBuilderTemplatesAction())
     
   },[])
-  useEffect(()=>{
-    if(id){
-      dispatch(getFormDataAction(id))
-    }
-  },[id])
 
-//   useEffect(() => {
-//     if (store && store?.form?._id) {
-//       history.push(`/form-funnel/form-setting/${store?.form?._id}`);
-//     }
-//   }, [store.form]);
   useEffect(() => {
     if (store?.templates) {
       if (type) {
@@ -159,8 +148,7 @@ const SelectTemplate = () => {
                       setCategoryData={setCategoryData}
                       dispatch={dispatch}
                       template = {template}
-                    />
-                    
+                    />  
                   </div>
                 </div>
               </Col>
