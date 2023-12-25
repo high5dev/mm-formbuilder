@@ -9,61 +9,61 @@ export const createForm = (payload) => {
 //create child form
 
 export const createChildForm=(payload) => {
-  return API.post('/form/create', payload)
+  return API.post('/web-builder-form/create', payload)
 }
 
 export const updateChildForm =(id, payload) =>{
-  return API.put('/form/edit/'+id, payload)
+  return API.put('/web-builder-form/edit/'+id, payload)
 }
 
 export const getChildFormPage=(id, payload)=>{
-  return API.get('/form/page/'+id, {params:payload})
+  return API.get('/web-builder-form/page/'+id, {params:payload})
 }
 
 export const getChildForms =(id) =>{
-  return API.get(`/form/forms/${id}`);
+  return API.get(`/web-builder-form/forms/${id}`);
 }
 
 export const getChildForm =(id) =>{
-  return API.get(`/form/form/${id}`);
+  return API.get(`/web-builder-form/form/${id}`);
 }
 
 export const getChildFormPreviewPage =(payload) =>{
-  return API.get('/form/preview-page/',{params:payload});
+  return API.get('/web-builder-form/preview-page/',{params:payload});
 }
 
 export const uploadFile =(payload) =>{
-  return API.post('/form/fileupload', payload);
+  return API.post('/web-builder-form/fileupload', payload);
 }
 
 export const createFormPage =(payload) =>{
-  return API.post('/form/create-page', payload);
+  return API.post('/web-builder-form/create-page', payload);
 }
 
 export const deleteFormPage =(id) =>{
-  return API.delete(`/form/delete-page/${id}`)
+  return API.delete(`/web-builder-form/delete-page/${id}`)
 }
 
 export const getFormPage =(id) =>{
-  return API.get(`/form/page/${id}`)
+  return API.get(`/web-builder-form/page/${id}`)
 }
 
 //create form rule
 
 export const createFormRule =(payload) =>{
-  return API.post('/form-rule/create', payload)
+  return API.post('/web-builder-form-rule/create', payload)
 }
 
 export const deleteFormRule=(id) =>{
-  return API.delete(`/form-rule/delete/${id}`)
+  return API.delete(`/web-builder-form-rule/delete/${id}`)
 }
 
 export const updateFormRule =(id, payload) =>{
-  return API.put('/form-rule/edit/' + id, payload);
+  return API.put('/web-builder-form-rule/edit/' + id, payload);
 }
 
 export const createDataset=(payload)=>{
-  return API.post('/web-entry/create', payload);
+  return API.post('/web-builder-form-entry/create', payload);
 }
 //create webbuilder
 
@@ -90,6 +90,10 @@ export const createPage=(payload) => {
 
 export const createShopPages=(payload) => {
   return API.post('/web-builder/create-shop-pages', payload);
+}
+
+export const createDynamicPage=(payload) => {
+  return API.post('/web-builder/create-dynamic-page', payload);
 }
 
 export const getPage = (id) => {
@@ -154,45 +158,45 @@ export const addLeads = (id, payload) => {
 //web entry
 
 export const getWebsiteEntry =(id) =>{
-  return API.get('/web-entry/dataset/'+id);
+  return API.get('/web-builder-form-entry/dataset/'+id);
 }
 
 export const deleteWebsiteEntry =(id) =>{
-  return API.delete('/web-entry/delete/'+id);
+  return API.delete('/web-builder-form-entry/delete/'+id);
 }
 
 export const editWebsiteEntry =(id, payload) =>{
-  return API.put(`/web-entry/edit/${id}`, payload);
+  return API.put(`/web-builder-form-entry/edit/${id}`, payload);
 }
 
 export const getWebsiteEntries =(payload) =>{
-  return API.get('/web-entry/datasets/', {params:payload});
+  return API.get('/web-builder-form-entry/datasets/', {params:payload});
 }
 
 //blog
 
 export const createBlog =(payload) =>{
-  return API.post('/web-blog/create', payload);
+  return API.post('/web-builder-blog/create', payload);
 }
 
 export const deleteBlog =(id) =>{
-  return API.delete(`/web-blog/delete/${id}`)
+  return API.delete(`/web-builder-blog/delete/${id}`)
 }
 
 export const updateBlog =(id,payload) =>{
-  return API.put(`/web-blog/update/${id}`,payload);
+  return API.put(`/web-builder-blog/update/${id}`,payload);
 }
 
 export const getWebBlogs =() =>{
-  return API.get('/web-blog/blogs')
+  return API.get('/web-builder-blog/blogs')
 }
 
 export const getPreviewBlogPage =(payload)=>{
-  return API.get('/web-blog/preview', {params:{...payload}})
+  return API.get('/web-builder-blog/preview', {params:{...payload}})
 }
 
 export const getPublishBlogPage =(payload) =>{
-  return API.get('/web-blog/publish', {params:{...payload}})
+  return API.get('/web-builder-blog/publish', {params:{...payload}})
 }
 
 export const addToImageLibrary = (payload) => {
@@ -296,7 +300,7 @@ export const updateWebCollection = (id, payload) => {
   return API.post(`/web-builder-cms/collection/update/${id}`, payload);
 }
 
-export const deleteWebCollection = (id, payload) => {
+export const deleteWebCollection = (id) => {
   return API.delete(`/web-builder-cms/collection/delete/${id}`);
 }
 
@@ -347,6 +351,10 @@ export const getConnectsByWebsite = (id) => {
 
 export const createOrUpdateConnect = (payload) => {
   return API.post(`/web-builder-cms/connection/create-update`, payload);
+}
+
+export const createMultipleConnects = (payload) => {
+  return API.post(`/web-builder-cms/connection/create-multiple`, payload);
 }
 
 export const deleteConnect = (id) => {

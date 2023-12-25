@@ -13,7 +13,7 @@ let repeater = {
       tagName: 'div',
       draggable: '*',
       droppable: false,
-      attributes: { class: 'repeater' },
+      attributes: { class: 'repeater', id: `repeater-${new Date().getTime()}` },
       components: (props) => {
         const numOfItems = props.attributes.numOfItems;
         const components = [];
@@ -81,6 +81,7 @@ let repeater = {
       // this.render();
     // },
     handleChangeNumPerRow(e) {
+      console.log('handleChangeNumOfItems--------------------------')
       const comps = this.model.get('components');
       const numPerRow = this.model.get('numPerRow');
       comps.parent.addStyle({ 'grid-template-columns': `repeat(${numPerRow}, 1fr)` })

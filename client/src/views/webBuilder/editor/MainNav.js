@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Eye, Save, X, ChevronDown, MoreHorizontal, Trash2, PlusSquare, Plus } from 'react-feather';
-import { BiMobile } from 'react-icons/bi';
+import { BiListPlus, BiMobile } from 'react-icons/bi';
 import { FaBox, FaPaintBrush } from 'react-icons/fa';
 import { FiSettings } from 'react-icons/fi';
 import {
@@ -18,12 +18,13 @@ import {
   MdOutlineLensBlur,
 } from 'react-icons/md';
 import { useSelector } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import '@src/assets/styles/web-builder.scss';
 import { useDispatch } from 'react-redux';
 import { setLinkUrlReducer } from '../store/reducer';
-import { updateFormDataAction } from '../store/action';
+import { updateFormDataAction, createPageAction} from '../store/action';
+import {setFormReducer} from '../store/reducer';
 import { BsPlusSquare } from 'react-icons/bs';
 import {
   Button,
@@ -76,7 +77,9 @@ export default function MainNav({
   selectedMainNav,
   setSelectedMainNav,
   setRoleMdl,
+  viewCMSMenu,
 }) {
+  const { id } = useParams();
   const dispatch = useDispatch();
   const [width, setWidth] = useState(1280);
   const [devicetype, setDeviceType] = useState('desktop');
@@ -117,6 +120,29 @@ export default function MainNav({
     setWidth(e.target.value);
   }
 
+  const addPage=()=>{
+    const pageNum=form.formData.length;
+    const name=`Page${pageNum}`;
+    const path='/'+form?._id+'/'+name;
+    const payload={
+      id,
+      pageData:{
+        name,
+        path,
+        step:formData.length
+      }
+    };
+    dispatch(createPageAction(payload)).then((res)=>{
+      const formData=[...form.formData, res];
+      const _form={
+        ...form,
+        formData:formData
+      };
+      dispatch(setFormReducer(_form));
+    })
+  }
+
+  
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       if (width > 1280) {
@@ -202,23 +228,18 @@ export default function MainNav({
               </DropdownToggle>
               <DropdownMenu container="body">
                 <DropdownItem tag="span" className="w-100">
-                  {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
                   <div className="d-flex align-items-center">
                     <span className="">Zoom In</span>
                     <span className="ms-3 font-small-2">Ctrl++</span>
                   </div>
                 </DropdownItem>
                 <DropdownItem tag="span" className="w-100">
-                  {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
                   <div className="d-flex align-items-center">
                     <span className="align-middle">Zoom Out</span>
                     <span className="ms-3 font-small-2">Ctrl--</span>
                   </div>
                 </DropdownItem>
               </DropdownMenu>
-              {/* <div className="menu-item">
-                <span>Site</span>
-              </div> */}
             </UncontrolledDropdown>
             <UncontrolledDropdown style={{ cursor: 'pointer' }}>
               <DropdownToggle tag="div" className="btn btn-sm hover-effect text-white">
@@ -290,17 +311,28 @@ export default function MainNav({
                   Pages
                 </UncontrolledTooltip>
               </span>
-              <span className="hover-bg">
-                <MdOutlineDownloading
-                  size={26}
-                  color={'black'}
-                  id="import"
-                  onClick={(e) => handleImport(e)}
-                />
-                <UncontrolledTooltip placement="bottom" target="import">
-                  Import
+              <span className="hover-bg" onClick={(e)=>{
+                  setSelectedMainNav('cms');
+                  setAddSideBarOpen(true);
+               }}>
+                <MdOutlineNewspaper size={24} color={'black'} id="cms" />
+                <UncontrolledTooltip placement="bottom" target="cms">
+                  CMS
                 </UncontrolledTooltip>
               </span>
+              {
+                store?.form?.addedCms && <span className="hover-bg">
+                  <MdOutlineDownloading
+                    size={26}
+                    color={'black'}
+                    id="import"
+                    onClick={(e) => handleImport(e)}
+                  />
+                  <UncontrolledTooltip placement="bottom" target="import">
+                    Import
+                  </UncontrolledTooltip>
+                </span>
+              }
               <span className="hover-bg">
                 <Trash2 size={24} color={'black'} id="trash2" onClick={handleClear} />
                 <UncontrolledTooltip placement="bottom" target="trash2">
@@ -341,6 +373,17 @@ export default function MainNav({
               Pages
             </UncontrolledTooltip>
           </span>
+          {
+            store?.form?.addedCms && <span className="hover-bg" onClick={(e)=>{
+                setSelectedMainNav('cms');
+                setAddSideBarOpen(true);
+              }}>
+              <MdOutlineNewspaper size={24} color={'black'} id="cms" />
+              <UncontrolledTooltip placement="bottom" target="cms">
+                CMS
+              </UncontrolledTooltip>
+            </span>
+          }
           <span className="hover-bg feature-hide">
             <MdOutlineDownloading
               size={26}
@@ -359,7 +402,7 @@ export default function MainNav({
             </UncontrolledTooltip>
           </span>
           <span className="hover-bg feature-hide" onClick={() => { handleAddElement() }}>
-            <PlusSquare size={26} color={'black'} id="add-element" />
+            <BiListPlus size={26} color={'black'} id="add-element" />
             <UncontrolledTooltip placement="bottom" target="add-element">
               Add Element
             </UncontrolledTooltip>
@@ -376,9 +419,13 @@ export default function MainNav({
               </div>
             </DropdownToggle>
             <DropdownMenu container="body">
+              <DropdownItem tag="span" className="w-100" onClick={(e) => addPage()}>
+                  <Plus size={20} color={'#174ae7'} id="add-element" />
+                  <span className="text-primary">Add Page</span>
+              </DropdownItem>
               {formData && formData.map((item) => {
                 return (
-                  <DropdownItem tag="span" className="w-100" onClick={(e) => handlePage(item)}>
+                  <DropdownItem tag="span" className="w-100 text-center" onClick={(e) => handlePage(item)}>
                     <span className="">{item.name}</span>
                   </DropdownItem>);
               })}
@@ -441,7 +488,7 @@ export default function MainNav({
             </UncontrolledTooltip>
           </span>
           <div className={'w-100 d-flex justify-content-around align-items-center ' + (showZoomIcons ? 'zoom-hide' : '')}>
-            <div className='d-flex'>
+            {/* <div className='d-flex'>
               <span className="menu-icon">
                 <MdWorkspacesOutline size={24} color={'black'} id="global" />
                 <UncontrolledTooltip placement="bottom" target="global">
@@ -460,7 +507,7 @@ export default function MainNav({
                   CMS
                 </UncontrolledTooltip>
               </span>
-            </div>
+            </div> */}
             <div className='d-flex'>
               <span className="menu-icon">
                 <FaPaintBrush size={24} color={'black'} id="styles" onClick={(e) => {

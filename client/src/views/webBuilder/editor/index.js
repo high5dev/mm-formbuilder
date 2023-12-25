@@ -31,6 +31,7 @@ export default function Index() {
   const [openAddElementMdl, setOpenAddElementMdl] = useState(false);
   const [selectedMainNav, setSelectedMainNav] = useState('elements');
   const [roleMdl, setRoleMdl] = useState(false);
+  const [viewCMSMenu, setViewCMSMenu]=useState(false);
   const store = useSelector((state) => {
     return {
       ...state.websiteEditor
@@ -127,6 +128,7 @@ export default function Index() {
               selectedMainNav={selectedMainNav}
               roleMdl={roleMdl}
               setRoleMdl={setRoleMdl}
+              setSelectedMainNav={setSelectedMainNav}
             />
           </div>
         </div>

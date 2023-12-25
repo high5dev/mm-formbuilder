@@ -706,11 +706,23 @@
   border: 1px solid gray !important;
   border-radius: 3px;
 }
-
+.rdw-editor-toolbar {
+  padding: 6px 5px 0;
+  border-radius: 2px;
+  border: 1px solid lightgray;
+  background: white;}
+.rdw-editor-main {
+  height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+  border: 1px solid lightgray;
+  border-top: none;
+}
 .post-description {
   padding: 10px;
   border: 1px solid lightgray;
 }
+
 .gjs-field-page-link{
   .trait-link-element-label,
   .trait-page-setting,
@@ -728,4 +740,47 @@
     display: none;
   }
 }
+.swal2-confirm{
+  min-width: 90px
+}
 
+.cms-sidebar {
+  .submenu-category {
+    color: black;
+    padding-right: 15px;
+    padding-left: 25px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    &:hover{
+      background-color:#f0f0f0;
+      cursor: pointer;
+    }
+  }
+
+  .selected-submenu-category {
+    color: blue;
+    background-color: #dce9ff;
+    padding-right: 15px;
+    padding-left: 25px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
+
+.collection-item {
+  .more-dropdown {
+    display: none;
+  }
+  &:hover{
+    cursor: pointer;
+    .more-dropdown {
+      display: block;
+    }
+  }
+}
+
+.preset-item {
+  &:hover{
+    cursor: pointer;
+  }
+}
