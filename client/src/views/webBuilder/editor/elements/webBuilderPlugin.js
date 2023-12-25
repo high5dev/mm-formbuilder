@@ -6,7 +6,8 @@ import galleryItem from './gallery/galleryItem'
 import iframe from "./iframe/iframe";
 import { blocks } from "./Blocks";
 import { customSectors, customProperties } from "./CustomStyles";
-import * as api from '../../store/api'
+import * as api from '../../store/api';
+import imageItem from "./image/image";
 import socialBar from "./socialBar/socialBar";
 import socialLink from "./traits/socialLink";
 import linkButton from "../elements/button/button";
@@ -51,6 +52,7 @@ export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('repeater', repeater);
   editor.DomComponents.addType('gallery-item', galleryItem);
   editor.DomComponents.addType('gallery', gallery);
+  editor.DomComponents.addType('image', imageItem);
   editor.DomComponents.addType('post-list-large', postLarge);
   editor.DomComponents.addType('post-card-large', postCard);
   editor.DomComponents.addType('post-list-sidebar', postSidebar);
