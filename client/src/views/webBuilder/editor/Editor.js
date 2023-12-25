@@ -1259,9 +1259,6 @@ export default function Editor({
           else{
             firstChild.className='gallery';
           }
-          if(firstChild.style.display!='grid'){
-            firstChild.style.display='grid';
-          }
           const elements=firstChild.children;
           if(elements && elements.length>0){
             for(let i=0; i<elements.length;i++){
@@ -1271,8 +1268,6 @@ export default function Editor({
               else{
                 elements[i].className='gallery-item';
               }
-              elements[i].style.backgroundColor='white';
-              elements[i].style.height='auto';
             }
           };
           editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
@@ -1416,7 +1411,7 @@ export default function Editor({
                       sidebarData.menu.id === 'quick-add' && (
                         <div className="quick-add">
                           {editor?.BlockManager.blocks.filter(e => e.get('category') === 'Basic').map((block) => {
-                            if(block.getLabel()!='Link' && block.getLabel()!='Link Block')
+                            if(block.getLabel()!='Link' && block.getLabel()!='Link Block' && block.getId()!='image')
                             return(
                               <div
                               key={block.getId()}
