@@ -11,7 +11,7 @@ let linkButton = {
             return(
                 <div class="link-parent-element">
                     <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-link-element" value={elProp.label}/> 
-                </div>  
+                </div>
             )
           },
         elProps:[

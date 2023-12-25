@@ -108,9 +108,9 @@ const UproofLabel = require("../UproofLabel");
 // const Video = require("../Video");
 //Form builder entry
 const FormEntry = require("../FormEntry");
-const Form = require("../Form");
-const FormRule=require("../FormRule");
-const FormPage=require("../FormPage");
+const WebBuilderForm = require("../WebBuilderForm");
+const WebBuilderFormRule=require("../WebBuilderFormRule");
+const WebBuilderFormPage=require("../WebBuilderFormPage");
 const WebsiteEntry=require("../WebsiteEntry");
 const ImageLibrary = require("../ImageLibrary");
 
@@ -174,7 +174,7 @@ const SocialProofDisplayUrl = require("../SocialProofDisplayUrl");
 // //employeeActivityLog
 // const EmployeeActivityLog = require("../EmployeeActivityLog");
 
-const WebBlog = require("../WebBlog");
+const WebBuilderBlog = require("../WebBuilderBlog");
 const WebBuilder = require("../WebBuilder");
 const WebPage = require("../WebPage");
 const WebBuilderElement = require("../WebBuilderElement");
@@ -272,9 +272,9 @@ const models = {
   // Income,
   // FinanceCategory,
   // UserGoal,
-  Form,
-  FormRule,
-  FormPage,
+  WebBuilderForm,
+  WebBuilderFormRule,
+  WebBuilderFormPage,
   FormEntry,
   WebsiteEntry,
   ImageLibrary,
@@ -348,7 +348,7 @@ const models = {
   // TournamentEvent,
   // Division,
   // Tournament,
-  WebBlog,
+  WebBuilderBlog,
   WebBuilder,
   WebPage,
   WebBuilderElement,

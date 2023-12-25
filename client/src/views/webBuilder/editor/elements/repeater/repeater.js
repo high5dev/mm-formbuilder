@@ -13,7 +13,7 @@ let repeater = {
       tagName: 'div',
       draggable: '*',
       droppable: false,
-      attributes: { class: 'repeater' },
+      attributes: { class: 'repeater', id: `repeater-${new Date().getTime()}` },
       components: (props) => {
         const numOfItems = props.attributes.numOfItems;
         const components = [];
@@ -43,8 +43,9 @@ let repeater = {
           min: 1,
         }
       ],
-      
-      styles: `.repeater {display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 10px; row-gap: 10px; width: 80%;}`,
+      connection: null,
+      propagate: ['connection'],
+      styles: `.repeater {display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 10px; row-gap: 10px; width: 100%;}`,
       // stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius', 'column-gap', 'row-gap'],
       // // 'stylable-require': ['width', 'background-color', 'margin']
       // // 'script-props': ['repeaterWidth', 'myprop2'],
@@ -81,6 +82,7 @@ let repeater = {
       // this.render();
     // },
     handleChangeNumPerRow(e) {
+      console.log('handleChangeNumOfItems--------------------------')
       const comps = this.model.get('components');
       const numPerRow = this.model.get('numPerRow');
       comps.parent.addStyle({ 'grid-template-columns': `repeat(${numPerRow}, 1fr)` })

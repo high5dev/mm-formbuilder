@@ -1,6 +1,6 @@
 // declare mongoose
 const mongoose = require("mongoose");
-const WebsiteEntrySchema = new mongoose.Schema(
+const WebBuilderEntrySchema = new mongoose.Schema(
   {
     websiteId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -33,4 +33,4 @@ const WebsiteEntrySchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("website-entry", WebsiteEntrySchema);
+module.exports = mongoose.model("webbuilder-entry", WebBuilderEntrySchema);
