@@ -222,44 +222,6 @@ export default function MainNav({
                 <span>Site</span>
               </div> */}
             </UncontrolledDropdown>
-            <UncontrolledDropdown style={{ cursor: 'pointer' }}>
-              <DropdownToggle tag="div" className="btn btn-sm hover-effect text-white">
-                View
-              </DropdownToggle>
-              <DropdownMenu container="body">
-                <DropdownItem tag="span" className="w-100">
-                  <div className="d-flex align-items-center">
-                    <span className="">Zoom In</span>
-                    <span className="ms-3 font-small-2">Ctrl++</span>
-                  </div>
-                </DropdownItem>
-                <DropdownItem tag="span" className="w-100">
-                  <div className="d-flex align-items-center">
-                    <span className="align-middle">Zoom Out</span>
-                    <span className="ms-3 font-small-2">Ctrl--</span>
-                  </div>
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
-            <UncontrolledDropdown style={{ cursor: 'pointer' }}>
-              <DropdownToggle tag="div" className="btn btn-sm hover-effect text-white">
-                Tools
-              </DropdownToggle>
-              <DropdownMenu container="body">
-                <DropdownItem tag="span" className="w-100">
-                  <span className="">Libraries</span>
-                </DropdownItem>
-                <DropdownItem tag="span" className="w-100">
-                  <span className="">Media Manager</span>
-                </DropdownItem>
-                <DropdownItem tag="span" className="w-100">
-                  <span className="">Multilingual</span>
-                </DropdownItem>
-                <DropdownItem tag="span" className="w-100">
-                  <span className="">Site Checker</span>
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
           </div>
         </div>
         <div className="additional-bar d-flex align-items-center justify-content-around">
