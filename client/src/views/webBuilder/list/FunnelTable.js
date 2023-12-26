@@ -113,7 +113,7 @@ export default function FunnelTable({
         setCount(Math.ceil(res.count / rowsPerPage))
       }
     })
-  }, [currentPage]);
+  }, [currentPage, rowsPerPage]);
 
 
   useEffect(() => {

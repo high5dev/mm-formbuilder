@@ -534,9 +534,9 @@ export const getFormDataAction = (id) => async (dispatch) => {
     dispatch(setFormProductsReducer(data.data?.products || []))
   } catch (error) { }
 };
-export const getFormsCountAction = () => async (dispatch) => {
+export const getWebsitesCountAction = () => async (dispatch) => {
   try {
-    const { data } = await api.getFormsCount();
+    const { data } = await api.getWebsiteCount();
     if (data && data.success === true) {
       return data.data
     }

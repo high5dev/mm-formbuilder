@@ -66,9 +66,9 @@ export default function Sidebar({
               >
                 <div className="d-flex justify-content-between align-middle cursor-pointer">
                   <div className="ws-name">
-                    <span>My Forms</span>
+                    <span>My Websites</span>
                   </div>
-                  <Badge color="light-primary">{formsCount?.forms}</Badge>
+                  <Badge color="light-primary">{formsCount?.websites}</Badge>
                 </div>
               </ListGroupItem>
               <ListGroupItem
