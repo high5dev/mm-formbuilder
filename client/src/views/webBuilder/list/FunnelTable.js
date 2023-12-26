@@ -94,11 +94,9 @@ export default function FunnelTable({
   const handleDetails = (row) => {
     dispatch(getWebsiteAction(row?._id)).then((res)=>{
       if(res){
-        history.push(`/form-funnel/form-setting/${row._id}`);
+        history.push(`/webbuilder-funnel/form-setting/${row._id}`);
       }
     })
-
-    // history.push(`/webpages/editor/${row._id}`);
   };
 
   useEffect(()=>{
