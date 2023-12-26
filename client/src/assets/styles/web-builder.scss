@@ -244,7 +244,9 @@
 .land-body {
   height: calc(100vh - 110px);
 }
-
+#editor{
+  overflow: scroll;
+}
 .editor-content {
   width: 100%;
 }

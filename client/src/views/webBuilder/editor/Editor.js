@@ -462,6 +462,7 @@ export default function Editor({
       container: '#editor',
       height: window.innerHeight-117,
       plugins: [basicBlockPlugin,(editor) => webBuilderPlugin(editor), websitePlugin],
+      fromElement: 1,
       richTextEditor: {
         actions: []
       },
