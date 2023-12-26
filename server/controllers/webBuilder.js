@@ -863,3 +863,24 @@ exports.getTemplates = asyncHandler(async (req, res) => {
   }
 });
 
+exports.getWebsiteCounts = asyncHandler(async(req,res)=>{
+  try {
+    const user = req.user
+    const {organization} = req.headers
+    const data = await WebBuilder.find({
+      userId: user._id,
+      organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+      isDelete: false,
+    });
+    const count = {
+      websites:data.filter(x=>x.isTemplate===false).length,
+      templates:data.filter(x=>x.isTemplate===true).length
+    }
+    return res.status(200).json({ success: true, data:count });
+  } catch (error) {
+    console.log(error)
+    res.status(500).send({ msg: error.message });
+  }
+})
+
+

@@ -211,8 +211,8 @@ export const delImageFromLibrary =(id) =>{
   return API.delete('/image-library/' + id);
 }
 
-export const getFormsCount = () => {
-  return API.get('/form-builder/get-user-forms-count');
+export const getWebsiteCount = () => {
+  return API.get('/web-builder/get-user-websites-count');
 };
 
 //save form entry
