@@ -1,6 +1,6 @@
 import moment from 'moment';
 let postLarge = {
-    isComponent: el => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('post-container')),
     model: {
       defaults: {
         tagName: 'div',
@@ -14,7 +14,7 @@ let postLarge = {
                 props.attributes.blogs.map((blog) =>{
                   return(<div class="post-large-container">
                   <div class="post-large-container-left">
-                      <img src={blog.imageUrl} width="350px" />
+                      <img src={blog.imageUrl} width="350px" class='blog-image'/>
                   </div>
                 <div class="post-large-container-right">
                   <span class="post-large-header">
@@ -63,6 +63,9 @@ let postLarge = {
           .post-large-container{display:flex; align-items:center;border:1px solid lightgray;margin:10px}
           .post-large-container-left {width:50%}
           .post-large-container-right {width:50%; padding-left:20px}
+          .post-large-title{word-wrap:break-word}
+          .post-large-description{word-wrap:break-word}
+          .blog-image{height:auto; width:300px}
           .image-avatar{border-radius:50%; margin-right:10px;}
           .post-large-header{display:flex; align-items:center}
           .post-container{padding:5px; width:700px}

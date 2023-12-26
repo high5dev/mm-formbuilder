@@ -1,5 +1,5 @@
 let categoryMenu = {
-    isComponent: (el) => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('category-container')),
     model: {
       defaults: {
         tagName: 'div',

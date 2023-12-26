@@ -1,6 +1,6 @@
 import moment from 'moment';
 let postSidebar = {
-    isComponent: el => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('post-sidebar')),
     model: {
       defaults: {
         tagName: 'div',

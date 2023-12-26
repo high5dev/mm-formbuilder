@@ -1,12 +1,12 @@
 import moment from 'moment';
 let archiveMenu = {
-    isComponent: (el) => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('archive-container')),
     model: {
       defaults: {
         tagName: 'div',
         draggable: '*',
         droppable: false,
-        attributes: { class: 'category-container' },
+        attributes: { class: 'archive-container' },
         components: (props) => {
           const postList = props.attributes.postList;
           return (
@@ -40,7 +40,7 @@ let archiveMenu = {
         ],
   
         styles: `
-            .category-container{padding:10px; border: 1px solid lightgray; width:300px}
+            .archive-container{padding:10px; border: 1px solid lightgray; width:300px}
             .post-item{color: black}
           `,
         stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius']

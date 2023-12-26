@@ -1,5 +1,5 @@
 let grayoutlineButton = {
-    isComponent: (el) => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('gray-outline-button')),
     model: {
       defaults: {
         tagName: 'div',
