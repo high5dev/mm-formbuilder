@@ -107,10 +107,29 @@ export default function Index({ blog, store, isOpen, toggle }) {
         </ModalHeader>
         <ModalBody className="">
             <div className='post-body'>
-               <div className='post-title mt-2'>
+               <div className='post-title mt-2 mb-2'>
                   <Label>Title</Label>
                   <Input type="text" value={title} onChange={(e)=>setTitle(e.target.value)}/>
                </div>
+               {
+              imageUrl==='' &&  <FileUploaderSingle attachments={attachments} setAttachments={setAttachments}/>
+            }
+            {
+              imageUrl!='' && 
+              <div class="d-flex justify-content-evenly">
+                <img src={imageUrl}  width="500px"/>
+                <Button
+                  color="danger"
+                  outline
+                  size="sm"
+                  className="ms-2 btn-icon"
+                  onClick={() => handleRemove()}
+                  style={{height:'30px'}}
+                >
+                  <X size={14} />
+                </Button>
+              </div>
+            }
                <div className='mt-2 mb-2'>
                   <Label>Description</Label>
                   <Editor
@@ -209,28 +228,7 @@ export default function Index({ blog, store, isOpen, toggle }) {
                     />
                   {/* <Input type="textarea" value={description} onChange={(e) => setDescription(e.target.value)}/> */}
                </div>
-            </div>
-            {
-              imageUrl==='' &&  <FileUploaderSingle attachments={attachments} setAttachments={setAttachments}/>
-            }
-            {
-              imageUrl!='' && 
-              <div class="d-flex justify-content-evenly">
-                <img src={imageUrl}  width="500px"/>
-                <Button
-                  color="danger"
-                  outline
-                  size="sm"
-                  className="ms-2 btn-icon"
-                  onClick={() => handleRemove()}
-                  style={{height:'30px'}}
-                >
-                  <X size={14} />
-                </Button>
-              </div>
-
-            }
-           
+            </div>    
         </ModalBody>
         <ModalFooter className="d-flex mb-1">
             <div className='d-flex justify-content-end'>
