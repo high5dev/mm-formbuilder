@@ -1596,7 +1596,7 @@ export default function Editor({
                           {
                             sidebarData?.menu?.subMenu?.map(sub => {
                               const returnComponent = <>
-                                <div className='submenu-item' onClick={()=>scrollToTarget(sub.name)}>{sub.name}</div>
+                                <div className='submenu-item cursor-pointer' onClick={()=>scrollToTarget(sub.name)}>{sub.name}</div>
                               </>
                               return returnComponent;
                             })
@@ -1686,7 +1686,7 @@ export default function Editor({
                             {
                               sidebarData?.menu?.subMenu?.map(sub => {
                                 const returnComponent = <>
-                                  <div className='submenu-item' onClick={() => scrollToTarget(sub.menu)}>{sub.menu}</div>
+                                  <div className='submenu-item cursor-pointer' onClick={() => scrollToTarget(sub.menu)}>{sub.menu}</div>
                                 </>
                                 return returnComponent;
                               })
