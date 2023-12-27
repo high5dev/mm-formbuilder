@@ -18,7 +18,7 @@ const nodemailerOptions = {
   replyTo: "postmaster@mymanager.com",
   dkim: {
     domainName: "mymanager.com",
-    keySelector: "mail",
+    keySelector: "postal",
     privateKey: pemKey,
   },
 };
@@ -29,7 +29,6 @@ const SendMail = async ({
   subject = ``,
   text = ``,
   body = ``,
-
   attachments = [],
   replyTo = "postmaster@mymanager.com",
 }) => {
@@ -43,19 +42,19 @@ const SendMail = async ({
     attachments,
     replyTo,
   };
-
+  if (process.env.MAILSERVER === "postal") {
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       // eslint-disable-next-line no-console
       console.log("Email Sending failed", error);
     } else {
       // eslint-disable-next-line no-console
-      console.log(`Email sent successfully ${info.response} ${subject}`);
+      console.log(`Email sent successfully`);
     }
   });
   // sendData(mailOptions);
-};
-
+  };
+}
 const SendBulkMail = async ({
   from = `"My Manager" <hello@mymanager.com>`,
   recipient,

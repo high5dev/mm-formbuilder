@@ -5,6 +5,8 @@ const {
   WebSiteRole,
   WebSiteInvite,
 } = require("../models/index/index");
+const { inviteWebBuilderTemplate } = require("../constants/emailTemplates");
+const { SendMail } = require("../service/sendMail");
 const { response } = require("express");
 
 exports.createRole = asyncHandler(async (req, res) => {
@@ -70,10 +72,25 @@ exports.getRolesByWebsite = asyncHandler(async (req, res) => {
 
 exports.createInvite = asyncHandler(async (req, res) => {
   let userId = req.user._id;
+  const email=req.user.email;
   const { organization } = req.headers;
   const payload = req.body;
   const websiteId = payload.websiteId;
-
+  const link=`https://mymanager.com/website/${websiteId}`;
+  const btnLink="https://mymanager.com";
+  const emailBody = inviteWebBuilderTemplate({
+    email,
+    link,
+    btnLink
+  });
+  payload.toEmail.forEach((_email)=>{
+    SendMail({
+      from: `via MyManager <hello@mymanager.com>`,
+      recipient: _email,
+      subject:"My Manager",
+      body: emailBody,
+    });
+  })
   try {
     const newInvite = await WebSiteInvite.create({
       ...payload,
