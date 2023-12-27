@@ -223,8 +223,6 @@ export const getWebsiteEntryAction =(id) =>async(dispatch) =>{
     const {data} = await api.getWebsiteEntry(id);
     if (data?.success === true) {
       return data.data
-    } else {
-      toast.error('Something went wrong! please try again');
     }
   } catch (error) { }
 }
@@ -265,11 +263,6 @@ export const createWebBuilderAction = (payload) => async (dispatch) => {
       formData: _form_data
     };
     dispatch(setFormReducer(form_data));
-    if (data?.success === true) {
-      toast.success('Form created successfully');
-    } else {
-      toast.error('Something went wrong! please try again');
-    }
     return form_data
   } catch (error) { }
 };
@@ -539,9 +532,9 @@ export const getFormDataAction = (id) => async (dispatch) => {
     dispatch(setFormProductsReducer(data.data?.products || []))
   } catch (error) { }
 };
-export const getFormsCountAction = () => async (dispatch) => {
+export const getWebsitesCountAction = () => async (dispatch) => {
   try {
-    const { data } = await api.getFormsCount();
+    const { data } = await api.getWebsiteCount();
     if (data && data.success === true) {
       return data.data
     }
@@ -749,9 +742,9 @@ export const deleteFormEntryAction = (id, formId) => async (dispatch) => {
 };
 
 //------------ *** templates
-export const getTemplatesAction = () => async (dispatch) => {
+export const getWebBuilderTemplatesAction = () => async (dispatch) => {
   try {
-    const { data } = await api.getTemplates();
+    const { data } = await api.getWebBuilderTemplates();
     dispatch(setTemplatesReducer(data.data));
     return data?.data
   } catch (error) { }

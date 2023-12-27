@@ -1,6 +1,6 @@
 import moment from 'moment';
 let postCard = {
-  isComponent: (el) => el.tagName === 'div',
+  isComponent: el => (el.tagName === 'DIV' && el.classList.contains('post-card-container')),
   model: {
     defaults: {
       tagName: 'div',

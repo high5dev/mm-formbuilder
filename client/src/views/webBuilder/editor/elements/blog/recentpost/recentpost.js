@@ -1,5 +1,5 @@
 let recentPost = {
-    isComponent: (el) => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('post-card-container')),
     model: {
       defaults: {
         tagName: 'div',

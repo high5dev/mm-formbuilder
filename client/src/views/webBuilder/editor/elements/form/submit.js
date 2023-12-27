@@ -39,7 +39,7 @@ let submitButton = {
           }
       ],
       styles: `
-      .submit-element {padding:10px, width:450px}
+      .submit-element {padding:10px; display:flex; justify-content:space-around}
       .submit-parent-element {display:flex; justify-content:space-around}
       .input-submit-element {padding:10px; font-size:14px; width:100px; background-color:#174ae7; color:white; border:1px solid}
       .message{text-align:center; margin-top:10px; display:none}

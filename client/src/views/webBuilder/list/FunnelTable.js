@@ -94,11 +94,9 @@ export default function FunnelTable({
   const handleDetails = (row) => {
     dispatch(getWebsiteAction(row?._id)).then((res)=>{
       if(res){
-        history.push(`/form-funnel/form-setting/${row._id}`);
+        history.push(`/webbuilder-funnel/form-setting/${row._id}`);
       }
     })
-
-    // history.push(`/webpages/editor/${row._id}`);
   };
 
   useEffect(()=>{
@@ -113,7 +111,7 @@ export default function FunnelTable({
         setCount(Math.ceil(res.count / rowsPerPage))
       }
     })
-  }, [currentPage]);
+  }, [currentPage, rowsPerPage]);
 
 
   useEffect(() => {
@@ -492,10 +490,11 @@ export default function FunnelTable({
               ) : (
                 <div
                   className="d-flex justify-content-center align-items-center"
-                  style={{ height: '70vh' }}
+                  style={{ height: '70vh', fontSize:'16px' }}
                 >
-                  <span className="me-2"> Loading...</span>
-                  <UILoader blocking={true} overlayColor="rgba(255,255,255, .5)"></UILoader>
+                  No data available
+                  {/* <span className="me-2"> Loading...</span>
+                  <UILoader blocking={true} overlayColor="rgba(255,255,255, .5)"></UILoader> */}
                 </div>
               )}
             </>

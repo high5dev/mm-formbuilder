@@ -10,6 +10,7 @@ const {
   renameWebsite,
   duplicateWebsite,
   publishWebsite,
+  getWebsiteCounts,
   updateAllPages,
   getPublishPage,
   getPreviewPage,
@@ -33,6 +34,7 @@ router.delete("/delete/:id", isAuthenticated, deleteWebsite);
 router.put('/rename/:id', isAuthenticated, renameWebsite);
 router.get("/publish-page/", getPublishPage);
 router.get("/preview-page/",  isAuthenticated, getPreviewPage);
+router.get("/get-user-websites-count", isAuthenticated, getWebsiteCounts);
 //page
 router.post("/create-page", isAuthenticated, createPage);
 router.post("/create-shop-pages", isAuthenticated, createShopPages);

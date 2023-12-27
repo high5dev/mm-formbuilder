@@ -6,7 +6,8 @@ import galleryItem from './gallery/galleryItem'
 import iframe from "./iframe/iframe";
 import { blocks } from "./Blocks";
 import { customSectors, customProperties } from "./CustomStyles";
-import * as api from '../../store/api'
+import * as api from '../../store/api';
+import imageItem from "./image/image";
 import socialBar from "./socialBar/socialBar";
 import socialLink from "./traits/socialLink";
 import linkButton from "../elements/button/button";
@@ -51,6 +52,7 @@ export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('repeater', repeater);
   editor.DomComponents.addType('gallery-item', galleryItem);
   editor.DomComponents.addType('gallery', gallery);
+  editor.DomComponents.addType('image', imageItem);
   editor.DomComponents.addType('post-list-large', postLarge);
   editor.DomComponents.addType('post-card-large', postCard);
   editor.DomComponents.addType('post-list-sidebar', postSidebar);
@@ -754,7 +756,7 @@ export const webBuilderPlugin = (editor) => {
               const pages=formData && formData.map((pageInfo)=>{
                 return({
                   label:pageInfo.name,
-                  value:'/website/'+websiteId+'/'+pageInfo.name
+                  value:'/'+websiteId+'/'+pageInfo.name
                 })
               });
               el.querySelector(".trait-pages").innerHTML=
@@ -769,6 +771,11 @@ export const webBuilderPlugin = (editor) => {
                   })}
                 </select>
               `;
+              let tempElProps=[];
+              const url=pages[0].value;
+              elProp={...elProp, linkType:'pages', Url:url};
+              tempElProps.push(elProp);
+              component.set('elProps', tempElProps);
               el.querySelector('.trait-pages-selection').addEventListener('change', (ev)=>{
                 let tempElProps=[];
                 const url=ev.target.value;
@@ -794,7 +801,7 @@ export const webBuilderPlugin = (editor) => {
           el.querySelector(".trait-pages").innerHTML=``;
           let tempElProps = [];
           const value=ev.target.value;
-          elProp={...elProp, linkType:value};
+          elProp={...elProp, linkType:value, Url:''};
           tempElProps.push(elProp);
           component.set('elProps', tempElProps);
         }
