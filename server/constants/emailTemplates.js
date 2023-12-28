@@ -3520,6 +3520,54 @@ exports.invoiceEmailTemplate = ({ ...data }) => {
   `;
 };
 
+exports.inviteWebBuilderTemplate = ({ ...data }) => {
+  return `
+  <!DOCTYPE html>
+<html>
+<head>
+<style>
+    .invite-description{
+      font-size:20px;
+    }
+	.invite-up-description{
+    	margin-bottom:30px;
+    }
+    .invite-btn{
+      margin-top:20px;
+      color:white;
+      font-size:16px;
+      padding:15px;
+      background-color:#174ae7;
+      border:none
+    }
+</style>
+</head>
+<body>
+ <div>
+ 	<div class="invite-title">
+    	<h2>You’re Invited to Collaborate on a Editor X Website</h2>
+    </div>
+    <div class="invite-description">
+      <div class="invite-up-description">
+      ${data.email} has invited you to get started on the ${data.link} site.
+      </div>
+      <div class="invite-down-description">
+      	Once you accept, you’ll be able to contribute based on your assigned role and  permissions and access this site from My Sites.
+      </div>
+    </div>
+    <div class="invite-footer">
+      <a href=${data.btnLink} class="invite-link-element" target='_blank'>
+    	<button class="invite-btn">Accept Invite</button>
+      </a>
+    </div>
+ </div>
+
+</body>
+</html>
+  `
+};
+
+
 exports.clintEmailTemplate = ({ ...data }) => {
   return `
   <html lang="en">

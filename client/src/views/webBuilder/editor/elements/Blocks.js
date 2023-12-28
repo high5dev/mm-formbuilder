@@ -198,4 +198,12 @@ export const blocks = [
     media:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="rectangle"><path d="M23.5 4.5H.5A.5.5 0 0 0 0 5v14a.5.5 0 0 0 .5.5h23a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5zm-.5 14H1v-13h22v13z"></path></svg>`,
     category:'Basic'
   },
+  {
+    id:'menu',
+    label:'Menu',
+    attributes:{ class:'fa fa-text'},
+    content:{type:'menu'},
+    media:`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" id="menu"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>`,
+    category:'Basic'
+  },
 ];

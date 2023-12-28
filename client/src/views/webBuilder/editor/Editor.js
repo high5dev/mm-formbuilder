@@ -475,6 +475,8 @@ export default function Editor({
         appendTo: document.querySelector('#style-manager-container'),
       },
       selectorManager: {
+        custom:true,
+        componentFirst: true,
         appendTo: document.querySelector('#selector-manager-container'),
       },
       layerManager: {
@@ -1120,15 +1122,9 @@ export default function Editor({
         if(el?.category[0]?.subMenu==='repeater'){
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
-          const style=htmlCmp.head;
-          const firstChild=htmlCmp.body.firstChild;
-          if(firstChild.className){
-            firstChild.className+=' repeater';
-          }
-          else{
-            firstChild.className+='repeater';
-          }
-          const elements=firstChild.children;
+          let repeaterElement=htmlCmp.body.getElementsByClassName('grid-display')[0];
+          repeaterElement.className+=' repeater';
+          const elements=repeaterElement.children;
           if(elements && elements.length>0){
             for(let i=0; i<elements.length;i++){
               if(elements[i].className){
@@ -1137,8 +1133,6 @@ export default function Editor({
               else{
                 elements[i].className+='repeater-item';
               }
-              elements[i].style.backgroundColor='white';
-              elements[i].style.minHeight='0px';
             }
           };
           editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
@@ -1176,13 +1170,23 @@ export default function Editor({
         if(el?.category[0]?.subMenu==='social-bar'){
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
-          const firstChild=htmlCmp.body.firstChild;
+          const firstChild=htmlCmp.body.firstElementChild;
           if(firstChild.className){
             firstChild.className+=' social-bar';
           }
           else{
             firstChild.className='social-bar';
           }
+          let imageElements=firstChild.getElementsByTagName('img');
+          for(let i=0; i<imageElements.length;i++){
+            const _imageEl=imageElements[i];
+            if(_imageEl.className){
+              _imageEl.className+=' social-icon';
+            }
+            else{
+              _imageEl.className='social-icon';
+            } 
+        }
           editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
             label: el?.category[0]?.name,
             content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
@@ -1197,24 +1201,16 @@ export default function Editor({
         if(el?.category[0]?.subMenu==='gallery'){
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
-          const firstChild=htmlCmp.body.firstChild;
-          if(firstChild.className){
-            firstChild.className+=' gallery';
-          }
-          else{
-            firstChild.className='gallery';
-          }
-          const elements=firstChild.children;
-          if(elements && elements.length>0){
-            for(let i=0; i<elements.length;i++){
-              if(elements[i].className){
-                elements[i].className+=' gallery-item';
-              }
-              else{
-                elements[i].className='gallery-item';
-              }
+          const imageEls=htmlCmp.body.getElementsByTagName('img');
+          for(let i=0; i<imageEls.length;i++){
+            const imageEl=imageEls[i];
+            let galleryItemEl=imageEl.parentNode;
+            let galleryContainer=imageEl.parentNode.parentNode;
+            galleryItemEl.className+=' gallery-item';
+            if(!galleryContainer.className.includes('gallery')){
+              galleryContainer.className+=' gallery'
             }
-          };
+          }
           editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
             label: el?.category[0]?.name,
             content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,

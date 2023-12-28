@@ -37,6 +37,7 @@ import thankyoupage from "./thankyoupage/thankyoupage";
 
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import menu from "./menu/menu";
 const testImageUrls = [
   'https://i.ibb.co/ZWnZPqr/tiktok.png',
   'https://i.ibb.co/tm0rJ2c/youtube-1.png',
@@ -471,6 +472,153 @@ export const webBuilderPlugin = (editor) => {
     },
   });
 
+  editor.DomComponents.addType('menu', menu);
+  editor.TraitManager.addType('menu',{
+    noLabel: true,
+    // Expects as return a simple HTML string or an HTML element
+    createInput({ trait, component }) {
+      const traitName = trait.get('name');
+      let newName = '';
+      let newUrl = '';
+      let newImage = '';
+      
+      // Create a new element container and add some content
+      const el = document.createElement('div');
+      el.className = 'trait-menu';
+      el.innerHTML = `<h6>Menu items</h6>`;
+
+      const containerElement = document.createElement('div');
+      containerElement.className = 'trait-menu-items-container';
+     
+      const menuItems = component.props().menus;
+      let socialItemsStr = '';
+      menuItems.forEach((item, index) => {
+        socialItemsStr = socialItemsStr + `
+          <div class="trait-menu-item-link-item">
+            <div>${item.name}</div>
+            <button class="trait-menu-item-link-delete"><i class="fa fa-trash"></i></button>
+          </div>
+        `;
+      });
+      containerElement.innerHTML = socialItemsStr;
+
+      const newLinkElement = document.createElement('div');
+      newLinkElement.className = 'trait-new-menu-item';
+      newLinkElement.innerHTML = `
+        <div class="trait-new-menu-item-label">New item</div>
+        <div class="trait-new-menu-item-link">
+          <input class="trait-new-menu-item-link__name" type="text" placeholder="Insert link name"/>
+          <div class="trait-new-menu-item-pagelink"></div>
+        </div>
+        <button class="btn btn-primary mb-1 trait-new-menu-item-link-add-btn">Add</button>
+      `;
+
+      const link=window.location.href;
+      const websiteId=link.split('/').slice(-1)[0];
+      api.getWebBuilder(websiteId).then(res=>{
+        if(res && res.data){
+          const {formData, websiteData}=res.data.data;
+          const pages=formData && formData.map((pageInfo)=>{
+            return({
+              label:pageInfo.name,
+              value:'/website/'+websiteId+'/'+pageInfo.name
+            })
+          });
+          el.querySelector(".trait-new-menu-item-pagelink").innerHTML=
+          `
+            <select class="trait-pages-selection">
+              ${pages && pages.map((_page, i)=>{
+                return(
+                  `<option value=${_page.value}>
+                    ${_page.label}
+                  </option>`
+                )
+              })}
+            </select>
+          `;
+          el.querySelector('.trait-pages-selection').addEventListener('change', (ev)=>{
+            newUrl=ev.target.value;
+          })
+        }
+      })
+
+      el.appendChild(containerElement);
+      el.appendChild(newLinkElement);
+
+      // Let's make our content interactive
+      const newLinkName = el.querySelector('.trait-new-menu-item-link__name');
+      const btnAdd = el.querySelector('.trait-new-menu-item-link-add-btn');
+
+      newLinkName.addEventListener('change', ev => {
+        newName = ev.target.value;
+      })
+
+      el.querySelectorAll('.trait-menu-item-link-delete').forEach((item, index) => {
+        item.addEventListener('click', event => {
+          //handle click
+          const tempList = [...menuItems];
+          tempList.splice(index, 1);
+          component.set(traitName, tempList);
+        })
+      })
+
+      btnAdd.addEventListener('click', ev => {
+        newLinkName.value = '';
+        component.set(traitName, [
+          ...component.props().menus,
+          {
+            name: newName,
+            pageLink: newUrl,
+            isActive: false,
+          }
+        ]);
+        newName = '';
+        newUrl = '';
+      })
+
+      return el;
+    },
+
+    onEvent({ elInput, component, event }) {
+      if (event.target.name) {
+        const index = parseInt(event.target.id.split('-')[3], 10);
+        const menus = [...component.props().menus];
+        const itemToChange = menus[index];
+        menus.splice(index, 1, { ...itemToChange, [event.target.name]: event.target.value });
+        component.set('menus', menus.slice(0, socialList.length));
+      }
+    },
+
+    onUpdate({ elInput, component }) {
+      const menuItems = component.props().menus;
+      const itemsContainer = elInput.querySelector('.trait-menu-items-container');
+
+      while (itemsContainer.hasChildNodes()) {
+        itemsContainer.removeChild(itemsContainer.firstChild);
+      }
+
+      let socialItemsStr = '';
+      menuItems.forEach((item, index) => {
+        socialItemsStr = socialItemsStr + `
+          <div class="trait-menu-item-link-item">
+            <div>${item.name}</div>
+            <button class="trait-menu-item-link-delete"><i class="fa fa-trash"></i></button>
+          </div>
+        `;
+      });
+      itemsContainer.innerHTML = socialItemsStr;
+
+      itemsContainer.querySelectorAll('.trait-menu-item-link-delete').forEach((item, index) => {
+        item.addEventListener('click', event => {
+          //handle click
+          const tempList = [...menuItems];
+          tempList.splice(index, 1);
+          component.set('menus', tempList);
+        })
+      })
+    },
+  })
+
   editor.TraitManager.addType('date', {
     noLabel: true,
     // Expects as return a simple HTML string or an HTML element
@@ -868,17 +1016,27 @@ export const webBuilderPlugin = (editor) => {
         tempCpt.append(component.clone(), {at: index})
       }
     }
-    if(component && !Array.isArray(component) && component.get('type')==='social-bar'){
-      let parentElement=component.getEl();
+    if(component && Array.isArray(component) && component[component.length-1].get('type')==='social-bar'){
+      let parentElement=component[component.length-1].getEl();
       let imageElements=parentElement.getElementsByTagName('img');
       let linkElements=parentElement.getElementsByTagName('a');
       let tempList=[];
-      for(let i=0; i<imageElements.length;i++){
+      for(let i=0; i<linkElements.length;i++){
           const _imageEl=imageElements[i]; 
           const item={name:_imageEl.alt, url:linkElements[i].href, image:_imageEl.src, type:'webaddress'};
           tempList.push(item);
       }
-      component.set('socialList', tempList);
+      component[component.length-1].set('socialList', tempList);
+    }
+    if (component && !Array.isArray(component) && component.get('type')==='menu'){
+      let parentElement=component.getEl();
+      let linkElements=parentElement.getElementsByTagName('a');
+      let tempList=[];
+      for(let i=0; i<linkElements.length;i++){
+        const item={name:linkElements[i].text, pageLink:linkElements[i].href, isActive: false};
+        tempList.push(item);
+      }
+      component.set('menus', tempList);
     }
   })
 
