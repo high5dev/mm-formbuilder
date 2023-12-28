@@ -81,7 +81,7 @@ export default function Index({
                       selectedMenu[index] && sidebarData.isOpen ? { background: '#e4e4e4' } : null
                     }
                   >
-                    <div className="justify-content-between align-items-center menu-icon">
+                    <div className="justify-content-between align-items-center menu-icon ">
                       {item.icon}
                     </div>
                     <span className="menu-content px-50">

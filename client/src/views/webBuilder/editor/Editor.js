@@ -178,7 +178,7 @@ export default function Editor({
   const [showAddCartButtonModal, setShowAddCartButtonModal] = useState(false);
   const [cartProductId, setCartProductId] = useState('');
   const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
-  
+
   const loadedRef = useRef();
   const storeRef = useRef();
   loadedRef.current = isStoreLoading;
@@ -368,9 +368,9 @@ export default function Editor({
     setSelectedProductCategory(category);
     selectedCmp.set('category', category);
   };
-  const handleOnclick =(index) =>{
-    setOpenCategory({index: index, value: true})
-  }
+  const handleOnclick = (index) => {
+    setOpenCategory({ index: index, value: true });
+  };
   // useEffect(() =>{
   //   let interval;
   //     if(editor && !form.isPublish){
@@ -526,7 +526,7 @@ export default function Editor({
         appendTo: document.querySelector('#style-manager-container')
       },
       selectorManager: {
-        custom:true,
+        custom: true,
         componentFirst: true,
         appendTo: document.querySelector('#selector-manager-container')
       },
@@ -782,7 +782,8 @@ export default function Editor({
         } catch (e) {}
       }
     });
-    gjsEditor.on('block:drag:start', function (model) {});
+    gjsEditor.on('block:drag:start', function (model) {
+    });
     gjsEditor.on('block:drag:stop', function (model) {
       setSidebarData({
         ...sidebarData,
@@ -809,8 +810,10 @@ export default function Editor({
       setBlockManager(props);
     });
     gjsEditor.on('component:selected', (cmp) => {
+      setTab('Settings');
       setSelectedCmp(cmp);
       console.log('cmp-------------------', cmp);
+      setRSidebarOpen(true);
       if (
         cmp.attributes.type === 'gridproductgallery' ||
         cmp.attributes.type === 'sliderproductgallery' ||
@@ -1228,25 +1231,23 @@ export default function Editor({
         if (el?.category[0]?.subMenu === 'repeater') {
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
-          const style=htmlCmp.head;
-          const firstChild=htmlCmp.body.firstChild;
-          if(firstChild.className){
-            firstChild.className+=' repeater';
+          const style = htmlCmp.head;
+          const firstChild = htmlCmp.body.firstChild;
+          if (firstChild.className) {
+            firstChild.className += ' repeater';
+          } else {
+            firstChild.className += 'repeater';
           }
-          else{
-            firstChild.className+='repeater';
-          }
-          const elements=firstChild.children;
-          if(elements && elements.length>0){
-            for(let i=0; i<elements.length;i++){
-              if(elements[i].className){
-                elements[i].className+=' repeater-item';
+          const elements = firstChild.children;
+          if (elements && elements.length > 0) {
+            for (let i = 0; i < elements.length; i++) {
+              if (elements[i].className) {
+                elements[i].className += ' repeater-item';
+              } else {
+                elements[i].className += 'repeater-item';
               }
-              else{
-                elements[i].className+='repeater-item';
-              }
-              elements[i].style.backgroundColor='white';
-              elements[i].style.minHeight='0px';
+              elements[i].style.backgroundColor = 'white';
+              elements[i].style.minHeight = '0px';
             }
           }
           editor.BlockManager.add(
@@ -1289,67 +1290,72 @@ export default function Editor({
         if (el?.category[0]?.subMenu === 'social-bar') {
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
-          const firstChild=htmlCmp.body.firstChild;
-          if(firstChild.className){
-            firstChild.className+=' social-bar';
+          const firstChild = htmlCmp.body.firstChild;
+          if (firstChild.className) {
+            firstChild.className += ' social-bar';
+          } else {
+            firstChild.className = 'social-bar';
           }
-          else{
-            firstChild.className='social-bar';
-          }
-          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
-            label: el?.category[0]?.name,
-            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
-            media: el.imageUrl,
-            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
-            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
-            mainMenu:`${el?.category[0]?.mainMenu}`,
-            refcategory:`${el?.category[0]?.name}`,
-            submenu:el?.category[0]?.subMenu,
-          });
+          editor.BlockManager.add(
+            `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`,
+            {
+              label: el?.category[0]?.name,
+              content: htmlCmp.head.innerHTML + htmlCmp.body.innerHTML,
+              media: el.imageUrl,
+              category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+              menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+              mainMenu: `${el?.category[0]?.mainMenu}`,
+              refcategory: `${el?.category[0]?.name}`,
+              submenu: el?.category[0]?.subMenu
+            }
+          );
         }
         if (el?.category[0]?.subMenu === 'gallery') {
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
-          const firstChild=htmlCmp.body.firstChild;
-          if(firstChild.className){
-            firstChild.className+=' gallery';
+          const firstChild = htmlCmp.body.firstChild;
+          if (firstChild.className) {
+            firstChild.className += ' gallery';
+          } else {
+            firstChild.className = 'gallery';
           }
-          else{
-            firstChild.className='gallery';
-          }
-          const elements=firstChild.children;
-          if(elements && elements.length>0){
-            for(let i=0; i<elements.length;i++){
-              if(elements[i].className){
-                elements[i].className+=' gallery-item';
-              }
-              else{
-                elements[i].className='gallery-item';
+          const elements = firstChild.children;
+          if (elements && elements.length > 0) {
+            for (let i = 0; i < elements.length; i++) {
+              if (elements[i].className) {
+                elements[i].className += ' gallery-item';
+              } else {
+                elements[i].className = 'gallery-item';
               }
             }
-          };
-          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
-            label: el?.category[0]?.name,
-            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
-            media: el.imageUrl,
-            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
-            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
-            mainMenu:`${el?.category[0]?.mainMenu}`,
-            refcategory:`${el?.category[0]?.name}`,
-            submenu:el?.category[0]?.subMenu,
-          });
-        }
-        else{
-          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
-            label: el?.category[0]?.name,
-            content: el.html,
-            media: el.imageUrl,
-            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
-            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
-            mainMenu:`${el?.category[0]?.mainMenu}`,
-            refcategory:`${el?.category[0]?.name}`,
-            submenu:el?.category[0]?.subMenu,
-          });
+          }
+          editor.BlockManager.add(
+            `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`,
+            {
+              label: el?.category[0]?.name,
+              content: htmlCmp.head.innerHTML + htmlCmp.body.innerHTML,
+              media: el.imageUrl,
+              category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+              menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+              mainMenu: `${el?.category[0]?.mainMenu}`,
+              refcategory: `${el?.category[0]?.name}`,
+              submenu: el?.category[0]?.subMenu
+            }
+          );
+        } else {
+          editor.BlockManager.add(
+            `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`,
+            {
+              label: el?.category[0]?.name,
+              content: el.html,
+              media: el.imageUrl,
+              category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+              menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+              mainMenu: `${el?.category[0]?.mainMenu}`,
+              refcategory: `${el?.category[0]?.name}`,
+              submenu: el?.category[0]?.subMenu
+            }
+          );
         }
       });
       // console.log('editorBlockManager', editor.BlockManager?.blocks);
@@ -1549,7 +1555,7 @@ export default function Editor({
                                   <div
                                     className="d-flex align-items-center px-50 border-bottom border-top border-bottom border-top "
                                     onClick={() => {
-                                      handleOnclick(index)
+                                      handleOnclick(index);
                                     }}
                                   >
                                     <div
@@ -1669,7 +1675,7 @@ export default function Editor({
                                   <div
                                     className="d-flex align-items-center px-50 border-bottom border-top border-bottom border-top "
                                     onClick={() => {
-                                      handleOnclick(index)
+                                      handleOnclick(index);
                                     }}
                                   >
                                     <div
@@ -1692,7 +1698,11 @@ export default function Editor({
                                   </div>
                                   {tempBlocks.map((b, ix) => {
                                     return (
-                                      <Collapse isOpen={OpenCategory.index == index ? OpenCategory.value : false}>
+                                      <Collapse
+                                        isOpen={
+                                          OpenCategory.index == index ? OpenCategory.value : false
+                                        }
+                                      >
                                         <div
                                           key={ix}
                                           className={
@@ -1778,7 +1788,7 @@ export default function Editor({
                                     <div
                                       className="d-flex align-items-center px-50 border-bottom border-top"
                                       onClick={() => {
-                                        handleOnclick(index)
+                                        handleOnclick(index);
                                       }}
                                     >
                                       <div
@@ -1801,7 +1811,11 @@ export default function Editor({
                                     </div>
                                     {tempBlocks.map((b, ix) => {
                                       return (
-                                        <Collapse isOpen={OpenCategory.index == index ? OpenCategory.value : false}>
+                                        <Collapse
+                                          isOpen={
+                                            OpenCategory.index == index ? OpenCategory.value : false
+                                          }
+                                        >
                                           <div
                                             key={ix}
                                             className={
@@ -2227,7 +2241,7 @@ export default function Editor({
           options={{ suppressScrollX: true }}
           style={{ height: `calc(100vh - 120px)` }}
         >
-          <div className="sidebar-header px-1">
+          {/* <div className="sidebar-header px-1">
             <span className="px-1 fs-5 fw-bolder text-black">{tab}</span>
             <span>
               <X
@@ -2237,7 +2251,32 @@ export default function Editor({
                 }}
               />
             </span>
-          </div>
+            
+          </div> */}
+          <div className='d-flex'> 
+          <div className="col-6  text-center text-dark ">
+              <Button
+                color={tab === 'Styles'? 'primary':'secondary'}
+                className='w-100 rounded-0'
+                onClick={() => {
+                   setTab('Styles');
+                }}
+              >
+                Styles
+              </Button>
+            </div>
+            <div className="col-6 text-center  text-dark">
+              <Button
+                color={tab === 'Settings'? 'primary':'secondary'}
+                className='w-100 rounded-0'
+                onClick={() => {
+                   setTab('Settings');
+                }}
+              >
+                Settings
+              </Button>
+            </div>
+            </div>
           <div style={{ display: tab === 'Styles' ? 'block' : 'none' }}>
             <div id="selector-manager-container" />
             <div id="style-manager-container" />

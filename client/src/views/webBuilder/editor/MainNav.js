@@ -180,7 +180,7 @@ export default function MainNav({
       <div className="up-navbar d-flex justify-content-between align-items-center">
         <div className="d-flex justify-content align-items-center">
           <div className="logo">
-            <span className="title brand-text text-dark">My Manager</span>
+            <span className="title brand-text text-dark"><img src={Logo} height={20} /></span>
           </div>
           <div className="menu-bar d-flex justify-content-between align-items-center">
             <UncontrolledDropdown style={{ cursor: 'pointer' }}>
@@ -224,13 +224,9 @@ export default function MainNav({
             </UncontrolledDropdown>
           </div>
         </div>
-        <div>
-          <img src={Logo} height={40} />
-        </div>
+        <div>{'1 hour ago saved'}</div>
         <div className="additional-bar d-flex align-items-center justify-content-around">
           <div className="menu-item hover-effect text-dark">Invite</div>
-          {/* <span className="menu-item text-primary text-dark">History</span> */}
-
           <Button className="menu-item text-primary text-dark" color="success">
             Save
           </Button>
@@ -582,7 +578,7 @@ export default function MainNav({
               </span>
             </div> */}
             <div className="d-flex">
-              <span className="menu-icon">
+              {/* <span className="menu-icon">
                 <FaPaintBrush
                   size={24}
                   color={'black'}
@@ -595,7 +591,7 @@ export default function MainNav({
                 <UncontrolledTooltip placement="bottom" target="styles">
                   Styles
                 </UncontrolledTooltip>
-              </span>
+              </span> */}
               <span className="menu-icon">
                 <MdOutlineLayers
                   size={26}
@@ -610,7 +606,7 @@ export default function MainNav({
                   Layers
                 </UncontrolledTooltip>
               </span>
-              <span className="menu-icon">
+              {/* <span className="menu-icon">
                 <FiSettings
                   size={24}
                   color={'black'}
@@ -623,7 +619,7 @@ export default function MainNav({
                 <UncontrolledTooltip placement="bottom" target="traits">
                   Settings
                 </UncontrolledTooltip>
-              </span>
+              </span> */}
               {/* <span className="menu-icon">
               <MdOutlineLibraryBooks size={24} color={'black'} id="pages" onClick={(e)=>{
                 setTab('Pages');
