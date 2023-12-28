@@ -105,6 +105,7 @@ export default function Editor({
   setPage,
   isclear,
   setIsClear,
+  isback,
   ispreview,
   ispublish,
   setIsPreview,
@@ -1085,7 +1086,13 @@ export default function Editor({
         html: html,
         css: css
       };
-
+      if(isback){
+        dispatch(updatePageAction(id, payload)).then((res) => {
+          if (res) {
+            history.goBack();
+          }
+        });
+      }
       if (ispreview) {
         dispatch(updatePageAction(id, payload)).then((res) => {
           if (res) {
@@ -1106,8 +1113,8 @@ export default function Editor({
           }
         });
       }
-    }
-  }, [ispreview, ispublish]);
+    };
+  }, [ispreview, ispublish, isback]);
 
   useEffect(() => {
     if (page) {
@@ -1446,6 +1453,20 @@ export default function Editor({
       }
     }
   }, [store.webBlogs]);
+
+  window.addEventListener('popstate', () => {
+    if (editor) {
+      const current_page = editor.Pages.getSelected();
+      const html = editor.getHtml({ current_page });
+      const css = editor.getCss({ current_page });
+      const payload = {
+        page: page?._id,
+        html: html,
+        css: css,
+      };
+        dispatch(updatePageAction(id, payload));
+    };
+  });
 
   return (
     <div className="d-flex">

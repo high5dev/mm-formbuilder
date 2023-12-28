@@ -11,6 +11,7 @@ export default function Index() {
   const [page, setPage]=useState();
   const [device, setDevice] = useState('desktop');
   const [ispreview, setIsPreview]=useState(false);
+  const [isback, setIsBack]=useState(false);
   const [ispublish, setIsPublish]=useState(false);
   const [isclear, setIsClear] =useState(false);
   const [isblog, setIsBlog]=useState(false);
@@ -57,6 +58,7 @@ export default function Index() {
             page={page}
             setPage={setPage}
             ispreview={ispreview}
+            setIsBack={setIsBack}
             setIsPreview={setIsPreview}
             setIsPublish={setIsPublish}
             tab={tab}
@@ -103,6 +105,7 @@ export default function Index() {
               setPage={setPage}
               ispreview={ispreview}
               ispublish={ispublish}
+              isback={isback}
               setIsPreview={setIsPreview}
               setIsPublish={setIsPublish}
               tab={tab}

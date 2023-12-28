@@ -16,6 +16,10 @@ export const updateChildForm =(id, payload) =>{
   return API.put('/web-builder-form/edit/'+id, payload)
 }
 
+export const deleteChildForm=(id)=>{
+  return API.delete(`/web-builder-form/delete/${id}`)
+}
+
 export const getChildFormPage=(id, payload)=>{
   return API.get('/web-builder-form/page/'+id, {params:payload})
 }
@@ -82,6 +86,10 @@ export const updateForm = (id, payload) => {
 
 export const renameWebsite =(id, payload) => {
   return API.put('/web-builder/rename/' + id, payload);
+}
+
+export const deleteWebsite =(id) =>{
+  return API.delete(`/web-builder/delete/${id}`);
 }
 
 export const createPage=(payload) => {

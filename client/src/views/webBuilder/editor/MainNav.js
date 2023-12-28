@@ -59,6 +59,7 @@ export default function MainNav({
   page,
   setPage,
   setIsClear,
+  setIsBack,
   setIsPreview,
   setIsPublish,
   setTab,
@@ -183,6 +184,7 @@ export default function MainNav({
             <span className="title brand-text text-dark"><img src={Logo} height={20} /></span>
           </div>
           <div className="menu-bar d-flex justify-content-between align-items-center">
+            <div className='text-white cursor-pointer' style={{fontSize:'12px', fontWeight:'600', marginLeft:'10px'}} onClick={(e)=>setIsBack(true)}>Back</div>
             <UncontrolledDropdown style={{ cursor: 'pointer' }}>
               <DropdownToggle tag="div" className="btn btn-sm hover-effect text-dark">
                 Site

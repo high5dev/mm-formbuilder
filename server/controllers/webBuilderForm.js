@@ -2,7 +2,7 @@
 const { default: mongoose } = require("mongoose");
 const asyncHandler = require("express-async-handler");
 const {
- Entry,
+ WebsiteEntry,
  WebBuilderForm,
  WebBuilderFormPage
 } = require("../models/index/index");
@@ -83,8 +83,8 @@ exports.deleteForm = asyncHandler(async (req, res) => {
 let { id } = req.params;
 try {
     id = mongoose.Types.ObjectId(id);
-    await WebBuilderForm.findByIdAndUpdate(id, { isDelete: true });
-    res.status(200).json({ success: true });
+    const deletedForm=await WebBuilderForm.findByIdAndUpdate(id, { isDelete: true }, {new:true});
+    res.status(200).json({ success: true, data:deletedForm });
 } catch (err) {
     res.send({ msg: err.message.replace(/\'/g, ""), success: false });
 }

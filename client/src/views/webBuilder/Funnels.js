@@ -39,12 +39,12 @@ export default function Funnels({
   isDesktopView
 }) {
   const store = useSelector((state) => state.websiteEditor);
+  const formsCount=store.formsCount;
   const [collapse, setCollapse] = useState(false);
   const [categoryUpdate, setCategoryUpdate] = useState(0);
   const [categoryData, setCategoryData] = useState([]);
   const [checkedCategoryData, setCheckedCategoryData] = useState([]);
   const [tableData, setTableData] = useState([]);
-  const [formsCount,setFormsCount] = useState(null)
 
   const handleCategoryCollapse = () => setCollapse(!collapse);
 
@@ -65,9 +65,7 @@ export default function Funnels({
     dispatch(getFormCategoriesAction()).then((res) => {
       setCategoryData(res);
     });
-    dispatch(getWebsitesCountAction()).then(res=>{
-      setFormsCount(res)
-    })
+    dispatch(getWebsitesCountAction());
   }, []);
 
   useEffect(() => {
