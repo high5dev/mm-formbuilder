@@ -80,6 +80,29 @@ export const menu = [
     subMenu: [],
   },
   {
+    id: 'Blocks',
+    name: 'Blocks',
+    icon: <FaRegSquare size={24} color={'#585858'} />,
+    subMenu: [
+      {
+        id: 'repeater',
+        name: 'Repeater',
+      },
+      {
+        id: 'gallery',
+        name: 'Gallery'
+      },
+      {
+        id:'iframe',
+        name:'Iframe'
+      },
+      {
+        id:'social-bar',
+        name:'SocialBar'
+      }
+    ],
+  },
+  {
     id: 'assets',
     name: 'Assets',
     icon: <MdOutlineBrokenImage size={20} color={'#585858'} />,
@@ -115,28 +138,36 @@ export const menu = [
         id: 'menus-search',
         name: 'Menus & Search',
       },
+    ],
+  },
+  {
+    id: 'text',
+    name: 'Text',
+    icon: <Type size={24} color={'#585858'} />,
+    subMenu: [
       {
-          id: 'Blocks',
-          name: 'Blocks',
-          subMenu: [
-            {
-              id: 'repeater',
-              name: 'Repeater',
-            },
-            {
-              id: 'gallery',
-              name: 'Gallery'
-            },
-            {
-              id:'iframe',
-              name:'Iframe'
-            },
-            {
-              id:'social-bar',
-              name:'SocialBar'
-            }
-          ],
-        },
+        id: 'text-themes',
+        name: 'Text Themes',
+      },
+      {
+        id: 'titles',
+        name: 'Titles',
+      },
+      {
+        id: 'collapsible-text',
+        name: 'Collapsible Text',
+      },
+      {
+        id: 'text-mask',
+        name: 'Text Mask',
+      },
+    ],
+  },
+  {
+    id: 'menus-search',
+    name: 'Menus & Search',
+    icon: <FaSearch size={24} color={'#585858'} />,
+    subMenu: [
       {
         id: 'layout-tools',
         name: 'layout-tools',
@@ -190,14 +221,6 @@ export const menu = [
       {
         id: 'video',
         name: 'Video',
-      },
-      {
-        id: 'content-templates',
-        name: 'Content Templates',
-      },
-      {
-        id: 'text',
-        name: 'Text',
       },
     ],
   },
@@ -369,7 +392,7 @@ export const menu = [
   {
     id: 'members',
     name: 'Members',
-    icon: <MdOutlineGroupAdd size={20} color={'#585858'} />,
+    icon: <MdOutlineGroupAdd size={24} color={'#585858'} />,
     subMenu: [],
   },
   {

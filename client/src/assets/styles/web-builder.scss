@@ -787,3 +787,44 @@
     cursor: pointer;
   }
 }
+
+.trait-menu-item-link-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.trait-new-menu-item-link {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.trait-new-menu-item {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.trait-new-menu-item-label {
+  font-size: 14px;
+}
+
+.trait-menu-item-link-delete {
+  border: none;
+}
+
+.trait-new-menu-item-pagelink, .trait-new-menu-item-link__name {
+  border: solid 1px !important;
+  border-radius: 3px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.trait-new-menu-item-link-add-btn {
+  width: 100px;
+  align-self: center;
+}

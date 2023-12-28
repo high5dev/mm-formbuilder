@@ -526,6 +526,8 @@ export default function Editor({
         appendTo: document.querySelector('#style-manager-container')
       },
       selectorManager: {
+        custom:true,
+        componentFirst: true,
         appendTo: document.querySelector('#selector-manager-container')
       },
       layerManager: {
@@ -1226,23 +1228,25 @@ export default function Editor({
         if (el?.category[0]?.subMenu === 'repeater') {
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
-          const style = htmlCmp.head;
-          const firstChild = htmlCmp.body.firstChild;
-          if (firstChild.className) {
-            firstChild.className += ' repeater';
-          } else {
-            firstChild.className += 'repeater';
+          const style=htmlCmp.head;
+          const firstChild=htmlCmp.body.firstChild;
+          if(firstChild.className){
+            firstChild.className+=' repeater';
           }
-          const elements = firstChild.children;
-          if (elements && elements.length > 0) {
-            for (let i = 0; i < elements.length; i++) {
-              if (elements[i].className) {
-                elements[i].className += ' repeater-item';
-              } else {
-                elements[i].className += 'repeater-item';
+          else{
+            firstChild.className+='repeater';
+          }
+          const elements=firstChild.children;
+          if(elements && elements.length>0){
+            for(let i=0; i<elements.length;i++){
+              if(elements[i].className){
+                elements[i].className+=' repeater-item';
               }
-              elements[i].style.backgroundColor = 'white';
-              elements[i].style.minHeight = '0px';
+              else{
+                elements[i].className+='repeater-item';
+              }
+              elements[i].style.backgroundColor='white';
+              elements[i].style.minHeight='0px';
             }
           }
           editor.BlockManager.add(
@@ -1285,72 +1289,67 @@ export default function Editor({
         if (el?.category[0]?.subMenu === 'social-bar') {
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
-          const firstChild = htmlCmp.body.firstChild;
-          if (firstChild.className) {
-            firstChild.className += ' social-bar';
-          } else {
-            firstChild.className = 'social-bar';
+          const firstChild=htmlCmp.body.firstChild;
+          if(firstChild.className){
+            firstChild.className+=' social-bar';
           }
-          editor.BlockManager.add(
-            `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`,
-            {
-              label: el?.category[0]?.name,
-              content: htmlCmp.head.innerHTML + htmlCmp.body.innerHTML,
-              media: el.imageUrl,
-              category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
-              menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
-              mainMenu: `${el?.category[0]?.mainMenu}`,
-              refcategory: `${el?.category[0]?.name}`,
-              submenu: el?.category[0]?.subMenu
-            }
-          );
+          else{
+            firstChild.className='social-bar';
+          }
+          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
+            label: el?.category[0]?.name,
+            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
+            media: el.imageUrl,
+            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+            mainMenu:`${el?.category[0]?.mainMenu}`,
+            refcategory:`${el?.category[0]?.name}`,
+            submenu:el?.category[0]?.subMenu,
+          });
         }
         if (el?.category[0]?.subMenu === 'gallery') {
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
-          const firstChild = htmlCmp.body.firstChild;
-          if (firstChild.className) {
-            firstChild.className += ' gallery';
-          } else {
-            firstChild.className = 'gallery';
+          const firstChild=htmlCmp.body.firstChild;
+          if(firstChild.className){
+            firstChild.className+=' gallery';
           }
-          const elements = firstChild.children;
-          if (elements && elements.length > 0) {
-            for (let i = 0; i < elements.length; i++) {
-              if (elements[i].className) {
-                elements[i].className += ' gallery-item';
-              } else {
-                elements[i].className = 'gallery-item';
+          else{
+            firstChild.className='gallery';
+          }
+          const elements=firstChild.children;
+          if(elements && elements.length>0){
+            for(let i=0; i<elements.length;i++){
+              if(elements[i].className){
+                elements[i].className+=' gallery-item';
+              }
+              else{
+                elements[i].className='gallery-item';
               }
             }
-          }
-          editor.BlockManager.add(
-            `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`,
-            {
-              label: el?.category[0]?.name,
-              content: htmlCmp.head.innerHTML + htmlCmp.body.innerHTML,
-              media: el.imageUrl,
-              category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
-              menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
-              mainMenu: `${el?.category[0]?.mainMenu}`,
-              refcategory: `${el?.category[0]?.name}`,
-              submenu: el?.category[0]?.subMenu
-            }
-          );
-        } else {
-          editor.BlockManager.add(
-            `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`,
-            {
-              label: el?.category[0]?.name,
-              content: el.html,
-              media: el.imageUrl,
-              category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
-              menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
-              mainMenu: `${el?.category[0]?.mainMenu}`,
-              refcategory: `${el?.category[0]?.name}`,
-              submenu: el?.category[0]?.subMenu
-            }
-          );
+          };
+          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
+            label: el?.category[0]?.name,
+            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
+            media: el.imageUrl,
+            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+            mainMenu:`${el?.category[0]?.mainMenu}`,
+            refcategory:`${el?.category[0]?.name}`,
+            submenu:el?.category[0]?.subMenu,
+          });
+        }
+        else{
+          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
+            label: el?.category[0]?.name,
+            content: el.html,
+            media: el.imageUrl,
+            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+            mainMenu:`${el?.category[0]?.mainMenu}`,
+            refcategory:`${el?.category[0]?.name}`,
+            submenu:el?.category[0]?.subMenu,
+          });
         }
       });
       // console.log('editorBlockManager', editor.BlockManager?.blocks);
