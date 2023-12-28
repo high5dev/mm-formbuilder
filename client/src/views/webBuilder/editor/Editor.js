@@ -474,6 +474,8 @@ export default function Editor({
         appendTo: document.querySelector('#style-manager-container'),
       },
       selectorManager: {
+        custom:true,
+        componentFirst: true,
         appendTo: document.querySelector('#selector-manager-container'),
       },
       layerManager: {
