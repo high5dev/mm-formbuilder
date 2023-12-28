@@ -717,6 +717,10 @@ export default function Editor({
       }
     });
     gjsEditor.on('component:remove', (component) => {
+      const id = component.getId();
+      const css=gjsEditor.Css;
+      const rules = css.getRules(`#${id}`);
+      css.remove(rules);
       if (!loadedRef.current && component.changed != {}) {
         if (compoId == '') compoId = component.ccid.split('-')[0];
         const parentType = component.parent()?.get('type');
@@ -1052,6 +1056,7 @@ export default function Editor({
     if (isclear) {
       if (editor) {
         editor.Components.clear();
+        editor.CssComposer.clear();
       }
       setIsClear(false);
     }
@@ -1336,33 +1341,30 @@ export default function Editor({
               }
             }
           }
-          editor.BlockManager.add(
-            `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`,
-            {
-              label: el?.category[0]?.name,
-              content: htmlCmp.head.innerHTML + htmlCmp.body.innerHTML,
-              media: el.imageUrl,
-              category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
-              menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
-              mainMenu: `${el?.category[0]?.mainMenu}`,
-              refcategory: `${el?.category[0]?.name}`,
-              submenu: el?.category[0]?.subMenu
-            }
-          );
-        } else {
-          editor.BlockManager.add(
-            `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`,
-            {
-              label: el?.category[0]?.name,
-              content: el.html,
-              media: el.imageUrl,
-              category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
-              menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
-              mainMenu: `${el?.category[0]?.mainMenu}`,
-              refcategory: `${el?.category[0]?.name}`,
-              submenu: el?.category[0]?.subMenu
-            }
-          );
+          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
+            label: el?.category[0]?.name,
+            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
+            media: el.imageUrl,
+            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+            mainMenu:`${el?.category[0]?.mainMenu}`,
+            refcategory:`${el?.category[0]?.name}`,
+            submenu:el?.category[0]?.subMenu,
+          });
+        }
+        else{
+          const parser = new DOMParser();
+          let htmlCmp = parser.parseFromString(el.html, 'text/html');
+          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
+            label: el?.category[0]?.name,
+            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
+            media: el.imageUrl,
+            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+            mainMenu:`${el?.category[0]?.mainMenu}`,
+            refcategory:`${el?.category[0]?.name}`,
+            submenu:el?.category[0]?.subMenu,
+          });
         }
       });
       // console.log('editorBlockManager', editor.BlockManager?.blocks);
