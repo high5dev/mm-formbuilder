@@ -146,14 +146,14 @@ export const menu = [
         id: 'titles',
         name: 'Titles',
       },
-      {
-        id: 'collapsible-text',
-        name: 'Collapsible Text',
-      },
-      {
-        id: 'text-mask',
-        name: 'Text Mask',
-      },
+      // {
+      //   id: 'collapsible-text',
+      //   name: 'Collapsible Text',
+      // },
+      // {
+      //   id: 'text-mask',
+      //   name: 'Text Mask',
+      // },
     ],
   },
   {
@@ -203,18 +203,18 @@ export const menu = [
         id: 'shapes',
         name: 'Shapes',
       },
-      {
-        id: 'vector-art',
-        name: 'Vector Art',
-      },
-      {
-        id: 'text-effects',
-        name: 'Text Effects',
-      },
-      {
-        id: 'video',
-        name: 'Video',
-      },
+      // {
+      //   id: 'vector-art',
+      //   name: 'Vector Art',
+      // },
+      // {
+      //   id: 'text-effects',
+      //   name: 'Text Effects',
+      // },
+      // {
+      //   id: 'video',
+      //   name: 'Video',
+      // },
     ],
   },
   {
@@ -397,12 +397,12 @@ export const menu = [
       }
     ],
   },
-  {
-    id: 'members',
-    name: 'Members',
-    icon: <MdOutlineGroupAdd size={24} color={'#585858'} />,
-    subMenu: [],
-  },
+  // {
+  //   id: 'members',
+  //   name: 'Members',
+  //   icon: <MdOutlineGroupAdd size={24} color={'#585858'} />,
+  //   subMenu: [],
+  // },
   {
     id: 'cms',
     name: 'CMS',
