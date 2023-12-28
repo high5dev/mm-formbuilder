@@ -4,7 +4,8 @@ import { useParams } from 'react-router-dom';
 import { Button, ListGroup, ListGroupItem } from 'reactstrap';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { updateFormDataAction, getChildFormsAction } from '../../../store/action';
+import {getChildFormsAction, deleteChildFormAction } from '../../../store/action';
+import {setChildFormReducer, setChildFormsReducer} from '../../../store/reducer';
 import NewStepModal from './NewStepModal';
 import { getUserData } from '../../../../../auth/utils';
 
@@ -20,12 +21,10 @@ export default function Sidebar({ active, setActive, dispatch, store }) {
 
   const mySwal = withReactContent(Swal);
 
-  const handleDeleteStep = async (e, stepId) => {
-    e.stopPropagation();
+  const handleDeleteForm = async (id) => {
     const res = await mySwal.fire({
       title: 'Delete?',
-      text: 'Are you sure you want to delete this step in funnel?',
-      icon: 'danger',
+      text: 'Are you sure you want to delete this form?',
       showCancelButton: true,
       confirmButtonText: 'Delete',
       customClass: {
@@ -35,20 +34,16 @@ export default function Sidebar({ active, setActive, dispatch, store }) {
       buttonsStyling: false
     });
     if (res.value) {
-      let formData = store.form.formData;
-      formData = formData.filter((x) => x.id !== stepId);
-
-      dispatch(updateFormDataAction(id, { formData: formData }));
+      dispatch(deleteChildFormAction(id)).then((res)=>{
+        if(res){
+          let childForms=store?.childForms;
+          childForms=childForms.filter((_form)=>_form._id!=id);
+          dispatch(setChildFormsReducer(childForms));
+        }
+      });
     }
   };
 
-  useEffect(() => {
-    dispatch(getChildFormsAction(store?.form?._id)).then((res)=>{
-      if(res && res.length){
-        setActive(res[0]._id)
-      }
-    });
-  }, []);
   return (
     <div style={{ minWidth: '260px', height: 'calc(100vh - 2rem)', border:'1px solid #ebe9f1' }}>
       <div className='sidebar-title d-flex justify-content-around' style={{paddingTop:'15px', paddingLeft:'15px'}}>
@@ -86,7 +81,7 @@ export default function Sidebar({ active, setActive, dispatch, store }) {
                     </div>
                     <div className={`${style === x._id ? 'd-block' : 'd-none'} text-secondary`}>
                       {user.id === store?.form?.userId ? (
-                        <Trash size={16} onClick={(e) => handleDeleteStep(e, x._id)} />
+                        <Trash size={16} onClick={(e) => handleDeleteForm(x._id)} />
                       ) : (
                         <Lock size={14} className="text-muted" />
                       )}

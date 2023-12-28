@@ -32,7 +32,7 @@ import '@src/assets/styles/toggle-switch.scss';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
-import { deleteFormAction, getWebBuildersAction, getWebsiteAction } from '../store/action';
+import { deleteWebsiteAction, getWebBuildersAction, getWebsiteAction, getWebsitesCountAction } from '../store/action';
 import '../../../assets/scss/style.css';
 import ReactPaginate from 'react-paginate';
 import { getUserData } from '../../../auth/utils';
@@ -168,7 +168,7 @@ export default function FunnelTable({
   const handleRemove = async (row) => {
     const res = await MySwal.fire({
       title: 'Delete?',
-      text: 'Are you sure you want to delete this form?',
+      text: 'Are you sure you want to delete this website?',
       // icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -181,8 +181,22 @@ export default function FunnelTable({
       buttonsStyling: false
     });
     if (res.value) {
-      //delete form
-      dispatch(deleteFormAction(row._id));
+      dispatch(deleteWebsiteAction(row._id)).then((res)=>{
+        if(res){
+          dispatch(getWebsitesCountAction());
+          const payload={
+            currentPage,
+            rowsPerPage,
+            template:false
+          };
+          dispatch(getWebBuildersAction(payload)).then(res=>{
+            if(res && res.data){
+              setDisplayData([...res.data]);
+              setCount(Math.ceil(res.count / rowsPerPage))
+            }
+          })
+        }
+      });
     }
   };
   const optionLabels = ['Table', 'List'];
