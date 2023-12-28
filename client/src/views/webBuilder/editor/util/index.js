@@ -1,4 +1,4 @@
-import { Plus } from 'react-feather';
+import { Plus, Database } from 'react-feather';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
   FaRegSquare,
@@ -21,7 +21,9 @@ import {
   MdBackupTable,
   MdOutlineGroupAdd,
   MdLanguage,
+  MdOutlineContentPaste 
 } from 'react-icons/md';
+
 import cmsMenu1 from '../../../../assets/img/cms-menu-1.png';
 import cmsMenu2 from '../../../../assets/img/cms-menu-2.png';
 import cmsMenu3 from '../../../../assets/img/cms-menu-3.png';
@@ -37,57 +39,50 @@ export function cx(inputs){
   }
 
 // const sidebar_menu_items = [
-//   { icon: <Plus size={24} color={'#585858'} />, name: ' Quick Add' },
-//   { icon: <MdOutlineBrokenImage size={24} color={'#585858'} />, name: ' Assets' },
-//   { icon: <MdOutlineGroupWork size={24} color={'#585858'} />, name: ' Compositions' },
-//   { icon: <MdGrid3X3 size={24} color={'#585858'} />, name: ' Wireframes' },
-//   { icon: <MdOutlineLayers size={24} color={'#585858'} />, name: ' Layout Tools' },
-//   { icon: <MdTextFormat size={24} color={'#585858'} />, name: ' Text' },
-//   { icon: <FaRegSquare size={24} color={'#585858'} />, name: ' Buttons' },
-//   { icon: <FaSearch size={24} color={'#585858'} />, name: ' Menus & Search' },
-//   { icon: <MdOutlinePermMedia size={24} color={'#585858'} />, name: 'Media' },
-//   { icon: <MdTexture size={24} color={'#585858'} />, name: 'Decorative' },
-//   { icon: <MdOutlineContactPage size={24} color={'#585858'} />, name: 'Contact & Forms' },
-//   { icon: <FaYoutubeSquare size={24} color={'#585858'} />, name: 'Embed & Social' },
-//   { icon: <FaBlog size={24} color={'#585858'} />, name: 'Blog' },
-//   { icon: <MdStorefront size={24} color={'#585858'} />, name: 'Store' },
-//   { icon: <MdBackupTable size={24} color={'#585858'} />, name: 'Bookings' },
-//   { icon: <FaRegCalendarAlt size={24} color={'#585858'} />, name: 'Events' },
-//   { icon: <MdOutlineGroupAdd size={24} color={'#585858'} />, name: 'Members' },
-//   { icon: <MdOutlineNewspaper size={24} color={'#585858'} />, name: 'CMS' },
-//   { icon: <MdLanguage size={24} color={'#585858'} />, name: 'Multilingual' }
+//   { icon: <Plus size={20} color={'#585858'} />, name: ' Quick Add' },
+//   { icon: <MdOutlineBrokenImage size={20} color={'#585858'} />, name: ' Assets' },
+//   { icon: <MdOutlineGroupWork size={20} color={'#585858'} />, name: ' Compositions' },
+//   { icon: <MdGrid3X3 size={20} color={'#585858'} />, name: ' Wireframes' },
+//   { icon: <MdOutlineLayers size={20} color={'#585858'} />, name: ' Layout Tools' },
+//   { icon: <MdTextFormat size={20} color={'#585858'} />, name: ' Text' },
+//   { icon: <FaRegSquare size={20} color={'#585858'} />, name: ' Buttons' },
+//   { icon: <FaSearch size={20} color={'#585858'} />, name: ' Menus & Search' },
+//   { icon: <MdOutlinePermMedia size={20} color={'#585858'} />, name: 'Media' },
+//   { icon: <MdTexture size={20} color={'#585858'} />, name: 'Decorative' },
+//   { icon: <MdOutlineContactPage size={20} color={'#585858'} />, name: 'Contact & Forms' },
+//   { icon: <FaYoutubeSquare size={20} color={'#585858'} />, name: 'Embed & Social' },
+//   { icon: <FaBlog size={20} color={'#585858'} />, name: 'Blog' },
+//   { icon: <MdStorefront size={20} color={'#585858'} />, name: 'Store' },
+//   { icon: <MdBackupTable size={20} color={'#585858'} />, name: 'Bookings' },
+//   { icon: <FaRegCalendarAlt size={20} color={'#585858'} />, name: 'Events' },
+//   { icon: <MdOutlineGroupAdd size={20} color={'#585858'} />, name: 'Members' },
+//   { icon: <MdOutlineNewspaper size={20} color={'#585858'} />, name: 'CMS' },
+//   { icon: <MdLanguage size={20} color={'#585858'} />, name: 'Multilingual' }
 // ];
 
 export const menu = [
   {
-    id: 'quick-add',
-    name: 'Quick Add',
-    icon: <Plus size={24} color={'#585858'} />,
+    id: 'theme',
+    name: 'Theme',
+    icon: <MdOutlineLayers size={20} color={'#585858'} />,
     subMenu: [],
   },
   {
-    id: 'Blocks',
-    name: 'Blocks',
-    icon: <FaRegSquare size={24} color={'#585858'} />,
-    subMenu: [
-      {
-        id: 'repeater',
-        name: 'Repeater',
-      },
-      {
-        id: 'gallery',
-        name: 'Gallery'
-      },
-      {
-        id:'social-bar',
-        name:'SocialBar'
-      }
-    ],
+    id: 'content',
+    name: 'Content',
+    icon: <Database size={20} color={'#585858'} />,
+    subMenu: [],
+  },
+  {
+    id: 'quick-add',
+    name: 'Quick Add',
+    icon: <Plus size={20} color={'#585858'} />,
+    subMenu: [],
   },
   {
     id: 'assets',
     name: 'Assets',
-    icon: <MdOutlineBrokenImage size={24} color={'#585858'} />,
+    icon: <MdOutlineBrokenImage size={20} color={'#585858'} />,
     subMenu: [
       {
         id:'assets',
@@ -98,7 +93,7 @@ export const menu = [
   {
     id: 'compositions',
     name: 'Compositions',
-    icon: <MdOutlineGroupWork size={24} color={'#585858'} />,
+    icon: <MdOutlineGroupWork size={20} color={'#585858'} />,
     subMenu: [
       {
         id: 'designed-sections',
@@ -116,61 +111,46 @@ export const menu = [
         id: 'navigation',
         name: 'Navigation',
       },
-    ],
-  },
-  {
-    id: 'layout-tools',
-    name: 'Layout Tools',
-    icon: <MdOutlineLayers size={24} color={'#585858'} />,
-    subMenu: [
       {
-        id: 'containers',
-        name: 'Containers',
-      },
-    ],
-  },
-  {
-    id: 'text',
-    name: 'Text',
-    icon: <Type size={24} color={'#585858'} />,
-    subMenu: [
-      {
-        id: 'text-themes',
-        name: 'Text Themes',
+        id: 'menus-search',
+        name: 'Menus & Search',
       },
       {
-        id: 'titles',
-        name: 'Titles',
-      },
-      // {
-      //   id: 'collapsible-text',
-      //   name: 'Collapsible Text',
-      // },
-      // {
-      //   id: 'text-mask',
-      //   name: 'Text Mask',
-      // },
-    ],
-  },
-  {
-    id: 'menus-search',
-    name: 'Menus & Search',
-    icon: <FaSearch size={24} color={'#585858'} />,
-    subMenu: [
+          id: 'Blocks',
+          name: 'Blocks',
+          subMenu: [
+            {
+              id: 'repeater',
+              name: 'Repeater',
+            },
+            {
+              id: 'gallery',
+              name: 'Gallery'
+            },
+            {
+              id:'iframe',
+              name:'Iframe'
+            },
+            {
+              id:'social-bar',
+              name:'SocialBar'
+            }
+          ],
+        },
       {
-        id: 'menus',
-        name: 'Menus',
+        id: 'layout-tools',
+        name: 'layout-tools',
       },
       {
-        id: 'search',
-        name: 'Search',
+        id:'embed-social',
+        name: 'Embed & Social'
       },
     ],
   },
   {
     id: 'media',
     name: 'Media',
-    icon: <MdOutlinePermMedia size={24} color={'#585858'} />,
+    icon: <MdOutlinePermMedia size={20} color={'#585858'} />,
     subMenu: [
       {
         id: 'upload-media',
@@ -192,31 +172,39 @@ export const menu = [
   },
   {
     id: 'decorative',
-    name: 'Decorative',
-    icon: <MdTexture size={24} color={'#585858'} />,
+    name: 'Text & Decorative',
+    icon: <MdTexture size={20} color={'#585858'} />,
     subMenu: [
       {
         id: 'shapes',
         name: 'Shapes',
       },
-      // {
-      //   id: 'vector-art',
-      //   name: 'Vector Art',
-      // },
-      // {
-      //   id: 'text-effects',
-      //   name: 'Text Effects',
-      // },
-      // {
-      //   id: 'video',
-      //   name: 'Video',
-      // },
+      {
+        id: 'vector-art',
+        name: 'Vector Art',
+      },
+      {
+        id: 'text-effects',
+        name: 'Text Effects',
+      },
+      {
+        id: 'video',
+        name: 'Video',
+      },
+      {
+        id: 'content-templates',
+        name: 'Content Templates',
+      },
+      {
+        id: 'text',
+        name: 'Text',
+      },
     ],
   },
   {
     id: 'contact-forms',
-    name: 'Contact & Forms',
-    icon: <MdOutlineContactPage size={24} color={'#585858'} />,
+    name: 'Forms',
+    icon: <MdOutlineContactPage size={20} color={'#585858'} />,
     subMenu: [
       {
         id: 'forms',
@@ -229,24 +217,9 @@ export const menu = [
     ],
   },
   {
-    id: 'embed-social',
-    name: 'Embed & Social',
-    icon: <FaYoutubeSquare size={24} color={'#585858'} />,
-    subMenu: [
-      {
-        id: 'embed',
-        name: 'Embed',
-      },
-      {
-        id: 'social',
-        name: 'Social',
-      },
-    ],
-  },
-  {
     id: 'blog',
     name: 'Blog',
-    icon: <FaBlog size={24} color={'#585858'} />,
+    icon: <FaBlog size={20} color={'#585858'} />,
     subMenu: [
       {
         id:'post-list-large',
@@ -277,7 +250,7 @@ export const menu = [
   {
     id: 'store',
     name: 'Store',
-    icon: <MdStorefront size={24} color={'#585858'} />,
+    icon: <MdStorefront size={20} color={'#585858'} />,
     subMenu: [
       {
         menu: 'Grid Product Gallery',
@@ -374,7 +347,7 @@ export const menu = [
   {
     id: 'bookings',
     name: 'Bookings',
-    icon: <MdBackupTable size={24} color={'#585858'} />,
+    icon: <MdBackupTable size={20} color={'#585858'} />,
     subMenu: [
       {
         id:'bookings',
@@ -385,7 +358,7 @@ export const menu = [
   {
     id: 'events',
     name: 'Events',
-    icon: <FaRegCalendarAlt size={24} color={'#585858'} />,
+    icon: <FaRegCalendarAlt size={20} color={'#585858'} />,
     subMenu: [
       {
         id:'events',
@@ -402,7 +375,7 @@ export const menu = [
   {
     id: 'cms',
     name: 'CMS',
-    icon: <MdOutlineNewspaper size={24} color={'#585858'} />,
+    icon: <MdOutlineNewspaper size={20} color={'#585858'} />,
     subMenu: [
       {
         menu: '',
