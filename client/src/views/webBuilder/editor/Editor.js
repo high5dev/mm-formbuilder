@@ -656,6 +656,10 @@ export default function Editor({
       }
     });
     gjsEditor.on('component:remove', (component) => {
+      const id = component.getId();
+      const css=gjsEditor.Css;
+      const rules = css.getRules(`#${id}`);
+      css.remove(rules);
       if (!loadedRef.current && component.changed != {}) {
         if (compoId == "")
           compoId = component.ccid.split('-')[0];
@@ -959,6 +963,7 @@ export default function Editor({
     if(isclear){
       if(editor){
         editor.Components.clear();
+        editor.CssComposer.clear();
       }
       setIsClear(false);
     }
@@ -1216,9 +1221,11 @@ export default function Editor({
           });
         }
         else{
+          const parser = new DOMParser();
+          let htmlCmp = parser.parseFromString(el.html, 'text/html');
           editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
             label: el?.category[0]?.name,
-            content: el.html,
+            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
             media: el.imageUrl,
             category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
             menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
