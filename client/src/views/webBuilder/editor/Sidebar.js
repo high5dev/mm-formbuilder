@@ -25,22 +25,46 @@ import { updateFormDataAction } from '../store/action';
 import { menu } from './util';
 var previewTimerId;
 
-export default function Index({sidebarData, setSidebarData, selectedCategory, setSelectedCategory}) {
+export default function Index({
+  sidebarData,
+  setSidebarData,
+  selectedCategory,
+  setSelectedCategory,
+  handleClick,
+  editor
+}) {
+  const [selectedMenu, setselectedMenu] = useState([]);
 
-  const handleSidebarOpen = (e, item) => {
+  const handleSidebarOpen = (e, item, index) => {
     e.preventDefault();
-    const isOpen=!sidebarData.isOpen;
+    const isOpen = !sidebarData.isOpen;
     setSidebarData({
       ...sidebarData,
       isOpen: true,
-      menu: item,
+      menu: item
     });
-    setSelectedCategory('');
+    setSelectedCategory(``);
+    setselectedMenu({
+      ...!selectedMenu,
+      [index]: true
+    });
+
+    handleClick(0);
+    const Labels = [];
+    editor?.BlockManager.blocks.map((block) => {
+      if (item.subMenu.length > 0 ) {
+        if (block.get('menu') === `${item.id}-${item.subMenu[0].id}`) {
+          Labels.push(block.get('label'));
+          setSelectedCategory(`${item.id}-${item.subMenu[0].id}-${Labels[0]}`);
+        }
+      }
+    });
   };
+
 
   return (
     <div className="d-flex">
-      <div className="sidebar" style={{borderRight: '1px solid #aaa'}}>
+      <div className="sidebar" style={{ borderRight: '1px solid #aaa' }}>
         <PerfectScrollbar
           className="scrollable-content"
           options={{ suppressScrollX: true }}
@@ -48,11 +72,21 @@ export default function Index({sidebarData, setSidebarData, selectedCategory, se
         >
           <div>
             {menu &&
-              menu.map((item) => {
+              menu.map((item, index) => {
                 return (
-                  <div className="menu-item" onClick={e => handleSidebarOpen(e, item)}>
-                    <div className="justify-content-between align-items-center">{item.icon}</div>
-                    <span className="menu-content">{item.name}</span>
+                  <div
+                    className=" menu-item mb-0 align-items-center p-50"
+                    onClick={(e) => handleSidebarOpen(e, item, index)}
+                    style={
+                      selectedMenu[index] && sidebarData.isOpen ? { background: '#e4e4e4' } : null
+                    }
+                  >
+                    <div className="justify-content-between align-items-center menu-icon ">
+                      {item.icon}
+                    </div>
+                    <span className="menu-content px-50">
+                      {item.name === 'Compositions' ? 'Sections' : item.name}
+                    </span>
                   </div>
                 );
               })}
