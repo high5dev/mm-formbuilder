@@ -43,9 +43,8 @@ let repeater = {
           min: 1,
         }
       ],
-      connection: null,
-      propagate: ['connection'],
-      styles: `.repeater {display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 10px; row-gap: 10px; width: 100%;}`,
+      
+      styles: `.repeater {display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 10px; row-gap: 10px;}`,
       // stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius', 'column-gap', 'row-gap'],
       // // 'stylable-require': ['width', 'background-color', 'margin']
       // // 'script-props': ['repeaterWidth', 'myprop2'],

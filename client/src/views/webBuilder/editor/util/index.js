@@ -79,10 +79,6 @@ export const menu = [
         name: 'Gallery'
       },
       {
-        id:'iframe',
-        name:'Iframe'
-      },
-      {
         id:'social-bar',
         name:'SocialBar'
       }
