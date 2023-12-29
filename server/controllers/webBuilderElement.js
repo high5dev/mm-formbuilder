@@ -142,9 +142,12 @@ exports.getAllElements = asyncHandler(async (req, res) => {
 exports.updateElement = asyncHandler(async (req, res) => {
   let { id } = req.params;
   let userId = req.user._id;
-  const payload = req.body;
+  const {name} = req.body;
   try {
-    const updatedElement = await WebBuilderElement.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, payload);
+    const webElement=await WebBuilderElement.findOne({_id:mongoose.Types.ObjectId(id)});
+    const categoryId=webElement.category;
+    const payload={name:name};
+    const updatedElement = await WebBuilderElementCategory.findOneAndUpdate({_id: mongoose.Types.ObjectId(categoryId)}, payload, {new:true});
     res.status(200).json({ success: true, data: updatedElement });
   } catch (err) {
     res.send({ msg: err.message.replace(/\'/g, ""), success: false });

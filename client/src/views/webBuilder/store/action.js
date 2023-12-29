@@ -845,10 +845,34 @@ export const createWebElementAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.createWebElement(payload);
     if (data.success)
-      dispatch(getWebElementsAction(data.data));
+      dispatch(getWebElementsAction());
     return data;
   } catch (error) { }
 };
+
+export const updateWebElementAction =(id, payload) =>async(dispatch)=>{
+  try {
+    const { data } = await api.updateWebElement(id, payload);
+    if (data.success)
+      toast.success('Web Element updated successfully.')
+      dispatch(getWebElementsAction());
+    return data.data;
+  } catch (error) { }
+
+}
+
+export const deleteWebElementAction= (id)=>async(dispatch) =>{
+  try{
+    const { data } = await api.deleteWebElement(id);
+    if (data.success){
+      toast.success('Web Element deleted successfully.');
+      dispatch(getWebElementsAction());
+    }
+    return data;
+  }
+  catch(error){
+  }
+}
 
 export const getWebCollectionsAction = (websiteId) => async (dispatch) => {
   try {
