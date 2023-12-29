@@ -48,7 +48,8 @@ import {
   updateSelectedProductAction,
   getChildFormsAction,
   getProductCategoryAction,
-  getWebsiteRolesAction
+  getWebsiteRolesAction,
+  updateFormAction
 } from '../store/action';
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
@@ -1647,7 +1648,8 @@ export default function Editor({
                                       }}
                                       key={ix}
                                     >
-                                      <img width="50" height="50" src={b.get('media')} />
+                                      {/* <img width="50" height="50" src={b.get('media')} /> */}
+                                      <i className={b.get('media')} style={{fontSize: 40}}></i>
                                       <div
                                         draggable
                                         onDragStart={(e) => {
