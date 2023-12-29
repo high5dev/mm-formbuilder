@@ -79,7 +79,9 @@ export default function MainNav({
   selectedMainNav,
   setSelectedMainNav,
   setRoleMdl,
-  viewCMSMenu
+  viewCMSMenu,
+  handelVisibleMenu,
+  VisibleMenu
 }) {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -260,15 +262,11 @@ export default function MainNav({
         <div className="feature-icons d-flex align-items-center">
           <span
             className=""
-            onClick={(e) => {
-              // setSelectedMainNav('pages');
-              // setAddSideBarOpen(true);
+            onClick={(e) => { 
+              handelVisibleMenu()
             }}
           >
-            <MdOutlineLensBlur size={26} color={'#0275d8'} id="inspector" />
-            <UncontrolledTooltip placement="bottom" target="inspector">
-              Inspector
-            </UncontrolledTooltip>
+            <MdOutlineLensBlur size={26} color={VisibleMenu?'black':'#0275d8'} id="inspector" />
           </span>
           <span className="hover-bg feature-show">
             <svg
