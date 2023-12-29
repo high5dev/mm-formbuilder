@@ -1,6 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Bold, X, Trash2, Check, ChevronRight, ChevronDown, ChevronUp, Trash, Edit, MoreVertical} from 'react-feather';
+import {
+  Bold,
+  X,
+  Trash2,
+  Check,
+  ChevronRight,
+  ChevronDown,
+  ChevronUp,
+  Settings,
+  Trash, Edit, MoreVertical
+} from 'react-feather';
+import { CgStyle } from 'react-icons/cg';
+
 import { RiQuestionMark } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
