@@ -235,7 +235,7 @@ export default function MainNav({
             Save
           </Button>
           <Button
-            className="btn btn-primary"
+            className="menu-item btn btn-primary"
             color="primary"
             onClick={(e) => {
               setIsPublish(true);
