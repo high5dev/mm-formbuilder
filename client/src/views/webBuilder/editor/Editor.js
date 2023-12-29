@@ -1762,7 +1762,7 @@ export default function Editor({
                               .map((b, ix) => {
                                 return (
                                   <div className="element" key={ix}>
-                                    <img width="280" src={b.get('media')} />
+                                    <img width="280" src={`../../assets/import-elements/menu-images/${b.get('media')}`} />
                                     <div
                                       draggable
                                       onDragStart={(e) => {
@@ -1876,7 +1876,7 @@ export default function Editor({
                                 .map((b, ix) => {
                                   return (
                                     <div className="element" key={ix}>
-                                      <img width="280" src={b.get('media')} />
+                                      <img width="280" src={`../../assets/import-elements/menu-images/${b.get('media')}`} />
                                       <div
                                         draggable
                                         onDragStart={(e) => {
