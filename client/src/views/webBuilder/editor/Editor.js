@@ -1,6 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Bold, X, Trash2, Check, ChevronRight, ChevronDown, ChevronUp } from 'react-feather';
+import {
+  Bold,
+  X,
+  Trash2,
+  Check,
+  ChevronRight,
+  ChevronDown,
+  ChevronUp,
+  Settings
+} from 'react-feather';
+import { CgStyle } from 'react-icons/cg';
 import { RiQuestionMark } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
@@ -129,7 +139,8 @@ export default function Editor({
   selectedMainNav,
   setSelectedMainNav,
   roleMdl,
-  setRoleMdl
+  setRoleMdl,
+  VisibleMenu
 }) {
   const [openCreateForm, setOpenCreateForm] = useState();
   const { id } = useParams();
@@ -524,7 +535,7 @@ export default function Editor({
         // appendTo: '#blocks'
       },
       styleManager: {
-        appendTo: document.querySelector('#style-manager-container')
+        appendTo: document.querySelector('#style-manager-container'),
       },
       selectorManager: {
         custom: true,
@@ -718,7 +729,7 @@ export default function Editor({
     });
     gjsEditor.on('component:remove', (component) => {
       const id = component.getId();
-      const css=gjsEditor.Css;
+      const css = gjsEditor.Css;
       const rules = css.getRules(`#${id}`);
       css.remove(rules);
       if (!loadedRef.current && component.changed != {}) {
@@ -787,8 +798,7 @@ export default function Editor({
         } catch (e) {}
       }
     });
-    gjsEditor.on('block:drag:start', function (model) {
-    });
+    gjsEditor.on('block:drag:start', function (model) {});
     gjsEditor.on('block:drag:stop', function (model) {
       setSidebarData({
         ...sidebarData,
@@ -1091,7 +1101,7 @@ export default function Editor({
         html: html,
         css: css
       };
-      if(isback){
+      if (isback) {
         dispatch(updatePageAction(id, payload)).then((res) => {
           if (res) {
             history.goBack();
@@ -1118,7 +1128,7 @@ export default function Editor({
           }
         });
       }
-    };
+    }
   }, [ispreview, ispublish, isback]);
 
   useEffect(() => {
@@ -1341,30 +1351,35 @@ export default function Editor({
               }
             }
           }
-          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
-            label: el?.category[0]?.name,
-            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
-            media: el.imageUrl,
-            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
-            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
-            mainMenu:`${el?.category[0]?.mainMenu}`,
-            refcategory:`${el?.category[0]?.name}`,
-            submenu:el?.category[0]?.subMenu,
-          });
-        }
-        else{
+          editor.BlockManager.add(
+            `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`,
+            {
+              label: el?.category[0]?.name,
+              content: htmlCmp.head.innerHTML + htmlCmp.body.innerHTML,
+              media: el.imageUrl,
+              category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+              menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+              mainMenu: `${el?.category[0]?.mainMenu}`,
+              refcategory: `${el?.category[0]?.name}`,
+              submenu: el?.category[0]?.subMenu
+            }
+          );
+        } else {
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
-          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
-            label: el?.category[0]?.name,
-            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
-            media: el.imageUrl,
-            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
-            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
-            mainMenu:`${el?.category[0]?.mainMenu}`,
-            refcategory:`${el?.category[0]?.name}`,
-            submenu:el?.category[0]?.subMenu,
-          });
+          editor.BlockManager.add(
+            `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`,
+            {
+              label: el?.category[0]?.name,
+              content: htmlCmp.head.innerHTML + htmlCmp.body.innerHTML,
+              media: el.imageUrl,
+              category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+              menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+              mainMenu: `${el?.category[0]?.mainMenu}`,
+              refcategory: `${el?.category[0]?.name}`,
+              submenu: el?.category[0]?.subMenu
+            }
+          );
         }
       });
       // console.log('editorBlockManager', editor.BlockManager?.blocks);
@@ -1464,15 +1479,15 @@ export default function Editor({
       const payload = {
         page: page?._id,
         html: html,
-        css: css,
+        css: css
       };
-        dispatch(updatePageAction(id, payload));
-    };
+      dispatch(updatePageAction(id, payload));
+    }
   });
 
   return (
     <div className="d-flex">
-      <div className="expanded-sidebar">
+      <div className="expanded-sidebar" hidden={VisibleMenu}>
         <PerfectScrollbar
           options={{ suppressScrollX: true }}
           style={{ height: `calc(100vh - 120px)` }}
@@ -1502,14 +1517,6 @@ export default function Editor({
                         ? 'Section Template'
                         : sidebarData.menu.name}
                     </span>
-                    {/* <div>
-                      <span className="header-icon">
-                        <RiQuestionMark size={16} />
-                      </span>
-                      <span className="header-icon" onClick={handleSidebarOpen}>
-                        <X size={16} />
-                      </span>
-                    </div> */}
                   </div>
                   <div className="expanded-content">
                     <div id="blocks">
@@ -1552,7 +1559,7 @@ export default function Editor({
                             })}
                         </div>
                       )}
-                     {sidebarData.menu.id === 'decorative' && (
+                      {sidebarData.menu.id === 'decorative' && (
                         <div className="submenu-and-element d-flex">
                           <div className="submenu-list pt-0">
                             {sidebarData?.menu?.subMenu?.map((sub, index) => {
@@ -2130,10 +2137,6 @@ export default function Editor({
                                   }}
                                   id={block.getLabel()}
                                 >
-                                  {/* <div
-                          style={{ width: 30, height: 30 }}
-                          dangerouslySetInnerHTML={{ __html: block.getMedia() }}
-                        /> */}
                                   <div className="text-sm w-full mt-1" title={block.getLabel()}>
                                     {block.getLabel()}
                                     <span class="info-icon-tooltip">
@@ -2270,42 +2273,30 @@ export default function Editor({
           options={{ suppressScrollX: true }}
           style={{ height: `calc(100vh - 120px)` }}
         >
-          {/* <div className="sidebar-header px-1">
-            <span className="px-1 fs-5 fw-bolder text-black">{tab}</span>
-            <span>
-              <X
-                size={20}
-                onClick={(e) => {
-                  handleRSideBarOpen(e);
-                }}
-              />
-            </span>
-            
-          </div> */}
-          <div className='d-flex'> 
-          <div className="col-6  text-center text-dark ">
+          <div className="d-flex">
+            <div className="col-6  text-center text-dark ">
               <Button
-                color={tab === 'Styles'? 'primary':'secondary'}
-                className='w-100 rounded-0'
+                color={tab === 'Styles' ? 'primary' : 'secondary'}
+                className="w-100 rounded-0"
                 onClick={() => {
-                   setTab('Styles');
+                  setTab('Styles');
                 }}
               >
-                Styles
+                <CgStyle size={14} /> Styles
               </Button>
             </div>
             <div className="col-6 text-center  text-dark">
               <Button
-                color={tab === 'Settings'? 'primary':'secondary'}
-                className='w-100 rounded-0'
+                color={tab === 'Settings' ? 'primary' : 'secondary'}
+                className="w-100 rounded-0"
                 onClick={() => {
-                   setTab('Settings');
+                  setTab('Settings');
                 }}
               >
-                Settings
+                <Settings size={14} /> Settings
               </Button>
             </div>
-            </div>
+          </div>
           <div style={{ display: tab === 'Styles' ? 'block' : 'none' }}>
             <div id="selector-manager-container" />
             <div id="style-manager-container" />
