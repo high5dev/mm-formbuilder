@@ -1552,7 +1552,7 @@ export default function Editor({
                             })}
                         </div>
                       )}
-                      {sidebarData.menu.id === 'decorative' && (
+                     {sidebarData.menu.id === 'decorative' && (
                         <div className="submenu-and-element d-flex">
                           <div className="submenu-list pt-0">
                             {sidebarData?.menu?.subMenu?.map((sub, index) => {
@@ -1602,22 +1602,28 @@ export default function Editor({
 
                                   {tempBlocks.map((b, ix) => {
                                     return (
-                                      <div
-                                        key={ix}
-                                        className={
-                                          selectedCategory ===
-                                          `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
-                                            ? 'selected-submenu-category'
-                                            : 'submenu-category'
+                                      <Collapse
+                                        isOpen={
+                                          OpenCategory.index == index ? OpenCategory.value : false
                                         }
-                                        onClick={() => {
-                                          setSelectedCategory(
-                                            `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
-                                          );
-                                        }}
                                       >
-                                        {b.get('label')}
-                                      </div>
+                                        <div
+                                          key={ix}
+                                          className={
+                                            selectedCategory ===
+                                            `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                              ? 'selected-submenu-category'
+                                              : 'submenu-category'
+                                          }
+                                          onClick={() => {
+                                            setSelectedCategory(
+                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                            );
+                                          }}
+                                        >
+                                          {b.get('label')}
+                                        </div>
+                                      </Collapse>
                                     );
                                   })}
                                 </>
