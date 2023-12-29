@@ -296,6 +296,14 @@ export const createWebElement = (payload) => {
   return API.post(`/web-builder-element/create`, payload);
 }
 
+export const updateWebElement = (id, payload) =>{
+  return API.put(`/web-builder-element/edit/${id}`, payload);
+}
+
+export const deleteWebElement=(id) =>{
+  return API.delete(`/web-builder-element/delete/${id}`)
+}
+
 export const getWebElements = () => {
   return API.get(`/web-builder-element/elements`);
 }
