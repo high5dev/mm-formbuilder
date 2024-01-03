@@ -21,15 +21,9 @@ export default function CreateFormModal({ open, toggle, dispatch, store }) {
   });
   const steps = [
     {
-      id: 'design',
-      title: 'Design',
-      subtitle: 'What do you want to design?',
-      content: <SelectFormTypeStep form={form} setForm={setForm} stepper={stepper} />
-    },
-    {
       id: 'form',
-      title: 'Design Information',
-      subtitle: 'Fill out information for your design',
+      title: 'Create Website',
+      subtitle: 'Fill in information below',
       content: (
         <FormInfoStep
           form={form}
@@ -39,6 +33,13 @@ export default function CreateFormModal({ open, toggle, dispatch, store }) {
           dispatch={dispatch}
         />
       )
+    },
+    {
+      disabled: true,
+      id: 'design',
+      title: 'Select Template',
+      subtitle: 'Select Template or create new',
+      content: <SelectFormTypeStep form={form} setForm={setForm} stepper={stepper} />
     },
     // {
     //   id: 'template',
@@ -62,6 +63,7 @@ export default function CreateFormModal({ open, toggle, dispatch, store }) {
       <ModalBody>
         <div className="modern-horizontal-wizard">
           <Wizard
+            headerClassName="pointer-events-none"
             type="modern-horizontal"
             ref={ref}
             steps={steps}
