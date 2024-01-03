@@ -9,12 +9,18 @@ const {
   WebBuilderElementCategory
 } = require("../models/index/index");
 const { response } = require("express");
+const { uploadMenuImage } = require("../Utilities/googleCloudStorageWebBuilder");
+const path = require('path');
 
 exports.createElement = asyncHandler(async (req, res) => {
   let userId = req.user._id;
   const { category, mainMenu, subMenu, html, imageUrl } = req.body;
 
   try {
+    // for (let i=299 ; i<303; i++) {
+    //   await uploadMenuImage(path.resolve(__dirname, `../../client/public/assets/import-elements/menu-images/myimage-${i}.png`), `myimage-${i}.png`);
+    // }
+    
     const selectedCategory = await WebBuilderElementCategory.findOne({
       mainMenu,
       subMenu: subMenu || '',

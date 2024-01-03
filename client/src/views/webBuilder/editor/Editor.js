@@ -1768,7 +1768,7 @@ export default function Editor({
                               .map((b, ix) => {
                                 return (
                                   <div className="element" key={ix}>
-                                    <img width="280" src={`../../assets/import-elements/menu-images/${b.get('media')}`} />
+                                    <img width="280" src={`https://storage.googleapis.com/mymember-storage/website-builder/menu-image/${b.get('media')}`} />
                                     <div
                                       draggable
                                       onDragStart={(e) => {
@@ -1991,7 +1991,7 @@ export default function Editor({
                                 .map((b, ix) => {
                                   return (
                                     <div className="element" key={ix}>
-                                      <img width="280" src={`../../assets/import-elements/menu-images/${b.get('media')}`} />
+                                      <img width="280" src={`https://storage.googleapis.com/mymember-storage/website-builder/menu-image/${b.get('media')}`} />
                                       <div
                                         draggable
                                         onDragStart={(e) => {
