@@ -1768,7 +1768,7 @@ export default function Editor({
                               .map((b, ix) => {
                                 return (
                                   <div className="element" key={ix}>
-                                    <img width="280" src={b.get('media')} />
+                                    <img width="280" src={`../../assets/import-elements/menu-images/${b.get('media')}`} />
                                     <div
                                       draggable
                                       onDragStart={(e) => {
@@ -1792,13 +1792,7 @@ export default function Editor({
                           </div>
                         </div>
                       )}
-                      {sidebarData.menu.id !== 'decorative' &&
-                        sidebarData.menu.id != 'quick-add' &&
-                        sidebarData.menu.id != 'blog' &&
-                        sidebarData.menu.id !== 'cms' &&
-                        sidebarData.menu.id !== 'store' &&
-                        sidebarData.menu.id!='assets' &&
-                        sidebarData.menu.id != 'compositions' && (
+                      {sidebarData.menu.id === 'contact-forms' && (
                           <div className="submenu-and-element d-flex">
                             <div className="submenu-list pt-0">
                               {sidebarData?.menu?.subMenu?.map((sub, index) => {
@@ -1883,6 +1877,121 @@ export default function Editor({
                                   return (
                                     <div className="element" key={ix}>
                                       <img width="280" src={b.get('media')} />
+                                      <div
+                                        draggable
+                                        onDragStart={(e) => {
+                                          e.stopPropagation();
+                                          blockManager.dragStart(b, e.nativeEvent);
+                                        }}
+                                        onDragEnd={(e) => {
+                                          e.stopPropagation();
+                                          if (b.get('label') === 'New Form') {
+                                            createForm();
+                                          }
+                                          if (b.get('label') === 'Add Existing Form') {
+                                            setAddFormMdl(true);
+                                          }
+                                          blockManager.dragStop(false);
+                                        }}
+                                      ></div>
+                                    </div>
+                                  );
+                                })}
+                            </div>
+                          </div>
+                        )}
+                      {sidebarData.menu.id !== 'decorative' &&
+                        sidebarData.menu.id !== 'quick-add' &&
+                        sidebarData.menu.id !== 'blog' &&
+                        sidebarData.menu.id !== 'cms' &&
+                        sidebarData.menu.id !== 'store' &&
+                        sidebarData.menu.id!== 'assets' &&
+                        sidebarData.menu.id !== 'compositions' &&
+                        sidebarData.menu.id !== 'contact-forms' && (
+                          <div className="submenu-and-element d-flex">
+                            <div className="submenu-list pt-0">
+                              {sidebarData?.menu?.subMenu?.map((sub, index) => {
+                                const categories = [];
+                                const tempBlocks = [];
+                                editor?.BlockManager.blocks.map((e) => {
+                                  if (
+                                    e.get('menu') === `${sidebarData.menu.id}-${sub.id}` &&
+                                    categories.findIndex(
+                                      (c) =>
+                                        c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`
+                                    ) === -1
+                                  ) {
+                                    categories.push(
+                                      `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`
+                                    );
+                                    tempBlocks.push(e);
+                                  }
+                                });
+
+                                const returnComponent = (
+                                  <>
+                                    <div
+                                      className="d-flex align-items-center px-50 border-bottom border-top"
+                                      onClick={() => {
+                                        handleOnclick(index);
+                                      }}
+                                    >
+                                      <div
+                                        hidden={
+                                          OpenCategory.index == index ? OpenCategory.value : false
+                                        }
+                                      >
+                                        <ChevronDown size={18} />
+                                      </div>
+                                      <div
+                                        hidden={
+                                          OpenCategory.index == index ? !OpenCategory.value : true
+                                        }
+                                      >
+                                        <ChevronUp size={18} />
+                                      </div>
+                                      <div className="ps-50">
+                                        <h5 className="submenu-item ps-0">{sub.name}</h5>
+                                      </div>
+                                    </div>
+                                    {tempBlocks.map((b, ix) => {
+                                      return (
+                                        <Collapse
+                                          isOpen={
+                                            OpenCategory.index == index ? OpenCategory.value : false
+                                          }
+                                        >
+                                          <div
+                                            key={ix}
+                                            className={
+                                              selectedCategory ===
+                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                                ? 'selected-submenu-category'
+                                                : 'submenu-category'
+                                            }
+                                            onClick={() => {
+                                              setSelectedCategory(
+                                                `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                              );
+                                            }}
+                                          >
+                                            {b.get('label')}
+                                          </div>
+                                        </Collapse>
+                                      );
+                                    })}
+                                  </>
+                                );
+                                return returnComponent;
+                              })}
+                            </div>
+                            <div className="element-container">
+                              {blockManager?.blocks
+                                ?.filter((e) => e.get('category').id === selectedCategory)
+                                .map((b, ix) => {
+                                  return (
+                                    <div className="element" key={ix}>
+                                      <img width="280" src={`../../assets/import-elements/menu-images/${b.get('media')}`} />
                                       <div
                                         draggable
                                         onDragStart={(e) => {
