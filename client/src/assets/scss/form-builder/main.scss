@@ -25,7 +25,7 @@
 .gjs-clm-tags-field,
 .gjs-select,
 .gjs-layer-vis {
-  color: $gray-700
+  color: $gray-700;
 }
 
 .gjs-clm-tags-c,
@@ -41,13 +41,18 @@
   color: $gray-700;
   font-family: Arial, Helvetica, sans-serif;
 }
-
 .gjs-clm-sel {
   font-size: 12px;
 
   .gjs-clm-sel-id {
     opacity: 1;
   }
+}
+.gjs-clm-sels-info{
+  display: none !important
+}
+.gjs-clm-tag{
+  margin-right: 10px !important;
 }
 
 #gjs-clm-tag-label {
@@ -56,30 +61,20 @@
 
 .gjs-layer-name,
 .gjs-sm-sector-label {
-  font-weight: 900;
+  font-weight: 600;
+  color: black;
 }
-
-.gjs-field {
-  background-color: white;
-  border: 1px solid $gray-200;
+.gjs-input-holder > input[type='text'],
+#gjs-sm-input-holder > select {
   color: $gray-700;
-
-}
-
-.gjs-input-holder>input[type='text'],
-#gjs-sm-input-holder>select {
-  color: $gray-700;
-
 }
 
 .gjs-sm-label {
   color: $gray-700;
   font-weight: 900;
-
 }
 
 .gjs-sm-sector {
-
   .gjs-sm-sector-title,
   .gjs-radio-item {
     color: $gray-700;
@@ -90,7 +85,7 @@
   background-color: white;
   color: $gray-700;
   font-size: 12px;
-  padding: 5px
+  padding: 5px;
 }
 
 .gjs-trt-traits {
@@ -113,9 +108,6 @@
 .gjs-blocks-cs {
   width: 100%;
   color: $gray-700;
-}
-.gjs-field{
-  align-items: center;
 }
 
 .gjs-blocks-c {
@@ -143,64 +135,119 @@
   border-bottom: $main-border;
   border-top: $main-border;
 }
-.gjs-input-holder{
- font-family: $main-font-family;
+.gjs-input-holder {
+  font-family: $main-font-family;
   font-size: $main-font-size;
   line-height: $main-line-height;
   font-weight: $main-font-weight;
 }
-.gjs-radio-item-label{
- font-family: $main-font-family;
+.gjs-radio-item-label {
+  font-family: $main-font-family;
   font-size: $main-font-size;
   line-height: $main-line-height;
   font-weight: $main-font-weight;
 }
-.gjs-sm-properties{
+.gjs-sm-properties {
   background: white !important;
-  border: block !important
+  border: block !important;
 }
-.gjs-input-unit{
- font-family: $main-font-family;
+.gjs-input-unit {
+  font-family: $main-font-family;
   font-size: $main-font-size;
   line-height: $main-line-height;
   font-weight: $main-font-weight;
 }
-.gjs-label{
- font-family: $main-font-family;
+.gjs-label {
+  font-family: $main-font-family;
   font-size: $main-font-size;
   line-height: $main-line-height;
   font-weight: $main-font-weight;
 }
-.gjs-clm-header-label{
- font-family: $main-font-family;
+.gjs-clm-header-label {
+  font-family: $main-font-family;
   font-size: $main-font-size;
   line-height: $main-line-height;
   font-weight: $main-font-weight;
 }
-.gjs-clm-label-sel{
- font-family: $main-font-family;
+.gjs-clm-label-sel {
+  font-family: $main-font-family;
   font-size: $main-font-size;
   line-height: $main-line-height;
   font-weight: $main-font-weight;
 }
-.gjs-clm-sel-id{
- font-family: $main-font-family;
+#gjs-clm-label{
+  position: absolute;
+  visibility: hidden;
+}
+#gjs-clm-label::before{
+  content: 'CSS';
+  visibility: visible;
+}
+[dir=ltr] .gjs-field .gjs-d-s-arrow{
+  border-left: 3px solid rgba(0,0,0,0);
+  border-right: 4px solid rgba(0,0,0,0);
+}
+[dir] .gjs-field .gjs-d-s-arrow {
+  margin: auto;
+  border-top: 4px solid #4e5154;
+  cursor: pointer;
+}
+.gjs-field-arrow-u {
+  border-bottom: 4px solid #4e5154;
+  border-top: none;
+}
+ .gjs-field-arrow-u,  .gjs-field-arrow-d {
+  border-left: 3px solid transparent;
+  border-right: 4px solid transparent;
+}
+ .gjs-field-arrow-u,.gjs-field-arrow-d {
+  border-left: 3px solid transparent;
+  border-right: 4px solid transparent;
+}
+.gjs-field-arrow-d {
+  border-top: 4px solid #4e5154;
+  cursor: pointer;
+}
+
+ .gjs-sm-unit option {
+  background-color: white;
+}
+.gjs-select option, .gjs-field-select option, .gjs-clm-select option, .gjs-sm-select option, .gjs-fields option, .gjs-sm-unit option {
+  color: #4e5154;
+}
+.gjs-clm-sel-id {
+  font-family: $main-font-family;
   font-size: $main-font-size;
   line-height: $main-line-height;
   font-weight: $main-font-weight;
 }
-.gjs-sm-label{
- font-family: $main-font-family;
+.gjs-sm-label {
+  font-family: $main-font-family;
   font-size: $main-font-size;
   line-height: $main-line-height;
   font-weight: $main-font-weight;
+}
+.gjs-field-menu, .gjs-field {
+  font-family: $main-font-family;
+  font-size: $main-font-size;
+  line-height: $main-line-height;
+  font-weight: $main-font-weight;
+  background-color: white;
+  color: $gray-700;
+  align-items: center;
+  border: block !important;
 }
 .gjs-field {
- font-family: $main-font-family;
+  font-family: $main-font-family;
   font-size: $main-font-size;
   line-height: $main-line-height;
   font-weight: $main-font-weight;
+  background-color: white;
+  color: $gray-700;
+  border: 1px solid #ebe9f1;
+  align-items: center;
 }
+
 .gjs-caret-icon {
   display: none;
 }
@@ -445,7 +492,7 @@ $layout-padding: 18px;
 // }
 
 .form-submenu.active {
-  background: #21D4E1;
+  background: #21d4e1;
   color: white;
 
   .action-icon {
@@ -469,44 +516,43 @@ $layout-padding: 18px;
 
 .gjs-editor-cont.Layout {
   .gjs-badge {
-    background: #21D4E1;
+    background: #21d4e1;
   }
 
   .gjs-toolbar {
-    background: #21D4E1;
+    background: #21d4e1;
   }
 
   .gjs-highlighter {
-    outline-color: #21D4E1;
+    outline-color: #21d4e1;
   }
 }
 
 .gjs-editor-cont.Layout-selected {
   .gjs-toolbar {
-    background: #21D4E1 !important;
+    background: #21d4e1 !important;
   }
 }
 
 .gjs-editor-cont.Column {
   .gjs-badge {
-    background: #5173FF;
+    background: #5173ff;
   }
 
   .gjs-toolbar {
-    background: #5173FF;
+    background: #5173ff;
   }
 
   .gjs-highlighter {
-    outline-color: #5173FF;
+    outline-color: #5173ff;
   }
 }
 
 .gjs-editor-cont.Column-selected {
   .gjs-toolbar {
-    background: #5173FF !important;
+    background: #5173ff !important;
   }
 }
-
 
 .gjs-editor-cont.invalid-selected {
   .gjs-toolbar {
@@ -541,24 +587,23 @@ $layout-padding: 18px;
 
 .gjs-editor-cont.Layout-Hover {
   .gjs-badge {
-    background: #21D4E1;
+    background: #21d4e1;
   }
 
   .gjs-highlighter {
-    outline-color: #21D4E1;
+    outline-color: #21d4e1;
   }
 }
 
 .gjs-editor-cont.Column-Hover {
   .gjs-badge {
-    background: #5173FF;
+    background: #5173ff;
   }
 
   .gjs-highlighter {
-    outline-color: #5173FF;
+    outline-color: #5173ff;
   }
 }
-
 
 .gjs-editor-cont.Body-Hover {
   .gjs-highlighter {
@@ -617,53 +662,51 @@ $layout-padding: 18px;
 
 .Layout-Drag,
 .Layout-selected {
-
   .gjs-placeholder.horizontal,
   .gjs-com-placeholder.horizontal,
   .gjs-placeholder.horizontal {
-    border-color: rgba(0, 0, 0, 0) #21D4E1;
+    border-color: rgba(0, 0, 0, 0) #21d4e1;
   }
 
   .gjs-placeholder.vertical,
   .gjs-com-placeholder.vertical,
   .gjs-placeholder.vertical {
-    border-color: #21D4E1 rgba(0, 0, 0, 0);
+    border-color: #21d4e1 rgba(0, 0, 0, 0);
   }
 
   .gjs-placeholder-int,
   .gjs-com-placeholder-int,
   .gjs-placeholder-int {
-    background-color: #21D4E1;
+    background-color: #21d4e1;
   }
 
   .gjs-layers #gjs-placeholder #gjs-plh-int.gjs-insert {
-    background-color: #21D4E1;
+    background-color: #21d4e1;
   }
 }
 
 .Column-Drag,
 .Column-selected {
-
   .gjs-placeholder.horizontal,
   .gjs-com-placeholder.horizontal,
   .gjs-placeholder.horizontal {
-    border-color: rgba(0, 0, 0, 0) #5173FF;
+    border-color: rgba(0, 0, 0, 0) #5173ff;
   }
 
   .gjs-placeholder.vertical,
   .gjs-com-placeholder.vertical,
   .gjs-placeholder.vertical {
-    border-color: #5173FF rgba(0, 0, 0, 0);
+    border-color: #5173ff rgba(0, 0, 0, 0);
   }
 
   .gjs-placeholder-int,
   .gjs-com-placeholder-int,
   .gjs-placeholder-int {
-    background-color: #5173FF;
+    background-color: #5173ff;
   }
 
   .gjs-layers #gjs-placeholder #gjs-plh-int.gjs-insert {
-    background-color: #5173FF;
+    background-color: #5173ff;
   }
 }
 
@@ -671,19 +714,17 @@ $layout-padding: 18px;
 .Form-selected {
   .gjs-placeholder.horizontal,
   .gjs-com-placeholder.horizontal,
-
   .gjs-placeholder.vertical,
   .gjs-com-placeholder.vertical,
-
   .gjs-placeholder-int,
   .gjs-com-placeholder-int,
   .gjs-placeholder-int {
-    background-color: #F5AB5A;
+    background-color: #f5ab5a;
   }
 }
 
 .gjs-layers #gjs-placeholder #gjs-plh-int.gjs-insert {
-  background-color: #F5AB5A;
+  background-color: #f5ab5a;
 }
 
 .mini-calender .fc-view-harness-active {
@@ -712,7 +753,7 @@ $layout-padding: 18px;
 
 .image-library::-webkit-scrollbar {
   width: 6px;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
 }
 
 .image-library::-webkit-scrollbar-thumb {
@@ -729,7 +770,7 @@ $layout-padding: 18px;
 
 .store-add {
   .store-item {
-    >.text-sm {
+    > .text-sm {
       display: flex;
       justify-content: space-between;
       margin-left: 24px;
@@ -758,7 +799,6 @@ $layout-padding: 18px;
         }
 
         &:hover {
-
           svg {
             fill: #000;
           }
