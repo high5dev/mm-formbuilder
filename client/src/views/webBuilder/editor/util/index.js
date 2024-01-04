@@ -460,6 +460,10 @@ export const menu = [
       }
     ],
   },
+  {
+    id: 'customer-dataset',
+    name: 'Content Library',
+  }
 ];
 
 export const collectionFieldTypes = [

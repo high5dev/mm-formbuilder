@@ -5,6 +5,7 @@ import { RiQuestionMark } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { Link, useHistory, useParams } from 'react-router-dom';
+import { SlArrowDown } from "react-icons/sl";
 import {
   Button,
   ButtonGroup,
@@ -17,7 +18,8 @@ import {
   OffcanvasBody,
   OffcanvasHeader,
   Spinner,
-  Modal
+  Modal,
+  Input
 } from 'reactstrap';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import websitePlugin from 'grapesjs-preset-webpage';
@@ -34,7 +36,7 @@ import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
 import { setChildFormReducer, setFormReducer } from '../store/reducer';
-import { getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, createChildFormAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction, getConnectionsByWebsiteAction, updateSelectedProductAction, getChildFormsAction, getProductCategoryAction, getWebsiteRolesAction } from '../store/action'
+import { getWebsiteAction, getPageAction, updatePageAction, publishWebsiteAction, createChildFormAction, getWebCollectionsAction, getWebDatasetsAction, getWebsiteAllDatasetsAction, updatePageNameAction, getConnectionsByWebsiteAction, updateSelectedProductAction, getChildFormsAction, getProductCategoryAction, getWebsiteRolesAction, createCustomerCollectAction, getWaitingClientsAction, confirmCustomerDatasetAction } from '../store/action'
 import OffCanvas from '../../components/offcanvas';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
@@ -42,7 +44,7 @@ import { webBuilderPlugin } from './elements/webBuilderPlugin';
 import PublishModal from './topNav/publish/publishModal';
 import { getWebElementsAction, createWebElementAction, getBlogsAction, getProductDatasetAction } from '../store/action';
 import { menu } from './util';
-import { getCategoriesByMenu, createWebElement,getImageLibrary} from '../store/api';
+import { getCategoriesByMenu, createWebElement,getImageLibrary } from '../store/api';
 import * as htmlToImage from 'html-to-image';
 import html2canvas from 'html2canvas';
 import AddElementModal from './topNav/import/AddElementModal';
@@ -67,9 +69,11 @@ import Sidebar from './Sidebar';
 import { element } from 'prop-types';
 import ProductsSettingModal from './store/ProductsSetting/ProductsSettingModal';
 import { ProductPageSettingModal } from './store/ProductPageSetting/ProductPageSettingModal';
+import { CustomerDatasetModal } from './store/customerDataset/CustomerDatasetModal';
 import RoleModal from './topNav/role';
 import AddPresetModal from './cms/AddPresetModal';
 import CMS from './topNav/cms';
+import { ImCheckmark, ImCross } from "react-icons/im";
 
 export default function Editor({
   isblog,
@@ -144,6 +148,7 @@ export default function Editor({
       dispatch(getConnectionsByWebsiteAction(store.form._id));
       dispatch(getWebsiteRolesAction(store.form._id));
       dispatch(getWebsiteAllDatasetsAction(store.form._id));
+      dispatch(getWaitingClientsAction(store.form._id));
     }
   }, [store.form._id]);
   
@@ -156,6 +161,10 @@ export default function Editor({
   const [showProductPageSettingModal, setShowProductPageSettingModal] = useState(false);
   const [showAddCartButtonModal, setShowAddCartButtonModal] = useState(false);
   const [cartProductId, setCartProductId] = useState("");
+  const [customerDataset, setCustomerDataset] = useState({ type: "", collectionId: "" });
+  const [showCustomerDatasetModal, setShowCustomerDatasetModal] = useState(false);
+  const [cdCheckedItems, setCDCheckedItems] = useState({});
+  const [customerCollectId, setCustomerCollectId] = useState("");
   const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
   const loadedRef = useRef();
   const storeRef = useRef();
@@ -331,6 +340,35 @@ export default function Editor({
   const handleChangeSelectedProductCategory = (category) => {
     setSelectedProductCategory(category);
     selectedCmp.set('category', category);
+  }
+
+  const handleChangeCustomerDataset = (type, collectionId) => {
+    setCustomerDataset({ type: type, collectionId: collectionId });
+  }
+
+  const handleCDCheckboxChange = (field, isChecked) => {
+    setCDCheckedItems({
+      ...cdCheckedItems,
+      [`${customerDataset.type}-${customerDataset.collectionId}`]: {
+        ...cdCheckedItems[`${customerDataset.type}-${customerDataset.collectionId}`],
+        [field]: isChecked
+      }
+    })
+  }
+
+  const collectFromClient = async () => {
+    const data = await dispatch(createCustomerCollectAction({
+      websiteId: store?.form?._id,
+      fields: cdCheckedItems[`${customerDataset.type}-${customerDataset.collectionId}`],
+      type: customerDataset.type,
+      collectionId: customerDataset.collectionId
+    }));
+    setCustomerCollectId(data.data._id);
+    setShowCustomerDatasetModal(true);
+  }
+
+  const handleConfirmCustomerDataset = (id, payload) => {
+    dispatch(confirmCustomerDatasetAction(id, payload));
   }
   // useEffect(() =>{
   //   let interval;
@@ -1451,7 +1489,7 @@ export default function Editor({
                       )
                     }
                     {
-                      sidebarData.menu.id !== 'decorative' && sidebarData.menu.id != 'quick-add' && sidebarData.menu.id != 'blog' && sidebarData.menu.id !== 'cms' && sidebarData.menu.id !== 'store' && (
+                      sidebarData.menu.id !== 'decorative' && sidebarData.menu.id != 'quick-add' && sidebarData.menu.id != 'blog' && sidebarData.menu.id !== 'cms' && sidebarData.menu.id !== 'store' && sidebarData.menu.id !== 'customer-dataset' && (
                       <div className='submenu-and-element d-flex'>
                         <div className="submenu-list">
                           {
@@ -1731,7 +1769,74 @@ export default function Editor({
                           </div>
                         </div>
                       )
-                    }   
+                    }
+                    {
+                      sidebarData.menu.id === 'customer-dataset' && (
+                        <div className='h-100 d-flex flex-column'>
+                          <div className='d-flex justify-content-center align-items-center p-2 flex-column'>
+                            <div>Send link to customer to manage dataset</div>
+                            <div className='round p-1 mt-1' style={{ border: '1px solid', cursor: 'pointer' }} onClick={collectFromClient}>+ Collect From Client</div>
+                          </div>
+                          <div className='mt-2 pe-3' style={{ flex: 1, overflow: "scroll" }}>
+                            <div className='ms-1 font-medium-5'>Collections</div>
+                            <div className=' ms-2 mt-1'>
+                              <div className='d-flex align-items-center justify-content-between' style={{ cursor: 'pointer' }} onClick={() => { handleChangeCustomerDataset("product", "") }}>
+                                <div className='font-medium-6'>Store Collection</div>
+                                <SlArrowDown size={16} />
+                              </div>
+                              {
+                                customerDataset.type === "product" &&
+                                (<div className='mt-1'>
+                                  {store?.webProducts?.fields.map((field, idx) => {
+                                    return (<div className='d-flex'>
+                                      <Input type="checkbox" id={"Product" + field.name + idx} checked={cdCheckedItems[`product-`]?.[field.name]} onChange={(e) => { handleCDCheckboxChange(field.name, e.target.checked) }} />
+                                      <Label className='ms-1' for={"Product" + field.name + idx}>{field.name}</Label>
+                                    </div>);
+                                  })}
+                                </div>)
+                              }
+                            </div>
+                            {
+                              store?.webCollections?.map(collection => {
+                                return (
+                                  <div className='ms-2 mt-1'>
+                                    <div className='d-flex align-items-center justify-content-between' style={{ cursor: 'pointer' }} onClick={() => { handleChangeCustomerDataset("cms", collection._id) }} >
+                                      <div className='font-medium-6'>{collection.name} Collection</div>
+                                      <SlArrowDown size={16} />
+                                    </div>
+                                    {
+                                      customerDataset.type === "cms" && customerDataset.collectionId === collection._id &&
+                                      (<div className='mt-1'>
+                                        {collection?.fields?.map((field, idx) => {
+                                          return (<div className='d-flex'>
+                                            <Input type="checkbox" id={collection._id + field.name + idx} checked={cdCheckedItems[`cms-${collection._id}`]?.[field.name]} onChange={(e) => { handleCDCheckboxChange(field.name, e.target.checked) }} />
+                                            <Label className='ms-1' for={collection._id + field.name + idx}>{field.name}</Label>
+                                          </div>);
+                                        })}
+                                      </div>)
+                                    }
+                                  </div>
+                                );
+                              })
+                            }
+                            <div className='ms-1 font-medium-5 mt-2'>Waiting Clients</div>
+                            {
+                              store?.waitingClients.map((client) => {
+                                return (
+                                  <div className='d-flex align-items-center justify-content-between ms-1 mt-2 w-100'>
+                                    <div className=''>{client.user.firstName} {client.user.lastName}</div>
+                                    <div className=''>
+                                      <Button color='success' className='me-1' onClick={() => { handleConfirmCustomerDataset(client._id, { isApproved: true, isDeclined: false }) }}><ImCheckmark /></Button>
+                                      <Button onClick={() => { handleConfirmCustomerDataset(client._id, { isApproved: true, isDeclined: true }) }}><ImCross /></Button>
+                                    </div>
+                                  </div>
+                                )
+                              })
+                            }
+                          </div>
+                        </div>
+                      )
+                    }
                   </div>
                 </div>
               </div>
@@ -1851,6 +1956,7 @@ export default function Editor({
         setShowProductPageSettingModal={setShowProductPageSettingModal}
         selectedCmp={selectedCmp}
       />
+      <CustomerDatasetModal showCustomerDatasetModal={showCustomerDatasetModal} setShowCustomerDatasetModal={setShowCustomerDatasetModal} customerCollectId={customerCollectId} />
       <ConnectProductDataSetModal store={store} showProductDataSetModal={showProductDataSetModal} setShowProductDataSetModal={setShowProductDataSetModal} modelsToConnect={modelsToConnect} datasetConnect={datasetConnect} setDatasetFields={setDatasetFields} />
       <AddCartButtonModal store={store} showAddCartButtonModal={showAddCartButtonModal} setShowAddCartButtonModal={setShowAddCartButtonModal} productId={cartProductId} handleChangeProductId={handleChangeProductId} />
       <BlogModal store ={store} isOpen={isblog} toggle={toggleBlog}/>

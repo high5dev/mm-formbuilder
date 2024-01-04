@@ -25,11 +25,11 @@ import { updateFormDataAction } from '../store/action';
 import { menu } from './util';
 var previewTimerId;
 
-export default function Index({sidebarData, setSidebarData, selectedCategory, setSelectedCategory}) {
+export default function Index({ sidebarData, setSidebarData, selectedCategory, setSelectedCategory }) {
 
   const handleSidebarOpen = (e, item) => {
     e.preventDefault();
-    const isOpen=!sidebarData.isOpen;
+    const isOpen = !sidebarData.isOpen;
     setSidebarData({
       ...sidebarData,
       isOpen: true,
@@ -40,7 +40,7 @@ export default function Index({sidebarData, setSidebarData, selectedCategory, se
 
   return (
     <div className="d-flex">
-      <div className="sidebar" style={{borderRight: '1px solid #aaa'}}>
+      <div className="sidebar" style={{ borderRight: '1px solid #aaa' }}>
         <PerfectScrollbar
           className="scrollable-content"
           options={{ suppressScrollX: true }}
@@ -49,12 +49,13 @@ export default function Index({sidebarData, setSidebarData, selectedCategory, se
           <div>
             {menu &&
               menu.map((item) => {
-                return (
-                  <div className="menu-item" onClick={e => handleSidebarOpen(e, item)}>
-                    <div className="justify-content-between align-items-center">{item.icon}</div>
-                    <span className="menu-content">{item.name}</span>
-                  </div>
-                );
+                if (item.id != 'customer-dataset')
+                  return (
+                    <div className="menu-item" onClick={e => handleSidebarOpen(e, item)}>
+                      <div className="justify-content-between align-items-center">{item.icon}</div>
+                      <span className="menu-content">{item.name}</span>
+                    </div>
+                  );
               })}
           </div>
         </PerfectScrollbar>
