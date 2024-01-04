@@ -40,6 +40,16 @@ const WebBuilderRoutes = [
     meta: {
       publicRoute: true
     }
+  },
+  {
+    path: '/customercollect/:id',
+    component: lazy(() => import('../../views/webBuilder/editor/store/collectCustomer/CollectCustomer')),
+    exact: true,
+    appLayout: false,
+    layout: 'BlankLayout',
+    meta: {
+      publicRoute: true
+    }
   }
 ];
 
