@@ -1965,7 +1965,7 @@ export default function Editor({
                         sidebarData.menu.id !== 'assets' &&
                         sidebarData.menu.id !== 'compositions' &&
                         sidebarData.menu.id !== 'contact-forms' &&
-                        sidebarData.menu.id !== 'customer-dataset' && (
+                        sidebarData.menu.id !== 'content' && (
                           <div className="submenu-and-element d-flex">
                             <div className="submenu-list pt-0">
                               {sidebarData?.menu?.subMenu?.map((sub, index) => {
@@ -2474,7 +2474,7 @@ export default function Editor({
                       )
                       }
                       {
-                        sidebarData.menu.id === 'customer-dataset' && (
+                        sidebarData.menu.id === 'content' && (
                           <div className='h-100 d-flex flex-column'>
                             <div className='d-flex justify-content-center align-items-center p-2 flex-column'>
                               <div>Send link to customer to manage dataset</div>
