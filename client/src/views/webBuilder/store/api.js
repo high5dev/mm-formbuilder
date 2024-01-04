@@ -16,8 +16,12 @@ export const updateChildForm = (id, payload) => {
   return API.put('/web-builder-form/edit/' + id, payload)
 }
 
-export const getChildFormPage = (id, payload) => {
-  return API.get('/web-builder-form/page/' + id, { params: payload })
+export const deleteChildForm=(id)=>{
+  return API.delete(`/web-builder-form/delete/${id}`)
+}
+
+export const getChildFormPage=(id, payload)=>{
+  return API.get('/web-builder-form/page/'+id, {params:payload})
 }
 
 export const getChildForms = (id) => {
@@ -84,7 +88,11 @@ export const renameWebsite = (id, payload) => {
   return API.put('/web-builder/rename/' + id, payload);
 }
 
-export const createPage = (payload) => {
+export const deleteWebsite =(id) =>{
+  return API.delete(`/web-builder/delete/${id}`);
+}
+
+export const createPage=(payload) => {
   return API.post('/web-builder/create-page', payload);
 }
 
@@ -211,8 +219,8 @@ export const delImageFromLibrary = (id) => {
   return API.delete('/image-library/' + id);
 }
 
-export const getFormsCount = () => {
-  return API.get('/form-builder/get-user-forms-count');
+export const getWebsiteCount = () => {
+  return API.get('/web-builder/get-user-websites-count');
 };
 
 //save form entry
@@ -286,6 +294,14 @@ export const getCategoriesByMenu = (payload) => {
 
 export const createWebElement = (payload) => {
   return API.post(`/web-builder-element/create`, payload);
+}
+
+export const updateWebElement = (id, payload) =>{
+  return API.put(`/web-builder-element/edit/${id}`, payload);
+}
+
+export const deleteWebElement=(id) =>{
+  return API.delete(`/web-builder-element/delete/${id}`)
 }
 
 export const getWebElements = () => {

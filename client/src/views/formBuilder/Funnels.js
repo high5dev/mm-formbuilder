@@ -65,9 +65,7 @@ export default function Funnels({
     dispatch(getFormCategoriesAction()).then((res) => {
       setCategoryData(res);
     });
-    dispatch(getFormsCountAction()).then(res=>{
-      setFormsCount(res)
-    })
+    dispatch(getFormsCountAction());
   }, []);
 
   useEffect(() => {
@@ -77,6 +75,13 @@ export default function Funnels({
       setTableData(store?.funnels);
     }
   }, [checkedCategoryData]);
+
+  useEffect(()=>{
+    if(store.formsCount){
+      setFormsCount(store.formsCount);
+    }
+  }, [store.formsCount]);
+
 
   useEffect(() => {
     switch (active) {

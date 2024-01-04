@@ -561,6 +561,7 @@ export default function Index({store, toggle, page, saveFormBlock}) {
   useEffect(() => {
     const form_gjsEditor = grapesjs.init({
       container: '#form-editor',
+      height:700,
       width:600,
       plugins: [(editor) => formBuilderPlugin(editor), websitePlugin],
       richTextEditor: {
@@ -1118,7 +1119,6 @@ export default function Index({store, toggle, page, saveFormBlock}) {
                         }}/>
                       </div>
                       <div className="link-section">
-                        <div className='mb-2'>When a visitor submits a form</div>
                         <div className='d-flex mb-1'>
                           <input type='radio' id="submit-button" checked={attributes.isButton} onChange={(e)=>{
                             if(e.target.checked){

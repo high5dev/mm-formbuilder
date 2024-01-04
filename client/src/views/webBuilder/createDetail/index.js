@@ -11,12 +11,12 @@ import { GiRank2 } from 'react-icons/gi';
 import { BsListCheck, BsUiChecks } from 'react-icons/bs';
 import { MdOutlineNotifications } from 'react-icons/md';
 import Breadcrumbs from '@components/breadcrumbs';
-
+import { PiListChecks } from "react-icons/pi";
 // ** CUSTOME Components
 import FormStep from './tabs/step';
 import Contact from './tabs/contact';
 import Sales from './tabs/sales';
-//import Automation from './tabs/automation';
+// import Automation from './tabs/automation';
 import Settings from './tabs/settings';
 
 // ** STYLES
@@ -27,6 +27,7 @@ import '@src/assets/styles/dark-layout.scss';
 import { getFormDataAction, getFormsEntryAction } from '../store/action';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { getUserData } from '../../../auth/utils';
+import { Pages } from './tabs/pages/pages';
 
 const FunnelSettings = () => {
   // ** STATES
@@ -49,7 +50,7 @@ const FunnelSettings = () => {
   });
   const dispatch = useDispatch();
 
-  const openEditor=()=>{
+  const openEditor = () => {
     history.push(`/webpages/editor/${store?.form._id}`);
   }
   useEffect(() => {
@@ -113,13 +114,65 @@ const FunnelSettings = () => {
         </Col>
         <Col xl="12" xs={{ order: 0 }} md={{ order: 1, size: 12 }} style={{ padding: '0px' }}>
           <div className='d-flex justify-content-between align-items-center'>
-          <Nav pills className="mb-2">
+            <Nav pills className="mb-2">
               <>
                 <NavItem style={{ width: isMobileView ? '50%' : '' }}>
                   <NavLink
                     active={active === '1'}
                     onClick={() => {
                       setActive('1');
+                      setTitle('Overview');
+                    }}
+                  >
+                    <PiListChecks className="font-medium-1 me-50" />
+                    <span className="fs-6">Overview</span>
+                  </NavLink>
+                </NavItem>
+
+                <NavItem style={{ width: isMobileView ? '50%' : '' }}>
+                  <NavLink
+                    active={active === '2'}
+                    onClick={() => {
+                      setActive('2');
+                      setTitle('Pages');
+                    }}
+                  >
+                    <PiListChecks className="font-medium-1 me-50" />
+                    <span className="fs-6">Pages</span>
+                  </NavLink>
+                </NavItem>
+
+                <NavItem style={{ width: isMobileView ? '50%' : '' }}>
+                  <NavLink
+                    active={active === '3'}
+                    onClick={() => {
+                      setActive('3');
+                      setTitle('Contacts');
+                    }}
+                  >
+                    <PiListChecks className="font-medium-1 me-50" />
+                    <span className="fs-6">Contacts</span>
+                  </NavLink>
+                </NavItem>
+
+                <NavItem style={{ width: isMobileView ? '50%' : '' }}>
+                  <NavLink
+                    active={active === '4'}
+                    onClick={() => {
+                      setActive('4');
+                      setTitle('Automation');
+                    }}
+                  >
+                    <PiListChecks className="font-medium-1 me-50" />
+                    <span className="fs-6">Automation</span>
+                  </NavLink>
+                </NavItem>
+
+                <NavItem style={{ width: isMobileView ? '50%' : '' }}>
+                  <NavLink
+                    active={active === '5'}
+                    onClick={() => {
+                      setActive('5');
                       setTitle('Forms');
                     }}
                   >
@@ -130,43 +183,55 @@ const FunnelSettings = () => {
 
                 <NavItem style={{ width: isMobileView ? '50%' : '' }}>
                   <NavLink
-                    active={active === '2'}
+                    active={active === '6'}
                     onClick={() => {
-                      setActive('2');
+                      setActive('6');
                       setTitle('Sales');
                     }}
                   >
                     <BsUiChecks className="font-medium-1 me-50" />
-                    <span className="fs-6">SALES</span>
+                    <span className="fs-6">Sales</span>
                   </NavLink>
                 </NavItem>
                 <NavItem style={{ width: isMobileView ? '50%' : '' }}>
-                <NavLink
-                  active={active === '3'}
-                  onClick={() => {
-                    setActive('3');
-                    setTitle('Settings');
-                  }}
-                >
-                  <MdOutlineNotifications className="font-medium-1 me-50" />
-                  <span className="fs-6">SETTINGS</span>
-                </NavLink>
-              </NavItem>
-              </> 
-          </Nav>
+                  <NavLink
+                    active={active === '7'}
+                    onClick={() => {
+                      setActive('7');
+                      setTitle('Settings');
+                    }}
+                  >
+                    <MdOutlineNotifications className="font-medium-1 me-50" />
+                    <span className="fs-6">Settings</span>
+                  </NavLink>
+                </NavItem>
+              </>
+            </Nav>
             <div>
-                <Button
-                  color="primary"
-                  onClick={(e)=>openEditor()}
-                >
-                  Edit Page
-                </Button>
+              <Button
+                color="primary"
+                onClick={(e) => openEditor()}
+              >
+                Edit Page
+              </Button>
             </div>
           </div>
 
           {store?.form?.id !== '' && (
             <TabContent activeTab={active}>
               <TabPane tabId="1">
+                <div>OverView</div>
+              </TabPane>
+              <TabPane tabId="2">
+                <Pages />
+              </TabPane>
+              <TabPane tabId="3">
+                <div>Contacts</div>
+              </TabPane>
+              <TabPane tabId="4">
+                <div>Automation</div>
+              </TabPane>
+              <TabPane tabId="5">
                 <FormStep
                   dispatch={dispatch}
                   store={store}
@@ -174,7 +239,7 @@ const FunnelSettings = () => {
                   isTabletView={isTabletView}
                 />
               </TabPane>
-              <TabPane tabId="2">
+              <TabPane tabId="6">
                 <Sales
                   dispatch={dispatch}
                   store={store}
@@ -183,7 +248,7 @@ const FunnelSettings = () => {
                   isDesktopView={isDesktopView}
                 />
               </TabPane>
-              <TabPane tabId="3">
+              <TabPane tabId="7">
                 <Settings
                   store={store}
                   dispatch={dispatch}

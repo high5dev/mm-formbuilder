@@ -8,35 +8,39 @@ import Editor from './Editor';
 export default function Index() {
   const [impStatus, setImpStatus] = useState(false);
   const [open, setOpen] = useState(false);
-  const [page, setPage]=useState();
+  const [page, setPage] = useState();
   const [device, setDevice] = useState('desktop');
-  const [ispreview, setIsPreview]=useState(false);
-  const [ispublish, setIsPublish]=useState(false);
-  const [isclear, setIsClear] =useState(false);
-  const [isblog, setIsBlog]=useState(false);
-  const [tab, setTab]=useState('');
-  const [createMdl, setCreateMdl]=useState(false);
-  const [renameMdl, setRenameMdl]=useState(false);
-  const [duplicateMdl, setDuplicateMdl]=useState(false);
-  const [customwidth, setCustomWidth]=useState();
+  const [ispreview, setIsPreview] = useState(false);
+  const [isback, setIsBack] = useState(false);
+  const [ispublish, setIsPublish] = useState(false);
+  const [isclear, setIsClear] = useState(false);
+  const [isblog, setIsBlog] = useState(false);
+  const [tab, setTab] = useState('');
+  const [createMdl, setCreateMdl] = useState(false);
+  const [renameMdl, setRenameMdl] = useState(false);
+  const [duplicateMdl, setDuplicateMdl] = useState(false);
+  const [customwidth, setCustomWidth] = useState();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarData, setSidebarData] = useState({
     isOpen: false,
-    menu: '',
+    menu: ''
   });
-  const [rsidebarOpen, setRSidebarOpen]=useState(false);
+  const [rsidebarOpen, setRSidebarOpen] = useState(false);
   const [addSideBarOpen, setAddSideBarOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const { stepId } = useParams();
   const [openAddElementMdl, setOpenAddElementMdl] = useState(false);
   const [selectedMainNav, setSelectedMainNav] = useState('elements');
   const [roleMdl, setRoleMdl] = useState(false);
-  const [viewCMSMenu, setViewCMSMenu]=useState(false);
+  const [viewCMSMenu, setViewCMSMenu] = useState(false);
+  const [VisibleMenu, setVisibleMenu] = useState(false);
   const store = useSelector((state) => {
     return {
       ...state.websiteEditor
     };
   });
+
+  const handelVisibleMenu = () => setVisibleMenu(!VisibleMenu);
 
   return (
     <>
@@ -47,7 +51,7 @@ export default function Index() {
             setIsBlog={setIsBlog}
             createMdl={createMdl}
             setCreateMdl={setCreateMdl}
-            renameMdl ={renameMdl}
+            renameMdl={renameMdl}
             setRenameMdl={setRenameMdl}
             duplicateMdl={duplicateMdl}
             setDuplicateMdl={setDuplicateMdl}
@@ -57,6 +61,7 @@ export default function Index() {
             page={page}
             setPage={setPage}
             ispreview={ispreview}
+            setIsBack={setIsBack}
             setIsPreview={setIsPreview}
             setIsPublish={setIsPublish}
             tab={tab}
@@ -77,22 +82,18 @@ export default function Index() {
             selectedMainNav={selectedMainNav}
             setSelectedMainNav={setSelectedMainNav}
             setRoleMdl={setRoleMdl}
+            handelVisibleMenu={handelVisibleMenu}
+            VisibleMenu={VisibleMenu}
           />
         </div>
         <div className="land-body d-flex">
-          {/* <Sidebar
-            sidebarData={sidebarData}
-            setSidebarData={setSidebarData}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />  */}
           <div className="editor-content">
             <Editor
               isblog={isblog}
               setIsBlog={setIsBlog}
               createMdl={createMdl}
               setCreateMdl={setCreateMdl}
-              renameMdl ={renameMdl}
+              renameMdl={renameMdl}
               setRenameMdl={setRenameMdl}
               duplicateMdl={duplicateMdl}
               setDuplicateMdl={setDuplicateMdl}
@@ -103,6 +104,7 @@ export default function Index() {
               setPage={setPage}
               ispreview={ispreview}
               ispublish={ispublish}
+              isback={isback}
               setIsPreview={setIsPreview}
               setIsPublish={setIsPublish}
               tab={tab}
@@ -129,6 +131,7 @@ export default function Index() {
               roleMdl={roleMdl}
               setRoleMdl={setRoleMdl}
               setSelectedMainNav={setSelectedMainNav}
+              VisibleMenu={VisibleMenu}
             />
           </div>
         </div>

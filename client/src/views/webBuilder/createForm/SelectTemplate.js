@@ -16,6 +16,7 @@ import '@styles/react/libs/shepherd-tour/shepherd-tour.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import BreadCrumbs from '@components/breadcrumbs';
+import { getUserData } from '../../../auth/utils';
 
 export const Start = ({ startTour, setTourStarted, tourStarted, index }) => {
   useEffect(() => {
@@ -104,7 +105,7 @@ const SelectTemplate = () => {
               style={{ minHeight: '100%' }}
             >
               <Col md="12" className="mb-1 p-0">
-                <div className="d-flex align-items-end ms-1">
+                <div className="d-flex align-items-center ms-1 mt-50">
                   {collapse && (
                     <div className="btn-collapse-wrapper pe-1 mb-1">
                       <Button
@@ -124,12 +125,12 @@ const SelectTemplate = () => {
                     </NavItem>
                     <NavItem>
                       <NavLink onClick={() => setActive('2')} active={active === '2'}>
-                        <span>My Organization</span>
+                        <span>By {getUserData()?.organizations[0]?.name}</span>
                       </NavLink>
                     </NavItem>
                     <NavItem>
                       <NavLink onClick={() => setActive('3')} active={active === '3'}>
-                        <span>My Templates</span>
+                        <span>By Username</span>
                       </NavLink>
                     </NavItem>
                   </Nav>

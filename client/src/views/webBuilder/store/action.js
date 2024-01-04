@@ -5,6 +5,7 @@ import {
   setFormReducer,
   setChildFormReducer,
   setChildFormsReducer,
+  setFormsCountReducer,
   setFormRuleReducer,
   setTemplatesReducer,
   setImageLibraryReducer,
@@ -77,7 +78,20 @@ export const getChildFormAction = (id) => async (dispatch) => {
   }
 }
 
-export const getChildFormPageAction = (id, payload) => async (dispatch) => {
+export const deleteChildFormAction=(id)=>async(dispatch)=>{
+  try{
+    const {data}=await api.deleteChildForm(id);
+    if(data?.success===true){
+      toast.success('Form deleted successfully');
+      return true;
+    }
+  }
+  catch(error){
+
+  }
+}
+
+export const getChildFormPageAction =(id, payload) =>async(dispatch) =>{
   try {
     const { data } = await api.getChildFormPage(id, payload);
     if (data?.success === true) {
@@ -272,12 +286,14 @@ export const createWebBuilderAction = (payload) => async (dispatch) => {
 export const getWebsiteAction = (id) => async (dispatch) => {
   try {
     const { data } = await api.getWebBuilder(id);
-    const { websiteData, formData } = data.data;
+    const { websiteData, formData, forms} = data.data;
+    console.log('forms=========', forms);
     const form_data = {
       ...websiteData,
       formData: formData
     };
     dispatch(setFormReducer(form_data));
+    dispatch(setChildFormsReducer(forms));
     if (data?.success === true) {
       return formData
     } else {
@@ -299,6 +315,18 @@ export const renameWebsiteAction = (id, payload) => async (dispatch) => {
     }
   }
   catch (error) {
+  }
+}
+
+export const deleteWebsiteAction =(id)=>async(dispatch) =>{
+  try{
+    const {data}=await api.deleteWebsite(id);
+    if(data?.success === true){
+      return true
+    }
+  }
+  catch(error){
+
   }
 }
 
@@ -534,10 +562,11 @@ export const getFormDataAction = (id) => async (dispatch) => {
     dispatch(setFormProductsReducer(data.data?.products || []))
   } catch (error) { }
 };
-export const getFormsCountAction = () => async (dispatch) => {
+export const getWebsitesCountAction = () => async (dispatch) => {
   try {
-    const { data } = await api.getFormsCount();
+    const { data } = await api.getWebsiteCount();
     if (data && data.success === true) {
+      dispatch(setFormsCountReducer(data.data));
       return data.data
     }
     else {
@@ -818,10 +847,34 @@ export const createWebElementAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.createWebElement(payload);
     if (data.success)
-      dispatch(getWebElementsAction(data.data));
+      dispatch(getWebElementsAction());
     return data;
   } catch (error) { }
 };
+
+export const updateWebElementAction =(id, payload) =>async(dispatch)=>{
+  try {
+    const { data } = await api.updateWebElement(id, payload);
+    if (data.success)
+      toast.success('Web Element updated successfully.')
+      dispatch(getWebElementsAction());
+    return data.data;
+  } catch (error) { }
+
+}
+
+export const deleteWebElementAction= (id)=>async(dispatch) =>{
+  try{
+    const { data } = await api.deleteWebElement(id);
+    if (data.success){
+      toast.success('Web Element deleted successfully.');
+      dispatch(getWebElementsAction());
+    }
+    return data;
+  }
+  catch(error){
+  }
+}
 
 export const getWebCollectionsAction = (websiteId) => async (dispatch) => {
   try {

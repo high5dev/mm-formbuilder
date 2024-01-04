@@ -3,8 +3,7 @@ const { default: mongoose } = require("mongoose");
 const asyncHandler = require("express-async-handler");
 const {
   WebBuilder,
-  FormEntry,
-  User,
+  WebBuilderForm,
   Authenticate,
   WebPage,
   WebBuilderBlog,
@@ -501,16 +500,36 @@ exports.getWebSites = asyncHandler(async (req, res) => {
 
 exports.getWebsite= asyncHandler(async(req, res) =>{
   const {id} =req.params;
+  const { organization } = req.headers;
+  const user = req.user;
   try{
     const websiteData=await WebBuilder.findOne({_id:id});
     if(websiteData){
       const pageData=await WebPage.find({websiteId:mongoose.Types.ObjectId(websiteData._id)});
+      let query = {
+        userId: mongoose.Types.ObjectId(user._id),
+        websiteId: mongoose.Types.ObjectId(id),
+        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+        isDelete: false,
+    };
+    const forms = await WebBuilderForm.aggregate([
+      {$match: query},
+      {
+        $lookup: {
+          from: "webbuilderform-pages",
+          localField: "_id",
+          foreignField: "formId",
+          as: "pageInfo",
+        }
+      }
+    ]);
       return res.send({
         success: true,
         message: "Website created successfully",
         data: {
           websiteData,
-          formData:pageData
+          formData:pageData,
+          forms:forms
         },
       });
     }
@@ -862,4 +881,25 @@ exports.getTemplates = asyncHandler(async (req, res) => {
     res.send({ msg: "error" });
   }
 });
+
+exports.getWebsiteCounts = asyncHandler(async(req,res)=>{
+  try {
+    const user = req.user
+    const {organization} = req.headers
+    const data = await WebBuilder.find({
+      userId: user._id,
+      organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+      isDelete: false,
+    });
+    const count = {
+      websites:data.filter(x=>x.isTemplate===false).length,
+      templates:data.filter(x=>x.isTemplate===true).length
+    }
+    return res.status(200).json({ success: true, data:count });
+  } catch (error) {
+    console.log(error)
+    res.status(500).send({ msg: error.message });
+  }
+})
+
 

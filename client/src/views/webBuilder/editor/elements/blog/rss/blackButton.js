@@ -1,5 +1,5 @@
 let blackButton = {
-    isComponent: (el) => el.tagName === 'div',
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('black-button')),
     model: {
       defaults: {
         tagName: 'div',

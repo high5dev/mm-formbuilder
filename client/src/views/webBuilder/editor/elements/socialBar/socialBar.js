@@ -8,7 +8,6 @@ let socialBar = {
       attributes: { class: 'social-bar' },
       components: (props) => {
         const socialList = props.attributes.socialList;
-        const components = [];
         return (
           <div class="social-bar-container">
             {
@@ -24,8 +23,6 @@ let socialBar = {
             }
           </div>
         )
-
-        return components;
       },
       socialList: [
         {
@@ -75,7 +72,7 @@ let socialBar = {
       ],
       
       styles: `
-        .social-bar {display: flex; flex-direction: row; width: fit-content;padding:5px}
+        .social-bar {display: flex; flex-direction: row; width: fit-content; height:60px}
         .social-bar-container{display:flex}
         .social-icon {width: 40px; height: 40px; margin: 5px; border-radius: 5px;}
       `,
@@ -87,26 +84,29 @@ let socialBar = {
       this.listenTo(this.model, 'change:socialList', this.handleChangeSocialList);
     },
     handleChangeSocialList() {
-      const comps = this.model.get('components');
-      const socialList = this.model.get('socialList');
+      let socialList = this.model.get('socialList');
+      let components=this.model.components().models;
+      let compTemps=[...components];
+      this.model.components.models=[];
+      let compTemp=compTemps[0];
+      let tempComponents=[];
+      for(let i=0; i<socialList.length; i++){
+        let tempTmp = compTemp.clone();
+        const social_item=socialList[i];
+        tempTmp.setAttributes({href:social_item.url});
+        tempTmp.attributes.href=social_item.url;
+        tempTmp.components().models[0].setAttributes({src:social_item.image});
+        tempTmp.components().models[0].attributes.src=social_item.image;
+        tempComponents.push(tempTmp)
+      };
+      let comps = this.model.get('components');
       while (comps.length > 0) {
         comps.pop();
       };
-      comps.push(
-        <div class="social-bar-container">
-          {
-            socialList && socialList.map((socialItem)=>{
-              return(
-                `
-                <a href=${socialItem.url} target='_parent'>
-                  <img src=${socialItem.image} alt=${socialItem.name} class='social-icon'>
-                </a>
-                `
-              )
-            })
-          }
-        </div>
-      );
+      for(let i=0; i<tempComponents.length; i++){
+        comps.push(tempComponents[i]);
+      }
+      
       this.render();
     },
   }

@@ -10,7 +10,7 @@ import CategorySidebar from './CategorySidebar';
 
 import 'shepherd.js/dist/css/shepherd.css';
 import '@styles/react/libs/shepherd-tour/shepherd-tour.scss';
-import { getFormCategoriesAction, getFormsAction, getFormsCountAction, getWebBuildersAction } from './store/action';
+import { getFormCategoriesAction, getFormsAction, getWebsitesCountAction, getWebBuildersAction } from './store/action';
 import { setAllFormsReducer } from './store/reducer';
 
 export const Start = ({ startTour, setTourStarted, tourStarted, orderContactType, index }) => {
@@ -39,12 +39,12 @@ export default function Funnels({
   isDesktopView
 }) {
   const store = useSelector((state) => state.websiteEditor);
+  const formsCount=store.formsCount;
   const [collapse, setCollapse] = useState(false);
   const [categoryUpdate, setCategoryUpdate] = useState(0);
   const [categoryData, setCategoryData] = useState([]);
   const [checkedCategoryData, setCheckedCategoryData] = useState([]);
   const [tableData, setTableData] = useState([]);
-  const [formsCount,setFormsCount] = useState(null)
 
   const handleCategoryCollapse = () => setCollapse(!collapse);
 
@@ -65,9 +65,7 @@ export default function Funnels({
     dispatch(getFormCategoriesAction()).then((res) => {
       setCategoryData(res);
     });
-    dispatch(getFormsCountAction()).then(res=>{
-      setFormsCount(res)
-    })
+    dispatch(getWebsitesCountAction());
   }, []);
 
   useEffect(() => {

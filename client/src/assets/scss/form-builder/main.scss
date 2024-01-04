@@ -110,10 +110,12 @@
   width: fit-content;
   padding-left: 3px;
 }
-
 .gjs-blocks-cs {
   width: 100%;
   color: $gray-700;
+}
+.gjs-field{
+  align-items: center;
 }
 
 .gjs-blocks-c {
@@ -135,7 +137,70 @@
   flex-direction: row;
   padding: 5px;
 }
-
+.gjs-sm-sector-title {
+  color: #4e5154;
+  background: white !important;
+  border-bottom: $main-border;
+  border-top: $main-border;
+}
+.gjs-input-holder{
+ font-family: $main-font-family;
+  font-size: $main-font-size;
+  line-height: $main-line-height;
+  font-weight: $main-font-weight;
+}
+.gjs-radio-item-label{
+ font-family: $main-font-family;
+  font-size: $main-font-size;
+  line-height: $main-line-height;
+  font-weight: $main-font-weight;
+}
+.gjs-sm-properties{
+  background: white !important;
+  border: block !important
+}
+.gjs-input-unit{
+ font-family: $main-font-family;
+  font-size: $main-font-size;
+  line-height: $main-line-height;
+  font-weight: $main-font-weight;
+}
+.gjs-label{
+ font-family: $main-font-family;
+  font-size: $main-font-size;
+  line-height: $main-line-height;
+  font-weight: $main-font-weight;
+}
+.gjs-clm-header-label{
+ font-family: $main-font-family;
+  font-size: $main-font-size;
+  line-height: $main-line-height;
+  font-weight: $main-font-weight;
+}
+.gjs-clm-label-sel{
+ font-family: $main-font-family;
+  font-size: $main-font-size;
+  line-height: $main-line-height;
+  font-weight: $main-font-weight;
+}
+.gjs-clm-sel-id{
+ font-family: $main-font-family;
+  font-size: $main-font-size;
+  line-height: $main-line-height;
+  font-weight: $main-font-weight;
+}
+.gjs-sm-label{
+ font-family: $main-font-family;
+  font-size: $main-font-size;
+  line-height: $main-line-height;
+  font-weight: $main-font-weight;
+}
+.gjs-field {
+ font-family: $main-font-family;
+  font-size: $main-font-size;
+  line-height: $main-line-height;
+  font-weight: $main-font-weight;
+}
 .gjs-caret-icon {
   display: none;
 }
