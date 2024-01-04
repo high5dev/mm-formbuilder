@@ -1,16 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {
-  Eye,
-  Save,
-  X,
-  ChevronDown,
-  MoreHorizontal,
-  Trash2,
-  PlusSquare,
-  Plus,
-  Minimize2
-} from 'react-feather';
-import { BiListPlus, BiMobile } from 'react-icons/bi';
+import { Eye, Save, X, ChevronDown, MoreHorizontal, Trash2, PlusSquare, Plus, Minimize2 } from 'react-feather';
+import { BiListPlus, BiMobile, BiBlanket } from 'react-icons/bi';
 import { FaBox, FaPaintBrush } from 'react-icons/fa';
 import { FiSettings } from 'react-icons/fi';
 import Logo from '@src/assets/images/logo/lightlogo.png';
@@ -54,6 +44,7 @@ import {
   UncontrolledDropdown,
   UncontrolledTooltip
 } from 'reactstrap';
+import { menu } from './util';
 
 export default function MainNav({
   setIsBlog,
@@ -182,6 +173,14 @@ export default function MainNav({
     setOpenAddElementMdl(true);
   };
 
+  const handleCustomerDataset = () => {
+    setSidebarData({
+      ...sidebarData,
+      isOpen: true,
+      menu: menu[menu.length - 1]
+    })
+  }
+
   useEffect(() => {
     if (formData) {
       setPage(formData[0]);
@@ -198,13 +197,7 @@ export default function MainNav({
             </span>
           </div>
           <div className="menu-bar d-flex justify-content-between align-items-center">
-            <div
-              className="text-white cursor-pointer"
-              style={{ fontSize: '12px', fontWeight: '600', marginLeft: '10px' }}
-              onClick={(e) => setIsBack(true)}
-            >
-              Back
-            </div>
+            <div className='text-dark cursor-pointer' style={{fontSize:'0.9rem', fontWeight:'500', marginLeft:'10px'}} onClick={(e)=>setIsBack(true)}>Back</div>
             <UncontrolledDropdown style={{ cursor: 'pointer' }}>
               <DropdownToggle tag="div" className="btn btn-sm hover-effect text-dark">
                 Site
@@ -253,7 +246,7 @@ export default function MainNav({
             Save
           </Button>
           <Button
-            className="btn btn-primary"
+            className="menu-item btn btn-primary"
             color="primary"
             onClick={(e) => {
               setIsPublish(true);
@@ -446,6 +439,12 @@ export default function MainNav({
             <BiListPlus size={26} color={'black'} id="add-element" />
             <UncontrolledTooltip placement="bottom" target="add-element">
               Add Element
+            </UncontrolledTooltip>
+          </span>
+          <span className="hover-bg feature-hide" onClick={() => { handleCustomerDataset() }}>
+            <BiBlanket size={26} color={'black'} id="customer-dataset" />
+            <UncontrolledTooltip placement="bottom" target="customer-dataset">
+              Customer Dataset
             </UncontrolledTooltip>
           </span>
         </div>

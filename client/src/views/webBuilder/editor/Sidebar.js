@@ -52,7 +52,7 @@ export default function Index({
     handleClick(0);
     const Labels = [];
     editor?.BlockManager.blocks.map((block) => {
-      if (item.subMenu.length > 0 ) {
+      if (item.subMenu.length > 0) {
         if (block.get('menu') === `${item.id}-${item.subMenu[0].id}`) {
           Labels.push(block.get('label'));
           setSelectedCategory(`${item.id}-${item.subMenu[0].id}-${Labels[0]}`);
@@ -73,22 +73,23 @@ export default function Index({
           <div>
             {menu &&
               menu.map((item, index) => {
-                return (
-                  <div
-                    className=" menu-item mb-0 align-items-center p-50"
-                    onClick={(e) => handleSidebarOpen(e, item, index)}
-                    style={
-                      selectedMenu[index] && sidebarData.isOpen ? { background: '#e4e4e4' } : null
-                    }
-                  >
-                    <div className="justify-content-between align-items-center menu-icon ">
-                      {item.icon}
+                if (item.id != 'customer-dataset')
+                  return (
+                    <div
+                      className=" menu-item mb-0 align-items-center p-50"
+                      onClick={(e) => handleSidebarOpen(e, item, index)}
+                      style={
+                        selectedMenu[index] && sidebarData.isOpen ? { background: '#e4e4e4' } : null
+                      }
+                    >
+                      <div className="justify-content-between align-items-center menu-icon ">
+                        {item.icon}
+                      </div>
+                      <span className="menu-content px-50">
+                        {item.name === 'Compositions' ? 'Sections' : item.name}
+                      </span>
                     </div>
-                    <span className="menu-content px-50">
-                      {item.name === 'Compositions' ? 'Sections' : item.name}
-                    </span>
-                  </div>
-                );
+                  );
               })}
           </div>
         </PerfectScrollbar>
