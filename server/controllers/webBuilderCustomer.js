@@ -50,7 +50,8 @@ exports.saveCustomerDataset = asyncHandler(async (req, res) => {
     try {
         const { id, values, websiteId } = req.body;
         let userId = req.user._id;
-        const data = await WebCustomerDataset.findOneAndUpdate({ customerCollectId: mongoose.Types.ObjectId(id) }, { userId: mongoose.Types.ObjectId(userId), values: values, isApproved: false, isDeclined: false, customerCollectId: mongoose.Types.ObjectId(id), websiteId: mongoose.Types.ObjectId(websiteId) }, { new: true, upsert: true });
+        const collectData = await WebCustomerCollect.findOne({ _id: mongoose.Types.ObjectId(id) });
+        const data = await WebCustomerDataset.findOneAndUpdate({ customerCollectId: mongoose.Types.ObjectId(id) }, { userId: mongoose.Types.ObjectId(userId), values: values, isApproved: false, isDeclined: false, customerCollectId: mongoose.Types.ObjectId(id), websiteId: mongoose.Types.ObjectId(collectData.websiteId) }, { new: true, upsert: true });
         return res.send({ success: true, data: data });
     } catch (err) {
         console.log(err);
