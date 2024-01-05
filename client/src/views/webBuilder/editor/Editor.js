@@ -1087,15 +1087,20 @@ export default function Editor({
       // Bind the 'result' on 'change' listener
       event: 'change',
       result: (rte, action) => {
-          const colorValue = action.btn.firstChild.value;
-          rte.exec('foreColor', colorValue);
+        const colorValue = action.btn.firstChild.value;
+        rte.exec('foreColor', colorValue);
       },
       // Callback on any input change (mousedown, keydown, etc..)
       update: (rte, action) => {
-          const value = rte.doc.queryCommandValue('foreColor');
-          if (value) {
-              // action.btn.firstChild.value = value;
-          }
+        const value = rte.doc.queryCommandValue('foreColor');
+        function rgbStringToHex(rgbString) {
+          const rgbValues = rgbString.match(/\d+/g).map(Number);
+          const hex = rgbValues.map(val => val.toString(16).padStart(2, '0')).join('');
+          return `#${hex}`;
+        }
+        if (value) {
+          action.btn.firstChild.value = rgbStringToHex(value);
+        }
       }
     });
 
@@ -2577,23 +2582,6 @@ export default function Editor({
                             </div>
                             <div className='mt-2 pe-3' style={{ flex: 1, overflow: "scroll" }}>
                               <div className='ms-1 font-medium-5'>Collections</div>
-                              <div className=' ms-2 mt-1'>
-                                <div className='d-flex align-items-center justify-content-between' style={{ cursor: 'pointer' }} onClick={() => { handleChangeCustomerDataset("product", "") }}>
-                                  <div className='font-medium-6'>Store Collection</div>
-                                  <SlArrowDown size={16} />
-                                </div>
-                                {
-                                  customerDataset.type === "product" &&
-                                  (<div className='mt-1'>
-                                    {storeProducts?.fields.map((field, idx) => {
-                                      return (<div className='d-flex'>
-                                        <Input type="checkbox" id={"Product" + field.name + idx} checked={cdCheckedItems[`product-`]?.[field.name]} onChange={(e) => { handleCDCheckboxChange(field.name, e.target.checked) }} />
-                                        <Label className='ms-1' for={"Product" + field.name + idx}>{field.name}</Label>
-                                      </div>);
-                                    })}
-                                  </div>)
-                                }
-                              </div>
                               {
                                 store?.webCollections?.map(collection => {
                                   return (
