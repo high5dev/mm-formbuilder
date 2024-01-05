@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { NavLink, Button, Label, Input, Modal, ModalHeader, ModalBody, ModalFooter, Nav, NavItem, TabContent, TabPane, Form, FormGroup, Card, Row, Col, InputGroup } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getWebsiteAction, updatePageNameAction } from '../../../store/action';
+import { useUploadSignature } from '../../../../../requests/documents/recipient-doc';
 
 const SeoModal = ({ editor, setEditor, seoModalData, setSeoModalData, selectedPage }) => {
 
@@ -230,7 +231,7 @@ const SeoModal = ({ editor, setEditor, seoModalData, setSeoModalData, selectedPa
         </ModalBody>
         <ModalFooter className="d-flex">
           <Button color="primary" className="add-todo-item me-1" onClick={() => {handleSave()}}>
-            Save & UPDATE
+            Save & Update
           </Button>
         </ModalFooter>
       </Modal>

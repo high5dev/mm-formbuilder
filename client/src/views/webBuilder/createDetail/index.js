@@ -139,7 +139,7 @@ const FunnelSettings = () => {
                   </NavLink>
                 </NavItem>
 
-                <NavItem style={{ width: isMobileView ? '50%' : '' }}>
+                {/* <NavItem style={{ width: isMobileView ? '50%' : '' }}>
                   <NavLink
                     active={active === '3'}
                     onClick={() => {
@@ -150,20 +150,7 @@ const FunnelSettings = () => {
                     <PiListChecks className="font-medium-1 me-50" />
                     <span className="fs-6">Contacts</span>
                   </NavLink>
-                </NavItem>
-
-                <NavItem style={{ width: isMobileView ? '50%' : '' }}>
-                  <NavLink
-                    active={active === '4'}
-                    onClick={() => {
-                      setActive('4');
-                      setTitle('Automation');
-                    }}
-                  >
-                    <PiListChecks className="font-medium-1 me-50" />
-                    <span className="fs-6">Automation</span>
-                  </NavLink>
-                </NavItem>
+                </NavItem> */}
 
                 <NavItem style={{ width: isMobileView ? '50%' : '' }}>
                   <NavLink
@@ -190,7 +177,22 @@ const FunnelSettings = () => {
                     <span className="fs-6">Sales</span>
                   </NavLink>
                 </NavItem>
+
                 <NavItem style={{ width: isMobileView ? '50%' : '' }}>
+                  <NavLink
+                    active={active === '4'}
+                    onClick={() => {
+                      setActive('4');
+                      setTitle('Automation');
+                    }}
+                  >
+                    <PiListChecks className="font-medium-1 me-50" />
+                    <span className="fs-6">Automation</span>
+                  </NavLink>
+                </NavItem>
+
+                
+                {/* <NavItem style={{ width: isMobileView ? '50%' : '' }}>
                   <NavLink
                     active={active === '7'}
                     onClick={() => {
@@ -201,7 +203,7 @@ const FunnelSettings = () => {
                     <MdOutlineNotifications className="font-medium-1 me-50" />
                     <span className="fs-6">Settings</span>
                   </NavLink>
-                </NavItem>
+                </NavItem> */}
               </>
             </Nav>
           </div>
@@ -214,12 +216,9 @@ const FunnelSettings = () => {
               <TabPane tabId="2">
                 <Pages />
               </TabPane>
-              <TabPane tabId="3">
+              {/* <TabPane tabId="3">
                 <div>Contacts</div>
-              </TabPane>
-              <TabPane tabId="4">
-                <div>Automation</div>
-              </TabPane>
+              </TabPane> */}
               <TabPane tabId="5">
                 <FormStep
                   dispatch={dispatch}
@@ -237,7 +236,10 @@ const FunnelSettings = () => {
                   isDesktopView={isDesktopView}
                 />
               </TabPane>
-              <TabPane tabId="7">
+              <TabPane tabId="4">
+                <div>Automation</div>
+              </TabPane>
+              {/* <TabPane tabId="7">
                 <Settings
                   store={store}
                   dispatch={dispatch}
@@ -246,7 +248,7 @@ const FunnelSettings = () => {
                   isDesktopView={isDesktopView}
                   contactTypeOptions={contactTypeOptions}
                 />
-              </TabPane>
+              </TabPane> */}
             </TabContent>
           )}
         </Col>

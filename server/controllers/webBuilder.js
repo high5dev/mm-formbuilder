@@ -537,7 +537,7 @@ exports.getWebsite= asyncHandler(async(req, res) =>{
         })
       }
 
-      const pageData=await WebPage.find({websiteId:mongoose.Types.ObjectId(websiteData._id)});
+      const pageData=await WebPage.find({websiteId:mongoose.Types.ObjectId(websiteData._id), isDelete: false});
       let query = {
         userId: mongoose.Types.ObjectId(user._id),
         websiteId: mongoose.Types.ObjectId(id),
@@ -795,7 +795,7 @@ exports.updatePageName = asyncHandler(async (req, res) => {
 exports.deletePage = asyncHandler(async (req, res) => {
   let { id } = req.params;
   try {
-    const pageToDelete = await WebPage.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, {isDelete: true});
+    const pageToDelete = await WebPage.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, {isDelete: true}, {new: true});
     const data = await WebBuilder.findOne({_id: pageToDelete.websiteId});
     await googleCloudStorageWebBuilder.deletePage(`${data._id}/${pageToDelete._id}`);
 
