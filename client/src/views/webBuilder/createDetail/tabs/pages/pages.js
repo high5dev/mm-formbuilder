@@ -245,7 +245,7 @@ export const Pages = () => {
                                                 </CardBody>
                                             </Card>
                                             
-                                            <Card style={{height: '100%', borderRadius: 10, marginTop: '1em'}}
+                                            <Card style={{height: '100%', borderRadius: 10, marginTop: '1em', marginBottom: '1em'}}
                                                   className={`shadow`}>
                                                 <CardBody>
                                                     <div className="d-flex justify-content-between align-items-center">

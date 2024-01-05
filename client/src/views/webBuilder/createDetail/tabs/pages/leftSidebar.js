@@ -36,7 +36,7 @@ export const Sidebar = ({active, setActive, dispatch, store}) => {
         }
     }
     return (
-        <div className="sidebar" style={{width: '260px', height: 'calc(100vh - 2rem)'}}>
+        <div className="sidebar" style={{width: '260px', height: 'auto'}}>
             <div className="sidebar-content task-sidebar">
                 <div className="task-app-menu">
 
