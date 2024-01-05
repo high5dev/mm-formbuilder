@@ -50,9 +50,6 @@ const FunnelSettings = () => {
   });
   const dispatch = useDispatch();
 
-  const openEditor = () => {
-    history.push(`/webpages/editor/${store?.form._id}`);
-  }
   useEffect(() => {
     dispatch(getFormDataAction(id));
     // dispatch(getFormsEntryAction(id));
@@ -207,14 +204,6 @@ const FunnelSettings = () => {
                 </NavItem>
               </>
             </Nav>
-            <div>
-              <Button
-                color="primary"
-                onClick={(e) => openEditor()}
-              >
-                Edit Page
-              </Button>
-            </div>
           </div>
 
           {store?.form?.id !== '' && (

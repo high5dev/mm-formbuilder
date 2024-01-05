@@ -23,7 +23,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import '@src/assets/styles/web-builder.scss';
 import { useDispatch } from 'react-redux';
-import { setLinkUrlReducer } from '../store/reducer';
+import { setCurrentPage, setLinkUrlReducer } from '../store/reducer';
 import { updateFormDataAction, createPageAction } from '../store/action';
 import { setFormReducer } from '../store/reducer';
 import { BsPlusSquare } from 'react-icons/bs';
@@ -57,8 +57,6 @@ export default function MainNav({
   customwidth,
   setCustomWidth,
   ispreview,
-  page,
-  setPage,
   setIsClear,
   setIsBack,
   setIsPreview,
@@ -91,6 +89,7 @@ export default function MainNav({
   const [showFeatureIcons, setShowFeatureIcons] = useState(false);
   const [showZoomIcons, setShowZoomIcons] = useState(false);
   const form = store.form;
+  const page = store.currentPage;
   const { formData } = form;
   const svgRef = useRef(null);
   const zoomRef = useRef(null);
@@ -144,6 +143,7 @@ export default function MainNav({
         formData: formData
       };
       dispatch(setFormReducer(_form));
+      handlePage(res);
     });
   };
 
@@ -166,24 +166,16 @@ export default function MainNav({
   };
 
   const handlePage = (item) => {
-    setPage(item);
+    dispatch(setCurrentPage(item));
   };
 
   const handleAddElement = () => {
     setOpenAddElementMdl(true);
   };
 
-  const handleCustomerDataset = () => {
-    setSidebarData({
-      ...sidebarData,
-      isOpen: true,
-      menu: menu[menu.length - 1]
-    })
-  }
-
   useEffect(() => {
     if (formData) {
-      setPage(formData[0]);
+      dispatch(setCurrentPage(formData[0]));
     }
   }, []);
 
@@ -435,12 +427,6 @@ export default function MainNav({
               Add Element
             </UncontrolledTooltip>
           </span>
-          <span className="hover-bg feature-hide" onClick={() => { handleCustomerDataset() }}>
-            <BiBlanket size={26} color={'black'} id="customer-dataset" />
-            <UncontrolledTooltip placement="bottom" target="customer-dataset">
-              Customer Dataset
-            </UncontrolledTooltip>
-          </span>
         </div>
         <div className="home-pages d-flex align-items-center">
           <UncontrolledDropdown style={{ cursor: 'pointer' }}>
@@ -462,7 +448,7 @@ export default function MainNav({
                   return (
                     <DropdownItem
                       tag="span"
-                      className="w-100 text-center"
+                      className="w-100 text-left"
                       onClick={(e) => handlePage(item)}
                     >
                       <span className="">{item.name}</span>

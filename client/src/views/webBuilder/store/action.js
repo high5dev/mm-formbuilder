@@ -287,7 +287,6 @@ export const getWebsiteAction = (id) => async (dispatch) => {
   try {
     const { data } = await api.getWebBuilder(id);
     const { websiteData, formData, forms} = data.data;
-    console.log('forms=========', forms);
     const form_data = {
       ...websiteData,
       formData: formData
@@ -334,8 +333,7 @@ export const duplicateWebsiteAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.duplicateWebsite(payload);
     const { websiteData, formData } = data.data;
-    let _form_data = [];
-    _form_data.push(JSON.parse(JSON.stringify(formData)));
+    const _form_data = [...formData];
     const form_data = {
       ...websiteData,
       formData: _form_data
@@ -1059,7 +1057,7 @@ export const getProductDatasetAction = (pageId) => async (dispatch) => {
   try {
     const { data } = await api.getProductDataset(pageId);
     if (data.success) {
-      dispatch(setWebStoreReducer(data.data[0]));
+      dispatch(setWebCollectionsReducer(data.data));
     }
     return data;
   } catch (error) {
@@ -1067,14 +1065,14 @@ export const getProductDatasetAction = (pageId) => async (dispatch) => {
   }
 }
 
-export const updateProductDatasetAction = (id, payload) => async (dispatch) => {
-  try {
-    const { data } = await api.updateProductDataset(id, payload);
-    if (data.success)
-      dispatch(getProductDatasetAction(data.data.websiteId));
-    return data;
-  } catch (error) { }
-};
+// export const updateProductDatasetAction = (id, payload) => async (dispatch) => {
+//   try {
+//     const { data } = await api.updateProductDataset(id, payload);
+//     if (data.success)
+//       dispatch(getProductDatasetAction(data.data.websiteId));
+//     return data;
+//   } catch (error) { }
+// };
 
 export const updateCartProductsAction = (payload) => async (dispatch) => {
   try {
