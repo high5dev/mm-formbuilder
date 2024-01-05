@@ -36,7 +36,7 @@ export const Sidebar = ({active, setActive, dispatch, store}) => {
         }
     }
     return (
-        <div className="sidebar" style={{width: '260px', height: 'calc(100vh - 2rem)'}}>
+        <div className="sidebar" style={{width: '260px', height: 'auto'}}>
             <div className="sidebar-content task-sidebar">
                 <div className="task-app-menu">
 
@@ -62,7 +62,7 @@ export const Sidebar = ({active, setActive, dispatch, store}) => {
                                             <span> {x?.name}</span>
                                         </div>
                                         <div>
-                                            {x?.name ? <Trash size={16} onClick={() => {deletePage(x._id)}}/> : 'No tab available'}
+                                            {x?.name && idx !== 0 && <Trash size={16} onClick={() => {deletePage(x._id)}}/>}
                                         </div>
                                     </ListGroupItem>
                                 );
