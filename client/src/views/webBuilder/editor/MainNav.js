@@ -456,7 +456,7 @@ export default function MainNav({
                       className="w-100 text-left"
                       onClick={(e) => handlePage(item)}
                     >
-                      <span className="">{item.name}</span>
+                      <span className="" style={{ color: page == item ? '#174ae7' : '#6e6b7b' }}>{item.name}</span>
                     </DropdownItem>
                   );
                 })}
