@@ -23,7 +23,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import '@src/assets/styles/web-builder.scss';
 import { useDispatch } from 'react-redux';
-import { setLinkUrlReducer } from '../store/reducer';
+import { setCurrentPage, setLinkUrlReducer } from '../store/reducer';
 import { updateFormDataAction, createPageAction } from '../store/action';
 import { setFormReducer } from '../store/reducer';
 import { BsPlusSquare } from 'react-icons/bs';
@@ -56,8 +56,6 @@ export default function MainNav({
   customwidth,
   setCustomWidth,
   ispreview,
-  page,
-  setPage,
   setIsClear,
   setIsBack,
   setIsPreview,
@@ -90,6 +88,7 @@ export default function MainNav({
   const [showFeatureIcons, setShowFeatureIcons] = useState(false);
   const [showZoomIcons, setShowZoomIcons] = useState(false);
   const form = store.form;
+  const page = store.currentPage;
   const { formData } = form;
   const svgRef = useRef(null);
   const zoomRef = useRef(null);
@@ -165,7 +164,7 @@ export default function MainNav({
   };
 
   const handlePage = (item) => {
-    setPage(item);
+    dispatch(setCurrentPage(item));
   };
 
   const handleAddElement = () => {
@@ -174,7 +173,7 @@ export default function MainNav({
 
   useEffect(() => {
     if (formData) {
-      setPage(formData[0]);
+      dispatch(setCurrentPage(formData[0]));
     }
   }, []);
 

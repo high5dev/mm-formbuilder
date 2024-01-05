@@ -74,6 +74,13 @@ export default function FunnelTable({
   const [displayData, setDisplayData] = useState([]);
 
   const contactTypes = useSelector((state) => state.totalContacts.contactTypeList);
+
+  const store = useSelector((state) => {
+    return {
+        ...state?.formEditor
+    };
+});
+
   // ** Function in get data on rows per page
   const handlePerPage = (e) => {
     const value = parseInt(e.currentTarget.value);
