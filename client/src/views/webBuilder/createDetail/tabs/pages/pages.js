@@ -2,16 +2,16 @@ import {Button, Card, CardBody, Col, Input, InputGroup, InputGroupText, Row, Tab
 import {Sidebar} from "./leftSidebar";
 import {Copy} from "react-feather";
 import {BsFillEyeFill} from "react-icons/bs";
-import {Fragment, useState} from "react";
+import {Fragment, useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {getUserData} from "../../../../../auth/utils";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import {cloneFormAction, deleteFormAction} from "../../../store/action";
+import {cloneFormAction, deleteFormAction, deleteWebsiteAction, duplicateWebsiteAction, getPageAction} from "../../../store/action";
 import {useHistory} from "react-router-dom";
-import EditModal from "../../../edit/EditModal";
+import DuplicateModal from '../../../editor/topNav/duplicate/duplicateModal';
 
 export const Pages = () => {
     // ** dispatch
@@ -21,14 +21,33 @@ export const Pages = () => {
     // ** redux-store
     const store = useSelector((state) => {
         return {
-            ...state?.formEditor
+            ...state?.websiteEditor
         };
     });
 
 
     // ** useStates
-    const [active, setActive] = useState('')
-    const [openEditor, setOpenEditor] = useState(false);
+    const [active, setActive] = useState('');
+    const [pageData, setPageData] = useState('');
+    const [duplicateMdl, setDuplicateMdl] = useState(false);
+
+    useEffect(() => {
+        if (store?.form?.formData?.length > 0) {
+            setActive(store.form.formData[0]._id);
+        }
+    }, [store?.form?.formData]);
+
+    useEffect(() => {
+        if (active) {
+            dispatch(getPageAction(active)).then((res) => {
+                setPageData(res);
+            });
+        }
+    }, [active]);
+
+    const _toggleDuplicate = () => {
+        setDuplicateMdl(!duplicateMdl);
+    };
 
 
     // ** constants
@@ -48,7 +67,7 @@ export const Pages = () => {
 
 
     const handleViewUrl = (x) => {
-        window.open(`/web-preview/${store?.form?._id}&path=${x?.path}`);
+        window.open(`/website/${store?.form?._id}`);
     };
 
 
@@ -57,46 +76,29 @@ export const Pages = () => {
     const handleDeleteForm = async () => {
         const result = await MySwal.fire({
             title: 'Delete?',
-            text: 'When a Funnel deleted, it gets inaccessible. Are you sure you want to delete the funnel? ',
+            text: 'Are you sure you want to delete the website? ',
             icon: 'danger',
             showCancelButton: true,
-            confirmButtonText: 'Delete anyway',
+            confirmButtonText: 'Delete',
             customClass: {
                 confirmButton: 'btn btn-danger',
-                cancelButton: 'btn btn-outline-danger ms-1'
+                cancelButton: 'btn btn-outline-danger ms-1',
             },
-            buttonsStyling: false
+            buttonsStyling: false,
         });
         if (result.value) {
-            await dispatch(deleteFormAction(store.form._id));
-            history.push('/form-funnel');
+            await dispatch(deleteWebsiteAction(store.form._id));
+            history.push('/business/tools');
         }
     };
 
     const handleClone = () => {
-        const payload = {
-            userId: getUserData().id,
-            name: store.form.name,
-            memberType: store.form.memberType,
-            automateEntry: store.form.automateEntry,
-            smartList: store.form.smartList,
-            subCategory: store.form.subCategory,
-            formType: store.form.formType,
-            formData: [...store.form.formData],
-            clonedFrom: store.form._id,
-            isTemplate: store.form.isTemplate
-        };
-        dispatch(cloneFormAction(payload)).then((res) => {
-            history.push(`/form-funnel/form-setting/${res}`);
-        });
+        _toggleDuplicate();
     };
 
-
-    // ** Toggle
-    const toggleEditor = () => {
-        localStorage.removeItem('gjsProject');
-        setOpenEditor(!openEditor);
-    };
+    const openEditor = () => {
+        history.push(`/webpages/editor/${store?.form._id}`);
+    }
 
     return (
         <Row style={{width: '100%', margin: '0px', padding: '0px'}}>
@@ -109,16 +111,21 @@ export const Pages = () => {
                         store={store}
                     />
                     <TabContent activeTab={active} className={'w-100'}>
-                        {store?.form && store?.form?.formData?.map((x) => (
-                            <TabPane tabId={x?.id}>
+                        {store?.form && store?.form?.formData?.map((x) => {
+                            return <TabPane tabId={x?._id}>
                                 <div className="tasks-area" style={{maxWidth: '100%', width: '100%'}}>
                                     <Fragment>
                                         <div className="m-1">
                                             <div className="d-flex justify-content-between">
                                                 <InputGroup size="md">
-                                                    <Input
+                                                    {/* <Input
                                                         value={`https://${organization ? organization?.path : 'me'
                                                         }.mymanager.com/web-preview/${store?.form?._id}&path=${x?.path}`}
+                                                        disabled="true"
+                                                    /> */}
+                                                    <Input
+                                                        value={`https://${organization ? organization?.path : 'me'
+                                                        }.mymanager.com/website/${store?.form?._id}`}
                                                         disabled="true"
                                                     />
                                                     <InputGroupText>
@@ -154,8 +161,8 @@ export const Pages = () => {
                                                         }}
                                                         key={x.html?.length}
                                                         src={
-                                                            x.html !== ''
-                                                                ? `/web-preview/${store?.form?._id}&path=${x.path}`
+                                                            pageData !== ''
+                                                                ? `/preview${x.path}`
                                                                 : `/logo.html`
                                                         }
                                                     />
@@ -164,12 +171,12 @@ export const Pages = () => {
                                             <Row>
                                                 <Col className="d-flex flex-row-reverse">
 
-                                                        <Button
-                                                            color="danger"
-                                                            onClick={handleDeleteForm}
-                                                        >
-                                                            REMOVE
-                                                        </Button>
+                                                    <Button
+                                                        color="danger"
+                                                        onClick={handleDeleteForm}
+                                                    >
+                                                        REMOVE
+                                                    </Button>
 
 
                                                     <Button
@@ -180,31 +187,32 @@ export const Pages = () => {
                                                         CLONE
                                                     </Button>
 
-                                                        <Button
-                                                            color="primary"
-                                                            className="me-2"
-                                                            onClick={toggleEditor}
-                                                        >
-                                                            EDIT PAGE
-                                                        </Button>
+                                                    <Button
+                                                        color="primary"
+                                                        className="me-2"
+                                                        onClick={openEditor}
+                                                    >
+                                                        EDIT PAGE
+                                                    </Button>
 
                                                 </Col>
                                             </Row>
                                         </div>
-                                        <EditModal
+                                        {/* <EditModal
                                             toggle={toggleEditor}
                                             open={openEditor}
                                             store={store}
                                             dispatch={dispatch}
                                             step={x}
-                                        />
+                                        /> */}
                                     </Fragment>
                                 </div>
                             </TabPane>
-                        ))}
+                        })}
                     </TabContent>
                 </div>
             </Col>
+            <DuplicateModal store={store} isOpen={duplicateMdl} toggle={_toggleDuplicate}/>
         </Row>
     )
 }

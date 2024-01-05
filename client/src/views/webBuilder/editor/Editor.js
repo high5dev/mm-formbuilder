@@ -54,7 +54,7 @@ import StyleSidebar from './topNav/styles';
 import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
-import { setChildFormReducer, setFormReducer } from '../store/reducer';
+import { setChildFormReducer, setCurrentPage, setFormReducer } from '../store/reducer';
 import {
   getWebsiteAction,
   getPageAction,
@@ -132,8 +132,6 @@ export default function Editor({
   duplicateMdl,
   setDuplicateMdl,
   customwidth,
-  page,
-  setPage,
   isclear,
   setIsClear,
   isback,
@@ -166,6 +164,7 @@ export default function Editor({
   const [openCreateForm, setOpenCreateForm] = useState();
   const { id } = useParams();
   const form = store.form;
+  const page = store.currentPage;
   const dispatch = useDispatch();
   const history = useHistory();
   const [editor, setEditor] = useState(null);
@@ -613,7 +612,7 @@ export default function Editor({
     dispatch(getBlogsAction(store?.form?._id));
     dispatch(getWebsiteAction(id)).then((res) => {
       if (res) {
-        setPage(res[0]);
+        dispatch(setCurrentPage(res.find(e => e._id === page?._id)));
       }
     });
     const gjsEditor = grapesjs.init({
@@ -2608,8 +2607,6 @@ export default function Editor({
                   store={store}
                   editor={editor}
                   setEditor={setEditor}
-                  page={page}
-                  setPage={setPage}
                 />
               </div>
             </Collapse>
@@ -2737,7 +2734,6 @@ export default function Editor({
         <FormEditorModal
           toggle={(e) => setFormEditorMdl(e)}
           store={store}
-          page={page}
           saveFormBlock={saveFormBlock}
         />
       </Modal>
