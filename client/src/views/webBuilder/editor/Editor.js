@@ -2717,8 +2717,8 @@ export default function Editor({
           options={{ suppressScrollX: true }}
           style={{ height: `calc(100vh - 120px)` }}
         >
-          <div className="d-flex">
-            <div className="col-6  text-center text-dark ">
+          <div className="d-flex" >
+            <div className="col-6  text-center text-dark " hidden={tab=="Layers"? true:false}>
               <Button
                 color={tab === 'Styles' ? 'primary' : 'secondary'}
                 className="w-100 rounded-0"
@@ -2729,7 +2729,7 @@ export default function Editor({
                 <CgStyle size={14} /> Styles
               </Button>
             </div>
-            <div className="col-6 text-center  text-dark">
+            <div className="col-6 text-center  text-dark" hidden={tab=="Layers"? true:false}>
               <Button
                 color={tab === 'Settings' ? 'primary' : 'secondary'}
                 className="w-100 rounded-0"
