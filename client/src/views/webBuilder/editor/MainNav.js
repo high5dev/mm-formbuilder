@@ -197,25 +197,12 @@ export default function MainNav({
             </span>
           </div>
           <div className="menu-bar d-flex justify-content-between align-items-center">
-            <div className='text-dark cursor-pointer' style={{fontSize:'0.9rem', fontWeight:'500', marginLeft:'10px'}} onClick={(e)=>setIsBack(true)}>Back</div>
+            <Button outline className='text-dark cursor-pointer' style={{fontSize:'0.9rem', fontWeight:'500', marginLeft:'10px'}} onClick={(e)=>setIsBack(true)}>Back</Button>
             <UncontrolledDropdown style={{ cursor: 'pointer' }}>
-              <DropdownToggle tag="div" className="btn btn-sm hover-effect text-dark">
-                Site
+              <DropdownToggle tag="div" className="btn btn-sm hover-effect text-dark w-100">
+                Advanced Settings
               </DropdownToggle>
               <DropdownMenu container="body">
-                <DropdownItem tag="span" className="w-100">
-                  <div className="d-flex align-items-center">
-                    <span className="">Preview</span>
-                    <span className="ms-3 font-small-2">Ctrl+Alt+P</span>
-                  </div>
-                </DropdownItem>
-                <DropdownItem tag="span" className="w-100">
-                  {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
-                  <div className="d-flex align-items-center">
-                    <span className="align-middle">Publish</span>
-                    <span className="ms-3 font-small-2">Ctrl+Shift+P</span>
-                  </div>
-                </DropdownItem>
                 <DropdownItem tag="span" className="w-100" onClick={(e) => setCreateMdl(true)}>
                   {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
                   <span className="align-middle">Create New Site</span>
@@ -232,6 +219,14 @@ export default function MainNav({
                   {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
                   <span className="align-middle">Role & Permissions</span>
                 </DropdownItem>
+                <DropdownItem tag="span" className="w-100" onClick={(e) => handleClear}>
+                  {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
+                  <span className="align-middle">Save as Template</span>
+                </DropdownItem>
+                <DropdownItem tag="span" className="w-100" onClick={(e) => handleClear}>
+                  {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
+                  <span className="align-middle">Invite</span>
+                </DropdownItem>
               </DropdownMenu>
               {/* <div className="menu-item">
                 <span>Site</span>
@@ -241,7 +236,6 @@ export default function MainNav({
         </div>
         <div>{'1 hour ago saved'}</div>
         <div className="additional-bar d-flex align-items-center justify-content-around">
-          <div className="menu-item hover-effect text-dark">Invite</div>
           <Button className="menu-item text-primary text-dark" color="success">
             Save
           </Button>
