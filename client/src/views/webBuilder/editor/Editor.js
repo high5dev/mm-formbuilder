@@ -1024,6 +1024,63 @@ export default function Editor({
       setShowAddCartButtonModal(true);
     });
 
+    const rte = gjsEditor.RichTextEditor;
+    rte.remove('wrap');
+
+    const fontFamilies = [
+      { value: 'Arial, Helvetica, sans-serif', name: 'Arial' },
+      { value: 'Arial Black, Gadget, sans-serif', name: 'Arial Black' },
+      { value: 'Brush Script MT, sans-serif', name: 'Brush Script MT' },
+      { value: 'Comic Sans MS, cursive, sans-serif', name: 'Comic Sans MS' },
+      { value: 'Courier New, Courier, monospace', name: 'Courier New' },
+      { value: 'Georgia, serif', name: 'Georgia' },
+      { value: 'Helvetica, sans-serif', name: 'Helvetica' },
+      { value: 'Impact, Charcoal, sans-serif', name: 'Impact' },
+      { value: 'Lucida Sans Unicode, Lucida Grande, sans-serif', name: 'Lucida Sans Unicode' },
+      { value: 'Tahoma, Geneva, sans-serif', name: 'Tahoma' },
+      { value: 'Times New Roman, Times, serif', name: 'Times New Roman' },
+      { value: 'Trebuchet MS, Helvetica, sans-serif', name: 'Trebuchet MS' },
+      { value: 'Verdana, Geneva, sans-serif', name: 'Verdana' }
+      // ... other font families ...
+    ];
+
+    rte.add('fontFamily', {
+      icon: `
+          <select class="gjs-field" style="width: 100px">
+              ${fontFamilies.map(font => `<option value="${font.value}">${font.name}</option>`).join('')}
+          </select>
+      `,
+      event: 'change',
+      result: (rte, action) => {
+        const fontFamilyValue = action.btn.childNodes[1].value;
+        rte.exec('fontName', fontFamilyValue);
+      },
+      update: (rte, action) => {
+        const value = rte.doc.queryCommandValue("fontName");
+        console.log(value);
+        if (value) {
+          action.btn.firstChild.value = value.replace(/['"]+/g, ''); // Remove quotes
+        }
+      }
+    });
+
+    rte.add('fontColor', {
+      icon: `<input type="color" class="gjs-field" style="width: 27px" />`,
+      // Bind the 'result' on 'change' listener
+      event: 'change',
+      result: (rte, action) => {
+          const colorValue = action.btn.firstChild.value;
+          rte.exec('foreColor', colorValue);
+      },
+      // Callback on any input change (mousedown, keydown, etc..)
+      update: (rte, action) => {
+          const value = rte.doc.queryCommandValue('foreColor');
+          if (value) {
+              // action.btn.firstChild.value = value;
+          }
+      }
+    });
+
     // Add new toolbar
     const dc = gjsEditor.DomComponents;
     const new_toolbar_id = 'custom-id';
@@ -1558,13 +1615,13 @@ export default function Editor({
 
   return (
     <div className="d-flex">
-      <div className="expanded-sidebar" hidden={VisibleMenu}>
+      <div className="expanded-sidebar shadow-lg" hidden={VisibleMenu}>
         <PerfectScrollbar
           options={{ suppressScrollX: true }}
           style={{ height: `calc(100vh - 120px)` }}
         >
           {selectedMainNav === 'elements' && (
-            <div className="d-flex">
+            <div className="d-flex" >
               <Sidebar
                 sidebarData={sidebarData}
                 setSidebarData={setSidebarData}
@@ -1587,6 +1644,9 @@ export default function Editor({
                         : sidebarData.menu.name === 'Compositions'
                           ? 'Section Template'
                           : sidebarData.menu.name}
+                    </span>
+                    <span className="header-icon" onClick={handleSidebarOpen}>
+                      <X size={16} style={{ cursor: "hand" }} />
                     </span>
                   </div>
                   <div className="expanded-content">

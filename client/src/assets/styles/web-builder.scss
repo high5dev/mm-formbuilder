@@ -290,6 +290,7 @@
   background-color: white;
   position: absolute;
   height: calc(100vh - 115px);
+  // box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
 
   .expanded-header {
     height: 50px;
@@ -457,7 +458,10 @@
     .element {
       position: relative;
       margin: 10px;
+      margin-bottom: 0px;
+      padding-bottom: 10px;
       justify-content: center;
+      border-bottom: 1px solid #eee;
 
       &:hover {
         cursor: pointer;
@@ -822,4 +826,10 @@
 .trait-new-menu-item-link-add-btn {
   width: 100px;
   align-self: center;
+}
+
+
+.gjs-rte-action {
+  width: inherit !important;
+  min-width: 25px;
 }
