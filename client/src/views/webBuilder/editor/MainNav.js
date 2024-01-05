@@ -172,14 +172,6 @@ export default function MainNav({
     setOpenAddElementMdl(true);
   };
 
-  const handleCustomerDataset = () => {
-    setSidebarData({
-      ...sidebarData,
-      isOpen: true,
-      menu: menu[menu.length - 1]
-    })
-  }
-
   useEffect(() => {
     if (formData) {
       dispatch(setCurrentPage(formData[0]));
@@ -438,12 +430,6 @@ export default function MainNav({
             <BiListPlus size={26} color={'black'} id="add-element" />
             <UncontrolledTooltip placement="bottom" target="add-element">
               Add Element
-            </UncontrolledTooltip>
-          </span>
-          <span className="hover-bg feature-hide" onClick={() => { handleCustomerDataset() }}>
-            <BiBlanket size={26} color={'black'} id="customer-dataset" />
-            <UncontrolledTooltip placement="bottom" target="customer-dataset">
-              Customer Dataset
             </UncontrolledTooltip>
           </span>
         </div>

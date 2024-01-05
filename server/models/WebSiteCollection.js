@@ -33,6 +33,10 @@ const WebSiteCollectionSchema = new mongoose.Schema(
       type: String,
       default: 'multiple'
     },
+    category: {
+      type: String,
+      default: null
+    },
     isDelete: {
       type: Boolean,
       default: false,
