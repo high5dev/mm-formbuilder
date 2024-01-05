@@ -37,7 +37,6 @@ export const formEditor = createSlice({
     webBlogs:[],
     webConnections: [],
     categories: [],
-    webProducts: {},
     cartProducts: [],
     selectedProduct: {},
     thankyouProducts: [],
@@ -63,9 +62,6 @@ export const formEditor = createSlice({
     },
     setCategoriesReducer: (state, action) => {
       state.categories = action?.payload;
-    },
-    setWebStoreReducer: (state, action) => {
-      state.webProducts = action?.payload;
     },
     setFormRuleReducer: (state,action) =>{
       state.formRules=action?.payload;

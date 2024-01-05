@@ -382,18 +382,14 @@ export const deleteMultipleConnects = (payload) => {
 }
 
 export const getProductCategory = (id) => {
-  return API.get(`/web-builder-store/category/${id}`);
+  return API.get(`/web-builder-cms/category/${id}`);
 }
 export const updateCategory = (id, payload) => {
-  return API.post(`/web-builder-store/category/update/${id}`, payload);
+  return API.post(`/web-builder-cms/category/update/${id}`, payload);
 };
 
 export const getProductDataset = (id) => {
-  return API.get(`/web-builder-store/dataset/${id}`);
-}
-
-export const updateProductDataset = (id, payload) => {
-  return API.post(`/web-builder-store/dataset/update/${id}`, payload);
+  return API.get(`/web-builder-cms/checkProductCollection/${id}`);
 }
 
 export const createCustomerCollect = (payload) => {

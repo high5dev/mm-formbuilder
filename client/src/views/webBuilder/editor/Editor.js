@@ -189,6 +189,7 @@ export default function Editor({
   const [selectedProductCategory, setSelectedProductCategory] = useState({});
   const [selectedFormBlock, setSelectedFormBlock] = useState(null);
   const [OpenCategory, setOpenCategory] = useState({ index: 0, value: true });
+  const [storeProducts, setStoreProducts] = useState({});
   const user = getUserData();
   useEffect(() => {
     if (store?.form?._id) {
@@ -201,6 +202,17 @@ export default function Editor({
       dispatch(getWaitingClientsAction(store.form._id));
     }
   }, [store.form._id]);
+
+  useEffect(() => {
+    if(store.webCollections) {
+      store.webCollections.map((collection) => {
+        if(collection.category == "store") {
+          setStoreProducts(collection);
+          return;
+        }
+      })
+    }
+  }, [store.webCollections])
 
   const [productDataset, setProductDataset] = useState({});
   const [datasetConnect, setDatasetConnect] = useState([]);
@@ -219,8 +231,10 @@ export default function Editor({
 
   const loadedRef = useRef();
   const storeRef = useRef();
+  const productRef = useRef();
   loadedRef.current = isStoreLoading;
   storeRef.current = store;
+  productRef.current = storeProducts;
 
   const toggle = () => {
     setOpen(!open);
@@ -361,14 +375,14 @@ export default function Editor({
             if (element.components().models.length == 0) {
               element.set(
                 'content',
-                store?.webProducts?.values[index][data[existingItemIndex].name]
+                storeProducts?.values[index][data[existingItemIndex].name]
               );
             } else {
               element
                 .components()
                 .models[0].set(
                   'content',
-                  store?.webProducts?.values[index][data[existingItemIndex].name]
+                  storeProducts?.values[index][data[existingItemIndex].name]
                 );
             }
           }
@@ -544,13 +558,13 @@ export default function Editor({
           component.get('type') === 'sliderproductgallery' ||
           component.get('type') === 'relatedproducts'
         ) {
-          component.set('products', store?.webProducts);
+          component.set('products', storeProducts);
         }
       });
-      updateComponentsAndChildren(components, store?.webProducts, store?.categories);
+      updateComponentsAndChildren(components, storeProducts, store?.categories);
       setIsStoreLoading(false);
     }
-  }, [store?.webProducts, store?.categories]);
+  }, [storeProducts, store?.categories]);
 
   useEffect(() => {
     if (editor) {
@@ -559,10 +573,10 @@ export default function Editor({
           if (component.get('type') === 'productpage') {
             if (
               Object.keys(storeRef.current?.selectedProduct).length == 0 &&
-              storeRef.current?.webProducts?.values.length > 0
+              productRef.current?.values.length > 0
             ) {
-              dispatch(updateSelectedProductAction(storeRef.current?.webProducts?.values[0]));
-              component.set('product', storeRef.current?.webProducts?.values[0]);
+              dispatch(updateSelectedProductAction(productRef.current?.values[0]));
+              component.set('product', productRef.current?.values[0]);
             } else {
               component.set('product', storeRef.current?.selectedProduct);
             }
@@ -576,9 +590,9 @@ export default function Editor({
       }
 
       const components = editor.getWrapper().components().models;
-      updateComponentsAndChildren(components, store?.webProducts);
+      updateComponentsAndChildren(components, storeProducts);
     }
-  }, [store?.webProducts]);
+  }, [storeProducts]);
 
   useEffect(() => {
     if (store?.form?._id) {
@@ -691,6 +705,7 @@ export default function Editor({
     });
 
     gjsEditor.on('component:add', (component) => {
+      if(!component) return;
       if (
         component.get('type') === 'gridproductgallery' ||
         component.get('type') === 'sliderproductgallery' ||
@@ -721,18 +736,19 @@ export default function Editor({
         component.set('fillopacity', component.getAttributes().fillopacity);
         component.set('borderwidth', component.getAttributes().borderwidth);
         component.set('buttoncornerradius', component.getAttributes().buttoncornerradius);
+        component.set('products', storeProducts);
       } else if (component.get('type') === 'addtocartbutton') {
-        setCartProductId(storeRef.current?.webProducts?.values[0].id);
-        component.set('productId', storeRef.current?.webProducts?.values[0].id);
+        setCartProductId(productRef.current?.values[0].id);
+        component.set('productId', productRef.current?.values[0].id);
       } else if (component.get('type') === 'shoppingcart') {
         let cartItemCount = 0;
       } else if (component.get('type') === 'productpage') {
         if (
           Object.keys(storeRef.current?.selectedProduct).length == 0 &&
-          storeRef.current?.webProducts.values.length > 0
+          productRef.current.values.length > 0
         ) {
-          dispatch(updateSelectedProductAction(storeRef.current?.webProducts.values[0]));
-          component.set('product', storeRef.current?.webProducts.values[0]);
+          dispatch(updateSelectedProductAction(productRef.current.values[0]));
+          component.set('product', productRef.current.values[0]);
         } else {
           component.set('product', storeRef.current?.selectedProduct);
         }
@@ -751,58 +767,58 @@ export default function Editor({
       } else if (component.get('type') === 'count-down') {
         component.set('template', component.getAttributes().template);
       }
-      if (!loadedRef.current && component.get('type') != 'image') {
-        if (compoId == '') compoId = component.ccid;
-        const parentType = component.parent().get('type');
+      // if (!loadedRef.current && component.get('type') != 'image') {
+      //   if (compoId == '') compoId = component.ccid;
+      //   const parentType = component.parent().get('type');
 
-        if (
-          (parentType == 'product-item' || parentType == 'repeat-item') &&
-          (component.parent().parent().get('cloning') == false ||
-            component.parent().parent().parent().get('cloning') == false)
-        ) {
-          console.log(component);
-          setIsStoreLoading(true);
-          let numOfItems;
-          if (
-            component.parent().parent().get('tagName') == 'gridproductgallery' ||
-            component.parent().parent().get('tagName') == 'repeater'
-          ) {
-            numOfItems = component.parent().parent().get('numOfItems');
-          } else {
-            numOfItems = component.parent().parent().parent().get('numOfItems');
-          }
-          let originalComp = component.parent().clone();
-          let comps = component.parent().parent().get('components');
-          for (let i = comps.models.length - 1; i >= 0; i--) {
-            comps.models[i].remove();
-          }
+      //   if (
+      //     (parentType == 'product-item' || parentType == 'repeat-item') &&
+      //     (component.parent().parent().get('cloning') == false ||
+      //       component.parent().parent().parent().get('cloning') == false)
+      //   ) {
+      //     console.log(component);
+      //     setIsStoreLoading(true);
+      //     let numOfItems;
+      //     if (
+      //       component.parent().parent().get('tagName') == 'gridproductgallery' ||
+      //       component.parent().parent().get('tagName') == 'repeater'
+      //     ) {
+      //       numOfItems = component.parent().parent().get('numOfItems');
+      //     } else {
+      //       numOfItems = component.parent().parent().parent().get('numOfItems');
+      //     }
+      //     let originalComp = component.parent().clone();
+      //     let comps = component.parent().parent().get('components');
+      //     for (let i = comps.models.length - 1; i >= 0; i--) {
+      //       comps.models[i].remove();
+      //     }
 
-          for (let i = 0; i < numOfItems; i++) {
-            const item = originalComp.clone();
+      //     for (let i = 0; i < numOfItems; i++) {
+      //       const item = originalComp.clone();
 
-            setChildIds(originalComp, item, i);
-            comps.push(item);
-          }
-          setIsStoreLoading(false);
+      //       setChildIds(originalComp, item, i);
+      //       comps.push(item);
+      //     }
+      //     setIsStoreLoading(false);
 
-          // const parentComponent = component.parent().parent();
-          // const parentChildren = parentComponent.get('components');
+      //     // const parentComponent = component.parent().parent();
+      //     // const parentChildren = parentComponent.get('components');
 
-          // // Filter out the current component from the children
-          // const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
+      //     // // Filter out the current component from the children
+      //     // const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
 
-          // childrenWithoutCurrent.forEach((child, index) => {
+      //     // childrenWithoutCurrent.forEach((child, index) => {
 
-          //   const copiedComponent = component.clone();
-          //   copiedComponent.ccid = compoId + "-" + (index + 2);
-          //   if(component.get('type') == 'text')
-          //     copiedComponent.set('style', { padding: "10px" });
-          //   child.append(copiedComponent);
-          // });
-          // setIsLoading(false);
-        }
-        compoId = '';
-      }
+      //     //   const copiedComponent = component.clone();
+      //     //   copiedComponent.ccid = compoId + "-" + (index + 2);
+      //     //   if(component.get('type') == 'text')
+      //     //     copiedComponent.set('style', { padding: "10px" });
+      //     //   child.append(copiedComponent);
+      //     // });
+      //     // setIsLoading(false);
+      //   }
+      //   compoId = '';
+      // }
     });
     gjsEditor.on('component:remove', (component) => {
       const id = component.getId();
@@ -838,43 +854,43 @@ export default function Editor({
         compoId = '';
       }
     });
-    gjsEditor.on('component:update', (component) => {
-      if (!loadedRef.current) {
-        try {
-          const parentType = component.parent().get('type');
+    // gjsEditor.on('component:update', (component) => {
+    //   if (!loadedRef.current) {
+    //     try {
+    //       const parentType = component.parent().get('type');
 
-          if (
-            (parentType == 'product-item' || parentType == 'repeat-item') &&
-            (component.parent().parent().get('cloning') == false ||
-              component.parent().parent().parent().get('cloning') == false)
-          ) {
-            setIsStoreLoading(true);
-            let numOfItems;
-            if (
-              component.parent().parent().get('tagName') == 'gridproductgallery' ||
-              component.parent().parent().get('tagName') == 'repeater'
-            ) {
-              numOfItems = component.parent().parent().get('numOfItems');
-            } else {
-              numOfItems = component.parent().parent().parent().get('numOfItems');
-            }
-            let originalComp = component.parent().clone();
-            let comps = component.parent().parent().get('components');
-            for (let i = comps.models.length - 1; i >= 0; i--) {
-              comps.models[i].remove();
-            }
+    //       if (
+    //         (parentType == 'product-item' || parentType == 'repeat-item') &&
+    //         (component.parent().parent().get('cloning') == false ||
+    //           component.parent().parent().parent().get('cloning') == false)
+    //       ) {
+    //         setIsStoreLoading(true);
+    //         let numOfItems;
+    //         if (
+    //           component.parent().parent().get('tagName') == 'gridproductgallery' ||
+    //           component.parent().parent().get('tagName') == 'repeater'
+    //         ) {
+    //           numOfItems = component.parent().parent().get('numOfItems');
+    //         } else {
+    //           numOfItems = component.parent().parent().parent().get('numOfItems');
+    //         }
+    //         let originalComp = component.parent().clone();
+    //         let comps = component.parent().parent().get('components');
+    //         for (let i = comps.models.length - 1; i >= 0; i--) {
+    //           comps.models[i].remove();
+    //         }
 
-            for (let i = 0; i < numOfItems; i++) {
-              const item = originalComp.clone();
+    //         for (let i = 0; i < numOfItems; i++) {
+    //           const item = originalComp.clone();
 
-              setChildIds(originalComp, item, i);
-              comps.push(item);
-            }
-            setIsStoreLoading(false);
-          }
-        } catch (e) { }
-      }
-    });
+    //           setChildIds(originalComp, item, i);
+    //           comps.push(item);
+    //         }
+    //         setIsStoreLoading(false);
+    //       }
+    //     } catch (e) { }
+    //   }
+    // });
     gjsEditor.on('block:drag:start', function (model) { });
     gjsEditor.on('block:drag:stop', function (model) {
       setSidebarData({
@@ -2490,7 +2506,7 @@ export default function Editor({
                                 {
                                   customerDataset.type === "product" &&
                                   (<div className='mt-1'>
-                                    {store?.webProducts?.fields.map((field, idx) => {
+                                    {storeProducts?.fields.map((field, idx) => {
                                       return (<div className='d-flex'>
                                         <Input type="checkbox" id={"Product" + field.name + idx} checked={cdCheckedItems[`product-`]?.[field.name]} onChange={(e) => { handleCDCheckboxChange(field.name, e.target.checked) }} />
                                         <Label className='ms-1' for={"Product" + field.name + idx}>{field.name}</Label>
@@ -2746,6 +2762,7 @@ export default function Editor({
       />
       <ProductsSettingModal
         store={store}
+        storeProducts={storeProducts}
         showProductsSettingModal={showProductsSettingModal}
         setShowProductsSettingModal={setShowProductsSettingModal}
         selectedProductCategory={selectedProductCategory}
@@ -2754,6 +2771,7 @@ export default function Editor({
       />
       <ProductPageSettingModal
         store={store}
+        storeProducts={storeProducts}
         showProductPageSettingModal={showProductPageSettingModal}
         setShowProductPageSettingModal={setShowProductPageSettingModal}
         selectedCmp={selectedCmp}
@@ -2765,6 +2783,7 @@ export default function Editor({
       />
       <ConnectProductDataSetModal
         store={store}
+        storeProducts={storeProducts}
         showProductDataSetModal={showProductDataSetModal}
         setShowProductDataSetModal={setShowProductDataSetModal}
         modelsToConnect={modelsToConnect}
@@ -2773,6 +2792,7 @@ export default function Editor({
       />
       <AddCartButtonModal
         store={store}
+        storeProducts={storeProducts}
         showAddCartButtonModal={showAddCartButtonModal}
         setShowAddCartButtonModal={setShowAddCartButtonModal}
         productId={cartProductId}

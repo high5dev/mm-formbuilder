@@ -6,7 +6,7 @@ import CollectionField from './fields';
 import FieldTypeModal from './FieldTypeModal';
 import AddFieldModal from './AddFieldModal';
 import AddItemField from './addItemFields';
-import { updateProductDatasetAction } from '../../store/action';
+// import { updateProductDatasetAction } from '../../store/action';
 import { setWebStoreReducer } from '../../store/reducer';
 
 const EditProductsModal = ({ store, showEditProductsModal, setShowEditProductsModal }) => {
@@ -42,14 +42,14 @@ const EditProductsModal = ({ store, showEditProductsModal, setShowEditProductsMo
     let updatedValues = [...updatedWebProducts.values];
     updatedValues[index] = { ...updatedValues[index], [fieldName]: changedValue };
     updatedWebProducts.values = updatedValues;
-    dispatch(updateProductDatasetAction(store?.form?._id, { values: updatedValues }));
+    // dispatch(updateProductDatasetAction(store?.form?._id, { values: updatedValues }));
     // console.log(fieldName);
   };
 
   const removeProduct = (index) => {
     let updatedValues = [...store?.webProducts.values];
     updatedValues.splice(index, 1);
-    dispatch(updateProductDatasetAction(store?.form?._id, { values: updatedValues }));
+    // dispatch(updateProductDatasetAction(store?.form?._id, { values: updatedValues }));
   }
 
   const onChangeAddItem = (valueObj) => {
@@ -66,11 +66,11 @@ const EditProductsModal = ({ store, showEditProductsModal, setShowEditProductsMo
       createdAt: currentDateString,
       updatedAt: currentDateString,
     }
-    dispatch(updateProductDatasetAction(store?.form?._id, { values: [...store?.webProducts?.values, newItem] })).then((res) => {
-      if (res.success) {
-        // setOpenEditCollection({ ...openCollection, data: res.data });
-      }
-    });
+    // dispatch(updateProductDatasetAction(store?.form?._id, { values: [...store?.webProducts?.values, newItem] })).then((res) => {
+    //   if (res.success) {
+    //     // setOpenEditCollection({ ...openCollection, data: res.data });
+    //   }
+    // });
 
     setAddNewItem(false);
   };
@@ -84,11 +84,11 @@ const EditProductsModal = ({ store, showEditProductsModal, setShowEditProductsMo
         createdAt: currentDateString,
         updatedAt: currentDateString,
       }
-      dispatch(updateProductDatasetAction(store?.form?._id, { values: [...store?.webProducts?.values, newItem] })).then((res) => {
-        if (res.success) {
-          // setOpenEditCollection({ ...openCollection, data: res.data });
-        }
-      });
+      // dispatch(updateProductDatasetAction(store?.form?._id, { values: [...store?.webProducts?.values, newItem] })).then((res) => {
+      //   if (res.success) {
+      //     // setOpenEditCollection({ ...openCollection, data: res.data });
+      //   }
+      // });
     }
   };
 
