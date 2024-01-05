@@ -1646,7 +1646,7 @@ export default function Editor({
                           : sidebarData.menu.name}
                     </span>
                     <span className="header-icon" onClick={handleSidebarOpen}>
-                      <X size={16} style={{ cursor: "hand" }} />
+                      <X size={16} color="#6e6b7b" style={{ cursor: "hand" }} />
                     </span>
                   </div>
                   <div className="expanded-content">
