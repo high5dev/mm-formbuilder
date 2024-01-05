@@ -19,6 +19,7 @@ import { Design } from './Design';
 
 const ProductsSettingModal = ({
   store,
+  storeProducts,
   showProductsSettingModal,
   setShowProductsSettingModal,
   selectedProductCategory,
@@ -58,7 +59,7 @@ const ProductsSettingModal = ({
     setCategoryType(2);
     setCategoryName(category?.name);
     setCheckedProductState(
-      store.webProducts?.values?.reduce((state, product) => {
+      storeProducts?.values?.reduce((state, product) => {
         state[product.id] = category?.products?.includes(product.id) || category?.isAll;
         return state;
       }, {})
@@ -80,7 +81,7 @@ const ProductsSettingModal = ({
       updateProductCategoryAction(selectedCategory?._id, {
         name: categoryName,
         products: ids.join(),
-        websitesId: store.form?._id,
+        websiteId: store.form?._id,
         isEdit: isEdit
       })
     );
@@ -205,7 +206,7 @@ const ProductsSettingModal = ({
                 />
                 <div className="mt-1">Products List</div>
                 <div className="product-list">
-                  {store?.webProducts?.values?.map((product, index) => {
+                  {storeProducts?.values?.map((product, index) => {
                     return (
                       <div className="d-flex mt-1">
                         <Input
@@ -228,11 +229,11 @@ const ProductsSettingModal = ({
               </div>
             )
           ) : settingType === 'Settings' ? (
-            <Settings store={store} selectedCmp={selectedCmp} />
+            <Settings store={store} storeProducts={storeProducts} selectedCmp={selectedCmp} />
           ) : settingType === 'Layout' ? (
-            <Layout store={store} selectedCmp={selectedCmp} />
+            <Layout store={store} storeProducts={storeProducts} selectedCmp={selectedCmp} />
           ) : (
-            <Design store={store} selectedCmp={selectedCmp} />
+            <Design store={store} storeProducts={storeProducts} selectedCmp={selectedCmp} />
           )}
         </div>
       </ModalBody>

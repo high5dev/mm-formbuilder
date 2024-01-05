@@ -2,14 +2,14 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Button, Label, Input, Modal, ModalHeader, ModalBody, Badge } from 'reactstrap';
 import { ChevronLeft } from 'react-feather';
 
-const AddCartButtonModal = ({ store, showAddCartButtonModal, setShowAddCartButtonModal, productId, handleChangeProductId }) => {
+const AddCartButtonModal = ({ store, storeProducts, showAddCartButtonModal, setShowAddCartButtonModal, productId, handleChangeProductId }) => {
   const [showProducts, setShowProducts] = useState(false);
   const [product, setProduct] = useState({});
   const [searchText, setSearchText] = useState('');
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    store?.webProducts?.values?.forEach((product) => {
+    storeProducts?.values?.forEach((product) => {
       if (product.id == productId) {
         setProduct(product);
       }
@@ -17,12 +17,12 @@ const AddCartButtonModal = ({ store, showAddCartButtonModal, setShowAddCartButto
   }, [productId]);
 
   useEffect(() => {
-    if (store?.webProducts?.values?.length > 0) {
-      setProducts(store?.webProducts?.values?.filter(item => {
+    if (storeProducts?.values?.length > 0) {
+      setProducts(storeProducts?.values?.filter(item => {
         return item.name && item.name.toLowerCase().includes(searchText.toLowerCase())
       }));
     }
-  }, [store?.webProducts, searchText]);
+  }, [storeProducts, searchText]);
 
   return (
     <>

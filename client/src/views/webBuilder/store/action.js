@@ -1059,7 +1059,7 @@ export const getProductDatasetAction = (pageId) => async (dispatch) => {
   try {
     const { data } = await api.getProductDataset(pageId);
     if (data.success) {
-      dispatch(setWebStoreReducer(data.data[0]));
+      dispatch(setWebCollectionsReducer(data.data));
     }
     return data;
   } catch (error) {
@@ -1067,14 +1067,14 @@ export const getProductDatasetAction = (pageId) => async (dispatch) => {
   }
 }
 
-export const updateProductDatasetAction = (id, payload) => async (dispatch) => {
-  try {
-    const { data } = await api.updateProductDataset(id, payload);
-    if (data.success)
-      dispatch(getProductDatasetAction(data.data.websiteId));
-    return data;
-  } catch (error) { }
-};
+// export const updateProductDatasetAction = (id, payload) => async (dispatch) => {
+//   try {
+//     const { data } = await api.updateProductDataset(id, payload);
+//     if (data.success)
+//       dispatch(getProductDatasetAction(data.data.websiteId));
+//     return data;
+//   } catch (error) { }
+// };
 
 export const updateCartProductsAction = (payload) => async (dispatch) => {
   try {

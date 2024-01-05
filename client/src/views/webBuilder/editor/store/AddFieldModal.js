@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import FieldSetting from './addFieldSettings';
 import { useDispatch } from 'react-redux';
-import { updateProductDatasetAction } from '../../store/action';
+// import { updateProductDatasetAction } from '../../store/action';
 
 const AddFieldModal = ({ open, toggle, fieldType, fieldTypeToggle, collection, openCollection, setOpenEditCollection, store }) =>{
   const dispatch = useDispatch();
@@ -14,13 +14,13 @@ const AddFieldModal = ({ open, toggle, fieldType, fieldTypeToggle, collection, o
 
   const addField = () => {
     if (store?.webProducts) {
-      dispatch(updateProductDatasetAction(store?.form?._id, {fields: [...store?.webProducts?.fields, {...fieldData, type: fieldType?.name}]})).then((res) => {
-        if (res.success) {
-          // setOpenEditCollection({...openCollection, data: res.data});
-        } else {
+      // dispatch(updateProductDatasetAction(store?.form?._id, {fields: [...store?.webProducts?.fields, {...fieldData, type: fieldType?.name}]})).then((res) => {
+      //   if (res.success) {
+      //     // setOpenEditCollection({...openCollection, data: res.data});
+      //   } else {
 
-        }
-      });
+      //   }
+      // });
     }
   };
 

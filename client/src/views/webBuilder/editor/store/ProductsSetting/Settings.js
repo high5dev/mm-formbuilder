@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Input } from 'reactstrap';
 
-export const Settings = ({ store, selectedCmp }) => {
+export const Settings = ({ store, storeProducts, selectedCmp }) => {
   const [fieldNames, setFieldNames] = useState({});
   const [hoverEffect, setHoverEffect] = useState('Swap');
   const [showcartbutton, setShowCartbutton] = useState(true);
@@ -9,7 +9,7 @@ export const Settings = ({ store, selectedCmp }) => {
   useEffect(() => {
     if (selectedCmp) {
       setFieldNames(
-        store.webProducts?.fields?.reduce((state, field) => {
+        storeProducts?.fields?.reduce((state, field) => {
           state[field.name] = selectedCmp.get('fieldnames')?.includes(field.name);
           return state;
         }, {})
@@ -46,7 +46,7 @@ export const Settings = ({ store, selectedCmp }) => {
         What's Displayed?
       </div>
       <div className="mt-1">What do you want to show?</div>
-      {store.webProducts?.fields?.map((field, index) => {
+      {storeProducts?.fields?.map((field, index) => {
         return (
           <div className="d-flex mt-1">
             <Input
