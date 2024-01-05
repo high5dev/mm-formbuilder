@@ -186,6 +186,8 @@ const ProductDataSet = require("../ProductDataSet");
 const ProductCategory = require("../ProductCategory");
 const WebSiteRole = require("../WebSiteRole");
 const WebSiteInvite = require("../WebSiteInvite");
+const WebCustomerCollect = require("../WebCustomerCollect");
+const WebCustomerDataset = require("../WebCustomerDataset");
 const models = {
   Authenticate,
   User,
@@ -360,6 +362,8 @@ const models = {
   ProductCategory,
   WebSiteRole,
   WebSiteInvite,
+  WebCustomerCollect,
+  WebCustomerDataset
 };
 
 module.exports = models;

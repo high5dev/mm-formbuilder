@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Eye, Save, X, ChevronDown, MoreHorizontal, Trash2, PlusSquare, Plus } from 'react-feather';
-import { BiListPlus, BiMobile } from 'react-icons/bi';
+import { Eye, Save, X, ChevronDown, MoreHorizontal, Trash2, PlusSquare, Plus, Minimize2 } from 'react-feather';
+import { BiListPlus, BiMobile, BiBlanket } from 'react-icons/bi';
 import { FaBox, FaPaintBrush } from 'react-icons/fa';
 import { FiSettings } from 'react-icons/fi';
 import Logo from '@src/assets/images/logo/lightlogo.png';
@@ -44,6 +44,7 @@ import {
   UncontrolledDropdown,
   UncontrolledTooltip
 } from 'reactstrap';
+import { menu } from './util';
 
 export default function MainNav({
   setIsBlog,
@@ -171,6 +172,14 @@ export default function MainNav({
     setOpenAddElementMdl(true);
   };
 
+  const handleCustomerDataset = () => {
+    setSidebarData({
+      ...sidebarData,
+      isOpen: true,
+      menu: menu[menu.length - 1]
+    })
+  }
+
   useEffect(() => {
     if (formData) {
       dispatch(setCurrentPage(formData[0]));
@@ -182,7 +191,9 @@ export default function MainNav({
       <div className="up-navbar d-flex justify-content-between align-items-center">
         <div className="d-flex justify-content align-items-center">
           <div className="logo">
-            <span className="title brand-text text-dark"><img src={Logo} height={20} /></span>
+            <span className="title brand-text text-dark">
+              <img src={Logo} height={20} />
+            </span>
           </div>
           <div className="menu-bar d-flex justify-content-between align-items-center">
             <div className='text-dark cursor-pointer' style={{fontSize:'0.9rem', fontWeight:'500', marginLeft:'10px'}} onClick={(e)=>setIsBack(true)}>Back</div>
@@ -261,11 +272,11 @@ export default function MainNav({
         <div className="feature-icons d-flex align-items-center">
           <span
             className=""
-            onClick={(e) => { 
-              handelVisibleMenu()
+            onClick={(e) => {
+              handelVisibleMenu();
             }}
           >
-            <MdOutlineLensBlur size={26} color={VisibleMenu?'black':'#0275d8'} id="inspector" />
+            <MdOutlineLensBlur size={26} color={VisibleMenu ? 'black' : '#0275d8'} id="inspector" />
           </span>
           <span className="hover-bg feature-show">
             <svg
@@ -429,6 +440,12 @@ export default function MainNav({
               Add Element
             </UncontrolledTooltip>
           </span>
+          <span className="hover-bg feature-hide" onClick={() => { handleCustomerDataset() }}>
+            <BiBlanket size={26} color={'black'} id="customer-dataset" />
+            <UncontrolledTooltip placement="bottom" target="customer-dataset">
+              Customer Dataset
+            </UncontrolledTooltip>
+          </span>
         </div>
         <div className="home-pages d-flex align-items-center">
           <UncontrolledDropdown style={{ cursor: 'pointer' }}>
@@ -506,11 +523,6 @@ export default function MainNav({
               }}
             />
           </span>
-          {/* <UncontrolledDropdown style={{ cursor: 'pointer' }}>
-            <DropdownToggle tag="div" className="btn btn-sm hover-effect">
-              <MoreHorizontal size={24} color={'black'} />
-            </DropdownToggle>
-          </UncontrolledDropdown> */}
         </div>
         <div className="devices-size d-flex align-items-center">
           <span className="px-1 text-dark">w</span>
@@ -526,7 +538,7 @@ export default function MainNav({
           </span>
           <span className="px-1 text-dark">px</span>
         </div>
-        <div className="zoom-size d-flex justify-content-around align-items-center">
+        <div className="zoom-size d-flex justify-content-end align-items-center">
           <span className="hover-bg zoom-show">
             <svg
               ref={zoomRef}
@@ -552,45 +564,11 @@ export default function MainNav({
           </span>
           <div
             className={
-              'w-100 d-flex justify-content-around align-items-center ' +
+              'd-flex justify-content-around align-items-center ' +
               (showZoomIcons ? 'zoom-hide' : '')
             }
           >
-            {/* <div className='d-flex'>
-              <span className="menu-icon">
-                <MdWorkspacesOutline size={24} color={'black'} id="global" />
-                <UncontrolledTooltip placement="bottom" target="global">
-                  Global Sections
-                </UncontrolledTooltip>
-              </span>
-              <span className="menu-icon">
-                <MdOutlineGridView size={24} color={'black'} id="market" />
-                <UncontrolledTooltip placement="bottom" target="market">
-                  App Market
-                </UncontrolledTooltip>
-              </span>
-              <span className="menu-icon">
-                <MdOutlineNewspaper size={24} color={'black'} id="cms" />
-                <UncontrolledTooltip placement="bottom" target="cms">
-                  CMS
-                </UncontrolledTooltip>
-              </span>
-            </div> */}
-            <div className="d-flex">
-              {/* <span className="menu-icon">
-                <FaPaintBrush
-                  size={24}
-                  color={'black'}
-                  id="styles"
-                  onClick={(e) => {
-                    setTab('Styles');
-                    setRSidebarOpen(true);
-                  }}
-                />
-                <UncontrolledTooltip placement="bottom" target="styles">
-                  Styles
-                </UncontrolledTooltip>
-              </span> */}
+            <div className="d-flex px-2 ">
               <span className="menu-icon">
                 <MdOutlineLayers
                   size={26}
@@ -605,29 +583,20 @@ export default function MainNav({
                   Layers
                 </UncontrolledTooltip>
               </span>
-              {/* <span className="menu-icon">
-                <FiSettings
-                  size={24}
+              <span className="menu-icon">
+                <Minimize2
+                  size={26}
                   color={'black'}
-                  id="traits"
+                  id="layers"
                   onClick={(e) => {
-                    setTab('Settings');
-                    setRSidebarOpen(true);
+                    setRSidebarOpen(false);
+                    console.log(document.querySelector('.gjs-toolbar').style.left);
                   }}
                 />
-                <UncontrolledTooltip placement="bottom" target="traits">
-                  Settings
+                <UncontrolledTooltip placement="bottom" target="layers">
+                  Close SideBar
                 </UncontrolledTooltip>
-              </span> */}
-              {/* <span className="menu-icon">
-              <MdOutlineLibraryBooks size={24} color={'black'} id="pages" onClick={(e)=>{
-                setTab('Pages');
-                setRSidebarOpen(true);
-             }}/>
-              <UncontrolledTooltip placement="bottom" target="pages">
-                Pages
-              </UncontrolledTooltip>
-            </span> */}
+              </span>
             </div>
           </div>
         </div>
