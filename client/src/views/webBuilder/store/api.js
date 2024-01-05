@@ -305,7 +305,7 @@ export const deleteWebElement=(id) =>{
 }
 
 export const getWebElements = () => {
-  // return API.get(`/web-builder-element/elements`);
+  return API.get(`/web-builder-element/elements`);
 }
 
 export const createWebCollection = (payload) => {
