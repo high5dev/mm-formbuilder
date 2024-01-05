@@ -77,6 +77,12 @@
 .gjs-sm-sector {
   .gjs-sm-sector-title,
   .gjs-radio-item {
+    &:hover{
+      color: blue;
+    }
+    &:target{
+      color: blue;
+    }
     color: $gray-700;
   }
 }
@@ -183,6 +189,9 @@
   content: 'CSS';
   visibility: visible;
 }
+[dir] .gjs-select option, [dir] .gjs-field-select option, [dir] .gjs-clm-select option, [dir] .gjs-sm-select option, [dir] .gjs-fields option, [dir] .gjs-sm-unit option {
+  background-color: white;
+}
 [dir=ltr] .gjs-field .gjs-d-s-arrow{
   border-left: 3px solid rgba(0,0,0,0);
   border-right: 4px solid rgba(0,0,0,0);
@@ -237,7 +246,8 @@
   align-items: center;
   border: block !important;
 }
-.gjs-field {
+
+.gjs-select, .gjs-field-integer, .gjs-radio-items,.gjs-field-text {
   font-family: $main-font-family;
   font-size: $main-font-size;
   line-height: $main-line-height;
@@ -245,6 +255,14 @@
   background-color: white;
   color: $gray-700;
   border: 1px solid #ebe9f1;
+  align-items: center;
+}
+
+.gjs-four-color {
+  color: #174ae7 !important;
+}
+
+.gjs-sm-label{
   align-items: center;
 }
 
