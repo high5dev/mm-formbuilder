@@ -144,6 +144,7 @@ export default function MainNav({
         formData: formData
       };
       dispatch(setFormReducer(_form));
+      handlePage(res);
     });
   };
 
@@ -452,7 +453,7 @@ export default function MainNav({
                   return (
                     <DropdownItem
                       tag="span"
-                      className="w-100 text-center"
+                      className="w-100 text-left"
                       onClick={(e) => handlePage(item)}
                     >
                       <span className="">{item.name}</span>
