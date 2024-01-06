@@ -36,8 +36,9 @@ import OperatorItem from '../form/rules/OperatorItem';
 import PreviewFormModal from './PreviewFormModal';
 import {setChildFormReducer, setFormRuleReducer} from '../../../store/reducer'
 import {createFormRuleAction, updateFormRuleAction, deleteFormRuleAction, editChildFormAction, uploadFileAction,createFormPageAction, removeFormPageAction, getFormPageAction, getChildFormsAction} from '../../../store/action';
-export default function Index({store, toggle, page, saveFormBlock}) {
+export default function Index({store, toggle, saveFormBlock}) {
   const dispatch=useDispatch();
+  const page = store.currentPage;
   const history=useHistory();
   const [currentFormPage, setCurrentFormPage]=useState();
   const [sidebarOpen, setSidebarOpen] = useState(true);

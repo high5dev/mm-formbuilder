@@ -58,8 +58,6 @@ export default function Index() {
             customwidth={customwidth}
             setCustomWidth={setCustomWidth}
             setIsClear={setIsClear}
-            page={page}
-            setPage={setPage}
             ispreview={ispreview}
             setIsBack={setIsBack}
             setIsPreview={setIsPreview}
@@ -100,8 +98,6 @@ export default function Index() {
               customwidth={customwidth}
               isclear={isclear}
               setIsClear={setIsClear}
-              page={page}
-              setPage={setPage}
               ispreview={ispreview}
               ispublish={ispublish}
               isback={isback}

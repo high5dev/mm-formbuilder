@@ -9,10 +9,13 @@ import {
   ChevronDown,
   ChevronUp,
   Settings,
-  Trash, Edit, MoreVertical
+  Trash,
+  Edit,
+  MoreVertical
 } from 'react-feather';
 import { CgStyle } from 'react-icons/cg';
 import WebFont from 'webfontloader';
+import { IoMdArrowDropright,IoMdArrowDropdown  } from "react-icons/io";
 import { RiQuestionMark } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
@@ -51,7 +54,7 @@ import StyleSidebar from './topNav/styles';
 import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
-import { setChildFormReducer, setFormReducer } from '../store/reducer';
+import { setChildFormReducer, setCurrentPage, setFormReducer } from '../store/reducer';
 import {
   getWebsiteAction,
   getPageAction,
@@ -129,8 +132,6 @@ export default function Editor({
   duplicateMdl,
   setDuplicateMdl,
   customwidth,
-  page,
-  setPage,
   isclear,
   setIsClear,
   isback,
@@ -163,6 +164,7 @@ export default function Editor({
   const [openCreateForm, setOpenCreateForm] = useState();
   const { id } = useParams();
   const form = store.form;
+  const page = store.currentPage;
   const dispatch = useDispatch();
   const history = useHistory();
   const [editor, setEditor] = useState(null);
@@ -431,8 +433,8 @@ export default function Editor({
       if (res) {
         editor.BlockManager.remove(ccid);
       }
-    })
-  }
+    });
+  };
 
   const handleChangeCustomerDataset = (type, collectionId) => {
     setCustomerDataset({ type: type, collectionId: collectionId });
@@ -610,7 +612,7 @@ export default function Editor({
     dispatch(getBlogsAction(store?.form?._id));
     dispatch(getWebsiteAction(id)).then((res) => {
       if (res) {
-        setPage(res[0]);
+        dispatch(setCurrentPage(res.find(e => e._id === page?._id)));
       }
     });
     const gjsEditor = grapesjs.init({
@@ -627,10 +629,12 @@ export default function Editor({
       },
       styleManager: {
         appendTo: document.querySelector('#style-manager-container'),
+        clearProperties: true
+
       },
       selectorManager: {
         custom: true,
-        componentFirst: true,
+        // componentFirst: true,
         appendTo: document.querySelector('#selector-manager-container')
       },
       layerManager: {
@@ -918,10 +922,18 @@ export default function Editor({
       setBlockManager(props);
     });
     gjsEditor.on('component:selected', (cmp) => {
-      setTab('Settings');
+      // get the selected componnet and its default toolbar
+      const defaultToolbar = cmp.get('toolbar');
+      if(defaultToolbar.filter((tlb) => tlb.id === new_toolbar_id)){
+        defaultToolbar.unshift({
+          id: `RightSidebar-new_toolbar_id`,
+          command: 'RightSidebar-component',
+          label: settingLabel
+        });
+      }
+      
       setSelectedCmp(cmp);
       console.log('cmp-------------------', cmp);
-      setRSidebarOpen(true);
       if (
         cmp.attributes.type === 'gridproductgallery' ||
         cmp.attributes.type === 'sliderproductgallery' ||
@@ -999,6 +1011,12 @@ export default function Editor({
           setOpenCreateAssetMdl(true);
         }
       });
+    });
+    gjsEditor.Commands.add('RightSidebar-component', (grapeEditor) => {
+      
+      setRSidebarOpen(true);
+      setTab('Settings');
+      
     });
     gjsEditor.Commands.add('connect-collection', (geditor) => {
       setConnectData({ ...connectData, isOpen: true });
@@ -1209,6 +1227,7 @@ export default function Editor({
         });
       }
     });
+
     // gjsEditor.BlockManager.remove('link');
     // gjsEditor.BlockManager.remove('link-block');
     setEditor(gjsEditor);
@@ -1770,14 +1789,14 @@ export default function Editor({
                                         OpenCategory.index == index ? OpenCategory.value : false
                                       }
                                     >
-                                      <ChevronDown size={18} />
+                                      <IoMdArrowDropright color="black" size={18} />
                                     </div>
                                     <div
                                       hidden={
                                         OpenCategory.index == index ? !OpenCategory.value : true
                                       }
                                     >
-                                      <ChevronUp size={18} />
+                                      <IoMdArrowDropdown color="black" size={18} />
                                     </div>
                                     <div className="ps-50">
                                       <h5 className="submenu-item ps-0">{sub.name}</h5>
@@ -1897,14 +1916,14 @@ export default function Editor({
                                         OpenCategory.index == index ? OpenCategory.value : false
                                       }
                                     >
-                                      <ChevronDown size={18} className=" " />
+                                      <IoMdArrowDropright color="black" size={18} className=" " />
                                     </div>
                                     <div
                                       hidden={
                                         OpenCategory.index == index ? !OpenCategory.value : true
                                       }
                                     >
-                                      <ChevronUp size={18} className=" " />
+                                      <IoMdArrowDropdown color="black" size={18} className=" " />
                                     </div>
                                     <div className="ps-50">
                                       <h5 className="submenu-item ps-0">{sub.name}</h5>
@@ -2121,14 +2140,14 @@ export default function Editor({
                                           OpenCategory.index == index ? OpenCategory.value : false
                                         }
                                       >
-                                        <ChevronDown size={18} />
+                                        <IoMdArrowDropright color="black" size={18} />
                                       </div>
                                       <div
                                         hidden={
                                           OpenCategory.index == index ? !OpenCategory.value : true
                                         }
                                       >
-                                        <ChevronUp size={18} />
+                                        <IoMdArrowDropdown color="black" size={18} />
                                       </div>
                                       <div className="ps-50">
                                         <h5 className="submenu-item ps-0">{sub.name}</h5>
@@ -2229,14 +2248,14 @@ export default function Editor({
                                         OpenCategory.index == index ? OpenCategory.value : false
                                       }
                                     >
-                                      <ChevronDown size={18} />
+                                      <IoMdArrowDropright color="black" size={18} />
                                     </div>
                                     <div
                                       hidden={
                                         OpenCategory.index == index ? !OpenCategory.value : true
                                       }
                                     >
-                                      <ChevronUp size={18} />
+                                      <IoMdArrowDropdown color='black' size={18} />
                                     </div>
                                     <div className="ps-50">
                                       <h5 className="submenu-item ps-0">{sub.name}</h5>
@@ -2677,8 +2696,6 @@ export default function Editor({
                   store={store}
                   editor={editor}
                   setEditor={setEditor}
-                  page={page}
-                  setPage={setPage}
                 />
               </div>
             </Collapse>
@@ -2735,14 +2752,14 @@ export default function Editor({
       ) : (
         <></>
       )}
-      <div className="property-sidebar" style={{ display: rsidebarOpen ? 'block' : 'none' }}>
+      <div className="property-sidebar" hidden={rsidebarOpen?false:true}>
         <PerfectScrollbar
           className="scrollable-content"
           options={{ suppressScrollX: true }}
           style={{ height: `calc(100vh - 120px)` }}
         >
-          <div className="d-flex">
-            <div className="col-6  text-center text-dark ">
+          <div className="d-flex" >
+            <div className="col-6  text-center text-dark " hidden={tab=="Layers"? true:false}>
               <Button
                 color={tab === 'Styles' ? 'primary' : 'secondary'}
                 className="w-100 rounded-0"
@@ -2753,7 +2770,7 @@ export default function Editor({
                 <CgStyle size={14} /> Styles
               </Button>
             </div>
-            <div className="col-6 text-center  text-dark">
+            <div className="col-6 text-center  text-dark" hidden={tab=="Layers"? true:false}>
               <Button
                 color={tab === 'Settings' ? 'primary' : 'secondary'}
                 className="w-100 rounded-0"
@@ -2765,7 +2782,7 @@ export default function Editor({
               </Button>
             </div>
           </div>
-          <div style={{ display: tab === 'Styles' ? 'block' : 'none' }}>
+          <div style={{ display: tab === 'Styles' ? 'block' : 'none' }} >
             <div id="selector-manager-container" />
             <div id="style-manager-container" />
           </div>
@@ -2806,7 +2823,6 @@ export default function Editor({
         <FormEditorModal
           toggle={(e) => setFormEditorMdl(e)}
           store={store}
-          page={page}
           saveFormBlock={saveFormBlock}
         />
       </Modal>

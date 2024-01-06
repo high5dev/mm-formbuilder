@@ -10,7 +10,9 @@ const {
   WebBuilderElementCategory,
   WebBuilderElement,
   WebSiteRole,
-  WebSiteCollection
+  WebSiteCollection,
+  WebSiteDataSet,
+  WebSiteConnection,
   //Income,
   //Contact,
 } = require("../models/index/index");
@@ -346,10 +348,11 @@ exports.createWebsite = asyncHandler(async (req, res) => {
 });
 
 exports.duplicateWebsite = asyncHandler (async(req, res) => {
+  const {id, name}=req.body;
+  const { organization } = req.headers;
+  const user = req.user;
+
   try{
-    const {id, name}=req.body;
-    const { organization } = req.headers;
-    const user = req.user;
     const webToClone = await WebBuilder.findOne({_id: mongoose.Types.ObjectId(id)});
     const pagesToClone = await WebPage.find({websiteId: mongoose.Types.ObjectId(webToClone._id)});
 
@@ -367,6 +370,7 @@ exports.duplicateWebsite = asyncHandler (async(req, res) => {
       creatorType: organization
         ? user.organizations.find((x) => x.organizationId.toString() === organization).userType
         : user.userType,
+      clonedFrom: webToClone._id,
     };
     const websiteData = await WebBuilder.create(webData);
     const newPageData = pagesToClone.map(e => {
@@ -385,7 +389,7 @@ exports.duplicateWebsite = asyncHandler (async(req, res) => {
       pageData.push(page);   
     };
     for (let i=0; i<pageData.length; i++) {
-      const result=await googleCloudStorageWebBuilder.readPage(`${webToClone._id}/${pagesToClone[i]._id}`);
+      const result = await googleCloudStorageWebBuilder.readPage(`${webToClone._id}/${pagesToClone[i]._id}`);
       await googleCloudStorageWebBuilder.createAndUpdatePage(`${websiteData._id}/${pageData[i]._id}`, result);
     };
     // console.log('website ===== >data', websiteData);
@@ -533,7 +537,7 @@ exports.getWebsite= asyncHandler(async(req, res) =>{
         })
       }
 
-      const pageData=await WebPage.find({websiteId:mongoose.Types.ObjectId(websiteData._id)});
+      const pageData=await WebPage.find({websiteId:mongoose.Types.ObjectId(websiteData._id), isDelete: false});
       let query = {
         userId: mongoose.Types.ObjectId(user._id),
         websiteId: mongoose.Types.ObjectId(id),
@@ -574,6 +578,9 @@ exports.deleteWebsite = asyncHandler(async (req, res) => {
     const webToDelete = await WebBuilder.findByIdAndUpdate(id, { isDelete: true });
     await WebPage.updateMany({websiteId: id}, { isDelete: true });
     await googleCloudStorageWebBuilder.deleteWeb(webToDelete._id);
+
+    await WebSiteCollection.updateMany({websiteId: id}, { isDelete: true });
+    await WebSiteConnection.updateMany({websiteId: id}, { isDelete: true });
 
     //delete default roles related to website
     await WebSiteRole.updateMany({websiteId: id}, { isDelete: true });
@@ -788,7 +795,7 @@ exports.updatePageName = asyncHandler(async (req, res) => {
 exports.deletePage = asyncHandler(async (req, res) => {
   let { id } = req.params;
   try {
-    const pageToDelete = await WebPage.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, {isDelete: true});
+    const pageToDelete = await WebPage.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, {isDelete: true}, {new: true});
     const data = await WebBuilder.findOne({_id: pageToDelete.websiteId});
     await googleCloudStorageWebBuilder.deletePage(`${data._id}/${pageToDelete._id}`);
 

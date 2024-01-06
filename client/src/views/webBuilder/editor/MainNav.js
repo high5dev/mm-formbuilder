@@ -1,5 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Eye, Save, X, ChevronDown, MoreHorizontal, Trash2, PlusSquare, Plus } from 'react-feather';
+import {
+  Eye,
+  Save,
+  X,
+  ChevronDown,
+  MoreHorizontal,
+  Trash2,
+  PlusSquare,
+  Plus,
+  Minimize2
+} from 'react-feather';
 import { BiListPlus, BiMobile, BiBlanket } from 'react-icons/bi';
 import { FaBox, FaPaintBrush } from 'react-icons/fa';
 import { FiSettings } from 'react-icons/fi';
@@ -23,7 +33,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import '@src/assets/styles/web-builder.scss';
 import { useDispatch } from 'react-redux';
-import { setLinkUrlReducer } from '../store/reducer';
+import { setCurrentPage, setLinkUrlReducer } from '../store/reducer';
 import { updateFormDataAction, createPageAction } from '../store/action';
 import { setFormReducer } from '../store/reducer';
 import { BsPlusSquare } from 'react-icons/bs';
@@ -45,6 +55,8 @@ import {
   UncontrolledTooltip
 } from 'reactstrap';
 import { menu } from './util';
+import Settings from '../../../navigation/vertical/settings';
+import { truncate } from 'fs';
 
 export default function MainNav({
   setIsBlog,
@@ -57,13 +69,12 @@ export default function MainNav({
   customwidth,
   setCustomWidth,
   ispreview,
-  page,
-  setPage,
   setIsClear,
   setIsBack,
   setIsPreview,
   setIsPublish,
   setTab,
+  tab,
   open,
   setOpen,
   rsidebarOpen,
@@ -91,9 +102,21 @@ export default function MainNav({
   const [showFeatureIcons, setShowFeatureIcons] = useState(false);
   const [showZoomIcons, setShowZoomIcons] = useState(false);
   const form = store.form;
+  const page = store.currentPage;
   const { formData } = form;
   const svgRef = useRef(null);
   const zoomRef = useRef(null);
+  const diffentTime = () => {
+    let today = new Date();
+    let diff = today - Date.parse(form.updatedAt);
+    let days = Math.floor(diff / 86400000);
+    let hours = Math.floor((diff % 86400000) / 3.6e6);
+    let minutes = Math.floor((diff % 3.6e6) / 6e4);
+    let seconds = Math.floor((diff % 6e4) / 1000);
+    let duration =
+      days + ' days ' + hours + ' hours ' + minutes + ' minutes ' + seconds + ' seconds ago Saved';
+    return duration;
+  };
 
   useEffect(() => {
     // Function to handle clicks outside of the SVG element
@@ -167,7 +190,7 @@ export default function MainNav({
   };
 
   const handlePage = (item) => {
-    setPage(item);
+    dispatch(setCurrentPage(item));
   };
 
   const handleAddElement = () => {
@@ -176,7 +199,7 @@ export default function MainNav({
 
   useEffect(() => {
     if (formData) {
-      setPage(formData[0]);
+      dispatch(setCurrentPage(formData[0]));
     }
   }, []);
 
@@ -185,31 +208,31 @@ export default function MainNav({
       <div className="up-navbar d-flex justify-content-between align-items-center">
         <div className="d-flex justify-content align-items-center">
           <div className="logo">
-            <span className="title brand-text text-dark"><img src={Logo} height={20} /></span>
+            <span className="title brand-text text-dark">
+              <img src={Logo} height={20} />
+            </span>
           </div>
           <div className="menu-bar d-flex justify-content-between align-items-center">
-            <div className='text-dark cursor-pointer' style={{fontSize:'0.9rem', fontWeight:'500', marginLeft:'10px'}} onClick={(e)=>setIsBack(true)}>Back</div>
+            <Button
+              outline
+              className="text-dark cursor-pointer"
+              style={{ fontSize: '0.9rem', fontWeight: '500', marginLeft: '10px' }}
+              onClick={(e) => setIsBack(true)}
+            >
+              Back
+            </Button>
             <UncontrolledDropdown style={{ cursor: 'pointer' }}>
-              <DropdownToggle tag="div" className="btn btn-sm hover-effect text-dark">
-                Site
+              <DropdownToggle
+                tag="div"
+                className="btn-sm hover-effect text-dark mw-100"
+                style={{ minWidth: 'max-content' }}
+              >
+                Advaced Settings
               </DropdownToggle>
               <DropdownMenu container="body">
-                <DropdownItem tag="span" className="w-100">
-                  <div className="d-flex align-items-center">
-                    <span className="">Preview</span>
-                    <span className="ms-3 font-small-2">Ctrl+Alt+P</span>
-                  </div>
-                </DropdownItem>
-                <DropdownItem tag="span" className="w-100">
-                  {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
-                  <div className="d-flex align-items-center">
-                    <span className="align-middle">Publish</span>
-                    <span className="ms-3 font-small-2">Ctrl+Shift+P</span>
-                  </div>
-                </DropdownItem>
                 <DropdownItem tag="span" className="w-100" onClick={(e) => setCreateMdl(true)}>
                   {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
-                  <span className="align-middle">Create New Site</span>
+                  <span className="align-middle text-dark">Create New Site</span>
                 </DropdownItem>
                 <DropdownItem tag="span" className="w-100" onClick={(e) => setRenameMdl(true)}>
                   {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
@@ -223,6 +246,14 @@ export default function MainNav({
                   {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
                   <span className="align-middle">Role & Permissions</span>
                 </DropdownItem>
+                <DropdownItem tag="span" className="w-100">
+                  {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
+                  <span className="align-middle">Save as Template</span>
+                </DropdownItem>
+                <DropdownItem tag="span" className="w-100">
+                  {/* <Edit2 className="mx-50 text-primary" size={18} style={{ cursor: 'pointer' }} /> */}
+                  <span className="align-middle">Invite</span>
+                </DropdownItem>
               </DropdownMenu>
               {/* <div className="menu-item">
                 <span>Site</span>
@@ -230,9 +261,9 @@ export default function MainNav({
             </UncontrolledDropdown>
           </div>
         </div>
-        <div>{'1 hour ago saved'}</div>
+        {/* <div>{diffentTime()}</div> */}
         <div className="additional-bar d-flex align-items-center justify-content-around">
-          <div className="menu-item hover-effect text-dark">Invite</div>
+        <div className='px-2'>{diffentTime()}</div>
           <Button className="menu-item text-primary text-dark" color="success">
             Save
           </Button>
@@ -264,11 +295,11 @@ export default function MainNav({
         <div className="feature-icons d-flex align-items-center">
           <span
             className=""
-            onClick={(e) => { 
-              handelVisibleMenu()
+            onClick={(e) => {
+              handelVisibleMenu();
             }}
           >
-            <MdOutlineLensBlur size={26} color={VisibleMenu?'black':'#0275d8'} id="inspector" />
+            <MdOutlineLensBlur size={26} color={VisibleMenu ? 'black' : '#0275d8'} id="inspector" />
           </span>
           <span className="hover-bg feature-show">
             <svg
@@ -509,11 +540,6 @@ export default function MainNav({
               }}
             />
           </span>
-          {/* <UncontrolledDropdown style={{ cursor: 'pointer' }}>
-            <DropdownToggle tag="div" className="btn btn-sm hover-effect">
-              <MoreHorizontal size={24} color={'black'} />
-            </DropdownToggle>
-          </UncontrolledDropdown> */}
         </div>
         <div className="devices-size d-flex align-items-center">
           <span className="px-1 text-dark">w</span>
@@ -529,7 +555,7 @@ export default function MainNav({
           </span>
           <span className="px-1 text-dark">px</span>
         </div>
-        <div className="zoom-size d-flex justify-content-around align-items-center">
+        <div className="zoom-size d-flex justify-content-end align-items-center">
           <span className="hover-bg zoom-show">
             <svg
               ref={zoomRef}
@@ -555,82 +581,51 @@ export default function MainNav({
           </span>
           <div
             className={
-              'w-100 d-flex justify-content-around align-items-center ' +
+              'd-flex justify-content-around align-items-center ' +
               (showZoomIcons ? 'zoom-hide' : '')
             }
           >
-            {/* <div className='d-flex'>
-              <span className="menu-icon">
-                <MdWorkspacesOutline size={24} color={'black'} id="global" />
-                <UncontrolledTooltip placement="bottom" target="global">
-                  Global Sections
-                </UncontrolledTooltip>
-              </span>
-              <span className="menu-icon">
-                <MdOutlineGridView size={24} color={'black'} id="market" />
-                <UncontrolledTooltip placement="bottom" target="market">
-                  App Market
-                </UncontrolledTooltip>
-              </span>
-              <span className="menu-icon">
-                <MdOutlineNewspaper size={24} color={'black'} id="cms" />
-                <UncontrolledTooltip placement="bottom" target="cms">
-                  CMS
-                </UncontrolledTooltip>
-              </span>
-            </div> */}
-            <div className="d-flex">
-              {/* <span className="menu-icon">
-                <FaPaintBrush
-                  size={24}
-                  color={'black'}
-                  id="styles"
-                  onClick={(e) => {
-                    setTab('Styles');
-                    setRSidebarOpen(true);
-                  }}
-                />
-                <UncontrolledTooltip placement="bottom" target="styles">
-                  Styles
-                </UncontrolledTooltip>
-              </span> */}
-              <span className="menu-icon">
+            <div className="d-flex px-2 ">
+              <span className={`menu-icon ${tab=='Layers'&& rsidebarOpen==true?'text-primary':'text-dark'}`}>
                 <MdOutlineLayers
                   size={26}
-                  color={'black'}
                   id="layers"
                   onClick={(e) => {
                     setTab('Layers');
-                    setRSidebarOpen(true);
+                    setRSidebarOpen(!rsidebarOpen);
                   }}
                 />
                 <UncontrolledTooltip placement="bottom" target="layers">
                   Layers
                 </UncontrolledTooltip>
               </span>
-              {/* <span className="menu-icon">
+              <span className={`menu-icon ${tab=='Settings'&&rsidebarOpen==true ||tab=='Styles'&&rsidebarOpen==true ?'text-primary':'text-dark'}`} >
                 <FiSettings
-                  size={24}
-                  color={'black'}
-                  id="traits"
+                  size={22}
+                  id="CloseSettings"
                   onClick={(e) => {
                     setTab('Settings');
-                    setRSidebarOpen(true);
+                    setRSidebarOpen(!rsidebarOpen);
                   }}
                 />
-                <UncontrolledTooltip placement="bottom" target="traits">
-                  Settings
+                <UncontrolledTooltip placement="bottom" target="CloseSettings">
+                  Close SideBar
+                </UncontrolledTooltip>
+              </span>
+              {/* <span className="menu-icon" hidden={rsidebarOpen ? true : false}>
+                <FiSettings
+                  size={26}
+                  color={'black'}
+                  id="OpenSettings"
+                  onClick={(e) => {
+                    setRSidebarOpen(true);
+                    console.log(document.querySelector('.gjs-toolbar').style.left);
+                  }}
+                />
+                <UncontrolledTooltip placement="bottom" target="OpenSettings">
+                  Open SideBar
                 </UncontrolledTooltip>
               </span> */}
-              {/* <span className="menu-icon">
-              <MdOutlineLibraryBooks size={24} color={'black'} id="pages" onClick={(e)=>{
-                setTab('Pages');
-                setRSidebarOpen(true);
-             }}/>
-              <UncontrolledTooltip placement="bottom" target="pages">
-                Pages
-              </UncontrolledTooltip>
-            </span> */}
             </div>
           </div>
         </div>
