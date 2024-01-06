@@ -37,7 +37,6 @@ import { setCurrentPage, setLinkUrlReducer } from '../store/reducer';
 import { updateFormDataAction, createPageAction } from '../store/action';
 import { setFormReducer } from '../store/reducer';
 import { BsPlusSquare } from 'react-icons/bs';
-import BackConfirmModal from './BackConfirmModal';
 import {
   Button,
   ButtonGroup,
@@ -106,7 +105,6 @@ export default function MainNav({
   const [devicetype, setDeviceType] = useState('desktop');
   const [showFeatureIcons, setShowFeatureIcons] = useState(false);
   const [showZoomIcons, setShowZoomIcons] = useState(false);
-  const [showBackConfirmModal, setShowBackConfirmModal] = useState(false);
   const [differentTime, setDifferentTime] = useState("");
   const form = store.form;
   const page = store.currentPage;
@@ -114,7 +112,7 @@ export default function MainNav({
   const svgRef = useRef(null);
   const zoomRef = useRef(null);
   const MySwal = withReactContent(Swal)
-  
+
   const handleConfirmCancel = () => {
     return MySwal.fire({
       title: '',
@@ -241,11 +239,6 @@ export default function MainNav({
   const handleAddElement = () => {
     setOpenAddElementMdl(true);
   };
-
-  const handleBackButton = () => {
-    setShowBackConfirmModal(true);
-
-  }
 
   const handleBackSave = () => {
     setIsBack(2);
@@ -688,7 +681,6 @@ export default function MainNav({
           </div>
         </div>
       </div>
-      <BackConfirmModal showBackConfirmModal={showBackConfirmModal} setShowBackConfirmModal={setShowBackConfirmModal} handleBackSave={handleBackSave} handleBackDiscard={handleBackDiscard} />
     </div>
   );
 }
