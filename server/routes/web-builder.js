@@ -22,6 +22,7 @@ const {
   getPage,
   getTemplates,
   createDynamicPage,
+  getGoogleFonts
 } = require("../controllers/webBuilder");
 //web builder
 router.get("/website/:id", isAuthenticated, getWebsite);
@@ -44,4 +45,5 @@ router.put("/publish/:id", isAuthenticated, publishWebsite);
 router.put("/update-page/:id", isAuthenticated, updatePageName);
 router.get("/page/:id", isAuthenticated,getPage);
 router.delete("/delete-page/:id", isAuthenticated, deletePage);
+router.get("/getGoogleFonts", isAuthenticated, getGoogleFonts);
 module.exports = router;

@@ -14,8 +14,8 @@ import {
   MoreVertical
 } from 'react-feather';
 import { CgStyle } from 'react-icons/cg';
+import WebFont from 'webfontloader';
 import { IoMdArrowDropright,IoMdArrowDropdown  } from "react-icons/io";
-
 import { RiQuestionMark } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
@@ -74,7 +74,8 @@ import {
   createCustomerCollectAction,
   getWaitingClientsAction,
   confirmCustomerDatasetAction,
-  updateFormAction
+  updateFormAction,
+  getGoogleFontsAction
 } from '../store/action';
 import OffCanvas from '../../components/offcanvas';
 import { getUserData } from '../../../auth/utils';
@@ -137,6 +138,8 @@ export default function Editor({
   isback,
   ispreview,
   ispublish,
+  isSave,
+  setIsSave,
   setIsPreview,
   setIsPublish,
   tab,
@@ -1062,25 +1065,65 @@ export default function Editor({
       // ... other font families ...
     ];
 
-    rte.add('fontFamily', {
-      icon: `
-          <select class="gjs-field" style="width: 100px">
-              ${fontFamilies.map(font => `<option value="${font.value}">${font.name}</option>`).join('')}
-          </select>
-      `,
-      event: 'change',
-      result: (rte, action) => {
-        const fontFamilyValue = action.btn.childNodes[1].value;
-        rte.exec('fontName', fontFamilyValue);
-      },
-      update: (rte, action) => {
-        const value = rte.doc.queryCommandValue("fontName");
-        console.log(value);
-        if (value) {
-          action.btn.firstChild.value = value.replace(/['"]+/g, ''); // Remove quotes
+    const fetchGoogleFonts = async () => {
+      const data = await dispatch(getGoogleFontsAction());
+      if(!data) return;
+      const fontData = data.items.map(font => { return { name: font.family, url: font.files.regular }; });
+      const fontFamilyProp = gjsEditor.StyleManager.getProperty('typography', 'font-family');
+      const options = [];
+      fontData.forEach(font => {
+        options.push({ id: font.name, label: font.name });
+      })
+      
+      fontFamilyProp.set('options', options);
+      const loadFont = (fontName) => {
+        WebFont.load({
+          google: {
+            families: [fontName]
+          },
+          active: function () {
+            // Append the font stylesheet to the GrapesJS iframe
+            const cssLink = gjsEditor.Canvas.getDocument().createElement('link');
+            cssLink.href = `https://fonts.googleapis.com/css?family=${fontName.replace(/\s/g, '+')}`;
+            cssLink.rel = 'stylesheet';
+            cssLink.type = 'text/css';
+
+            const head = gjsEditor.Canvas.getDocument().head;
+            head.appendChild(cssLink);
+          }
+        });
+      };
+      fontFamilyProp.on('change:value', (model) => {
+        // Handle the font family change
+        const selectedFontFamily = model.get('value');
+        loadFont(selectedFontFamily);
+        // Additional actions based on the selected font family
+        // ...
+      });
+      gjsEditor.StyleManager.render();
+      rte.add('fontFamily', {
+        icon: `
+            <select class="gjs-field" style="width: 100px">
+                ${fontData.map(font => `<option value="${font.name}">${font.name}</option>`).join('')}
+            </select>
+        `,
+        event: 'change',
+        result: (rte, action) => {
+          const fontFamilyValue = action.btn.childNodes[1].value;
+          loadFont(fontFamilyValue);
+          rte.exec('fontName', fontFamilyValue);
+        },
+        update: (rte, action) => {
+          const value = rte.doc.queryCommandValue("fontName");
+          console.log(value);
+          if (value) {
+            action.btn.firstChild.value = value.replace(/['"]+/g, ''); // Remove quotes
+          }
         }
-      }
-    });
+      });
+    };
+
+    fetchGoogleFonts();
 
     rte.add('fontColor', {
       icon: `<input type="color" class="gjs-field" style="width: 27px" />`,
@@ -1255,12 +1298,18 @@ export default function Editor({
         html: html,
         css: css
       };
-      if (isback) {
+      if (isback == 2) {
         dispatch(updatePageAction(id, payload)).then((res) => {
           if (res) {
             history.goBack();
           }
         });
+      } else if(isback == 1) {
+        history.goBack();
+      }
+      if(isSave) {
+        dispatch(updatePageAction(id, payload));
+        setIsSave(false);
       }
       if (ispreview) {
         dispatch(updatePageAction(id, payload)).then((res) => {
@@ -1283,7 +1332,7 @@ export default function Editor({
         });
       }
     }
-  }, [ispreview, ispublish, isback]);
+  }, [ispreview, ispublish, isback, isSave]);
 
   useEffect(() => {
     if (page) {
@@ -1298,7 +1347,8 @@ export default function Editor({
           setIsStoreLoading(false);
         }
       });
-      const interval = setInterval(() => {
+
+      function autoSave(editor) {
         if (editor) {
           const current_page = editor.Pages.getSelected();
           const html = editor.getHtml({ current_page });
@@ -1310,7 +1360,8 @@ export default function Editor({
           };
           dispatch(updatePageAction(id, payload));
         }
-      }, 1000 * 30);
+      }
+      const interval = setInterval(autoSave.bind(null, editor), 1000 * 30);
 
       //Clearing the interval
       return () => clearInterval(interval);

@@ -506,6 +506,7 @@ export const updatePageAction = (id, payload) => async (dispatch) => {
     const res = await api.updatePage(id, payload);
     const { data } = res;
     if (data?.success === true) {
+      dispatch(getWebsiteAction(id));
       return data?.url;
     }
   }
@@ -1154,6 +1155,19 @@ export const confirmCustomerDatasetAction = (id, payload) => async (dispatch) =>
     const { data } = await api.confirmCustomerDataset(id, payload);
     if(data.success) {
       dispatch(setWaitingClientsReducer(data.data));
+    }
+  } catch (err) {
+
+  }
+}
+
+export const getGoogleFontsAction = () => async (dispatch) => {
+  try {
+    const {data} = await api.getGoogleFonts();
+    if(data.success) {
+      return data.data;
+    } else {
+      return null;
     }
   } catch (err) {
 
