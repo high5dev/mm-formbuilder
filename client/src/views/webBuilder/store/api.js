@@ -75,6 +75,14 @@ export const createWebBuilder=(payload) => {
   return API.post('/web-builder/create', payload)
 }
 
+export const updateWebBuilderTheme=(id, payload)=>{
+  return API.put(`/web-builder-theme/update/${id}`, payload)
+}
+
+export const addWebBuilderThemeColor=(id, payload)=>{
+  return API.post(`/web-builder-theme/add-color/${id}`, payload)
+}
+
 export const duplicateWebsite =(payload) => {
   return API.post('/web-builder/duplicate', payload)
 }

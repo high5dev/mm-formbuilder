@@ -19,6 +19,7 @@ export const formEditor = createSlice({
     childForm:{
     },
     childForms:[],
+    formTheme:{},
     formRules:[],
     formDataset:[],
     formsCount:{},
@@ -49,6 +50,9 @@ export const formEditor = createSlice({
     },
     setFormReducer: (state, action) => {
       state.form = action?.payload;
+    },
+    setFormThemeReducer :(state, action) =>{
+      state.formTheme = action?.payload;
     },
     setChildFormReducer: (state,action) =>{
       state.childForm=action?.payload;
@@ -160,6 +164,7 @@ export const formEditor = createSlice({
 export const {
   setLinkUrlReducer,
   setFormReducer,
+  setFormThemeReducer,
   setFormRuleReducer,
   setChildFormReducer,
   setChildFormsReducer,

@@ -54,7 +54,6 @@ exports.createElement = asyncHandler(async (req, res) => {
 exports.getAllElements = asyncHandler(async (req, res) => {
   let userId = req.user._id;
   try {
-
     const elements = await WebBuilderElement.aggregate([
       {
         $match: {
@@ -87,6 +86,7 @@ exports.getAllElements = asyncHandler(async (req, res) => {
       //   },
       // },
     ]);
+    console.log('*************')
 
     // const newElements = [];
     // elements.map((element) => {

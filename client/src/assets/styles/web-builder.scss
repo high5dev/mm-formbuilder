@@ -294,6 +294,7 @@
   background-color: white;
   position: absolute;
   height: calc(100vh - 115px);
+  min-width: 200px;
 
   .expanded-header {
     height: 50px;
@@ -827,4 +828,55 @@
 .trait-new-menu-item-link-add-btn {
   width: 100px;
   align-self: center;
+}
+.theme-colors-container{
+  width: 200px;
+}
+.theme-color-item{
+  padding:10px
+}
+.theme-color-panel{
+  width:30px;
+  height: 30px;
+  border: 1px solid lightgray;
+  .color-picker-element{
+    padding:3px;
+    border-radius: 0px;
+    border: none;
+  }
+}
+.padding-item{
+  padding: 5px;
+  text-align: center;
+  width: 35px;
+  height: 35px;
+}
+.submenu-item{
+  &:hover{
+    cursor: pointer;
+  }
+}
+.color-outline-element{
+  width:30px;
+  height: 30px;
+  border: 1px solid lightgray;
+  margin-right: 7px;
+  cursor: pointer;
+  .color-item{
+    width:22px;
+    height:22px;
+    border:1px solid lightgray;
+  }
+  &:hover{
+    background-color: lightgray;
+  }
+}
+.plus-item{
+  border: 1px dashed lightgray;
+}
+.gallery-image-element {
+  margin-top: 10px;
+  margin-left: 10px;
+  overflow-y: scroll;
+  max-height: 500px;
 }

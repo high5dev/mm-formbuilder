@@ -1,0 +1,161 @@
+export const colors=[
+    {
+        name:'Primary',
+        value:"#ff0000"
+    },
+    {
+        name:'Secondary',
+        value:"#0000ff"
+    },
+    {
+        name:'Color #3',
+        value:"#3cb371"
+    },
+    {
+        name:'Color #4',
+        value:"#ee82ee"
+    },
+];
+
+export const buttons=[
+    {
+        type:'Primary',
+        attributes:{
+            border:"none",
+            padding:"10px",
+            fontSize:"14px",
+            fontFamily:"Arial",
+            fontWeight:'normal',
+            textDecoration:'none',
+            fontStyle:'normal',
+            color:'#ffffff',
+            backgroundColor:'#174ae7',
+            borderRadius:'0px',
+            minWidth:'80px'
+        }
+    },
+    {
+        type:'Secondary',
+        attributes:{
+            border:"none",
+            padding:"10px",
+            fontSize:"14px",
+            fontFamily:"Arial",
+            fontWeight:'normal',
+            textDecoration:'none',
+            fontStyle:'normal',
+            color:'#ffffff',
+            backgroundColor:'#6c757d',
+            borderRadius:'0px',
+            minWidth:'80px'
+        }
+    }
+]
+
+export const image={
+        type:'image',
+        attributes:{
+            borderRadius:'0%',
+            borderWidth:'0px',
+            borderStyle:'solid',
+            borderColor:'#000000'
+        }
+}
+
+
+export const background={
+    backgroundColor:'#ffffff',
+    pages:[]
+}
+
+
+export const fonts=[
+    {
+        type:'DFLT',
+        attributes:{
+            fontSize:"14px",
+            fontFamily:"Arial",
+            fontWeight:'normal',
+            textDecoration:'none',
+            fontStyle:'normal',
+            color:'#000000',
+        }
+    },
+    {
+        type:'PAR',
+        attributes:{
+            fontSize:"14px",
+            fontFamily:"Arial",
+            fontWeight:'normal',
+            textDecoration:'none',
+            fontStyle:'normal',
+            color:'#000000',
+        }
+    },
+    {
+        type:'H1',
+        attributes:{
+            fontSize:"14px",
+            fontFamily:"Arial",
+            fontWeight:'normal',
+            textDecoration:'none',
+            fontStyle:'normal',
+            color:'#000000',
+        }
+    },
+    {
+        type:'H2',
+        attributes:{
+            fontSize:"14px",
+            fontFamily:"Arial",
+            fontWeight:'normal',
+            textDecoration:'none',
+            fontStyle:'normal',
+            color:'#000000',
+        }
+    },
+    {
+        type:'H3',
+        attributes:{
+            fontSize:"14px",
+            fontFamily:"Arial",
+            fontWeight:'normal',
+            textDecoration:'none',
+            fontStyle:'normal',
+            color:'#000000',
+        }
+    },
+    {
+        type:'H4',
+        attributes:{
+            fontSize:"14px",
+            fontFamily:"Arial",
+            fontWeight:'normal',
+            textDecoration:'none',
+            fontStyle:'normal',
+            color:'#000000',
+        }
+    },
+    {
+        type:'H5',
+        attributes:{
+            fontSize:"14px",
+            fontFamily:"Arial",
+            fontWeight:'normal',
+            textDecoration:'none',
+            fontStyle:'normal',
+            color:'#000000',
+        }
+    },
+    {
+        type:'H6',
+        attributes:{
+            fontSize:"14px",
+            fontFamily:"Arial",
+            fontWeight:'normal',
+            textDecoration:'none',
+            fontStyle:'normal',
+            color:'#000000',
+        }
+    }
+]
