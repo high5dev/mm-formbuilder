@@ -1160,3 +1160,16 @@ export const confirmCustomerDatasetAction = (id, payload) => async (dispatch) =>
 
   }
 }
+
+export const getGoogleFontsAction = () => async (dispatch) => {
+  try {
+    const {data} = await api.getGoogleFonts();
+    if(data.success) {
+      return data.data;
+    } else {
+      return null;
+    }
+  } catch (err) {
+
+  }
+}

@@ -58,6 +58,8 @@ import {
 import { menu } from './util';
 import Settings from '../../../navigation/vertical/settings';
 import { truncate } from 'fs';
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 export default function MainNav({
   setIsBlog,
@@ -111,6 +113,28 @@ export default function MainNav({
   const { formData } = form;
   const svgRef = useRef(null);
   const zoomRef = useRef(null);
+  const MySwal = withReactContent(Swal)
+  
+  const handleConfirmCancel = () => {
+    return MySwal.fire({
+      title: '',
+      text: 'Do you want to save Changes?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-outline-danger ms-1'
+      },
+      buttonsStyling: false
+    }).then(function (result) {
+      if (result.value) {
+        handleBackSave();
+      } else if (result.dismiss === MySwal.DismissReason.cancel) {
+        handleBackDiscard();
+      }
+    })
+  }
 
   useEffect(() => {
     let interval = setInterval(() => {
@@ -251,7 +275,7 @@ export default function MainNav({
               outline
               className="text-dark cursor-pointer"
               style={{ fontSize: '0.9rem', fontWeight: '500', marginLeft: '10px' }}
-              onClick={(e) => handleBackButton()}
+              onClick={handleConfirmCancel}
             >
               Back
             </Button>

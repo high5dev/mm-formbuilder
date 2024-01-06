@@ -1,6 +1,8 @@
 // model
 const { default: mongoose } = require("mongoose");
 const asyncHandler = require("express-async-handler");
+const fetch = require('node-fetch');
+
 const {
   WebBuilder,
   WebBuilderForm,
@@ -27,7 +29,7 @@ const {postMoment}=require('../Utilities/timeHandler');
 
 const googleCloudStorageWebBuilder = require("../Utilities/googleCloudStorageWebBuilder");
 const { defaultRoles } = require('../constants/defaultRoles');
-
+require("dotenv").config();
 /**
  *
  * @desc Create WebBuilder Controller
@@ -938,4 +940,13 @@ exports.getWebsiteCounts = asyncHandler(async(req,res)=>{
   }
 })
 
-
+exports.getGoogleFonts = asyncHandler(async (req, res) => {
+  try {
+    const response = await fetch(`https://www.googleapis.com/webfonts/v1/webfonts?key=${process.env.GOOGLE_FONT_API_KEY}`);
+    const data = await response.json();
+    return res.status(200).json({ success: true, data:data });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ msg: err.message });
+  }
+})

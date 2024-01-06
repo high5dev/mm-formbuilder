@@ -74,7 +74,8 @@ import {
   createCustomerCollectAction,
   getWaitingClientsAction,
   confirmCustomerDatasetAction,
-  updateFormAction
+  updateFormAction,
+  getGoogleFontsAction
 } from '../store/action';
 import OffCanvas from '../../components/offcanvas';
 import { getUserData } from '../../../auth/utils';
@@ -195,8 +196,6 @@ export default function Editor({
   const [OpenCategory, setOpenCategory] = useState({ index: 0, value: true });
   const [storeProducts, setStoreProducts] = useState({});
   const user = getUserData();
-  const editorRef = useRef(null);
-  editorRef.current = editor;
   useEffect(() => {
     if (store?.form?._id) {
       dispatch(getWebsiteAllDatasetsAction(store.form._id));
@@ -1067,9 +1066,8 @@ export default function Editor({
     ];
 
     const fetchGoogleFonts = async () => {
-      const apiKey = 'AIzaSyDVxXl_2M0mwuQUbHGWoaIIoFWIzOQrzrA'; // You need a Google API key
-      const response = await fetch(`https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}`);
-      const data = await response.json();
+      const data = await dispatch(getGoogleFontsAction());
+      if(!data) return;
       const fontData = data.items.map(font => { return { name: font.family, url: font.files.regular }; });
       const fontFamilyProp = gjsEditor.StyleManager.getProperty('typography', 'font-family');
       const options = [];
@@ -1349,11 +1347,12 @@ export default function Editor({
           setIsStoreLoading(false);
         }
       });
-      const interval = setInterval(() => {
-        if (editorRef.current) {
-          const current_page = editorRef.current.Pages.getSelected();
-          const html = editorRef.current.getHtml({ current_page });
-          const css = editorRef.current.getCss({ current_page });
+
+      function autoSave(editor) {
+        if (editor) {
+          const current_page = editor.Pages.getSelected();
+          const html = editor.getHtml({ current_page });
+          const css = editor.getCss({ current_page });
           const payload = {
             page: page?._id,
             html: html,
@@ -1361,7 +1360,8 @@ export default function Editor({
           };
           dispatch(updatePageAction(id, payload));
         }
-      }, 1000 * 30);
+      }
+      const interval = setInterval(autoSave.bind(null, editor), 1000 * 30);
 
       //Clearing the interval
       return () => clearInterval(interval);
