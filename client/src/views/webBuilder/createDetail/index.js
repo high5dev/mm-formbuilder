@@ -27,6 +27,7 @@ import '@src/assets/styles/dark-layout.scss';
 import { getFormDataAction, getFormsEntryAction } from '../store/action';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { getUserData } from '../../../auth/utils';
+import OverviewStep from './tabs/overview';
 import { Pages } from './tabs/pages/pages';
 
 const FunnelSettings = () => {
@@ -211,7 +212,12 @@ const FunnelSettings = () => {
           {store?.form?.id !== '' && (
             <TabContent activeTab={active}>
               <TabPane tabId="1">
-                <div>OverView</div>
+                <OverviewStep
+                    dispatch={dispatch}
+                    store={store}
+                    isMobileView={isMobileView}
+                    isTabletView={isTabletView}
+                  />
               </TabPane>
               <TabPane tabId="2">
                 <Pages />
