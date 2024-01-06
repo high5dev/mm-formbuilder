@@ -1738,7 +1738,7 @@ export default function Editor({
                               const returnComponent = (
                                 <>
                                   <div
-                                    className="d-flex align-items-center px-50 border-bottom border-top border-bottom border-top "
+                                    className="d-flex align-items-center px-50 border-bottom border-top border-bottom border-top cursor-pointer"
                                     onClick={() => {
                                       handleOnclick(index);
                                     }}
@@ -1865,7 +1865,7 @@ export default function Editor({
                               const returnComponent = (
                                 <>
                                   <div
-                                    className="d-flex align-items-center px-50 border-bottom border-top border-bottom border-top "
+                                    className="d-flex align-items-center px-50 border-bottom border-top border-bottom border-top cursor-pointer"
                                     onClick={() => {
                                       handleOnclick(index);
                                     }}
@@ -1973,7 +1973,7 @@ export default function Editor({
                               const returnComponent = (
                                 <>
                                   <div
-                                    className="d-flex align-items-center px-50 border-bottom border-top"
+                                    className="d-flex align-items-center px-50 border-bottom border-top cursor-pointer"
                                     onClick={() => {
                                       handleOnclick(index);
                                     }}
@@ -2089,7 +2089,7 @@ export default function Editor({
                                 const returnComponent = (
                                   <>
                                     <div
-                                      className="d-flex align-items-center px-50 border-bottom border-top"
+                                      className="d-flex align-items-center px-50 border-bottom border-top cursor-pointer"
                                       onClick={() => {
                                         handleOnclick(index);
                                       }}
@@ -2197,7 +2197,7 @@ export default function Editor({
                               const returnComponent = (
                                 <>
                                   <div
-                                    className="d-flex align-items-center px-50 border-bottom border-top"
+                                    className="d-flex align-items-center px-50 border-bottom border-top cursor-pointer"
                                     onClick={() => {
                                       handleOnclick(index);
                                     }}
