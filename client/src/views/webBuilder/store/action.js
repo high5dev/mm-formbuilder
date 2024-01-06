@@ -506,6 +506,7 @@ export const updatePageAction = (id, payload) => async (dispatch) => {
     const res = await api.updatePage(id, payload);
     const { data } = res;
     if (data?.success === true) {
+      dispatch(getWebsiteAction(id));
       return data?.url;
     }
   }

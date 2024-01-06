@@ -37,6 +37,7 @@ import { setCurrentPage, setLinkUrlReducer } from '../store/reducer';
 import { updateFormDataAction, createPageAction } from '../store/action';
 import { setFormReducer } from '../store/reducer';
 import { BsPlusSquare } from 'react-icons/bs';
+import BackConfirmModal from './BackConfirmModal';
 import {
   Button,
   ButtonGroup,
@@ -69,6 +70,8 @@ export default function MainNav({
   customwidth,
   setCustomWidth,
   ispreview,
+  isSave,
+  setIsSave,
   setIsClear,
   setIsBack,
   setIsPreview,
@@ -101,22 +104,40 @@ export default function MainNav({
   const [devicetype, setDeviceType] = useState('desktop');
   const [showFeatureIcons, setShowFeatureIcons] = useState(false);
   const [showZoomIcons, setShowZoomIcons] = useState(false);
+  const [showBackConfirmModal, setShowBackConfirmModal] = useState(false);
+  const [differentTime, setDifferentTime] = useState("");
   const form = store.form;
   const page = store.currentPage;
   const { formData } = form;
   const svgRef = useRef(null);
   const zoomRef = useRef(null);
-  const diffentTime = () => {
-    let today = new Date();
-    let diff = today - Date.parse(form.updatedAt);
-    let days = Math.floor(diff / 86400000);
-    let hours = Math.floor((diff % 86400000) / 3.6e6);
-    let minutes = Math.floor((diff % 3.6e6) / 6e4);
-    let seconds = Math.floor((diff % 6e4) / 1000);
-    let duration =
-      days + ' days ' + hours + ' hours ' + minutes + ' minutes ' + seconds + ' seconds ago Saved';
-    return duration;
-  };
+
+  useEffect(() => {
+    let interval = setInterval(() => {
+      if (form && page) {
+        let pageData;
+        form.formData.forEach((data) => {
+          if (data._id == page._id) {
+            pageData = data;
+          }
+        })
+        if (pageData) {
+          let today = new Date();
+          let diff = today - Date.parse(pageData.updatedAt);
+          let days = Math.floor(diff / 86400000);
+          let hours = Math.floor((diff % 86400000) / 3.6e6);
+          let minutes = Math.floor((diff % 3.6e6) / 6e4);
+          let seconds = Math.floor((diff % 6e4) / 1000);
+          let duration =
+            days + ' days ' + hours + ' hours ' + minutes + ' minutes ' + seconds + ' seconds ago Saved';
+          if (seconds != NaN) {
+            setDifferentTime(duration);
+          }
+        }
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [form, page])
 
   useEffect(() => {
     // Function to handle clicks outside of the SVG element
@@ -197,6 +218,19 @@ export default function MainNav({
     setOpenAddElementMdl(true);
   };
 
+  const handleBackButton = () => {
+    setShowBackConfirmModal(true);
+
+  }
+
+  const handleBackSave = () => {
+    setIsBack(2);
+  }
+
+  const handleBackDiscard = () => {
+    setIsBack(1);
+  }
+
   useEffect(() => {
     if (formData) {
       dispatch(setCurrentPage(formData[0]));
@@ -217,7 +251,7 @@ export default function MainNav({
               outline
               className="text-dark cursor-pointer"
               style={{ fontSize: '0.9rem', fontWeight: '500', marginLeft: '10px' }}
-              onClick={(e) => setIsBack(true)}
+              onClick={(e) => handleBackButton()}
             >
               Back
             </Button>
@@ -263,8 +297,8 @@ export default function MainNav({
         </div>
         {/* <div>{diffentTime()}</div> */}
         <div className="additional-bar d-flex align-items-center justify-content-around">
-        <div className='px-2'>{diffentTime()}</div>
-          <Button className="menu-item text-primary text-dark" color="success">
+          <div className='px-2'>{differentTime}</div>
+          <Button className="menu-item text-primary text-dark" color="success" onClick={() => setIsSave(true)}>
             Save
           </Button>
           <Button
@@ -586,7 +620,7 @@ export default function MainNav({
             }
           >
             <div className="d-flex px-2 ">
-              <span className={`menu-icon ${tab=='Layers'&& rsidebarOpen==true?'text-primary':'text-dark'}`}>
+              <span className={`menu-icon ${tab == 'Layers' && rsidebarOpen == true ? 'text-primary' : 'text-dark'}`}>
                 <MdOutlineLayers
                   size={26}
                   id="layers"
@@ -599,7 +633,7 @@ export default function MainNav({
                   Layers
                 </UncontrolledTooltip>
               </span>
-              <span className={`menu-icon ${tab=='Settings'&&rsidebarOpen==true ||tab=='Styles'&&rsidebarOpen==true ?'text-primary':'text-dark'}`} >
+              <span className={`menu-icon ${tab == 'Settings' && rsidebarOpen == true || tab == 'Styles' && rsidebarOpen == true ? 'text-primary' : 'text-dark'}`} >
                 <FiSettings
                   size={22}
                   id="CloseSettings"
@@ -630,6 +664,7 @@ export default function MainNav({
           </div>
         </div>
       </div>
+      <BackConfirmModal showBackConfirmModal={showBackConfirmModal} setShowBackConfirmModal={setShowBackConfirmModal} handleBackSave={handleBackSave} handleBackDiscard={handleBackDiscard} />
     </div>
   );
 }

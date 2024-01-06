@@ -137,6 +137,8 @@ export default function Editor({
   isback,
   ispreview,
   ispublish,
+  isSave,
+  setIsSave,
   setIsPreview,
   setIsPublish,
   tab,
@@ -193,6 +195,8 @@ export default function Editor({
   const [OpenCategory, setOpenCategory] = useState({ index: 0, value: true });
   const [storeProducts, setStoreProducts] = useState({});
   const user = getUserData();
+  const editorRef = useRef(null);
+  editorRef.current = editor;
   useEffect(() => {
     if (store?.form?._id) {
       dispatch(getWebsiteAllDatasetsAction(store.form._id));
@@ -1296,12 +1300,18 @@ export default function Editor({
         html: html,
         css: css
       };
-      if (isback) {
+      if (isback == 2) {
         dispatch(updatePageAction(id, payload)).then((res) => {
           if (res) {
             history.goBack();
           }
         });
+      } else if(isback == 1) {
+        history.goBack();
+      }
+      if(isSave) {
+        dispatch(updatePageAction(id, payload));
+        setIsSave(false);
       }
       if (ispreview) {
         dispatch(updatePageAction(id, payload)).then((res) => {
@@ -1324,7 +1334,7 @@ export default function Editor({
         });
       }
     }
-  }, [ispreview, ispublish, isback]);
+  }, [ispreview, ispublish, isback, isSave]);
 
   useEffect(() => {
     if (page) {
@@ -1340,10 +1350,10 @@ export default function Editor({
         }
       });
       const interval = setInterval(() => {
-        if (editor) {
-          const current_page = editor.Pages.getSelected();
-          const html = editor.getHtml({ current_page });
-          const css = editor.getCss({ current_page });
+        if (editorRef.current) {
+          const current_page = editorRef.current.Pages.getSelected();
+          const html = editorRef.current.getHtml({ current_page });
+          const css = editorRef.current.getCss({ current_page });
           const payload = {
             page: page?._id,
             html: html,
