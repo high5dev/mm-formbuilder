@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { Input, Spinner } from 'reactstrap'
 import { Modal } from 'reactstrap';
-import { getPreviewPageAction, getPublishPageAction, getPreviewBlogPageAction, getPublishBlogPageAction, updateThankyouProductsAction, updateSelectedProductAction } from "../webBuilder/store/action";
+import { getPreviewPageAction, getPublishPageAction, getPreviewBlogPageAction, getPublishBlogPageAction, updateThankyouProductsAction, updateSelectedProductAction, getWebCollectionsAction } from "../webBuilder/store/action";
 import renderHTML from 'react-render-html';
 import { BiMobile } from 'react-icons/bi';
 import {
@@ -224,7 +224,7 @@ export default function Index() {
   }, [store.webCollections])
   
   useEffect(() => {
-    dispatch(getProductDatasetAction(id));
+    dispatch(getWebCollectionsAction(id));
     let name;
     if (pageName) {
       name = pageName;
@@ -490,7 +490,7 @@ export default function Index() {
           // Handle the click event
           console.log('cart button clicked');
           let cartProducts = [];
-          const newItem = productRef?.values.find(item => item.id === target.getAttribute('productId'))
+          const newItem = productRef.current?.values.find(item => item.id === target.getAttribute('productId'))
           const existingItem = storeRef.current?.cartProducts.find(item => item.product.id === newItem.id);
           if (existingItem) {
             cartProducts = storeRef.current?.cartProducts.map(item => item.product.id === newItem.id ? { ...item, count: item.count + 1 } : item);
@@ -512,7 +512,7 @@ export default function Index() {
           setShowCartSidebar(true);
         } else if(target.matches('.product-cart')) {
           let cartProducts = [];
-          const newItem = productRef?.values.find(item => item.id === target.parentElement.parentElement.getAttribute('productid'))
+          const newItem = productRef.current?.values.find(item => item.id === target.parentElement.parentElement.getAttribute('productid'))
           const existingItem = storeRef.current?.cartProducts.find(item => item.product.id === newItem.id);
           if (existingItem) {
             cartProducts = storeRef.current?.cartProducts.map(item => item.product.id === newItem.id ? { ...item, count: item.count + 1 } : item);
@@ -536,7 +536,7 @@ export default function Index() {
           dispatch(updateCartProductsAction([]));
           history.push(thankyouLink);
         } else if(target.matches('.product-img2') || target.matches('.quick-view')) {
-          const selectedProduct = productRef?.values?.find((element) => element.id === target.parentElement.parentElement.parentElement.parentElement.getAttribute('productid'));
+          const selectedProduct = productRef.current?.values?.find((element) => element.id === target.parentElement.parentElement.parentElement.parentElement.getAttribute('productid'));
           dispatch(updateSelectedProductAction(selectedProduct));
           history.push(productLink);
         }

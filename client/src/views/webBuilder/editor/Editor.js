@@ -1728,7 +1728,7 @@ export default function Editor(
                 delay={{ show: 10, hide: 20 }}
                 style={{ height: '100%' }}
               >
-                <div style={{ height: '100%', overflow: 'scroll', width:'300px' }}>
+                <div style={{ height: '100%', overflow: 'scroll' }}>
                   <div className="expanded-header">
                     <span className="me-1">
                       {sidebarData.menu.name === 'CMS'

@@ -819,6 +819,7 @@ exports.publishWebsite = asyncHandler(async (req, res) => {
       return res.status(200).json({ success: true, message: `Success`, data});
     }
   } catch (err) {
+    console.log(err);
     res.send({ msg: "error" });
   }
 });
@@ -868,13 +869,14 @@ exports.getPublishPage = asyncHandler(async (req, res) => {
   let {id, pageName} = req.query;
   try {
     const data = await WebBuilder.findOne({_id: id});
-    const page=await WebPage.findOne({name:pageName, websiteId:mongoose.Types.ObjectId(id)});
+    const page = await WebPage.findOne({ name: pageName, websiteId: mongoose.Types.ObjectId(id), isDelete: false });
     if(data && data.isPublish){
       const result=await googleCloudStorageWebBuilder.readPage(`${data._id}/${page._id}`);
       return res.status(200).json({ success: true, data:result, pageInfo: page });
     }
     return res.status(404).json({ success: false, message: `Page not found` });
   } catch (err) {
+    console.log(err);
     res.send({ msg: "error" });
   }
 });
