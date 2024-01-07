@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Input } from 'reactstrap';
 
-export const Design = ({ store, selectedCmp }) => {
+export const Design = ({ store, storeProducts, selectedCmp }) => {
   const [buttonText, setButtonText] = useState('Add to Cart');
   const [buttonStyle, setButtonStyle] = useState('style1');
   const [fillOpacity, setFillOpacity] = useState(100);

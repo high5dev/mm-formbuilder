@@ -19,11 +19,10 @@ import CreateFormCategoryModal from '../CreateFormCategoryModal';
 import { createFormAction, createWebBuilderAction } from '../../store/action';
 import {colors, buttons, fonts, image, background} from '../../editor/leftSidebar/theme/defaultTheme';
 const typeOptions = [
-  { value: 'leads', label: 'Leads' },
-  { value: 'sales', label: 'Sales' },
-  { value: 'email', label: 'Emails' },
-  { value: 'forms', label: 'Forms' },
-  { value: 'website', label: 'Websites' }
+  { value: 'Website', label: 'Website' },
+  { value: 'Form', label: 'Form' },
+  { value: 'Funnel', label: 'Funnel' },
+  { value: 'Landing Page', label: 'Landing Page' }
 ];
 export default function FormInfoStep({ form, setForm, store, dispatch, stepper }) {
   const [categories, setCategories] = useState([]);
@@ -55,12 +54,13 @@ export default function FormInfoStep({ form, setForm, store, dispatch, stepper }
     <div>
       <div>
         <Label>Name</Label>
-        <Input type="text" onChange={(e)=>setForm({...form,name:e.target.value})}/>
-      </div>
-      <div>
-        <Label>Goal</Label>
+        <Input type="text" onChange={(e)=>setForm({...form,name:e.target.value})} placeholder='Enter name of website'/>
+        <Label className='mt-2'>Description</Label>
+        <Input placeholder='Short description goes here' type="text"/>
+        <Label className='mt-2'>Select Type</Label>
         <Select options={typeOptions} onChange={(data) => handleSelectFormType(data.value)} />
       </div>
+    
       {form?.isTemplate === true && (
         <div>
           <div className='d-flex justify-content-between'>

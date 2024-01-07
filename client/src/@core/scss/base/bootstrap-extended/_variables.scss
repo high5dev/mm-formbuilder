@@ -10,7 +10,11 @@
 // (c) = are custom variables for MyManager template
 
 // Color system
-
+$main-font-size: 1rem !default;
+$main-font-family: "Montserrat", Helvetica, Arial, serif !default;
+$main-line-height: 1.45 !default;
+$main-font-weight: 400 !default;
+$main-border:1px solid #ebe9f1!default;
 $white: #fff !default;
 $gray-50: #f6f6f6 !default;
 $gray-100: #babfc7 !default; // $gray-lightest

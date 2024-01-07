@@ -9,12 +9,18 @@ const {
   WebBuilderElementCategory
 } = require("../models/index/index");
 const { response } = require("express");
+const { uploadMenuImage } = require("../Utilities/googleCloudStorageWebBuilder");
+const path = require('path');
 
 exports.createElement = asyncHandler(async (req, res) => {
   let userId = req.user._id;
   const { category, mainMenu, subMenu, html, imageUrl } = req.body;
 
   try {
+    // for (let i=299 ; i<303; i++) {
+    //   await uploadMenuImage(path.resolve(__dirname, `../../client/public/assets/import-elements/menu-images/myimage-${i}.png`), `myimage-${i}.png`);
+    // }
+    
     const selectedCategory = await WebBuilderElementCategory.findOne({
       mainMenu,
       subMenu: subMenu || '',
@@ -142,9 +148,12 @@ exports.getAllElements = asyncHandler(async (req, res) => {
 exports.updateElement = asyncHandler(async (req, res) => {
   let { id } = req.params;
   let userId = req.user._id;
-  const payload = req.body;
+  const {name} = req.body;
   try {
-    const updatedElement = await WebBuilderElement.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, payload);
+    const webElement=await WebBuilderElement.findOne({_id:mongoose.Types.ObjectId(id)});
+    const categoryId=webElement.category;
+    const payload={name:name};
+    const updatedElement = await WebBuilderElementCategory.findOneAndUpdate({_id: mongoose.Types.ObjectId(categoryId)}, payload, {new:true});
     res.status(200).json({ success: true, data: updatedElement });
   } catch (err) {
     res.send({ msg: err.message.replace(/\'/g, ""), success: false });

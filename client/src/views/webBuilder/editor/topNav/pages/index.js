@@ -26,13 +26,14 @@ import {
   UncontrolledTooltip
 } from 'reactstrap';
 import EditMoal from './editModal';
-import { setFormReducer } from '../../../store/reducer';
+import { setCurrentPage, setFormReducer } from '../../../store/reducer';
 import { RiSeoLine } from 'react-icons/ri';
 import SeoModal from './SeoModal';
 
-export default function Index({ page, setPage, id, store, editor, setEditor, setPageTab }) {
+export default function Index({ setPage, id, store, editor, setEditor, setPageTab }) {
 
   const form=store.form;
+  const page = store.currentPage;
   const {formData}=form;
   const [isOpen, setIsOpen]=useState(false);
   const [selectedPage, setSelectedPage]=useState();
@@ -106,14 +107,14 @@ export default function Index({ page, setPage, id, store, editor, setEditor, set
                   key={item?._id}
                   className="page-item d-flex my-1 justify-content-between"
                 >
-                  <div className="fs-6 fw-bolder text-black" onClick={(e) => setPage(item)}>
+                  <div className={`fs-6 fw-bolder ${page?._id !== item?._id ? 'text-black' : 'text-primary'}`} onClick={(e) => dispatch(setCurrentPage(item))}>
                     {item?.name || 'Home page'}
                   </div>
                   
                   <div>
                     <UncontrolledDropdown>
                       <DropdownToggle tag='span' onClick={() => {setSelectedPage(item)}}>
-                        <MoreVertical size={20} color={"#333"} />
+                        <MoreVertical size={20} color={page?._id !== item?._id ? '#333' : '#0000FF'} />
                       </DropdownToggle>
                       <DropdownMenu end>
                         <DropdownItem className='d-flex w-100 align-items-center' onClick={(e) => {

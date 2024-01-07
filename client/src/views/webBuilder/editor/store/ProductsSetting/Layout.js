@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Input } from 'reactstrap';
-export const Layout = ({ store, selectedCmp }) => {
+export const Layout = ({ store, storeProducts, selectedCmp }) => {
   const [displayStyle, setDisplayStyle] = useState('style1');
   const [alignStyle, setAlignStyle] = useState('align1');
   const [sidePadding, setSidePadding] = useState(0);

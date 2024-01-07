@@ -4,21 +4,21 @@ import { MoreVertical, Send, Image, ChevronDown, ChevronRight, Link2, ChevronLef
 import { isObjEmpty, selectThemeColors } from '@utils'
 import Select, { components } from 'react-select';
 
-const ConnectProductDataSetModal = ({ store, showProductDataSetModal, setShowProductDataSetModal, modelsToConnect, datasetConnect, setDatasetFields }) => {
+const ConnectProductDataSetModal = ({ store, storeProducts, showProductDataSetModal, setShowProductDataSetModal, modelsToConnect, datasetConnect, setDatasetFields }) => {
   const [viewConnection, setViewConnection] = useState(false);
   const [selectedModel, setSelectedModel] = useState(null);
   const [fieldsOfCollection, setFieldsOfCollection] = useState([]);
   const [selectedField, setSelectedField] = useState('');
 
   useEffect(() => {
-    if (store.webProducts?.fields?.length > 0) {
+    if (storeProducts?.fields?.length > 0) {
       const tempFields = [];
-      store.webProducts?.fields.map(f => {
+      storeProducts?.fields.map(f => {
         tempFields.push({ value: f.name, label: f.name });
       });
       setFieldsOfCollection(tempFields);
     }
-  }, [store.webProducts]);
+  }, [storeProducts]);
 
   const changeField = (data) => {
     setSelectedField(data);

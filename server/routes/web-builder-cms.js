@@ -16,6 +16,9 @@ const {
   deleteConnection,
   multipleDeleteConnection,
   createMultipleConnection,
+  getProductCategoriesByPage,
+  updateProductCategoryByPage,
+  checkProductDataset
 } = require("../controllers/webBuilderCms");
 
 router.post("/collection/create", isAuthenticated, createCollection);
@@ -31,6 +34,10 @@ router.get("/connections-of-website/:id", isAuthenticated, getConnectionsByWebsi
 router.post("/connection/create-update", isAuthenticated, createOrUpdateConnection);
 router.post("/connection/create-multiple", isAuthenticated, createMultipleConnection);
 router.delete("/connection/delete/:id", isAuthenticated, deleteConnection);
-router.post("/connection/multiple-delete", isAuthenticated, multipleDeleteConnection)
+router.post("/connection/multiple-delete", isAuthenticated, multipleDeleteConnection);
+
+router.get("/checkProductCollection/:id", isAuthenticated, checkProductDataset);
+router.get("/category/:id", isAuthenticated, getProductCategoriesByPage);
+router.post("/category/update/:id", isAuthenticated, updateProductCategoryByPage);
 
 module.exports = router;

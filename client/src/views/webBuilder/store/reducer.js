@@ -38,11 +38,13 @@ export const formEditor = createSlice({
     webBlogs:[],
     webConnections: [],
     categories: [],
-    webProducts: {},
     cartProducts: [],
     selectedProduct: {},
     thankyouProducts: [],
     webRoles: [],
+    currentPage: {},
+    customerCollect: {},
+    waitingClients: []
   },
   reducers: {
     setLinkUrlReducer: (state, action) => {
@@ -65,9 +67,6 @@ export const formEditor = createSlice({
     },
     setCategoriesReducer: (state, action) => {
       state.categories = action?.payload;
-    },
-    setWebStoreReducer: (state, action) => {
-      state.webProducts = action?.payload;
     },
     setFormRuleReducer: (state,action) =>{
       state.formRules=action?.payload;
@@ -157,6 +156,15 @@ export const formEditor = createSlice({
     },
     setThankyouProductsReducer: (state, action) => {
       state.thankyouProducts = action?.payload;
+    },
+    setCurrentPage: (state, action) => {
+      state.currentPage = action?.payload;
+    },
+    setCustomerCollectReducer: (state, action) => {
+      state.customerCollect = action?.payload;
+    },
+    setWaitingClientsReducer: (state, action) => {
+      state.waitingClients = action?.payload;
     }
   }
 });
@@ -189,6 +197,9 @@ export const {
   setWebStoreReducer,
   setCartProductsReducer,
   setSelectedProductReducer,
-  setThankyouProductsReducer
+  setThankyouProductsReducer,
+  setCurrentPage,
+  setCustomerCollectReducer,
+  setWaitingClientsReducer
 } = formEditor.actions;
 export default formEditor.reducer;

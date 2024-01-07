@@ -15,7 +15,7 @@
 }
 
 .gjs-field-replace-image {
-  border: none
+  border: none;
 }
 
 .trait-image-url {
@@ -49,7 +49,7 @@
 }
 
 .select-image-item {
-  margin: 2px
+  margin: 2px;
 }
 
 #select-btn,
@@ -102,7 +102,7 @@
         font-weight: bold;
         font-size: medium;
         font-size: medium;
-        color: black
+        color: black;
       }
     }
 
@@ -123,11 +123,9 @@
         cursor: pointer;
       }
     }
-
-    .additional-bar {
-      width: 20%
+    .menu-item{
+      margin-right: 10px;
     }
-
   }
 
   .down-navbar {
@@ -145,7 +143,7 @@
         display: none;
         position: relative;
 
-        >div {
+        > div {
           position: absolute;
           display: flex;
           background: white;
@@ -154,7 +152,7 @@
           padding: 3px;
           border-radius: 5px;
 
-          >span {
+          > span {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -212,15 +210,13 @@
         display: none;
       }
 
-      
-
       @media (max-width: 850px) {
         width: 80px;
 
-        >div {
+        > div {
           display: none !important;
         }
-        
+
         .zoom-hide {
           display: flex !important;
           position: absolute;
@@ -245,7 +241,7 @@
 .land-body {
   height: calc(100vh - 110px);
 }
-#editor{
+#editor {
   overflow: scroll;
 }
 .editor-content {
@@ -335,7 +331,6 @@
       }
     }
   }
-
 }
 
 .style-sidebar {
@@ -463,7 +458,10 @@
     .element {
       position: relative;
       margin: 10px;
+      margin-bottom: 0px;
+      padding-bottom: 10px;
       justify-content: center;
+      border-bottom: 1px solid #eee;
 
       &:hover {
         cursor: pointer;
@@ -514,7 +512,6 @@
     max-width: 300px;
     max-height: calc(100vh - 110px);
   }
-
 }
 
 .trait-social-link-item {
@@ -554,7 +551,7 @@
   background-color: #0275d8;
 }
 
-[class|="trait-social-link-delete"] {
+[class|='trait-social-link-delete'] {
   font-size: 14px;
   background-color: none;
   border: none;
@@ -714,7 +711,8 @@
   padding: 6px 5px 0;
   border-radius: 2px;
   border: 1px solid lightgray;
-  background: white;}
+  background: white;
+}
 .rdw-editor-main {
   height: 100%;
   overflow: auto;
@@ -727,25 +725,24 @@
   border: 1px solid lightgray;
 }
 
-.gjs-field-page-link{
+.gjs-field-page-link {
   .trait-link-element-label,
   .trait-page-setting,
   .trait-tab-selection,
-  .trait-pages-selection
-  {
-    margin-bottom:10px;
+  .trait-pages-selection {
+    margin-bottom: 10px;
     border: 1px solid lightgrey;
   }
-  .trait-input-address{
-    display:none;
+  .trait-input-address {
+    display: none;
     border: 1px solid lightgrey;
   }
-  .trait-tab-selection{
+  .trait-tab-selection {
     display: none;
   }
 }
-.swal2-confirm{
-  min-width: 90px
+.swal2-confirm {
+  min-width: 90px;
 }
 
 .cms-sidebar {
@@ -755,8 +752,8 @@
     padding-left: 25px;
     padding-top: 8px;
     padding-bottom: 8px;
-    &:hover{
-      background-color:#f0f0f0;
+    &:hover {
+      background-color: #f0f0f0;
       cursor: pointer;
     }
   }
@@ -775,7 +772,7 @@
   .more-dropdown {
     display: none;
   }
-  &:hover{
+  &:hover {
     cursor: pointer;
     .more-dropdown {
       display: block;
@@ -784,7 +781,7 @@
 }
 
 .preset-item {
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
 }
@@ -818,7 +815,8 @@
   border: none;
 }
 
-.trait-new-menu-item-pagelink, .trait-new-menu-item-link__name {
+.trait-new-menu-item-pagelink,
+.trait-new-menu-item-link__name {
   border: solid 1px !important;
   border-radius: 3px;
   margin-top: 5px;

@@ -217,7 +217,7 @@ export default function Templates({
                   alt="Not authorized page"
                 />
                 <p className="text-capitalize" style={{ fontSize: '20px', marginBottom: '3px' }}>
-                  <b>Blank Template</b>
+                  <b>Create New</b>
                 </p>
                 <p style={{ fontSize: '16px' }}>Start from scratch</p>
                 <div className="mt-1">

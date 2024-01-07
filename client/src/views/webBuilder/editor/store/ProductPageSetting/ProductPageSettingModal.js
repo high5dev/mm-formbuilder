@@ -6,6 +6,7 @@ import { Design } from './Design';
 
 export const ProductPageSettingModal = ({
   store,
+  storeProducts,
   showProductPageSettingModal,
   setShowProductPageSettingModal,
   selectedCmp
@@ -44,9 +45,9 @@ export const ProductPageSettingModal = ({
         </div>
         <div className="type-content p-1 w-100 h-100">
           {settingType === 'Settings' ? (
-            <Settings store={store} selectedCmp={selectedCmp} />
+            <Settings store={store} storeProducts={storeProducts} selectedCmp={selectedCmp} />
           ) : (
-						<Design store={store} selectedCmp={selectedCmp} />
+            <Design store={store} storeProducts={storeProducts} selectedCmp={selectedCmp} />
           )}
         </div>
       </ModalBody>

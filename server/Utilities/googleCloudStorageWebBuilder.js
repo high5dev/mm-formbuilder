@@ -43,6 +43,14 @@ function googleCloudStorageWebBuilder() {
     });
   };
 
+  this.uploadMenuImage = async(filePath, fileName) => {
+    configureBucketCors().catch(console.error);
+    const pageDoc = bucket.file(`website-builder/menu-image/${fileName}`);
+    const fileBuffer = fs.readFileSync(filePath);
+    await pageDoc.save(fileBuffer);
+    return `https://storage.googleapis.com/${process.env.GCS_BUCKET}/${pageDoc.name}`;
+  }
+
   this.readPage = async(pageDirectory) => {
     configureBucketCors().catch(console.error);
     const pageDoc = bucket.file(`website-builder/${pageDirectory}/index.html`);

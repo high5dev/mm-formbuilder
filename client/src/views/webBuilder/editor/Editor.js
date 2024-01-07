@@ -1,10 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Bold, X, Trash2, Check, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Plus } from 'react-feather';
+import { Bold, X, Trash2, Check, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Plus,  Edit,
+  MoreVertical, Settings } from 'react-feather';
+import { CgStyle } from 'react-icons/cg';
+import { IoMdArrowDropright,IoMdArrowDropdown  } from "react-icons/io";
 import { RiQuestionMark } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { Link, useHistory, useParams } from 'react-router-dom';
+import { SlArrowDown } from "react-icons/sl";
 import {
   Button,
   ButtonGroup,
@@ -17,7 +21,12 @@ import {
   OffcanvasBody,
   OffcanvasHeader,
   Spinner,
-  Modal
+  Modal,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  UncontrolledDropdown,
+  Input
 } from 'reactstrap';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import websitePlugin from 'grapesjs-preset-webpage';
@@ -33,7 +42,7 @@ import StyleSidebar from './topNav/styles';
 import LayerSidebar from './topNav/layers';
 import PageSidebar from './topNav/pages';
 import TraitSidebar from './topNav/traits';
-import { setChildFormReducer, setFormReducer } from '../store/reducer';
+import { setChildFormReducer, setCurrentPage, setFormReducer } from '../store/reducer';
 import {
   getWebsiteAction,
   getPageAction,
@@ -41,6 +50,7 @@ import {
   publishWebsiteAction,
   createChildFormAction,
   getWebCollectionsAction,
+  deleteWebElementAction,
   getWebDatasetsAction,
   getWebsiteAllDatasetsAction,
   updatePageNameAction,
@@ -49,9 +59,14 @@ import {
   getChildFormsAction,
   getProductCategoryAction,
   getWebsiteRolesAction,
-  addWebBuilderThemeColorAction
+  addWebBuilderThemeColorAction,
+  createCustomerCollectAction,
+  getWaitingClientsAction,
+  confirmCustomerDatasetAction,
+  updateFormAction
 } from '../store/action';
 import OffCanvas from '../../components/offcanvas';
+import { getUserData } from '../../../auth/utils';
 import { employeeUpdateIdError } from '../../contacts/store/reducer';
 import '@src/assets/styles/web-builder.scss';
 import { webBuilderPlugin } from './elements/webBuilderPlugin';
@@ -66,6 +81,8 @@ import { menu } from './util';
 import { getCategoriesByMenu, createWebElement, getImageLibrary } from '../store/api';
 import * as htmlToImage from 'html-to-image';
 import html2canvas from 'html2canvas';
+import CreateAssetModal from './leftSidebar/assets/CreateAssetModal';
+import RenameAssetModal from './leftSidebar/assets/RenameAssetModal';
 import AddElementModal from './topNav/import/AddElementModal';
 import RenameModal from './topNav/rename/renameModal';
 import CreateFormModal from '../createForm/CreateFormModal';
@@ -94,11 +111,14 @@ import Sidebar from './Sidebar';
 import { element } from 'prop-types';
 import ProductsSettingModal from './store/ProductsSetting/ProductsSettingModal';
 import { ProductPageSettingModal } from './store/ProductPageSetting/ProductPageSettingModal';
+import { CustomerDatasetModal } from './store/customerDataset/CustomerDatasetModal';
 import RoleModal from './topNav/role';
 import AddPresetModal from './cms/AddPresetModal';
 import CMS from './topNav/cms';
+import { ImCheckmark, ImCross } from "react-icons/im";
 
-export default function Editor({
+export default function Editor(
+  {
   isblog,
   setIsBlog,
   createMdl,
@@ -108,8 +128,6 @@ export default function Editor({
   duplicateMdl,
   setDuplicateMdl,
   customwidth,
-  page,
-  setPage,
   isclear,
   setIsClear,
   isback,
@@ -138,12 +156,15 @@ export default function Editor({
   selectedMainNav,
   setSelectedMainNav,
   roleMdl,
-  setRoleMdl
-}) {
+  setRoleMdl,
+  VisibleMenu
+}) 
+{
   const [openCreateForm, setOpenCreateForm] = useState();
   const { id } = useParams();
   const form = store.form;
   const formTheme=store.formTheme;
+  const page = store.currentPage;
   const dispatch = useDispatch();
   const history = useHistory();
   const [editor, setEditor] = useState(null);
@@ -157,6 +178,8 @@ export default function Editor({
   const [formeditorMdl, setFormEditorMdl] = useState(false);
   const [themeEditing, setThemeEditing]=useState(false);
   const [openCreateColMdl, setOpenCreateColMdl] = useState(false);
+  const [openCreateAssetMdl, setOpenCreateAssetMdl] = useState(false);
+  const [openRenameAssetMdl, setOpenRenameAssetMdl] = useState(false);
   const [openEditCollection, setOpenEditCollection] = useState({ isOpen: false, data: {} });
   const [openCreateDatasetMdl, setOpenCreateDatasetMdl] = useState({ isOpen: false, data: {} });
   const [openAddPresetMdl, setOpenAddPresetMdl] = useState(false);
@@ -165,6 +188,7 @@ export default function Editor({
   const [modelsToConnect, setModelsToConnect] = useState([]);
   const [isinvite, setIsInvite] = useState(false);
   const [selectedCollection, setSelectedCollection] = useState(null);
+  const [selectedWebElement, setSelectedWebElement] = useState();
   const [selectedProductCategory, setSelectedProductCategory] = useState({});
   const [selectedFormBlock, setSelectedFormBlock] = useState(null);
   const [OpenCategory, setOpenCategory] = useState({ index: 0, value: true });
@@ -172,6 +196,8 @@ export default function Editor({
   const [selectedColor, setSelectedColor]=useState();
   const [selectedButton, setSelectedButton]=useState();
   const [selectedFont, setSelectedFont]=useState();
+  const [storeProducts, setStoreProducts] = useState({});
+  const user = getUserData();
   useEffect(() => {
     if (store?.form?._id) {
       dispatch(getWebsiteAllDatasetsAction(store.form._id));
@@ -180,8 +206,20 @@ export default function Editor({
       dispatch(getConnectionsByWebsiteAction(store.form._id));
       dispatch(getWebsiteRolesAction(store.form._id));
       dispatch(getWebsiteAllDatasetsAction(store.form._id));
+      dispatch(getWaitingClientsAction(store.form._id));
     }
   }, [store.form._id]);
+
+  useEffect(() => {
+    if(store.webCollections) {
+      store.webCollections.map((collection) => {
+        if(collection.category == "store") {
+          setStoreProducts(collection);
+          return;
+        }
+      })
+    }
+  }, [store.webCollections])
 
   const [productDataset, setProductDataset] = useState({});
   const [datasetConnect, setDatasetConnect] = useState([]);
@@ -191,13 +229,19 @@ export default function Editor({
   const [showProductsSettingModal, setShowProductsSettingModal] = useState(false);
   const [showProductPageSettingModal, setShowProductPageSettingModal] = useState(false);
   const [showAddCartButtonModal, setShowAddCartButtonModal] = useState(false);
-  const [cartProductId, setCartProductId] = useState('');
+  const [cartProductId, setCartProductId] = useState("");
+  const [customerDataset, setCustomerDataset] = useState({ type: "", collectionId: "" });
+  const [showCustomerDatasetModal, setShowCustomerDatasetModal] = useState(false);
+  const [cdCheckedItems, setCDCheckedItems] = useState({});
+  const [customerCollectId, setCustomerCollectId] = useState("");
   const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
 
   const loadedRef = useRef();
   const storeRef = useRef();
+  const productRef = useRef();
   loadedRef.current = isStoreLoading;
   storeRef.current = store;
+  productRef.current = storeProducts;
 
   const toggle = () => {
     setOpen(!open);
@@ -338,14 +382,14 @@ export default function Editor({
             if (element.components().models.length == 0) {
               element.set(
                 'content',
-                store?.webProducts?.values[index][data[existingItemIndex].name]
+                storeProducts?.values[index][data[existingItemIndex].name]
               );
             } else {
               element
                 .components()
                 .models[0].set(
                   'content',
-                  store?.webProducts?.values[index][data[existingItemIndex].name]
+                  storeProducts?.values[index][data[existingItemIndex].name]
                 );
             }
           }
@@ -386,6 +430,57 @@ export default function Editor({
   const handleOnclick = (index) => {
     setOpenCategory({ index: index, value: true });
   };
+
+  const handleRemove = (_b) => {
+    const id = _b.get('index');
+    const ccid = _b.getId();
+    dispatch(deleteWebElementAction(id)).then((res) => {
+      if (res) {
+        editor.BlockManager.remove(ccid);
+      }
+    });
+  };
+
+  const handleChangeCustomerDataset = (type, collectionId) => {
+    setCustomerDataset({ type: type, collectionId: collectionId });
+  }
+
+  const handleCDCheckboxChange = (field, isChecked) => {
+    setCDCheckedItems({
+      ...cdCheckedItems,
+      [`${customerDataset.type}-${customerDataset.collectionId}`]: {
+        ...cdCheckedItems[`${customerDataset.type}-${customerDataset.collectionId}`],
+        [field]: isChecked
+      }
+    })
+  }
+
+  const collectFromClient = async () => {
+    const data = await dispatch(createCustomerCollectAction({
+      websiteId: store?.form?._id,
+      fields: cdCheckedItems[`${customerDataset.type}-${customerDataset.collectionId}`],
+      type: customerDataset.type,
+      collectionId: customerDataset.collectionId
+    }));
+    setCustomerCollectId(data.data._id);
+    setShowCustomerDatasetModal(true);
+  }
+
+  const handleConfirmCustomerDataset = (id, payload) => {
+    dispatch(confirmCustomerDatasetAction(id, payload));
+  }
+
+  const handleRename = (_b) => {
+    setSelectedWebElement(_b);
+    setOpenRenameAssetMdl(true);
+    // const id=_b.get('index');
+    // const ccid=_b.getId();
+    // dispatch(updateWebElementAction(id)).then((res)=>{
+    //   if(res){
+    //     editor.BlockManager.remove(ccid);
+    //   }
+    // })
+  }
   // useEffect(() =>{
   //   let interval;
   //     if(editor && !form.isPublish){
@@ -492,13 +587,13 @@ export default function Editor({
           component.get('type') === 'sliderproductgallery' ||
           component.get('type') === 'relatedproducts'
         ) {
-          component.set('products', store?.webProducts);
+          component.set('products', storeProducts);
         }
       });
-      updateComponentsAndChildren(components, store?.webProducts, store?.categories);
+      updateComponentsAndChildren(components, storeProducts, store?.categories);
       setIsStoreLoading(false);
     }
-  }, [store?.webProducts, store?.categories]);
+  }, [storeProducts, store?.categories]);
 
   useEffect(() => {
     if (editor) {
@@ -507,10 +602,10 @@ export default function Editor({
           if (component.get('type') === 'productpage') {
             if (
               Object.keys(storeRef.current?.selectedProduct).length == 0 &&
-              storeRef.current?.webProducts?.values.length > 0
+              productRef.current?.values.length > 0
             ) {
-              dispatch(updateSelectedProductAction(storeRef.current?.webProducts?.values[0]));
-              component.set('product', storeRef.current?.webProducts?.values[0]);
+              dispatch(updateSelectedProductAction(productRef.current?.values[0]));
+              component.set('product', productRef.current?.values[0]);
             } else {
               component.set('product', storeRef.current?.selectedProduct);
             }
@@ -524,9 +619,9 @@ export default function Editor({
       }
 
       const components = editor.getWrapper().components().models;
-      updateComponentsAndChildren(components, store?.webProducts);
+      updateComponentsAndChildren(components, storeProducts);
     }
-  }, [store?.webProducts]);
+  }, [storeProducts]);
 
   useEffect(() => {
     if (store?.form?._id) {
@@ -544,7 +639,7 @@ export default function Editor({
     dispatch(getBlogsAction(store?.form?._id));
     dispatch(getWebsiteAction(id)).then((res) => {
       if (res) {
-        setPage(res[0]);
+        dispatch(setCurrentPage(res.find(e => e._id === page?._id)));
       }
     });
     const gjsEditor = grapesjs.init({
@@ -560,11 +655,13 @@ export default function Editor({
         // appendTo: '#blocks'
       },
       styleManager: {
-        appendTo: document.querySelector('#style-manager-container')
+        appendTo: document.querySelector('#style-manager-container'),
+        clearProperties: true
+
       },
       selectorManager: {
         custom: true,
-        componentFirst: true,
+        // componentFirst: true,
         appendTo: document.querySelector('#selector-manager-container')
       },
       layerManager: {
@@ -639,6 +736,7 @@ export default function Editor({
     });
 
     gjsEditor.on('component:add', (component) => {
+      if(!component) return;
       if (
         component.get('type') === 'gridproductgallery' ||
         component.get('type') === 'sliderproductgallery' ||
@@ -669,18 +767,19 @@ export default function Editor({
         component.set('fillopacity', component.getAttributes().fillopacity);
         component.set('borderwidth', component.getAttributes().borderwidth);
         component.set('buttoncornerradius', component.getAttributes().buttoncornerradius);
+        component.set('products', storeProducts);
       } else if (component.get('type') === 'addtocartbutton') {
-        setCartProductId(storeRef.current?.webProducts?.values[0].id);
-        component.set('productId', storeRef.current?.webProducts?.values[0].id);
+        setCartProductId(productRef.current?.values[0].id);
+        component.set('productId', productRef.current?.values[0].id);
       } else if (component.get('type') === 'shoppingcart') {
         let cartItemCount = 0;
       } else if (component.get('type') === 'productpage') {
         if (
           Object.keys(storeRef.current?.selectedProduct).length == 0 &&
-          storeRef.current?.webProducts.values.length > 0
+          productRef.current.values.length > 0
         ) {
-          dispatch(updateSelectedProductAction(storeRef.current?.webProducts.values[0]));
-          component.set('product', storeRef.current?.webProducts.values[0]);
+          dispatch(updateSelectedProductAction(productRef.current.values[0]));
+          component.set('product', productRef.current.values[0]);
         } else {
           component.set('product', storeRef.current?.selectedProduct);
         }
@@ -699,62 +798,62 @@ export default function Editor({
       } else if (component.get('type') === 'count-down') {
         component.set('template', component.getAttributes().template);
       }
-      if (!loadedRef.current && component.get('type') != 'image') {
-        if (compoId == '') compoId = component.ccid;
-        const parentType = component.parent().get('type');
+      // if (!loadedRef.current && component.get('type') != 'image') {
+      //   if (compoId == '') compoId = component.ccid;
+      //   const parentType = component.parent().get('type');
 
-        if (
-          (parentType == 'product-item' || parentType == 'repeat-item') &&
-          (component.parent().parent().get('cloning') == false ||
-            component.parent().parent().parent().get('cloning') == false)
-        ) {
-          console.log(component);
-          setIsStoreLoading(true);
-          let numOfItems;
-          if (
-            component.parent().parent().get('tagName') == 'gridproductgallery' ||
-            component.parent().parent().get('tagName') == 'repeater'
-          ) {
-            numOfItems = component.parent().parent().get('numOfItems');
-          } else {
-            numOfItems = component.parent().parent().parent().get('numOfItems');
-          }
-          let originalComp = component.parent().clone();
-          let comps = component.parent().parent().get('components');
-          for (let i = comps.models.length - 1; i >= 0; i--) {
-            comps.models[i].remove();
-          }
+      //   if (
+      //     (parentType == 'product-item' || parentType == 'repeat-item') &&
+      //     (component.parent().parent().get('cloning') == false ||
+      //       component.parent().parent().parent().get('cloning') == false)
+      //   ) {
+      //     console.log(component);
+      //     setIsStoreLoading(true);
+      //     let numOfItems;
+      //     if (
+      //       component.parent().parent().get('tagName') == 'gridproductgallery' ||
+      //       component.parent().parent().get('tagName') == 'repeater'
+      //     ) {
+      //       numOfItems = component.parent().parent().get('numOfItems');
+      //     } else {
+      //       numOfItems = component.parent().parent().parent().get('numOfItems');
+      //     }
+      //     let originalComp = component.parent().clone();
+      //     let comps = component.parent().parent().get('components');
+      //     for (let i = comps.models.length - 1; i >= 0; i--) {
+      //       comps.models[i].remove();
+      //     }
 
-          for (let i = 0; i < numOfItems; i++) {
-            const item = originalComp.clone();
+      //     for (let i = 0; i < numOfItems; i++) {
+      //       const item = originalComp.clone();
 
-            setChildIds(originalComp, item, i);
-            comps.push(item);
-          }
-          setIsStoreLoading(false);
+      //       setChildIds(originalComp, item, i);
+      //       comps.push(item);
+      //     }
+      //     setIsStoreLoading(false);
 
-          // const parentComponent = component.parent().parent();
-          // const parentChildren = parentComponent.get('components');
+      //     // const parentComponent = component.parent().parent();
+      //     // const parentChildren = parentComponent.get('components');
 
-          // // Filter out the current component from the children
-          // const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
+      //     // // Filter out the current component from the children
+      //     // const childrenWithoutCurrent = parentChildren.filter((child) => child !== component.parent());
 
-          // childrenWithoutCurrent.forEach((child, index) => {
+      //     // childrenWithoutCurrent.forEach((child, index) => {
 
-          //   const copiedComponent = component.clone();
-          //   copiedComponent.ccid = compoId + "-" + (index + 2);
-          //   if(component.get('type') == 'text')
-          //     copiedComponent.set('style', { padding: "10px" });
-          //   child.append(copiedComponent);
-          // });
-          // setIsLoading(false);
-        }
-        compoId = '';
-      }
+      //     //   const copiedComponent = component.clone();
+      //     //   copiedComponent.ccid = compoId + "-" + (index + 2);
+      //     //   if(component.get('type') == 'text')
+      //     //     copiedComponent.set('style', { padding: "10px" });
+      //     //   child.append(copiedComponent);
+      //     // });
+      //     // setIsLoading(false);
+      //   }
+      //   compoId = '';
+      // }
     });
     gjsEditor.on('component:remove', (component) => {
       const id = component.getId();
-      const css=gjsEditor.Css;
+      const css = gjsEditor.Css;
       const rules = css.getRules(`#${id}`);
       css.remove(rules);
       if (!loadedRef.current && component.changed != {}) {
@@ -786,45 +885,44 @@ export default function Editor({
         compoId = '';
       }
     });
-    gjsEditor.on('component:update', (component) => {
-      if (!loadedRef.current) {
-        try {
-          const parentType = component.parent().get('type');
+    // gjsEditor.on('component:update', (component) => {
+    //   if (!loadedRef.current) {
+    //     try {
+    //       const parentType = component.parent().get('type');
 
-          if (
-            (parentType == 'product-item' || parentType == 'repeat-item') &&
-            (component.parent().parent().get('cloning') == false ||
-              component.parent().parent().parent().get('cloning') == false)
-          ) {
-            setIsStoreLoading(true);
-            let numOfItems;
-            if (
-              component.parent().parent().get('tagName') == 'gridproductgallery' ||
-              component.parent().parent().get('tagName') == 'repeater'
-            ) {
-              numOfItems = component.parent().parent().get('numOfItems');
-            } else {
-              numOfItems = component.parent().parent().parent().get('numOfItems');
-            }
-            let originalComp = component.parent().clone();
-            let comps = component.parent().parent().get('components');
-            for (let i = comps.models.length - 1; i >= 0; i--) {
-              comps.models[i].remove();
-            }
+    //       if (
+    //         (parentType == 'product-item' || parentType == 'repeat-item') &&
+    //         (component.parent().parent().get('cloning') == false ||
+    //           component.parent().parent().parent().get('cloning') == false)
+    //       ) {
+    //         setIsStoreLoading(true);
+    //         let numOfItems;
+    //         if (
+    //           component.parent().parent().get('tagName') == 'gridproductgallery' ||
+    //           component.parent().parent().get('tagName') == 'repeater'
+    //         ) {
+    //           numOfItems = component.parent().parent().get('numOfItems');
+    //         } else {
+    //           numOfItems = component.parent().parent().parent().get('numOfItems');
+    //         }
+    //         let originalComp = component.parent().clone();
+    //         let comps = component.parent().parent().get('components');
+    //         for (let i = comps.models.length - 1; i >= 0; i--) {
+    //           comps.models[i].remove();
+    //         }
 
-            for (let i = 0; i < numOfItems; i++) {
-              const item = originalComp.clone();
+    //         for (let i = 0; i < numOfItems; i++) {
+    //           const item = originalComp.clone();
 
-              setChildIds(originalComp, item, i);
-              comps.push(item);
-            }
-            setIsStoreLoading(false);
-          }
-        } catch (e) {}
-      }
-    });
-    gjsEditor.on('block:drag:start', function (model) {
-    });
+    //           setChildIds(originalComp, item, i);
+    //           comps.push(item);
+    //         }
+    //         setIsStoreLoading(false);
+    //       }
+    //     } catch (e) { }
+    //   }
+    // });
+    gjsEditor.on('block:drag:start', function (model) { });
     gjsEditor.on('block:drag:stop', function (model) {
       setSidebarData({
         ...sidebarData,
@@ -851,10 +949,18 @@ export default function Editor({
       setBlockManager(props);
     });
     gjsEditor.on('component:selected', (cmp) => {
-      setTab('Settings');
+      // get the selected componnet and its default toolbar
+      const defaultToolbar = cmp.get('toolbar');
+      if(defaultToolbar.filter((tlb) => tlb.id === new_toolbar_id)){
+        defaultToolbar.unshift({
+          id: `RightSidebar-new_toolbar_id`,
+          command: 'RightSidebar-component',
+          label: settingLabel
+        });
+      }
+      
       setSelectedCmp(cmp);
       console.log('cmp-------------------', cmp);
-      setRSidebarOpen(true);
       if (
         cmp.attributes.type === 'gridproductgallery' ||
         cmp.attributes.type === 'sliderproductgallery' ||
@@ -929,29 +1035,15 @@ export default function Editor({
         buttonsStyling: false
       }).then((result) => {
         if (result.isConfirmed) {
-          const selectedCmp = editor.getSelected();
-          htmlToImage.toPng(selectedCmp.getEl()).then((dataUrl) => {
-            const html = selectedCmp.toHTML();
-            const css = editor.CodeManager.getCode(selectedCmp, 'css', {
-              cssc: editor.CssComposer
-            });
-            const mainMenu = 'assets';
-            const subMenu = 'assets';
-            const category = 'assets';
-            dispatch(
-              createWebElementAction({
-                mainMenu,
-                subMenu,
-                category,
-                html: `${html}<style>${css}</style>`,
-                imageUrl: dataUrl
-              })
-            ).then((res) => {
-              editor.Modal.close();
-            });
-          });
+          setOpenCreateAssetMdl(true);
         }
       });
+    });
+    gjsEditor.Commands.add('RightSidebar-component', (grapeEditor) => {
+      
+      setRSidebarOpen(true);
+      setTab('Settings');
+      
     });
     gjsEditor.Commands.add('connect-collection', (geditor) => {
       setConnectData({ ...connectData, isOpen: true });
@@ -975,6 +1067,68 @@ export default function Editor({
 
     gjsEditor.Commands.add('setting-addcartbutton', (gjsEditor) => {
       setShowAddCartButtonModal(true);
+    });
+
+    const rte = gjsEditor.RichTextEditor;
+    rte.remove('wrap');
+
+    const fontFamilies = [
+      { value: 'Arial, Helvetica, sans-serif', name: 'Arial' },
+      { value: 'Arial Black, Gadget, sans-serif', name: 'Arial Black' },
+      { value: 'Brush Script MT, sans-serif', name: 'Brush Script MT' },
+      { value: 'Comic Sans MS, cursive, sans-serif', name: 'Comic Sans MS' },
+      { value: 'Courier New, Courier, monospace', name: 'Courier New' },
+      { value: 'Georgia, serif', name: 'Georgia' },
+      { value: 'Helvetica, sans-serif', name: 'Helvetica' },
+      { value: 'Impact, Charcoal, sans-serif', name: 'Impact' },
+      { value: 'Lucida Sans Unicode, Lucida Grande, sans-serif', name: 'Lucida Sans Unicode' },
+      { value: 'Tahoma, Geneva, sans-serif', name: 'Tahoma' },
+      { value: 'Times New Roman, Times, serif', name: 'Times New Roman' },
+      { value: 'Trebuchet MS, Helvetica, sans-serif', name: 'Trebuchet MS' },
+      { value: 'Verdana, Geneva, sans-serif', name: 'Verdana' }
+      // ... other font families ...
+    ];
+
+    rte.add('fontFamily', {
+      icon: `
+          <select class="gjs-field" style="width: 100px">
+              ${fontFamilies.map(font => `<option value="${font.value}">${font.name}</option>`).join('')}
+          </select>
+      `,
+      event: 'change',
+      result: (rte, action) => {
+        const fontFamilyValue = action.btn.childNodes[1].value;
+        rte.exec('fontName', fontFamilyValue);
+      },
+      update: (rte, action) => {
+        const value = rte.doc.queryCommandValue("fontName");
+        console.log(value);
+        if (value) {
+          action.btn.firstChild.value = value.replace(/['"]+/g, ''); // Remove quotes
+        }
+      }
+    });
+
+    rte.add('fontColor', {
+      icon: `<input type="color" class="gjs-field" style="width: 27px" />`,
+      // Bind the 'result' on 'change' listener
+      event: 'change',
+      result: (rte, action) => {
+        const colorValue = action.btn.firstChild.value;
+        rte.exec('foreColor', colorValue);
+      },
+      // Callback on any input change (mousedown, keydown, etc..)
+      update: (rte, action) => {
+        const value = rte.doc.queryCommandValue('foreColor');
+        function rgbStringToHex(rgbString) {
+          const rgbValues = rgbString.match(/\d+/g).map(Number);
+          const hex = rgbValues.map(val => val.toString(16).padStart(2, '0')).join('');
+          return `#${hex}`;
+        }
+        if (value) {
+          action.btn.firstChild.value = rgbStringToHex(value);
+        }
+      }
     });
 
     // Add new toolbar
@@ -1059,6 +1213,7 @@ export default function Editor({
         });
       }
     });
+
     // gjsEditor.BlockManager.remove('link');
     // gjsEditor.BlockManager.remove('link-block');
     setEditor(gjsEditor);
@@ -1127,7 +1282,7 @@ export default function Editor({
         html: html,
         css: css
       };
-      if(isback){
+      if (isback) {
         dispatch(updatePageAction(id, payload)).then((res) => {
           if (res) {
             history.goBack();
@@ -1154,7 +1309,7 @@ export default function Editor({
           }
         });
       }
-    };
+    }
   }, [ispreview, ispublish, isback]);
 
   useEffect(() => {
@@ -1377,33 +1532,36 @@ export default function Editor({
               }
             }
           }
-          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
-            label: el?.category[0]?.name,
-            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
-            media: el.imageUrl,
-            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
-            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
-            mainMenu:`${el?.category[0]?.mainMenu}`,
-            refcategory:`${el?.category[0]?.name}`,
-            submenu:el?.category[0]?.subMenu,
-          });
-        }
-        else{
+          editor.BlockManager.add(
+            `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`,
+            {
+              label: el?.category[0]?.name,
+              content: htmlCmp.head.innerHTML + htmlCmp.body.innerHTML,
+              media: el.imageUrl,
+              category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+              menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+              mainMenu: `${el?.category[0]?.mainMenu}`,
+              refcategory: `${el?.category[0]?.name}`,
+              submenu: el?.category[0]?.subMenu
+            }
+          );
+        } else {
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
           editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
+            index: el?._id,
+            user: el?.userId,
             label: el?.category[0]?.name,
-            content: htmlCmp.head.innerHTML+htmlCmp.body.innerHTML,
+            content: htmlCmp.head.innerHTML + htmlCmp.body.innerHTML,
             media: el.imageUrl,
             category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
             menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
-            mainMenu:`${el?.category[0]?.mainMenu}`,
-            refcategory:`${el?.category[0]?.name}`,
-            submenu:el?.category[0]?.subMenu,
+            mainMenu: `${el?.category[0]?.mainMenu}`,
+            refcategory: `${el?.category[0]?.name}`,
+            submenu: el?.category[0]?.subMenu,
           });
         }
       });
-      // console.log('editorBlockManager', editor.BlockManager?.blocks);
     }
   }, [store.webElements, editor]);
 
@@ -1500,21 +1658,21 @@ export default function Editor({
       const payload = {
         page: page?._id,
         html: html,
-        css: css,
+        css: css
       };
-        dispatch(updatePageAction(id, payload));
-    };
+      dispatch(updatePageAction(id, payload));
+    }
   });
 
   return (
     <div className="d-flex">
-      <div className="expanded-sidebar">
+      <div className="expanded-sidebar shadow-lg" hidden={VisibleMenu}>
         <PerfectScrollbar
           options={{ suppressScrollX: true }}
           style={{ height: `calc(100vh - 120px)` }}
         >
           {selectedMainNav === 'elements' && (
-            <div className="d-flex">
+            <div className="d-flex" >
               <Sidebar
                 sidebarData={sidebarData}
                 setSidebarData={setSidebarData}
@@ -1553,14 +1711,9 @@ export default function Editor({
                         sidebarData.menu.name
                       }
                     </span>
-                    {/* <div>
-                      <span className="header-icon">
-                        <RiQuestionMark size={16} />
-                      </span>
-                      <span className="header-icon" onClick={handleSidebarOpen}>
-                        <X size={16} />
-                      </span>
-                    </div> */}
+                    <span className="header-icon" onClick={handleSidebarOpen}>
+                      <X size={16} color="#6e6b7b" style={{ cursor: "hand" }} />
+                    </span>
                   </div>
                   <div className="expanded-content">
                     <div id="blocks">
@@ -1603,7 +1756,7 @@ export default function Editor({
                             })}
                         </div>
                       )}
-                     {sidebarData.menu.id === 'decorative' && (
+                      {sidebarData.menu.id === 'decorative' && (
                         <div className="submenu-and-element d-flex">
                           <div className="submenu-list pt-0">
                             {sidebarData?.menu?.subMenu?.map((sub, index) => {
@@ -1637,14 +1790,14 @@ export default function Editor({
                                         OpenCategory.index == index ? OpenCategory.value : false
                                       }
                                     >
-                                      <ChevronDown size={18} />
+                                      <IoMdArrowDropright color="black" size={18} />
                                     </div>
                                     <div
                                       hidden={
                                         OpenCategory.index == index ? !OpenCategory.value : true
                                       }
                                     >
-                                      <ChevronUp size={18} />
+                                      <IoMdArrowDropdown color="black" size={18} />
                                     </div>
                                     <div className="ps-50">
                                       <h5 className="submenu-item ps-0">{sub.name}</h5>
@@ -1662,7 +1815,7 @@ export default function Editor({
                                           key={ix}
                                           className={
                                             selectedCategory ===
-                                            `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
                                               ? 'selected-submenu-category'
                                               : 'submenu-category'
                                           }
@@ -1698,7 +1851,8 @@ export default function Editor({
                                       }}
                                       key={ix}
                                     >
-                                      <img width="50" height="50" src={b.get('media')} />
+                                      {/* <img width="50" height="50" src={b.get('media')} /> */}
+                                      <i className={b.get('media')} style={{ fontSize: 40 }}></i>
                                       <div
                                         draggable
                                         onDragStart={(e) => {
@@ -1763,14 +1917,14 @@ export default function Editor({
                                         OpenCategory.index == index ? OpenCategory.value : false
                                       }
                                     >
-                                      <ChevronDown size={18} className=" " />
+                                      <IoMdArrowDropright color="black" size={18} className=" " />
                                     </div>
                                     <div
                                       hidden={
                                         OpenCategory.index == index ? !OpenCategory.value : true
                                       }
                                     >
-                                      <ChevronUp size={18} className=" " />
+                                      <IoMdArrowDropdown color="black" size={18} className=" " />
                                     </div>
                                     <div className="ps-50">
                                       <h5 className="submenu-item ps-0">{sub.name}</h5>
@@ -1787,7 +1941,115 @@ export default function Editor({
                                           key={ix}
                                           className={
                                             selectedCategory ===
-                                            `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                              ? 'selected-submenu-category'
+                                              : 'submenu-category'
+                                          }
+                                          onClick={() => {
+                                            setSelectedCategory(
+                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                            );
+                                          }}
+                                        >
+                                          {b.get('label')}
+                                        </div>
+                                      </Collapse>
+                                    );
+                                  })}
+                                </>
+                              );
+                              return returnComponent;
+                            })}
+                          </div>
+                          <div className="element-container">
+                            {blockManager?.blocks
+                              ?.filter((e) => e.get('category').id === selectedCategory)
+                              .map((b, ix) => {
+                                return (
+                                  <div className="element" key={ix}>
+                                    <img width="280" src={`https://storage.googleapis.com/mymember-storage/website-builder/menu-image/${b.get('media')}`} />
+                                    <div
+                                      draggable
+                                      onDragStart={(e) => {
+                                        e.stopPropagation();
+                                        blockManager.dragStart(b, e.nativeEvent);
+                                      }}
+                                      onDragEnd={(e) => {
+                                        e.stopPropagation();
+                                        if (b.get('label') === 'New Form') {
+                                          createForm();
+                                        }
+                                        if (b.get('label') === 'Add Existing Form') {
+                                          setAddFormMdl(true);
+                                        }
+                                        blockManager.dragStop(false);
+                                      }}
+                                    ></div>
+                                  </div>
+                                );
+                              })}
+                          </div>
+                        </div>
+                      )}
+                      {sidebarData.menu.id === 'contact-forms' && (
+                        <div className="submenu-and-element d-flex">
+                          <div className="submenu-list pt-0">
+                            {sidebarData?.menu?.subMenu?.map((sub, index) => {
+                              const categories = [];
+                              const tempBlocks = [];
+                              editor?.BlockManager.blocks.map((e) => {
+                                if (
+                                  e.get('menu') === `${sidebarData.menu.id}-${sub.id}` &&
+                                  categories.findIndex(
+                                    (c) =>
+                                      c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`
+                                  ) === -1
+                                ) {
+                                  categories.push(
+                                    `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`
+                                  );
+                                  tempBlocks.push(e);
+                                }
+                              });
+
+                              const returnComponent = (
+                                <>
+                                  <div
+                                    className="d-flex align-items-center px-50 border-bottom border-top"
+                                    onClick={() => {
+                                      handleOnclick(index);
+                                    }}
+                                  >
+                                    <div
+                                      hidden={
+                                        OpenCategory.index == index ? OpenCategory.value : false
+                                      }
+                                    >
+                                      <ChevronDown size={18} />
+                                    </div>
+                                    <div
+                                      hidden={
+                                        OpenCategory.index == index ? !OpenCategory.value : true
+                                      }
+                                    >
+                                      <ChevronUp size={18} />
+                                    </div>
+                                    <div className="ps-50">
+                                      <h5 className="submenu-item ps-0">{sub.name}</h5>
+                                    </div>
+                                  </div>
+                                  {tempBlocks.map((b, ix) => {
+                                    return (
+                                      <Collapse
+                                        isOpen={
+                                          OpenCategory.index == index ? OpenCategory.value : false
+                                        }
+                                      >
+                                        <div
+                                          key={ix}
+                                          className={
+                                            selectedCategory ===
+                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
                                               ? 'selected-submenu-category'
                                               : 'submenu-category'
                                           }
@@ -1841,9 +2103,14 @@ export default function Editor({
                         sidebarData.menu.id != 'quick-add' &&
                         sidebarData.menu.id != 'blog' &&
                         sidebarData.menu.id !='theme'&&
+                        sidebarData.menu.id !== 'quick-add' &&
+                        sidebarData.menu.id !== 'blog' &&
                         sidebarData.menu.id !== 'cms' &&
                         sidebarData.menu.id !== 'store' &&
-                        sidebarData.menu.id != 'compositions' && (
+                        sidebarData.menu.id !== 'assets' &&
+                        sidebarData.menu.id !== 'compositions' &&
+                        sidebarData.menu.id !== 'contact-forms' &&
+                        sidebarData.menu.id !== 'content' && (
                           <div className="submenu-and-element d-flex">
                             <div className="submenu-list pt-0">
                               {sidebarData?.menu?.subMenu?.map((sub, index) => {
@@ -1877,14 +2144,14 @@ export default function Editor({
                                           OpenCategory.index == index ? OpenCategory.value : false
                                         }
                                       >
-                                        <ChevronDown size={18} />
+                                        <IoMdArrowDropright color="black" size={18} />
                                       </div>
                                       <div
                                         hidden={
                                           OpenCategory.index == index ? !OpenCategory.value : true
                                         }
                                       >
-                                        <ChevronUp size={18} />
+                                        <IoMdArrowDropdown color="black" size={18} />
                                       </div>
                                       <div className="ps-50">
                                         <h5 className="submenu-item ps-0">{sub.name}</h5>
@@ -1901,7 +2168,7 @@ export default function Editor({
                                             key={ix}
                                             className={
                                               selectedCategory ===
-                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                                `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
                                                 ? 'selected-submenu-category'
                                                 : 'submenu-category'
                                             }
@@ -1927,7 +2194,7 @@ export default function Editor({
                                 .map((b, ix) => {
                                   return (
                                     <div className="element" key={ix}>
-                                      <img width="280" src={b.get('media')} />
+                                      <img width="280" src={`https://storage.googleapis.com/mymember-storage/website-builder/menu-image/${b.get('media')}`} />
                                       <div
                                         draggable
                                         onDragStart={(e) => {
@@ -1951,7 +2218,7 @@ export default function Editor({
                             </div>
                           </div>
                         )}
-                      {sidebarData.menu.id === 'theme'&& (
+                      {sidebarData.menu.id === 'theme' && (
                         <>
                         {
                           !themeEditing &&
@@ -2100,6 +2367,133 @@ export default function Editor({
                         }
                         </>
                       )}
+                      {sidebarData.menu.id === 'assets' && (
+                        <div className="submenu-and-element d-flex">
+                          <div className="submenu-list pt-0">
+                            {sidebarData?.menu?.subMenu?.map((sub, index) => {
+                              const categories = [];
+                              const tempBlocks = [];
+                              editor?.BlockManager.blocks.map((e) => {
+                                if (
+                                  e.get('menu') === `${sidebarData.menu.id}-${sub.id}` &&
+                                  categories.findIndex(
+                                    (c) =>
+                                      c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`
+                                  ) === -1 && user.id === e.get('user')
+                                ) {
+                                  categories.push(
+                                    `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`
+                                  );
+                                  tempBlocks.push(e);
+                                }
+                              });
+
+                              const returnComponent = (
+                                <>
+                                  <div
+                                    className="d-flex align-items-center px-50 border-bottom border-top"
+                                    onClick={() => {
+                                      handleOnclick(index);
+                                    }}
+                                  >
+                                    <div
+                                      hidden={
+                                        OpenCategory.index == index ? OpenCategory.value : false
+                                      }
+                                    >
+                                      <IoMdArrowDropright color="black" size={18} />
+                                    </div>
+                                    <div
+                                      hidden={
+                                        OpenCategory.index == index ? !OpenCategory.value : true
+                                      }
+                                    >
+                                      <IoMdArrowDropdown color='black' size={18} />
+                                    </div>
+                                    <div className="ps-50">
+                                      <h5 className="submenu-item ps-0">{sub.name}</h5>
+                                    </div>
+                                  </div>
+                                  {tempBlocks.map((b, ix) => {
+                                    return (
+                                      <Collapse
+                                        isOpen={
+                                          OpenCategory.index == index ? OpenCategory.value : false
+                                        }
+                                      >
+                                        <div
+                                          key={ix}
+                                          className={
+                                            selectedCategory ===
+                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                              ? 'd-flex justify-content-between align-items-center selected-submenu-category'
+                                              : 'd-flex justify-content-between align-items-center submenu-category'
+                                          }
+                                          onClick={() => {
+                                            setSelectedCategory(
+                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                            );
+                                          }}
+                                        >
+                                          <div>
+                                            {b.get('label')}
+                                          </div>
+                                          <div className='assets-action'>
+                                            <UncontrolledDropdown>
+                                              <DropdownToggle tag="div" className="btn btn-sm">
+                                                <MoreVertical size={14} className="cursor-pointer" />
+                                              </DropdownToggle>
+                                              <DropdownMenu positionFixed={true}>
+                                                <DropdownItem tag="span" className="w-100" onClick={() => handleRename(b)}>
+                                                  <Edit size={14} className="me-50" />
+                                                  <span className="align-middle">Rename</span>
+                                                </DropdownItem>
+                                                <DropdownItem tag="span" className="w-100" onClick={() => handleRemove(b)}>
+                                                  <Trash size={14} className="me-50" />
+                                                  <span className="align-middle">Delete</span>
+                                                </DropdownItem>
+                                              </DropdownMenu>
+                                            </UncontrolledDropdown>
+                                          </div>
+                                        </div>
+                                      </Collapse>
+                                    );
+                                  })}
+                                </>
+                              );
+                              return returnComponent;
+                            })}
+                          </div>
+                          <div className="element-container">
+                            {blockManager?.blocks
+                              ?.filter((e) => e.get('category').id === selectedCategory)
+                              .map((b, ix) => {
+                                return (
+                                  <div className="element" key={ix}>
+                                    <img width="280" src={b.get('media')} />
+                                    <div
+                                      draggable
+                                      onDragStart={(e) => {
+                                        e.stopPropagation();
+                                        blockManager.dragStart(b, e.nativeEvent);
+                                      }}
+                                      onDragEnd={(e) => {
+                                        e.stopPropagation();
+                                        if (b.get('label') === 'New Form') {
+                                          createForm();
+                                        }
+                                        if (b.get('label') === 'Add Existing Form') {
+                                          setAddFormMdl(true);
+                                        }
+                                        blockManager.dragStop(false);
+                                      }}
+                                    ></div>
+                                  </div>
+                                );
+                              })}
+                          </div>
+                        </div>
+                      )}
                       {sidebarData.menu.id === 'cms' && (
                         <>
                           {store?.form?.addedCms && (
@@ -2157,7 +2551,7 @@ export default function Editor({
                                             className="d-flex align-items-center"
                                           >
                                             {e.id === 'add-preset' ||
-                                            e.id === 'create-collection' ? (
+                                              e.id === 'create-collection' ? (
                                               <CiCircleChevRight
                                                 className="ms-1 cms-menu-icon"
                                                 size={27}
@@ -2331,10 +2725,6 @@ export default function Editor({
                                   }}
                                   id={block.getLabel()}
                                 >
-                                  {/* <div
-                          style={{ width: 30, height: 30 }}
-                          dangerouslySetInnerHTML={{ __html: block.getMedia() }}
-                        /> */}
                                   <div className="text-sm w-full mt-1" title={block.getLabel()}>
                                     {block.getLabel()}
                                     <span class="info-icon-tooltip">
@@ -2376,13 +2766,61 @@ export default function Editor({
                           </div>
                         </div>
                       )}
+                      {sidebarData.menu.id === 'content' && (
+                          <div className='h-100 d-flex flex-column'>
+                            <div className='d-flex justify-content-center align-items-center p-2 flex-column'>
+                              <div>Send link to customer to manage dataset</div>
+                              <div className='round p-1 mt-1' style={{ border: '1px solid', cursor: 'pointer' }} onClick={collectFromClient}>+ Collect From Client</div>
+                            </div>
+                            <div className='mt-2 pe-3' style={{ flex: 1, overflow: "scroll" }}>
+                              <div className='ms-1 font-medium-5'>Collections</div>
+                              {
+                                store?.webCollections?.map(collection => {
+                                  return (
+                                    <div className='ms-2 mt-1'>
+                                      <div className='d-flex align-items-center justify-content-between' style={{ cursor: 'pointer' }} onClick={() => { handleChangeCustomerDataset("cms", collection._id) }} >
+                                        <div className='font-medium-6'>{collection.name} Collection</div>
+                                        <SlArrowDown size={16} />
+                                      </div>
+                                      {
+                                        customerDataset.type === "cms" && customerDataset.collectionId === collection._id &&
+                                        (<div className='mt-1'>
+                                          {collection?.fields?.map((field, idx) => {
+                                            return (<div className='d-flex'>
+                                              <Input type="checkbox" id={collection._id + field.name + idx} checked={cdCheckedItems[`cms-${collection._id}`]?.[field.name]} onChange={(e) => { handleCDCheckboxChange(field.name, e.target.checked) }} />
+                                              <Label className='ms-1' for={collection._id + field.name + idx}>{field.name}</Label>
+                                            </div>);
+                                          })}
+                                        </div>)
+                                      }
+                                    </div>
+                                  );
+                                })
+                              }
+                              <div className='ms-1 font-medium-5 mt-2'>Waiting Clients</div>
+                              {
+                                store?.waitingClients.map((client) => {
+                                  return (
+                                    <div className='d-flex align-items-center justify-content-between ms-1 mt-2 w-100'>
+                                      <div className=''>{client.user.firstName} {client.user.lastName}</div>
+                                      <div className=''>
+                                        <Button color='success' className='me-1' onClick={() => { handleConfirmCustomerDataset(client._id, { isApproved: true, isDeclined: false }) }}><ImCheckmark /></Button>
+                                        <Button onClick={() => { handleConfirmCustomerDataset(client._id, { isApproved: true, isDeclined: true }) }}><ImCross /></Button>
+                                      </div>
+                                    </div>
+                                  )
+                                })
+                              }
+                            </div>
+                          </div>
+                      )}
+
                     </div>
                   </div>
                 </div>
               </Collapse>
-            </div>
-          )}
-
+            </div>)
+          }
           {selectedMainNav === 'pages' && (
             <Collapse
               isOpen={addSideBarOpen}
@@ -2407,8 +2845,6 @@ export default function Editor({
                   store={store}
                   editor={editor}
                   setEditor={setEditor}
-                  page={page}
-                  setPage={setPage}
                 />
               </div>
             </Collapse>
@@ -2465,49 +2901,37 @@ export default function Editor({
       ) : (
         <></>
       )}
-      <div className="property-sidebar" style={{ display: rsidebarOpen ? 'block' : 'none' }}>
+      <div className="property-sidebar" hidden={rsidebarOpen?false:true}>
         <PerfectScrollbar
           className="scrollable-content"
           options={{ suppressScrollX: true }}
           style={{ height: `calc(100vh - 120px)` }}
         >
-          {/* <div className="sidebar-header px-1">
-            <span className="px-1 fs-5 fw-bolder text-black">{tab}</span>
-            <span>
-              <X
-                size={20}
-                onClick={(e) => {
-                  handleRSideBarOpen(e);
-                }}
-              />
-            </span>
-            
-          </div> */}
-          <div className='d-flex'> 
-          <div className="col-6  text-center text-dark ">
+          <div className="d-flex" >
+            <div className="col-6  text-center text-dark " hidden={tab=="Layers"? true:false}>
               <Button
-                color={tab === 'Styles'? 'primary':'secondary'}
-                className='w-100 rounded-0'
+                color={tab === 'Styles' ? 'primary' : 'secondary'}
+                className="w-100 rounded-0"
                 onClick={() => {
-                   setTab('Styles');
+                  setTab('Styles');
                 }}
               >
-                Styles
+                <CgStyle size={14} /> Styles
               </Button>
             </div>
-            <div className="col-6 text-center  text-dark">
+            <div className="col-6 text-center  text-dark" hidden={tab=="Layers"? true:false}>
               <Button
-                color={tab === 'Settings'? 'primary':'secondary'}
-                className='w-100 rounded-0'
+                color={tab === 'Settings' ? 'primary' : 'secondary'}
+                className="w-100 rounded-0"
                 onClick={() => {
-                   setTab('Settings');
+                  setTab('Settings');
                 }}
               >
-                Settings
+                <Settings size={14} /> Settings
               </Button>
             </div>
-            </div>
-          <div style={{ display: tab === 'Styles' ? 'block' : 'none' }}>
+          </div>
+          <div style={{ display: tab === 'Styles' ? 'block' : 'none' }} >
             <div id="selector-manager-container" />
             <div id="style-manager-container" />
           </div>
@@ -2548,7 +2972,6 @@ export default function Editor({
         <FormEditorModal
           toggle={(e) => setFormEditorMdl(e)}
           store={store}
-          page={page}
           saveFormBlock={saveFormBlock}
         />
       </Modal>
@@ -2584,6 +3007,8 @@ export default function Editor({
         setSelectedCollection={setSelectedCollection}
         createDatasetToggle={createDatasetToggle}
       />
+      <CreateAssetModal store={store} isOpen={openCreateAssetMdl} editor={editor} toggle={setOpenCreateAssetMdl} />
+      <RenameAssetModal store={store} webElement={selectedWebElement} isOpen={openRenameAssetMdl} editor={editor} toggle={setOpenRenameAssetMdl} />
       <EditProductsModal
         store={store}
         showEditProductsModal={showEditProductsModal}
@@ -2591,6 +3016,7 @@ export default function Editor({
       />
       <ProductsSettingModal
         store={store}
+        storeProducts={storeProducts}
         showProductsSettingModal={showProductsSettingModal}
         setShowProductsSettingModal={setShowProductsSettingModal}
         selectedProductCategory={selectedProductCategory}
@@ -2599,12 +3025,19 @@ export default function Editor({
       />
       <ProductPageSettingModal
         store={store}
+        storeProducts={storeProducts}
         showProductPageSettingModal={showProductPageSettingModal}
         setShowProductPageSettingModal={setShowProductPageSettingModal}
         selectedCmp={selectedCmp}
       />
+      <CustomerDatasetModal 
+        showCustomerDatasetModal={showCustomerDatasetModal} 
+        setShowCustomerDatasetModal={setShowCustomerDatasetModal} 
+        customerCollectId={customerCollectId} 
+      />
       <ConnectProductDataSetModal
         store={store}
+        storeProducts={storeProducts}
         showProductDataSetModal={showProductDataSetModal}
         setShowProductDataSetModal={setShowProductDataSetModal}
         modelsToConnect={modelsToConnect}
@@ -2613,6 +3046,7 @@ export default function Editor({
       />
       <AddCartButtonModal
         store={store}
+        storeProducts={storeProducts}
         showAddCartButtonModal={showAddCartButtonModal}
         setShowAddCartButtonModal={setShowAddCartButtonModal}
         productId={cartProductId}
@@ -2626,6 +3060,6 @@ export default function Editor({
         toggle={toggleAddPresetMdl}
         editCollectionToggle={toggleOpenEditCollection}
       />
-    </div>
+    </div >
   );
 }

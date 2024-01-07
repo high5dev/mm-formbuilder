@@ -23,7 +23,9 @@ import {
   setSelectedProductReducer,
   setThankyouProductsReducer,
   setWebRolesReducer,
-  setCategoriesReducer
+  setCategoriesReducer,
+  setCustomerCollectReducer,
+  setWaitingClientsReducer
 } from './reducer';
 import * as api from './api';
 import { toast } from 'react-toastify';
@@ -44,7 +46,7 @@ export const createChildFormAction = (payload) => async (dispatch) => {
   } catch (error) { }
 };
 
-export const editChildFormAction =(id, payload) =>async(dispatch) =>{
+export const editChildFormAction = (id, payload) => async (dispatch) => {
   try {
     const { data } = await api.updateChildForm(id, payload);
     dispatch(setChildFormReducer(data.data));
@@ -57,23 +59,23 @@ export const editChildFormAction =(id, payload) =>async(dispatch) =>{
   } catch (error) { }
 }
 
-export const getChildFormsAction=(id) =>async(dispatch) =>{
-  try{
-    const {data}=await api.getChildForms(id);
+export const getChildFormsAction = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.getChildForms(id);
     dispatch(setChildFormsReducer(data.data));
     return data.data
   }
-  catch(error){
+  catch (error) {
   }
 }
 
-export const getChildFormAction=(id) =>async(dispatch) =>{
-  try{
-    const {data}=await api.getChildForm(id);
+export const getChildFormAction = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.getChildForm(id);
     dispatch(setChildFormReducer(data.data));
     return data.data
   }
-  catch(error){
+  catch (error) {
   }
 }
 
@@ -92,7 +94,7 @@ export const deleteChildFormAction=(id)=>async(dispatch)=>{
 
 export const getChildFormPageAction =(id, payload) =>async(dispatch) =>{
   try {
-    const {data} = await api.getChildFormPage(id, payload);
+    const { data } = await api.getChildFormPage(id, payload);
     if (data?.success === true) {
       return data.page
     } else {
@@ -102,21 +104,21 @@ export const getChildFormPageAction =(id, payload) =>async(dispatch) =>{
 
 }
 
-export const getChildPreviewFormPageAction =(payload) =>async(dispatch) =>{
-  try{
-    const {data} = await api.getChildFormPreviewPage(payload);
-    if(data?.success === true){
+export const getChildPreviewFormPageAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.getChildFormPreviewPage(payload);
+    if (data?.success === true) {
       return data.page
     }
-    else{
+    else {
       toast.error('Something went wrong! please try again');
     }
   }
-  catch(error){
+  catch (error) {
   }
-} 
+}
 
-export const createFormRuleAction =(payload) =>async(dispatch) =>{
+export const createFormRuleAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.createFormRule(payload);
     if (data?.success === true) {
@@ -125,14 +127,14 @@ export const createFormRuleAction =(payload) =>async(dispatch) =>{
     } else {
       toast.error('Something went wrong! please try again');
     }
-    
-  } catch (error) { 
+
+  } catch (error) {
 
   }
 }
 
-export const deleteFormRuleAction =(id) =>async(dispatch) =>{
-  const {data} = await api.deleteFormRule(id);
+export const deleteFormRuleAction = (id) => async (dispatch) => {
+  const { data } = await api.deleteFormRule(id);
   if (data?.success === true) {
     toast.success('Rule deleted successfully');
     return true
@@ -142,8 +144,8 @@ export const deleteFormRuleAction =(id) =>async(dispatch) =>{
   }
 }
 
-export const updateFormRuleAction =(id, payload) =>async(dispatch) =>{
-  const {data} = await api.updateFormRule(id, payload);
+export const updateFormRuleAction = (id, payload) => async (dispatch) => {
+  const { data } = await api.updateFormRule(id, payload);
   if (data?.success === true) {
     toast.success('Page updated successfully');
     return data.data
@@ -196,19 +198,19 @@ export const uploadFileAction = (payload) => async (dispatch) => {
 
 export const createFormPageAction = (payload) => async (dispatch) => {
   try {
-    const {data} = await api.createFormPage(payload);
+    const { data } = await api.createFormPage(payload);
     if (data?.success === true) {
       toast.success('Page created successfully');
     } else {
       toast.error('Something went wrong! please try again');
     }
-    return data.data; 
+    return data.data;
   } catch (error) { }
 };
 
-export const removeFormPageAction =(id) =>async (dispatch) =>{
+export const removeFormPageAction = (id) => async (dispatch) => {
   try {
-    const {data} = await api.deleteFormPage(id);
+    const { data } = await api.deleteFormPage(id);
     if (data?.success === true) {
       toast.success('Page deleted successfully');
       return true;
@@ -216,13 +218,13 @@ export const removeFormPageAction =(id) =>async (dispatch) =>{
       toast.error('Something went wrong! please try again');
       return false;
     }
-    return data.data; 
+    return data.data;
   } catch (error) { }
 }
 
-export const getFormPageAction =(id) =>async(dispatch) =>{
+export const getFormPageAction = (id) => async (dispatch) => {
   try {
-    const {data} = await api.getFormPage(id);
+    const { data } = await api.getFormPage(id);
     if (data?.success === true) {
       return data.data
     } else {
@@ -233,18 +235,18 @@ export const getFormPageAction =(id) =>async(dispatch) =>{
 }
 
 //web entry
-export const getWebsiteEntryAction =(id) =>async(dispatch) =>{
+export const getWebsiteEntryAction = (id) => async (dispatch) => {
   try {
-    const {data} = await api.getWebsiteEntry(id);
+    const { data } = await api.getWebsiteEntry(id);
     if (data?.success === true) {
       return data.data
     }
   } catch (error) { }
 }
 
-export const deleteWebsiteEntryAction =(id) =>async(dispatch) =>{
+export const deleteWebsiteEntryAction = (id) => async (dispatch) => {
   try {
-    const {data} = await api.deleteWebsiteEntry(id);
+    const { data } = await api.deleteWebsiteEntry(id);
     if (data?.success === true) {
       toast.success('Entry deleted successfully');
       return true;
@@ -254,9 +256,9 @@ export const deleteWebsiteEntryAction =(id) =>async(dispatch) =>{
   } catch (error) { }
 }
 
-export const editWebsiteEntryAction =(id, payload) =>async(dispatch) =>{
+export const editWebsiteEntryAction = (id, payload) => async (dispatch) => {
   try {
-    const {data} = await api.editWebsiteEntry(id, payload);
+    const { data } = await api.editWebsiteEntry(id, payload);
     if (data?.success === true) {
       toast.success('Entry updated successfully');
       return true;
@@ -356,8 +358,7 @@ export const duplicateWebsiteAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.duplicateWebsite(payload);
     const { websiteData, formData } = data.data;
-    let _form_data = [];
-    _form_data.push(JSON.parse(JSON.stringify(formData)));
+    const _form_data = [...formData];
     const form_data = {
       ...websiteData,
       formData: _form_data
@@ -870,10 +871,34 @@ export const createWebElementAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.createWebElement(payload);
     if (data.success)
-      dispatch(getWebElementsAction(data.data));
+      dispatch(getWebElementsAction());
     return data;
   } catch (error) { }
 };
+
+export const updateWebElementAction =(id, payload) =>async(dispatch)=>{
+  try {
+    const { data } = await api.updateWebElement(id, payload);
+    if (data.success)
+      toast.success('Web Element updated successfully.')
+      dispatch(getWebElementsAction());
+    return data.data;
+  } catch (error) { }
+
+}
+
+export const deleteWebElementAction= (id)=>async(dispatch) =>{
+  try{
+    const { data } = await api.deleteWebElement(id);
+    if (data.success){
+      toast.success('Web Element deleted successfully.');
+      dispatch(getWebElementsAction());
+    }
+    return data;
+  }
+  catch(error){
+  }
+}
 
 export const getWebCollectionsAction = (websiteId) => async (dispatch) => {
   try {
@@ -1051,14 +1076,14 @@ export const updateProductCategoryAction = (id, payload) => async (dispatch) => 
     if (data.success) {
       dispatch(getProductCategoryAction(payload.websiteId));
     }
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const getProductDatasetAction = (pageId) => async (dispatch) => {
   try {
     const { data } = await api.getProductDataset(pageId);
     if (data.success) {
-      dispatch(setWebStoreReducer(data.data[0]));
+      dispatch(setWebCollectionsReducer(data.data));
     }
     return data;
   } catch (error) {
@@ -1066,14 +1091,14 @@ export const getProductDatasetAction = (pageId) => async (dispatch) => {
   }
 }
 
-export const updateProductDatasetAction = (id, payload) => async (dispatch) => {
-  try {
-    const { data } = await api.updateProductDataset(id, payload);
-    if (data.success)
-      dispatch(getProductDatasetAction(data.data.websiteId));
-    return data;
-  } catch (error) { }
-};
+// export const updateProductDatasetAction = (id, payload) => async (dispatch) => {
+//   try {
+//     const { data } = await api.updateProductDataset(id, payload);
+//     if (data.success)
+//       dispatch(getProductDatasetAction(data.data.websiteId));
+//     return data;
+//   } catch (error) { }
+// };
 
 export const updateCartProductsAction = (payload) => async (dispatch) => {
   try {
@@ -1094,6 +1119,68 @@ export const updateSelectedProductAction = (payload) => async (dispatch) => {
 export const updateThankyouProductsAction = (payload) => async (dispatch) => {
   try {
     dispatch(setThankyouProductsReducer(payload));
+  } catch (err) {
+
+  }
+}
+
+export const createCustomerCollectAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createCustomerCollect(payload);
+    return data;
+  } catch (err) {
+
+  }
+}
+
+export const getCustomerCollectAction = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.getCustomerCollect(id);
+    if (data.success) {
+      dispatch(setCustomerCollectReducer(data.data));
+    }
+  } catch (err) {
+
+  }
+}
+
+export const saveCustomerDatasetAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.saveCustomerDataset(payload);
+    if (data.success) {
+      return data;
+    }
+  } catch (err) {
+
+  }
+}
+
+export const uploadCustomerImageAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.uploadCustomerImage(payload);
+    return data;
+  } catch (err) {
+
+  }
+}
+
+export const getWaitingClientsAction = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.getWaitingClients(id);
+    if(data.success) {
+      dispatch(setWaitingClientsReducer(data.data));
+    }
+  } catch (err) {
+
+  }
+}
+
+export const confirmCustomerDatasetAction = (id, payload) => async (dispatch) => {
+  try {
+    const { data } = await api.confirmCustomerDataset(id, payload);
+    if(data.success) {
+      dispatch(setWaitingClientsReducer(data.data));
+    }
   } catch (err) {
 
   }
