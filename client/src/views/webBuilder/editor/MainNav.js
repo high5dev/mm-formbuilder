@@ -344,14 +344,14 @@ export default function MainNav({
       </div>
       <div className="down-navbar d-flex align-items-center">
         <div className="feature-icons d-flex align-items-center">
-          <span
+          {/* <span
             className=""
             onClick={(e) => {
               handelVisibleMenu();
             }}
           >
             <MdOutlineLensBlur size={26} color={VisibleMenu ? 'black' : '#0275d8'} id="inspector" />
-          </span>
+          </span> */}
           <span className="hover-bg feature-show">
             <svg
               ref={svgRef}
@@ -375,15 +375,15 @@ export default function MainNav({
               Show Features
             </UncontrolledTooltip>
             <div className={showFeatureIcons ? '' : 'd-none'}>
-              {/* <span className="hover-bg" onClick={(e) => {
+              <span className="hover-bg" onClick={(e) => {
                 setSelectedMainNav('elements');
                 setAddSideBarOpen(false);
               }}>
                 <Plus size={24} color={'black'} id="addElements" />
                 <UncontrolledTooltip placement="bottom" target="addElements">
-                  Add Elements
+                  Elements
                 </UncontrolledTooltip>
-              </span> */}
+              </span>
               <span
                 className="hover-bg"
                 onClick={(e) => {
@@ -451,10 +451,10 @@ export default function MainNav({
             <UncontrolledTooltip placement="bottom" target="comments">
               Comments
             </UncontrolledTooltip> */}
-            {/* <Plus size={24} color={'black'} id="addElements" />
+            <Plus size={24} color={'black'} id="addElements" />
             <UncontrolledTooltip placement="bottom" target="addElements">
-              Add Elements
-            </UncontrolledTooltip> */}
+              Elements
+            </UncontrolledTooltip>
           </span>
           <span
             className="hover-bg feature-hide"

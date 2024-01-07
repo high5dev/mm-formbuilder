@@ -3,6 +3,7 @@ import {
   setAllFormsReducer,
   setFormContacts,
   setFormReducer,
+  setFormThemeReducer,
   setChildFormReducer,
   setChildFormsReducer,
   setFormsCountReducer,
@@ -283,14 +284,38 @@ export const createWebBuilderAction = (payload) => async (dispatch) => {
   } catch (error) { }
 };
 
+export const updateWebBuilderThemeAction =(id, payload) =>async(dispatch)=>{
+  try{
+    const { data } = await api.updateWebBuilderTheme(id, payload);
+    if(data.data){
+      dispatch(setFormThemeReducer(data.data));
+    }
+    return data.data
+  }
+  catch (error) { }
+}
+
+export const addWebBuilderThemeColorAction =(id, payload) =>async(dispatch) =>{
+  try{
+    const { data } = await api.addWebBuilderThemeColor(id, payload);
+    if(data.data){
+      dispatch(setFormThemeReducer(data.data));
+    }
+    return data.data
+  }
+  catch (error) { }
+}
+
+
 export const getWebsiteAction = (id) => async (dispatch) => {
   try {
     const { data } = await api.getWebBuilder(id);
-    const { websiteData, formData, forms} = data.data;
+    const { websiteData, formData, forms, themeData} = data.data;
     const form_data = {
       ...websiteData,
       formData: formData
     };
+    dispatch(setFormThemeReducer(themeData));
     dispatch(setFormReducer(form_data));
     dispatch(setChildFormsReducer(forms));
     if (data?.success === true) {
@@ -688,10 +713,11 @@ export const addToImageLibraryAction = (payload) => async (dispatch) => {
   } catch (error) { }
 };
 
-export const getToImageLibraryAction = () => async (dispatch) => {
+export const getToImageLibraryAction = (payload) => async (dispatch) => {
   try {
-    const { data } = await api.getImageLibrary();
+    const { data } = await api.getImageLibrary(payload);
     dispatch(setImageLibraryReducer(data));
+    return data;
   } catch (error) { }
 };
 

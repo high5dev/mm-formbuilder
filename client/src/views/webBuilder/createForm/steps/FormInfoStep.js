@@ -17,6 +17,7 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { Settings } from 'react-feather';
 import CreateFormCategoryModal from '../CreateFormCategoryModal';
 import { createFormAction, createWebBuilderAction } from '../../store/action';
+import {colors, buttons, fonts, image, background} from '../../editor/leftSidebar/theme/defaultTheme';
 const typeOptions = [
   { value: 'Website', label: 'Website' },
   { value: 'Form', label: 'Form' },
@@ -41,14 +42,12 @@ export default function FormInfoStep({ form, setForm, store, dispatch, stepper }
   };
   const handleCreateForm = () => {
     dispatch(setFormReducer(form));
-    dispatch(createWebBuilderAction({...form, clonedFrom: 'blank'})).then(res=>{
+    dispatch(createWebBuilderAction({...form, clonedFrom: 'blank', colors, buttons, fonts, image, background})).then(res=>{
       if(res){
         localStorage.setItem('pageNum', 1);
         history.push(`/webbuilder-funnel/create/${form?.formType}/${form.isTemplate===true?"template":"form"}/${res?._id}`);
       }
     })
-   
-    //toggle();
   };
 
   return (
