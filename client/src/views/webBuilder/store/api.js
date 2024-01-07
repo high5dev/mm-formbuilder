@@ -423,3 +423,7 @@ export const getWaitingClients = (id) => {
 export const confirmCustomerDataset = (id, payload) => {
   return API.post(`web-builder-customer/confirm/${id}`, payload);
 }
+
+export const getGoogleFonts = () => {
+  return API.get(`web-builder/getGoogleFonts`);
+}

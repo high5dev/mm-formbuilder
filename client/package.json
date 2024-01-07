@@ -168,6 +168,7 @@
     "twilio-client": "^1.14.0",
     "uuid": "^9.0.0",
     "video-metadata-thumbnails": "^1.0.22",
+    "webfontloader": "^1.6.28",
     "wnumb": "1.2.0",
     "xlsx": "0.17.3",
     "yarn": "1.21.1",
