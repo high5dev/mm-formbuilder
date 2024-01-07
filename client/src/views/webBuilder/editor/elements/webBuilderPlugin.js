@@ -980,6 +980,1004 @@ export const webBuilderPlugin = (editor) => {
 
   })
 
+  editor.TraitManager.addType('gallery-show-items', {
+    noLabel: true,
+    // Expects as return a simple HTML string or an HTML element
+    createInput({trait, component}) {
+      const traitName = trait.get('name');
+      const traitLabel = trait.get('label');
+      const products = component.props()["products"];
+      const selectedFields = component.props()['fieldnames'].split(",");
+      let showItems = "";
+      products.fields.forEach((field, idx) => {
+        let checked = false;
+        selectedFields.forEach((selectedField) => {
+          if(selectedField == field.name) checked = true;
+        })
+        if(checked) {
+          showItems += `<div class="d-flex mt-1">
+            <input id="field${idx}" name="${field.name}" type="checkbox" class="me-1 border-primary form-check-input" checked=${checked} style="width:17.98px">
+            <label for="field${idx}">${field.name}</label></div>`;
+        } else {
+          showItems += `<div class="d-flex mt-1">
+            <input id="field${idx}" name="${field.name}" type="checkbox" class="me-1 border-primary form-check-input" style="width:17.98px">
+            <label for="field${idx}">${field.name}</label></div>`;
+        }
+      })
+      const el = document.createElement('div');
+
+      el.className = 'gallery-show-items';
+
+      el.innerHTML = `
+        <h6>${traitLabel}</h6>
+        ${showItems}
+        `;
+
+      return el;
+    },
+    onUpdate({elInput, component}) {
+      const fieldnames = component.props().fieldnames;
+      let checkedFields = [];
+      const fields = elInput.querySelectorAll('[id^="field"]');
+      fields.forEach(checkbox => {
+        // Check if the checkbox is checked
+        checkbox.addEventListener('change', function() {
+          
+          fields.forEach(field => {
+            if (field.checked) {
+              // Log the 'name' attribute of the checkbox
+              checkedFields.push(field.name);
+            }
+          });
+          component.set('fieldnames', checkedFields.join());
+          checkedFields = [];
+        })
+        
+      });
+    }
+  });
+
+  editor.TraitManager.addType('gallery-image-hover-effect', {
+    noLabel: true,
+    // Expects as return a simple HTML string or an HTML element
+    createInput({trait, component}) {
+      const traitName = trait.get('name');
+      const traitLabel = trait.get('label');
+      const hoverEffect = component.props()["hovereffect"];
+      const el = document.createElement('div');
+
+      el.className = 'gallery-image-hover-effect mt-2';
+
+      let content = `
+        <div class="mt-1 d-grid hover-list">
+          <div
+          class="hover-item d-flex flex-column justify-content-center align-items-center cursor-hand"
+          >
+            <div class="${'item-bg' + (hoverEffect === 'Nothing' ? ' selected' : '')}" name="Nothing">
+              <svg viewBox="0 0 70 70" fill="currentColor" width="70" height="70" color="#ee5951">
+                <path d="M0 0 H70 V70 H0 Z" fill="none"></path>
+                <path d="M0 70 L70 0" stroke="currentColor" stroke-width="2"></path>
+              </svg>
+            </div>
+            <div class="mt-1 text-nowrap d-flex justify-content-center">Nothing</div>
+          </div>
+          <div
+            class="hover-item d-flex flex-column justify-content-center align-items-center cursor-hand"
+          >
+            <div class="${'item-bg' + (hoverEffect === 'Swap' ? ' selected' : '')}" name="Swap">
+              <svg viewBox="0 0 72 72" fill="currentColor" width="72" height="72">
+                <g class="Thumbnail_Store Galleries_Hover_Swap image_Selected">
+                  <path
+                    fill="#80b1ff"
+                    d="M17 26h22c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H17c-1.1 0-2-.9-2-2V28c0-1.1.9-2 2-2zm28-6H23c-1.1 0-2 .9-2 2v2h18c2.21 0 4 1.79 4 4v14h2c1.1 0 2-.9 2-2V22c0-1.1-.9-2-2-2z"
+                    class="illus-clr-1"
+                  ></path>
+                  <path
+                    fill="#e7f0ff"
+                    d="M35.57 41h-15c-.81 0-1.28-.85-.81-1.47l3.17-4.14c.36-.47 1.08-.52 1.51-.12l2.49 2.33 2.89-4.17c.38-.55 1.21-.58 1.63-.06l4.91 6.07c.51.63.04 1.56-.79 1.56z"
+                    class="illus-clr-3"
+                  ></path>
+                  <path
+                    fill="#116dff"
+                    d="M60.05 32.96v10c0 1.65-1.35 3-3 3h-9v-2h9c.55 0 1-.45 1-1v-10c0-.55-.45-1-1-1h-3.72l2.16 2.16-1.41 1.41-4.64-4.64 4.64-4.64 1.41 1.41-2.3 2.3h3.86c1.65 0 3 1.35 3 3z"
+                    class="illus-clr-2"
+                  ></path>
+                </g>
+              </svg>
+            </div>
+            <div class="mt-1 text-nowrap d-flex justify-content-center">Swap image</div>
+          </div>
+          <div
+            class="hover-item d-flex flex-column justify-content-center align-items-center cursor-hand"
+          >
+            <div class="${'item-bg' + (hoverEffect === 'Zoom' ? ' selected' : '')}" name="Zoom">
+              <svg viewBox="0 0 72 72" fill="currentColor" width="72" height="72">
+                <g class="Thumbnail_Store Galleries_Hover_Zoom_Selected">
+                  <path
+                    fill="#80b1ff"
+                    d="M26 25h22c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H26c-1.1 0-2-.9-2-2V27c0-1.1.9-2 2-2z"
+                    class="illus-clr-1"
+                  ></path>
+                  <path
+                    fill="#e7f0ff"
+                    d="M44.57 40h-15c-.81 0-1.28-.85-.81-1.47l3.17-4.14c.36-.47 1.08-.52 1.51-.12l2.49 2.33 2.89-4.17c.38-.55 1.21-.58 1.63-.06l4.91 6.07c.51.63.04 1.56-.79 1.56z"
+                    class="illus-clr-3"
+                  ></path>
+                  <path
+                    fill="#116dff"
+                    d="M23.76 48.66l-3.29 3.29h2.59v2h-6v-6h2v2.59l3.29-3.29 1.41 1.41zm27.29-30.71v2h2.59l-3.29 3.29 1.41 1.41 3.29-3.29v2.59h2v-6h-6z"
+                    class="illus-clr-2"
+                  ></path>
+                </g>
+              </svg>
+            </div>
+            <div class="mt-1 text-nowrap d-flex justify-content-center">Zoom</div>
+          </div>
+        </div>
+        `;
+      el.innerHTML = `
+            <h6>${traitLabel}</h6>
+            ${content}
+            `
+      return el;
+    },
+    onUpdate({ elInput, component }) {
+      const items = elInput.querySelectorAll('.item-bg');
+      items.forEach(item => {
+        item.addEventListener('click', function () {
+          console.log('Item clicked:', this);
+          component.set('hovereffect', this.getAttribute("name"));
+          items.forEach(it => {
+            it.classList.remove('selected');
+          });
+          item.classList.add("selected");
+          // Add your click event logic here
+        });
+      });
+    }
+  });
+
+  editor.TraitManager.addType('gallery-show-cart-button', {
+    noLabel: true,
+    // Expects as return a simple HTML string or an HTML element
+    createInput({trait, component}) {
+      const traitName = trait.get('name');
+      const traitLabel = trait.get('label');
+      const hoverEffect = component.props()["hovereffect"];
+      const el = document.createElement('div');
+
+      el.className = 'gallery-show-cart-button mt-2';
+      el.innerHTML = `
+            <h6>${traitLabel}</h6>
+            <div class="mt-1 d-flex justify-content-between align-items-center">
+              <div>Show button</div>
+              <input type="checkbox" class="me-3 border-primary form-check-input" checked=${component.props().showcartbutton == 1 ? true : ""} style="width:17.98px">
+            </div>
+            `
+      return el;
+    },
+    onUpdate({ elInput, component }) {
+      const checkBox = elInput.querySelector('.form-check-input');
+      checkBox.addEventListener('change', function() {
+        if(this.checked) {
+          component.set('showcartbutton', 1);
+        } else {
+          component.set('showcartbutton', 0);
+        }
+      });
+    }
+  });
+
+  editor.TraitManager.addType('gallery-product-display-style', {
+    noLabel: true,
+    // Expects as return a simple HTML string or an HTML element
+    createInput({trait, component}) {
+      const traitName = trait.get('name');
+      const traitLabel = trait.get('label');
+      const displayStyle = component.props()["displaystyle"];
+      const alignStyle = component.props()["alignstyle"];
+      const el = document.createElement('div');
+
+      el.className = 'gallery-product-display-style mt-2';
+
+      let styleContent = `
+        <div class="mt-1 d-grid hover-list">
+          <div
+            class="hover-item style-item d-flex flex-column justify-content-center align-items-center cursor-hand"
+            name="style1"
+          >
+            <div
+              class="${
+                'item-bg d-flex align-items-center justify-content-center' +
+                (displayStyle === 'style1' ? ' selected' : '')
+              }"
+            >
+              <svg
+                id="Layer_1"
+                width="40"
+                height="72"
+                data-name="Layer 1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 40 40"
+                class="_2rXrQ"
+                data-hook="layout-classic-icon"
+              >
+                <rect class="_1J3ON" width="40" height="28.2" rx="3.3" ry="3.3" fill="#4eb7f5"></rect>
+                <path
+                  class="_1GJ2c"
+                  d="M124.4,490.4a1,1,0,0,0-1.2-.3l-0.3.3-6.5,6.4h6.4l3.5-3.4Z"
+                  transform="translate(-108.8 -472.8)"
+                  fill="#fff"
+                ></path>
+                <path
+                  class="_1r8bf"
+                  d="M133.3,486.7l-6.9,6.7-3.5,3.4h18.4l-6.5-10a1,1,0,0,0-1.2-.3Z"
+                  transform="translate(-108.8 -472.8)"
+                  fill="#d3edff"
+                ></path>
+                <ellipse class="_1r8bf" cx="12.7" cy="7.6" rx="2.3" ry="2.3" fill="#d3edff"></ellipse>
+                <rect class="_1J3ON" y="34.2" width="19.4" height="1.77" fill="#4eb7f5"></rect>
+                <rect class="_1J3ON" y="38.2" width="9.1" height="1.77" fill="#4eb7f5"></rect>
+              </svg>
+            </div>
+          </div>
+          <div
+            class="hover-item style-item d-flex flex-column justify-content-center align-items-center cursor-hand"
+            name="style2"
+          >
+            <div
+              class="${
+                'item-bg d-flex align-items-center justify-content-center' +
+                (displayStyle === 'style2' ? ' selected' : '')
+              }"
+            >
+              <svg
+                id="Layer_1"
+                width="40"
+                height="72"
+                data-name="Layer 1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 40 40"
+                class="hnf8b"
+                data-hook="layout-image-only-icon"
+              >
+                <rect class="_2C-G3" width="40" height="40" rx="3.3" ry="3.3" fill="#4eb7f5"></rect>
+                <path
+                  class="_1y7dW"
+                  d="M224.3,495.6a1,1,0,0,0-1.2-.3l-0.3.3-6.5,6.4h6.4l3.5-3.4Z"
+                  transform="translate(-208.8 -472.6)"
+                  fill="#fff"
+                ></path>
+                <path
+                  class="_2A5ER"
+                  d="M233.2,491.9l-6.9,6.7-3.5,3.4h18.4l-6.5-10a1,1,0,0,0-1.2-.3Z"
+                  transform="translate(-208.8 -472.6)"
+                  fill="#d3edff"
+                ></path>
+                <ellipse class="_2A5ER" cx="12.7" cy="13" rx="2.3" ry="2.3" fill="#d3edff"></ellipse>
+              </svg>
+            </div>
+          </div>
+          <div
+            class="hover-item style-item d-flex flex-column justify-content-center align-items-center cursor-hand"
+            name="style3"
+          >
+            <div
+              class="${
+                'item-bg d-flex align-items-center justify-content-center' +
+                (displayStyle === 'style3' ? ' selected' : '')
+              }"
+            >
+              <svg
+                id="Layer_1"
+                width="40"
+                height="72"
+                data-name="Layer 1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 40 40"
+                class="_1NGTN"
+                data-hook="layout-with-border-icon"
+              >
+                <path
+                  class="_2WVXx"
+                  d="M350,472.7H316.6l-1.3.3a3.3,3.3,0,0,0-1.8,1.8,3.4,3.4,0,0,0-.3,1.3v33.3a3.3,3.3,0,0,0,3.3,3.3H350a3.3,3.3,0,0,0,3.3-3.3V476.1A3.3,3.3,0,0,0,350,472.7Zm1.8,36.7a1.8,1.8,0,0,1-1.8,1.8H316.6a1.8,1.8,0,0,1-1.8-1.8V498.6h36.9v10.8Z"
+                  transform="translate(-313.3 -472.7)"
+                  fill="#4eb7f5"
+                ></path>
+                <path
+                  class="mbZQQ"
+                  d="M328.9,488.1a1,1,0,0,0-1.2-.3l-0.3.3-6.5,6.4h6.4l3.5-3.4Z"
+                  transform="translate(-313.3 -472.7)"
+                  fill="#fff"
+                ></path>
+                <path
+                  class="_2DenK"
+                  d="M337.8,484.4l-6.9,6.7-3.5,3.4h18.4l-6.5-10a1,1,0,0,0-1.2-.3Z"
+                  transform="translate(-313.3 -472.7)"
+                  fill="#d3edff"
+                ></path>
+                <ellipse class="_2DenK" cx="12.7" cy="7.6" rx="2.3" ry="2.3" fill="#d3edff"></ellipse>
+                <rect
+                  class="_2WVXx"
+                  x="5.4"
+                  y="29.6"
+                  width="19.4"
+                  height="1.77"
+                  fill="#4eb7f5"
+                ></rect>
+                <rect class="_2WVXx" x="5.4" y="33.6" width="9.1" height="1.77" fill="#4eb7f5"></rect>
+              </svg>
+            </div>
+          </div>
+          <div
+            class="hover-item style-item mt-1 d-flex flex-column justify-content-center align-items-center cursor-hand"
+            name="style4"
+          >
+            <div
+              class="${
+                'item-bg d-flex align-items-center justify-content-center' +
+                (displayStyle === 'style4' ? ' selected' : '')
+              }"
+            >
+              <svg
+                id="Layer_1"
+                width="40"
+                height="72"
+                data-name="Layer 1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 40 40"
+                class="_1cc73"
+                data-hook="layout-centered-icon"
+              >
+                <rect
+                  class="_2rQrG"
+                  width="40"
+                  height="26.64"
+                  rx="3.2"
+                  ry="3.2"
+                  fill="#4eb7f5"
+                ></rect>
+                <path
+                  class="ctEAQ"
+                  d="M430.1,490.9a1,1,0,0,0-1.2-.2l-0.3.2-6.5,6h6.4l3.5-3.2Z"
+                  transform="translate(-414.6 -474.3)"
+                  fill="#fff"
+                ></path>
+                <path
+                  class="_2-ZIp"
+                  d="M439,487.4l-6.9,6.3-3.5,3.2H447l-6.5-9.5a1,1,0,0,0-1.2-.3Z"
+                  transform="translate(-414.6 -474.3)"
+                  fill="#d3edff"
+                ></path>
+                <ellipse class="_2-ZIp" cx="12.7" cy="7.2" rx="2.3" ry="2.2" fill="#d3edff"></ellipse>
+                <rect
+                  class="_2rQrG"
+                  x="10.3"
+                  y="30.9"
+                  width="19.4"
+                  height="1.67"
+                  fill="#4eb7f5"
+                ></rect>
+                <rect
+                  class="_2rQrG"
+                  x="15.5"
+                  y="38.3"
+                  width="9.1"
+                  height="1.67"
+                  fill="#4eb7f5"
+                ></rect>
+                <rect class="_2rQrG" x="17" y="35" width="6" height="0.93" fill="#4eb7f5"></rect>
+              </svg>
+            </div>
+          </div>
+        </div>
+        `;
+
+      let alignContent = `
+            <div class="d-flex hover-list align-list mt-1 mb-2">
+              <div
+                class="hover-item d-flex flex-column justify-content-center align-items-center cursor-hand me-2"
+                name="align1"
+              >
+                <div
+                  class="${
+                    'item-bg d-flex align-items-center justify-content-center' +
+                    (alignStyle === 'align1' ? ' selected' : '')
+                  }"
+                >
+                  <svg
+                    class="_962Jt"
+                    xmlns="http://www.w3.org/2000/svg"
+                    preserveAspectRatio="xMidYMid"
+                    width="38"
+                    height="38"
+                    viewBox="0 0 38 38"
+                    data-hook="align-left-icon"
+                  >
+                    <path
+                      class="fuo8c"
+                      d="M26.000,27.000 C26.000,27.000 17.000,27.000 17.000,27.000 C15.852,27.000 15.000,26.000 15.000,25.000 C15.000,25.000 15.000,22.000 15.000,22.000 C15.000,21.000 15.852,20.000 17.000,20.000 C17.000,20.000 26.420,20.000 26.420,20.000 C27.569,20.000 28.000,21.000 28.000,22.000 C28.000,22.000 28.000,25.000 28.000,25.000 C28.000,26.000 27.149,27.000 26.000,27.000 ZM11.000,9.000 C11.000,9.000 13.000,9.000 13.000,9.000 C13.000,9.000 13.000,29.000 13.000,29.000 C13.000,29.000 11.000,29.000 11.000,29.000 C11.000,29.000 11.000,9.000 11.000,9.000 Z"
+                      fill-rule="evenodd"
+                      fill="#7fccf7"
+                    ></path>
+                    <path
+                      class="_3n3Ns"
+                      d="M25.000,16.000 C25.000,17.105 24.105,18.000 23.000,18.000 C23.000,18.000 17.000,18.000 17.000,18.000 C15.896,18.000 15.000,17.105 15.000,16.000 C15.000,16.000 15.000,13.000 15.000,13.000 C15.000,11.895 15.896,11.000 17.000,11.000 C17.000,11.000 23.000,11.000 23.000,11.000 C24.105,11.000 25.000,11.895 25.000,13.000 C25.000,13.000 25.000,16.000 25.000,16.000 Z"
+                      fill-rule="evenodd"
+                      fill="#3899ec"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div
+                class="hover-item d-flex flex-column justify-content-center align-items-center cursor-hand me-2"
+                name="align2"
+              >
+                <div
+                  class="${
+                    'item-bg d-flex align-items-center justify-content-center' +
+                    (alignStyle === 'align2' ? ' selected' : '')
+                  }"
+                >
+                  <svg
+                    class="_228n2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    preserveAspectRatio="xMidYMid"
+                    width="38"
+                    height="38"
+                    viewBox="0 0 38 38"
+                    data-hook="align-center-icon"
+                  >
+                    <path
+                      class="fuo8c"
+                      d="M25.000,27.000 C25.000,27.000 20.000,27.000 20.000,27.000 C20.000,27.000 20.000,29.000 20.000,29.000 C20.000,29.000 18.000,29.000 18.000,29.000 C18.000,29.000 18.000,27.000 18.000,27.000 C18.000,27.000 13.000,27.000 13.000,27.000 C11.852,27.000 11.000,26.000 11.000,25.000 C11.000,25.000 11.000,22.000 11.000,22.000 C11.000,21.000 11.852,20.000 13.000,20.000 C13.000,20.000 18.000,20.000 18.000,20.000 C18.000,20.000 18.000,9.000 18.000,9.000 C18.000,9.000 20.000,9.000 20.000,9.000 C20.000,9.000 20.000,20.000 20.000,20.000 C20.000,20.000 25.420,20.000 25.420,20.000 C26.569,20.000 27.000,21.000 27.000,22.000 C27.000,22.000 27.000,25.000 27.000,25.000 C27.000,26.000 26.149,27.000 25.000,27.000 Z"
+                      fill-rule="evenodd"
+                      fill="#7fccf7"
+                    ></path>
+                    <path
+                      class="_3n3Ns"
+                      d="M24.000,16.000 C24.000,17.105 23.105,18.000 22.000,18.000 C22.000,18.000 16.000,18.000 16.000,18.000 C14.895,18.000 14.000,17.105 14.000,16.000 C14.000,16.000 14.000,13.000 14.000,13.000 C14.000,11.895 14.895,11.000 16.000,11.000 C16.000,11.000 22.000,11.000 22.000,11.000 C23.105,11.000 24.000,11.895 24.000,13.000 C24.000,13.000 24.000,16.000 24.000,16.000 Z"
+                      fill-rule="evenodd"
+                      fill="#3899ec"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div
+                class="hover-item d-flex flex-column justify-content-center align-items-center cursor-hand"
+                name="align3"
+              >
+                <div
+                  class="${
+                    'item-bg d-flex align-items-center justify-content-center' +
+                    (alignStyle === 'align3' ? ' selected' : '')
+                  }"
+                >
+                  <svg
+                    class="_3MgSE"
+                    xmlns="http://www.w3.org/2000/svg"
+                    preserveAspectRatio="xMidYMid"
+                    width="38"
+                    height="38"
+                    viewBox="0 0 38 38"
+                    data-hook="align-right-icon"
+                  >
+                    <path
+                      class="fuo8c"
+                      d="M26.000,29.000 C26.000,29.000 26.000,9.000 26.000,9.000 C26.000,9.000 28.000,9.000 28.000,9.000 C28.000,9.000 28.000,29.000 28.000,29.000 C28.000,29.000 26.000,29.000 26.000,29.000 ZM22.000,27.000 C22.000,27.000 13.000,27.000 13.000,27.000 C11.852,27.000 11.000,26.000 11.000,25.000 C11.000,25.000 11.000,22.000 11.000,22.000 C11.000,21.000 11.852,20.000 13.000,20.000 C13.000,20.000 22.420,20.000 22.420,20.000 C23.569,20.000 24.000,21.000 24.000,22.000 C24.000,22.000 24.000,25.000 24.000,25.000 C24.000,26.000 23.149,27.000 22.000,27.000 Z"
+                      fill-rule="evenodd"
+                      fill="#7fccf7"
+                    ></path>
+                    <path
+                      class="_3n3Ns"
+                      d="M24.000,16.000 C24.000,17.105 23.105,18.000 22.000,18.000 C22.000,18.000 16.000,18.000 16.000,18.000 C14.895,18.000 14.000,17.105 14.000,16.000 C14.000,16.000 14.000,13.000 14.000,13.000 C14.000,11.895 14.895,11.000 16.000,11.000 C16.000,11.000 22.000,11.000 22.000,11.000 C23.105,11.000 24.000,11.895 24.000,13.000 C24.000,13.000 24.000,16.000 24.000,16.000 Z"
+                      fill-rule="evenodd"
+                      fill="#3899ec"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+      `
+      el.innerHTML = `
+            <h6>${traitLabel}</h6>
+            ${styleContent}
+            <h6 class="mt-2">Product info alignment</h6>
+            ${alignContent}
+            `
+      return el;
+    },
+    onUpdate({ elInput, component }) {
+      const items = elInput.querySelectorAll('.hover-list .style-item');
+      const alignItems = elInput.querySelectorAll('.align-list .hover-item');
+      items.forEach(item => {
+        item.addEventListener('click', function () {
+          console.log('Item clicked:', this);
+          component.set('displaystyle', this.getAttribute("name"));
+          alignItems.forEach(it => {
+            it.childNodes[1].classList.remove('selected');
+          });
+          if (this.getAttribute("name") != 'style4') {
+            alignItems[0].childNodes[1].classList.add("selected");
+            component.set('alignstyle', 'align1');
+          } else {
+            alignItems[1].childNodes[1].classList.add("selected");
+            component.set('alignstyle', 'align2');
+          }
+          items.forEach(it => {
+            it.childNodes[1].classList.remove('selected');
+          });
+          item.childNodes[1].classList.add("selected");
+          // Add your click event logic here
+        });
+      });
+
+      
+      alignItems.forEach(item => {
+        item.addEventListener('click', function () {
+          console.log('Item clicked:', this);
+          component.set('alignstyle', this.getAttribute("name"));
+          alignItems.forEach(it => {
+            it.childNodes[1].classList.remove('selected');
+          });
+          item.childNodes[1].classList.add("selected");
+          // Add your click event logic here
+        });
+      });
+    }
+  });
+
+  editor.TraitManager.addType('gallery-button-style', {
+    noLabel: true,
+    // Expects as return a simple HTML string or an HTML element
+    createInput({trait, component}) {
+      const traitName = trait.get('name');
+      const traitLabel = trait.get('label');
+      const buttonStyle = component.props()["buttonstyle"];
+      const el = document.createElement('div');
+
+      el.className = 'gallery-button-style mt-2';
+
+      let content = `
+            <div class="mt-1 d-grid hover-list button-style-list align-list mb-2">
+              <div
+                class="hover-item d-flex flex-column justify-content-center align-items-center cursor-hand"
+                name="style1"
+              >
+                <div
+                  class="${
+                    'item-bg d-flex align-items-center justify-content-center' +
+                    (buttonStyle === 'style1' ? ' selected' : '')
+                  }"
+                >
+                  <svg
+                    data-aid="button-skin-1-icon"
+                    class="_2AeKu"
+                    width="35"
+                    height="17"
+                    id="Layer_1"
+                    data-name="Layer 1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 35 17"
+                  >
+                    <path
+                      class="_2OBPq"
+                      d="M131.5,765.4h-29a3,3,0,0,1-3-3v-11a3,3,0,0,1,3-3h29a3,3,0,0,1,3,3v11A3,3,0,0,1,131.5,765.4Z"
+                      transform="translate(-99.5 -748.4)"
+                      fill="#4eb7f5"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div
+                class="hover-item d-flex flex-column justify-content-center align-items-center cursor-hand"
+                name="style2"
+              >
+                <div
+                  class="${
+                    'item-bg d-flex align-items-center justify-content-center' +
+                    (buttonStyle === 'style2' ? ' selected' : '')
+                  }"
+                >
+                  <svg
+                    data-aid="button-skin-2-icon"
+                    class="_2AeKu"
+                    width="35"
+                    height="17"
+                    id="Layer_1"
+                    data-name="Layer 1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 35 17"
+                  >
+                    <rect class="_2OBPq" width="35" height="17" rx="8.5" ry="8.5" fill="#4eb7f5"></rect>
+                  </svg>
+                </div>
+              </div>
+              <div
+                class="hover-item d-flex flex-column justify-content-center align-items-center cursor-hand"
+                name="style3"
+              >
+                <div
+                  class="${
+                    'item-bg d-flex align-items-center justify-content-center' +
+                    (buttonStyle === 'style3' ? ' selected' : '')
+                  }"
+                >
+                  <svg
+                    data-aid="button-skin-3-icon"
+                    class="_2AeKu"
+                    width="35"
+                    height="17"
+                    id="Layer_1"
+                    data-name="Layer 1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 35 17"
+                  >
+                    <rect class="_2OBPq" width="35" height="17" fill="#4eb7f5"></rect>
+                  </svg>
+                </div>
+              </div>
+              <div
+                class="hover-item d-flex flex-column justify-content-center align-items-center cursor-hand mt-1"
+                name="style4"
+              >
+                <div
+                  class="${
+                    'item-bg d-flex align-items-center justify-content-center' +
+                    (buttonStyle === 'style4' ? ' selected' : '')
+                  }"
+                >
+                  <svg
+                    data-aid="button-skin-4-icon"
+                    class="_2AeKu"
+                    width="35"
+                    height="17"
+                    id="Layer_1"
+                    data-name="Layer 1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 35 17"
+                  >
+                    <path
+                      class="_2OBPq"
+                      d="M320,749.4a2,2,0,0,1,2,2v11a2,2,0,0,1-2,2H291a2,2,0,0,1-2-2v-11a2,2,0,0,1,2-2h29m0-1H291a3,3,0,0,0-3,3v11a3,3,0,0,0,3,3h29a3,3,0,0,0,3-3v-11a3,3,0,0,0-3-3h0Z"
+                      transform="translate(-288 -748.4)"
+                      fill="#4eb7f5"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div
+                class="hover-item d-flex flex-column justify-content-center align-items-center cursor-hand mt-1"
+                name="style5"
+              >
+                <div
+                  class="${
+                    'item-bg d-flex align-items-center justify-content-center' +
+                    (buttonStyle === 'style5' ? ' selected' : '')
+                  }"
+                >
+                  <svg
+                    data-aid="button-skin-5-icon"
+                    class="_2AeKu"
+                    width="35"
+                    height="17"
+                    id="Layer_1"
+                    data-name="Layer 1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 35 17"
+                  >
+                    <path
+                      class="_2OBPq"
+                      d="M375.2,749.4a7.5,7.5,0,1,1,0,15h-18a7.5,7.5,0,0,1,0-15h18m0-1h-18a8.5,8.5,0,0,0,0,17h18a8.5,8.5,0,1,0,0-17h0Z"
+                      transform="translate(-348.7 -748.4)"
+                      fill="#4eb7f5"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div
+                class="hover-item d-flex flex-column justify-content-center align-items-center cursor-hand mt-1"
+                name="style6"
+              >
+                <div
+                  class="${
+                    'item-bg d-flex align-items-center justify-content-center' +
+                    (buttonStyle === 'style6' ? ' selected' : '')
+                  }"
+                >
+                  <svg
+                    data-aid="button-skin-6-icon"
+                    class="_2AeKu"
+                    width="35"
+                    height="17"
+                    id="Layer_1"
+                    data-name="Layer 1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 35 17"
+                  >
+                    <path
+                      class="_2OBPq"
+                      d="M447,749v15H414V749h33m1-1H413v17h35V748h0Z"
+                      transform="translate(-413 -748)"
+                      fill="#4eb7f5"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+        `;
+      el.innerHTML = `
+            <h6>${traitLabel}</h6>
+            ${content}
+            `
+      return el;
+    },
+    onUpdate({ elInput, component }) {
+      const items = elInput.querySelectorAll('.hover-item');
+      items.forEach(item => {
+        item.addEventListener('click', function () {
+          console.log('Item clicked:', this);
+          component.set('buttonstyle', this.getAttribute("name"));
+          if (this.getAttribute("name") === 'style1') {
+            component.set("fillopacity", 100);
+            component.set("borderwidth", 0);
+            component.set("buttoncornerradius", 5);
+          } else if (this.getAttribute("name") === 'style2') {
+            component.set("fillopacity", 100);
+            component.set("borderwidth", 0);
+            component.set("buttoncornerradius", 20);
+          } else if (this.getAttribute("name") === 'style3') {
+            component.set("fillopacity", 100);
+            component.set("borderwidth", 0);
+            component.set("buttoncornerradius", 0);
+          } else if (this.getAttribute("name") === 'style4') {
+            component.set("fillopacity", 0);
+            component.set("borderwidth", 1);
+            component.set("buttoncornerradius", 5);
+          } else if (this.getAttribute("name") === 'style5') {
+            component.set("fillopacity", 0);
+            component.set("borderwidth", 1);
+            component.set("buttoncornerradius", 20);
+          } else if (this.getAttribute("name") === 'style6') {
+            component.set("fillopacity", 0);
+            component.set("borderwidth", 1);
+            component.set("buttoncornerradius", 0);
+          }
+          items.forEach(it => {
+            it.childNodes[1].classList.remove('selected');
+          });
+          item.childNodes[1].classList.add("selected");
+          // Add your click event logic here
+        });
+      });
+    }
+  });
+
+  editor.TraitManager.addType('product-page-show-items', {
+    noLabel: true,
+    // Expects as return a simple HTML string or an HTML element
+    createInput({trait, component}) {
+      const traitName = trait.get('name');
+      const traitLabel = trait.get('label');
+      const product = component.props()["product"];
+      const selectedFields = component.props()['fieldnames'].split(",");
+      let showItems = "";
+      Object.keys(product).map((key, idx) => {
+        let checked = false;
+        selectedFields.forEach((selectedField) => {
+          if(selectedField == key) checked = true;
+        })
+        if(checked) {
+          showItems += `<div class="d-flex mt-1">
+            <input id="field${idx}" name="${key}" type="checkbox" class="me-1 border-primary form-check-input" checked=${checked} style="width:17.98px">
+            <label for="field${idx}">${key}</label></div>`;
+        } else {
+          showItems += `<div class="d-flex mt-1">
+            <input id="field${idx}" name="${key}" type="checkbox" class="me-1 border-primary form-check-input" style="width:17.98px">
+            <label for="field${idx}">${key}</label></div>`;
+        }
+      })
+      const el = document.createElement('div');
+
+      el.className = 'product-page-show-items';
+
+      el.innerHTML = `
+        <h6>${traitLabel}</h6>
+        ${showItems}
+        `;
+
+      return el;
+    },
+    onUpdate({elInput, component}) {
+      let checkedFields = [];
+      const fields = elInput.querySelectorAll('[id^="field"]');
+      fields.forEach(checkbox => {
+        // Check if the checkbox is checked
+        checkbox.addEventListener('change', function() {
+          
+          fields.forEach(field => {
+            if (field.checked) {
+              // Log the 'name' attribute of the checkbox
+              checkedFields.push(field.name);
+            }
+          });
+          component.set('fieldnames', checkedFields.join());
+          checkedFields = [];
+        })
+        
+      });
+    }
+  });
+
+  editor.TraitManager.addType('product-page-show-cart-button', {
+    noLabel: true,
+    // Expects as return a simple HTML string or an HTML element
+    createInput({trait, component}) {
+      const traitName = trait.get('name');
+      const traitLabel = trait.get('label');
+      const el = document.createElement('div');
+
+      el.className = 'product-page-show-cart-button mt-2';
+      el.innerHTML = `
+            <div class="mt-1 d-flex justify-content-between align-items-center">
+              <div>Show button</div>
+              <input type="checkbox" class="me-3 border-primary form-check-input" checked=${component.props().showcartbutton == 1 ? true : ""} style="width:17.98px">
+            </div>
+            `
+      return el;
+    },
+    onUpdate({ elInput, component }) {
+      const checkBox = elInput.querySelector('.form-check-input');
+      checkBox.addEventListener('change', function() {
+        if(this.checked) {
+          component.set('showcartbutton', 1);
+        } else {
+          component.set('showcartbutton', 0);
+        }
+      });
+    }
+  });
+
+  editor.TraitManager.addType('product-page-align-style', {
+    noLabel: true,
+    // Expects as return a simple HTML string or an HTML element
+    createInput({trait, component}) {
+      const traitName = trait.get('name');
+      const traitLabel = trait.get('label');
+      const alignStyle = component.props()["alignstyle"];
+      const el = document.createElement('div');
+
+      el.className = 'product-page-align-style mt-2';
+
+      let alignContent = `
+            <div class="d-flex hover-list align-list mt-1 mb-2">
+              <div
+                class="hover-item d-flex flex-column justify-content-center align-items-center cursor-hand me-2"
+                name="align1"
+              >
+                <div
+                  class="${
+                    'item-bg d-flex align-items-center justify-content-center' +
+                    (alignStyle === 'align1' ? ' selected' : '')
+                  }"
+                >
+                  <svg
+                    class="_962Jt"
+                    xmlns="http://www.w3.org/2000/svg"
+                    preserveAspectRatio="xMidYMid"
+                    width="38"
+                    height="38"
+                    viewBox="0 0 38 38"
+                    data-hook="align-left-icon"
+                  >
+                    <path
+                      class="fuo8c"
+                      d="M26.000,27.000 C26.000,27.000 17.000,27.000 17.000,27.000 C15.852,27.000 15.000,26.000 15.000,25.000 C15.000,25.000 15.000,22.000 15.000,22.000 C15.000,21.000 15.852,20.000 17.000,20.000 C17.000,20.000 26.420,20.000 26.420,20.000 C27.569,20.000 28.000,21.000 28.000,22.000 C28.000,22.000 28.000,25.000 28.000,25.000 C28.000,26.000 27.149,27.000 26.000,27.000 ZM11.000,9.000 C11.000,9.000 13.000,9.000 13.000,9.000 C13.000,9.000 13.000,29.000 13.000,29.000 C13.000,29.000 11.000,29.000 11.000,29.000 C11.000,29.000 11.000,9.000 11.000,9.000 Z"
+                      fill-rule="evenodd"
+                      fill="#7fccf7"
+                    ></path>
+                    <path
+                      class="_3n3Ns"
+                      d="M25.000,16.000 C25.000,17.105 24.105,18.000 23.000,18.000 C23.000,18.000 17.000,18.000 17.000,18.000 C15.896,18.000 15.000,17.105 15.000,16.000 C15.000,16.000 15.000,13.000 15.000,13.000 C15.000,11.895 15.896,11.000 17.000,11.000 C17.000,11.000 23.000,11.000 23.000,11.000 C24.105,11.000 25.000,11.895 25.000,13.000 C25.000,13.000 25.000,16.000 25.000,16.000 Z"
+                      fill-rule="evenodd"
+                      fill="#3899ec"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div
+                class="hover-item d-flex flex-column justify-content-center align-items-center cursor-hand me-2"
+                name="align2"
+              >
+                <div
+                  class="${
+                    'item-bg d-flex align-items-center justify-content-center' +
+                    (alignStyle === 'align2' ? ' selected' : '')
+                  }"
+                >
+                  <svg
+                    class="_228n2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    preserveAspectRatio="xMidYMid"
+                    width="38"
+                    height="38"
+                    viewBox="0 0 38 38"
+                    data-hook="align-center-icon"
+                  >
+                    <path
+                      class="fuo8c"
+                      d="M25.000,27.000 C25.000,27.000 20.000,27.000 20.000,27.000 C20.000,27.000 20.000,29.000 20.000,29.000 C20.000,29.000 18.000,29.000 18.000,29.000 C18.000,29.000 18.000,27.000 18.000,27.000 C18.000,27.000 13.000,27.000 13.000,27.000 C11.852,27.000 11.000,26.000 11.000,25.000 C11.000,25.000 11.000,22.000 11.000,22.000 C11.000,21.000 11.852,20.000 13.000,20.000 C13.000,20.000 18.000,20.000 18.000,20.000 C18.000,20.000 18.000,9.000 18.000,9.000 C18.000,9.000 20.000,9.000 20.000,9.000 C20.000,9.000 20.000,20.000 20.000,20.000 C20.000,20.000 25.420,20.000 25.420,20.000 C26.569,20.000 27.000,21.000 27.000,22.000 C27.000,22.000 27.000,25.000 27.000,25.000 C27.000,26.000 26.149,27.000 25.000,27.000 Z"
+                      fill-rule="evenodd"
+                      fill="#7fccf7"
+                    ></path>
+                    <path
+                      class="_3n3Ns"
+                      d="M24.000,16.000 C24.000,17.105 23.105,18.000 22.000,18.000 C22.000,18.000 16.000,18.000 16.000,18.000 C14.895,18.000 14.000,17.105 14.000,16.000 C14.000,16.000 14.000,13.000 14.000,13.000 C14.000,11.895 14.895,11.000 16.000,11.000 C16.000,11.000 22.000,11.000 22.000,11.000 C23.105,11.000 24.000,11.895 24.000,13.000 C24.000,13.000 24.000,16.000 24.000,16.000 Z"
+                      fill-rule="evenodd"
+                      fill="#3899ec"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div
+                class="hover-item d-flex flex-column justify-content-center align-items-center cursor-hand"
+                name="align3"
+              >
+                <div
+                  class="${
+                    'item-bg d-flex align-items-center justify-content-center' +
+                    (alignStyle === 'align3' ? ' selected' : '')
+                  }"
+                >
+                  <svg
+                    class="_3MgSE"
+                    xmlns="http://www.w3.org/2000/svg"
+                    preserveAspectRatio="xMidYMid"
+                    width="38"
+                    height="38"
+                    viewBox="0 0 38 38"
+                    data-hook="align-right-icon"
+                  >
+                    <path
+                      class="fuo8c"
+                      d="M26.000,29.000 C26.000,29.000 26.000,9.000 26.000,9.000 C26.000,9.000 28.000,9.000 28.000,9.000 C28.000,9.000 28.000,29.000 28.000,29.000 C28.000,29.000 26.000,29.000 26.000,29.000 ZM22.000,27.000 C22.000,27.000 13.000,27.000 13.000,27.000 C11.852,27.000 11.000,26.000 11.000,25.000 C11.000,25.000 11.000,22.000 11.000,22.000 C11.000,21.000 11.852,20.000 13.000,20.000 C13.000,20.000 22.420,20.000 22.420,20.000 C23.569,20.000 24.000,21.000 24.000,22.000 C24.000,22.000 24.000,25.000 24.000,25.000 C24.000,26.000 23.149,27.000 22.000,27.000 Z"
+                      fill-rule="evenodd"
+                      fill="#7fccf7"
+                    ></path>
+                    <path
+                      class="_3n3Ns"
+                      d="M24.000,16.000 C24.000,17.105 23.105,18.000 22.000,18.000 C22.000,18.000 16.000,18.000 16.000,18.000 C14.895,18.000 14.000,17.105 14.000,16.000 C14.000,16.000 14.000,13.000 14.000,13.000 C14.000,11.895 14.895,11.000 16.000,11.000 C16.000,11.000 22.000,11.000 22.000,11.000 C23.105,11.000 24.000,11.895 24.000,13.000 C24.000,13.000 24.000,16.000 24.000,16.000 Z"
+                      fill-rule="evenodd"
+                      fill="#3899ec"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+      `
+      el.innerHTML = `
+            <h6 class="mt-2">Product info alignment</h6>
+            ${alignContent}
+            `
+      return el;
+    },
+    onUpdate({ elInput, component }) {
+      const alignItems = elInput.querySelectorAll('.align-list .hover-item');
+
+      alignItems.forEach(item => {
+        item.addEventListener('click', function () {
+          console.log('Item clicked:', this);
+          component.set('alignstyle', this.getAttribute("name"));
+          alignItems.forEach(it => {
+            it.childNodes[1].classList.remove('selected');
+          });
+          item.childNodes[1].classList.add("selected");
+          // Add your click event logic here
+        });
+      });
+    }
+  });
+
   blocks.forEach(block => {
     editor.Blocks.add(block.id, block);
   })
