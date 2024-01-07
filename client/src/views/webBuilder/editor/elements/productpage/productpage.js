@@ -119,6 +119,56 @@ let productpage = {
           font-size: 15px;
         }
       `,
+      traits: [
+        {
+          type: 'product-page-show-items',
+          name: 'productPageShowItems',
+          label: 'What do you want to show?',
+          changeProp: true,
+        },
+        {
+          type: 'product-page-show-cart-button',
+          name: 'productPageShowCartButton',
+          label: '',
+          changeProp: true,
+        },
+        {
+          type: 'text',
+          name: 'buttontext',
+          label: 'Button Text',
+          changeProp: true,
+        },
+        {
+          type: 'product-page-align-style',
+          name: 'productPageAlignStyle',
+          label: 'Product info alignment',
+          changeProp: true,
+        },
+        {
+          type: 'gallery-button-style',
+          name: 'productPageButtonStyle',
+          label: 'Button Design',
+          changeProp: true,
+        },
+        {
+          type: 'text',
+          name: 'fillopacity',
+          label: 'Fill opacity',
+          changeProp: true,
+        },
+        {
+          type: 'text',
+          name: 'borderwidth',
+          label: 'Border Width',
+          changeProp: true,
+        },
+        {
+          type: 'text',
+          name: 'buttoncornerradius',
+          label: 'Corner Radius',
+          changeProp: true,
+        },
+      ],
       script: function () {}
     }
   },

@@ -75,7 +75,8 @@ import {
   getWaitingClientsAction,
   confirmCustomerDatasetAction,
   updateFormAction,
-  getGoogleFontsAction
+  getGoogleFontsAction,
+  createShopPagesAction
 } from '../store/action';
 import OffCanvas from '../../components/offcanvas';
 import { getUserData } from '../../../auth/utils';
