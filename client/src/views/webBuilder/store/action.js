@@ -272,13 +272,14 @@ export const editWebsiteEntryAction = (id, payload) => async (dispatch) => {
 export const createWebBuilderAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.createWebBuilder(payload);
-    const { websiteData, formData } = data.data;
+    const { websiteData, formData, defaultTheme } = data.data;
     let _form_data = [];
     _form_data.push(JSON.parse(JSON.stringify(formData)));
     const form_data = {
       ...websiteData,
       formData: _form_data
     };
+    dispatch(setFormThemeReducer(defaultTheme));
     dispatch(setFormReducer(form_data));
     return form_data
   } catch (error) { }
