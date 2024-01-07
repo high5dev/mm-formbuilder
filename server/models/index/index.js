@@ -179,6 +179,7 @@ const WebBuilder = require("../WebBuilder");
 const WebPage = require("../WebPage");
 const WebBuilderElement = require("../WebBuilderElement");
 const WebBuilderElementCategory = require("../WebElementCategory");
+const WebBuilderTheme = require("../WebBuilderTheme");
 const WebSiteCollection = require("../WebSiteCollection");
 const WebSiteDataSet = require("../WebSiteDataSet");
 const WebSiteConnection = require("../WebSiteConnection");
@@ -352,6 +353,7 @@ const models = {
   // Tournament,
   WebBuilderBlog,
   WebBuilder,
+  WebBuilderTheme,
   WebPage,
   WebBuilderElement,
   WebBuilderElementCategory,

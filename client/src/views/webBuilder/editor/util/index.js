@@ -65,7 +65,36 @@ export const menu = [
     id: 'theme',
     name: 'Theme',
     icon: <MdOutlineLayers size={20} color={'#585858'} />,
-    subMenu: [],
+    subMenu: [
+      {
+        id:'colors',
+        name:'COLORS'
+      },
+      {
+        id:'buttons',
+        name:'BUTTONS'
+      },
+      {
+        id:'text',
+        name:'Text'
+      },
+      {
+        id:'images',
+        name:'IMAGES'
+      },
+      {
+        id:'rows & columns',
+        name:'ROWS & COLUMNS'
+      },
+      {
+        id:'backgrounds',
+        name:'BACKGROUNDS'
+      },
+      {
+          id:'site layout',
+          name:'SITE LAYOUT'
+      }
+    ],
   },
   {
     id: 'content',

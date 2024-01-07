@@ -6,6 +6,7 @@ const fetch = require('node-fetch');
 const {
   WebBuilder,
   WebBuilderForm,
+  WebBuilderTheme,
   Authenticate,
   WebPage,
   WebBuilderBlog,
@@ -42,7 +43,7 @@ exports.createWebsite = asyncHandler(async (req, res) => {
   try {
     const { organization } = req.headers;
     const user = req.user;
-    const { clonedFrom, formData } = req.body;
+    const { clonedFrom, formData, colors, buttons, fonts, image, background} = req.body;
     if (clonedFrom === 'blank') {
       delete req.body.formData;
       const webData = {
@@ -54,7 +55,6 @@ exports.createWebsite = asyncHandler(async (req, res) => {
           ? user.organizations.find((x) => x.organizationId.toString() === organization).userType
           : user.userType,
       };
-      console.log('webData=============', webData);
       const websiteData = await WebBuilder.create(webData);
       const {name, html, css, step, path}=formData[0];
       const page_path="/"+websiteData._id+"/"+name;
@@ -68,6 +68,20 @@ exports.createWebsite = asyncHandler(async (req, res) => {
       const newPage = await WebPage.create(pageData);
       const blankPageData = "<body></body><style></style>"
       await googleCloudStorageWebBuilder.createAndUpdatePage(`${websiteData._id}/${newPage._id}`, blankPageData);
+      const webThemeData={
+        colors,
+        buttons,
+        fonts,
+        image,
+        background,
+        websiteId: websiteData._id,
+        userId: mongoose.Types.ObjectId(req.user._id),
+        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+        creatorType: organization
+          ? user.organizations.find((x) => x.organizationId.toString() === organization).userType
+          : user.userType,
+      };
+      const defaultTheme= await WebBuilderTheme.create(webThemeData);
       const templateBlogs=[
         {
           name: 'Maria Cole',
@@ -217,7 +231,8 @@ exports.createWebsite = asyncHandler(async (req, res) => {
         message: "Website created successfully",
         data: {
           websiteData,
-          formData:newPage
+          formData:newPage,
+          defaultTheme
         },
       });
     } else if (clonedFrom === 'default') {
@@ -253,7 +268,20 @@ exports.createWebsite = asyncHandler(async (req, res) => {
         },
       ];
       const newPages = await WebPage.create(pageData);
-
+      const webThemeData={
+        colors,
+        buttons,
+        fonts,
+        image,
+        background,
+        websiteId: data._id,
+        userId: mongoose.Types.ObjectId(req.user._id),
+        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+        creatorType: organization
+          ? user.organizations.find((x) => x.organizationId.toString() === organization).userType
+          : user.userType,
+      };
+      const defaultTheme= await WebBuilderTheme.create(webThemeData);
       const newData = [];
       for (const d of newPages) {
         const blankPageData = "<body></body><style></style>"
@@ -283,6 +311,7 @@ exports.createWebsite = asyncHandler(async (req, res) => {
           ...data,
           newPages,
           pageData: newData,
+          defaultTheme:defaultTheme
         }
       });
     } else {
@@ -311,7 +340,20 @@ exports.createWebsite = asyncHandler(async (req, res) => {
         };
       });
       const newPages = await WebPage.create(newPageData);      
-
+      const webThemeData={
+        colors,
+        buttons,
+        fonts,
+        image,
+        background,
+        websiteId: data._id,
+        userId: mongoose.Types.ObjectId(req.user._id),
+        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+        creatorType: organization
+          ? user.organizations.find((x) => x.organizationId.toString() === organization).userType
+          : user.userType,
+      };
+      const defaultTheme= await WebBuilderTheme.create(webThemeData);
       const pageData = [];
       for (const page of newPages) {
         const tempData = await googleCloudStorageWebBuilder.copyPage(`${webToClone._id}/${page._id}`, `${data._id}/${page._id}`);
@@ -338,6 +380,7 @@ exports.createWebsite = asyncHandler(async (req, res) => {
           ...data,
           newPages,
           pageData,
+          defaultTheme
         }
       });
     }
@@ -511,7 +554,8 @@ exports.getWebsite= asyncHandler(async(req, res) =>{
   const user = req.user;
   try{
     const websiteData=await WebBuilder.findOne({_id:id});
-    if(websiteData){
+    if(websiteData){;
+      const themeData=await WebBuilderTheme.findOne({websiteId:mongoose.Types.ObjectId(websiteData._id)});
       const collectionData = await WebSiteCollection.find({ websiteId: mongoose.Types.ObjectId(id), name: "PROFILE" });
       let isExist = false;
       collectionData.map((data) => {
@@ -559,11 +603,11 @@ exports.getWebsite= asyncHandler(async(req, res) =>{
     ]);
       return res.send({
         success: true,
-        message: "Website created successfully",
         data: {
           websiteData,
           formData:pageData,
-          forms:forms
+          forms:forms,
+          themeData:themeData
         },
       });
     }

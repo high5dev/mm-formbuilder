@@ -1,20 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Bold,
-  X,
-  Trash2,
-  Check,
-  ChevronRight,
-  ChevronDown,
-  ChevronUp,
-  Settings,
-  Trash,
-  Edit,
-  MoreVertical
-} from 'react-feather';
+import { Bold, X, Trash2, Check, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Plus,  Edit,
+  MoreVertical, Settings } from 'react-feather';
 import { CgStyle } from 'react-icons/cg';
-import WebFont from 'webfontloader';
 import { IoMdArrowDropright,IoMdArrowDropdown  } from "react-icons/io";
 import { RiQuestionMark } from 'react-icons/ri';
 import { toast } from 'react-toastify';
@@ -71,11 +59,11 @@ import {
   getChildFormsAction,
   getProductCategoryAction,
   getWebsiteRolesAction,
+  addWebBuilderThemeColorAction,
   createCustomerCollectAction,
   getWaitingClientsAction,
   confirmCustomerDatasetAction,
-  updateFormAction,
-  getGoogleFontsAction
+  updateFormAction
 } from '../store/action';
 import OffCanvas from '../../components/offcanvas';
 import { getUserData } from '../../../auth/utils';
@@ -102,6 +90,12 @@ import DuplicateModal from './topNav/duplicate/duplicateModal';
 import InvitationModal from './topNav/invite/invitationModal';
 import FormEditorModal from './leftSidebar/form/FormEditorModal';
 import SelectFormModal from './leftSidebar/form/SelectFormModal';
+import ColorTheme from './leftSidebar/theme/ColorTheme';
+import TextTheme from './leftSidebar/theme/TextTheme';
+import ImageTheme from './leftSidebar/theme/ImageTheme';
+import ButtonTheme from './leftSidebar/theme/ButtonTheme';
+import RowsTheme from './leftSidebar/theme/RowsTheme';
+import BackgroundTheme from './leftSidebar/theme/BackgroundTheme';
 import cmsimg from '../../../assets/img/cms-img.png';
 import { CiCircleChevRight, CiCirclePlus } from 'react-icons/ci';
 import CreateCollectionModal from './cms/collection/CreateCollectionModal';
@@ -123,7 +117,8 @@ import AddPresetModal from './cms/AddPresetModal';
 import CMS from './topNav/cms';
 import { ImCheckmark, ImCross } from "react-icons/im";
 
-export default function Editor({
+export default function Editor(
+  {
   isblog,
   setIsBlog,
   createMdl,
@@ -138,8 +133,6 @@ export default function Editor({
   isback,
   ispreview,
   ispublish,
-  isSave,
-  setIsSave,
   setIsPreview,
   setIsPublish,
   tab,
@@ -152,6 +145,8 @@ export default function Editor({
   store,
   sidebarData,
   setSidebarData,
+  selectedSubMenu,
+  setSelectedSubMenu,
   selectedCategory,
   setSelectedCategory,
   openAddElementMdl,
@@ -163,10 +158,12 @@ export default function Editor({
   roleMdl,
   setRoleMdl,
   VisibleMenu
-}) {
+}) 
+{
   const [openCreateForm, setOpenCreateForm] = useState();
   const { id } = useParams();
   const form = store.form;
+  const formTheme=store.formTheme;
   const page = store.currentPage;
   const dispatch = useDispatch();
   const history = useHistory();
@@ -179,6 +176,7 @@ export default function Editor({
   const [isPublishModal, setIsPublishModal] = useState(false);
   const [publishUrl, setPublishUrl] = useState();
   const [formeditorMdl, setFormEditorMdl] = useState(false);
+  const [themeEditing, setThemeEditing]=useState(false);
   const [openCreateColMdl, setOpenCreateColMdl] = useState(false);
   const [openCreateAssetMdl, setOpenCreateAssetMdl] = useState(false);
   const [openRenameAssetMdl, setOpenRenameAssetMdl] = useState(false);
@@ -194,6 +192,10 @@ export default function Editor({
   const [selectedProductCategory, setSelectedProductCategory] = useState({});
   const [selectedFormBlock, setSelectedFormBlock] = useState(null);
   const [OpenCategory, setOpenCategory] = useState({ index: 0, value: true });
+  //theme section
+  const [selectedColor, setSelectedColor]=useState();
+  const [selectedButton, setSelectedButton]=useState();
+  const [selectedFont, setSelectedFont]=useState();
   const [storeProducts, setStoreProducts] = useState({});
   const user = getUserData();
   useEffect(() => {
@@ -496,6 +498,28 @@ export default function Editor({
   //       return () => clearInterval(interval);
   //     }
   // }, [editor?.getHtml(editor?.Pages.getSelected()), editor?.getCss(editor?.Pages.getSelected()), form, page])
+
+  const addNewThemeColor=()=>{
+    if(formTheme?._id && formTheme?.colors){
+      const themeId=formTheme._id;
+      const colors=formTheme.colors;
+      const payload={
+        name:'Color #'+colors.length.toString(),
+        value:"#000000",
+      };
+      dispatch(addWebBuilderThemeColorAction(themeId, payload)).then(res=>{
+        if(res){
+          setSelectedSubMenu('colors');
+          setThemeEditing(true);
+        }
+      })
+
+    }
+  }
+
+
+
+
   useEffect(() => {
     if (editor && store.selectedProduct) {
       const components = editor.getWrapper().components().models;
@@ -1065,65 +1089,25 @@ export default function Editor({
       // ... other font families ...
     ];
 
-    const fetchGoogleFonts = async () => {
-      const data = await dispatch(getGoogleFontsAction());
-      if(!data) return;
-      const fontData = data.items.map(font => { return { name: font.family, url: font.files.regular }; });
-      const fontFamilyProp = gjsEditor.StyleManager.getProperty('typography', 'font-family');
-      const options = [];
-      fontData.forEach(font => {
-        options.push({ id: font.name, label: font.name });
-      })
-      
-      fontFamilyProp.set('options', options);
-      const loadFont = (fontName) => {
-        WebFont.load({
-          google: {
-            families: [fontName]
-          },
-          active: function () {
-            // Append the font stylesheet to the GrapesJS iframe
-            const cssLink = gjsEditor.Canvas.getDocument().createElement('link');
-            cssLink.href = `https://fonts.googleapis.com/css?family=${fontName.replace(/\s/g, '+')}`;
-            cssLink.rel = 'stylesheet';
-            cssLink.type = 'text/css';
-
-            const head = gjsEditor.Canvas.getDocument().head;
-            head.appendChild(cssLink);
-          }
-        });
-      };
-      fontFamilyProp.on('change:value', (model) => {
-        // Handle the font family change
-        const selectedFontFamily = model.get('value');
-        loadFont(selectedFontFamily);
-        // Additional actions based on the selected font family
-        // ...
-      });
-      gjsEditor.StyleManager.render();
-      rte.add('fontFamily', {
-        icon: `
-            <select class="gjs-field" style="width: 100px">
-                ${fontData.map(font => `<option value="${font.name}">${font.name}</option>`).join('')}
-            </select>
-        `,
-        event: 'change',
-        result: (rte, action) => {
-          const fontFamilyValue = action.btn.childNodes[1].value;
-          loadFont(fontFamilyValue);
-          rte.exec('fontName', fontFamilyValue);
-        },
-        update: (rte, action) => {
-          const value = rte.doc.queryCommandValue("fontName");
-          console.log(value);
-          if (value) {
-            action.btn.firstChild.value = value.replace(/['"]+/g, ''); // Remove quotes
-          }
+    rte.add('fontFamily', {
+      icon: `
+          <select class="gjs-field" style="width: 100px">
+              ${fontFamilies.map(font => `<option value="${font.value}">${font.name}</option>`).join('')}
+          </select>
+      `,
+      event: 'change',
+      result: (rte, action) => {
+        const fontFamilyValue = action.btn.childNodes[1].value;
+        rte.exec('fontName', fontFamilyValue);
+      },
+      update: (rte, action) => {
+        const value = rte.doc.queryCommandValue("fontName");
+        console.log(value);
+        if (value) {
+          action.btn.firstChild.value = value.replace(/['"]+/g, ''); // Remove quotes
         }
-      });
-    };
-
-    fetchGoogleFonts();
+      }
+    });
 
     rte.add('fontColor', {
       icon: `<input type="color" class="gjs-field" style="width: 27px" />`,
@@ -1298,18 +1282,12 @@ export default function Editor({
         html: html,
         css: css
       };
-      if (isback == 2) {
+      if (isback) {
         dispatch(updatePageAction(id, payload)).then((res) => {
           if (res) {
             history.goBack();
           }
         });
-      } else if(isback == 1) {
-        history.goBack();
-      }
-      if(isSave) {
-        dispatch(updatePageAction(id, payload));
-        setIsSave(false);
       }
       if (ispreview) {
         dispatch(updatePageAction(id, payload)).then((res) => {
@@ -1332,7 +1310,7 @@ export default function Editor({
         });
       }
     }
-  }, [ispreview, ispublish, isback, isSave]);
+  }, [ispreview, ispublish, isback]);
 
   useEffect(() => {
     if (page) {
@@ -1347,8 +1325,7 @@ export default function Editor({
           setIsStoreLoading(false);
         }
       });
-
-      function autoSave(editor) {
+      const interval = setInterval(() => {
         if (editor) {
           const current_page = editor.Pages.getSelected();
           const html = editor.getHtml({ current_page });
@@ -1360,8 +1337,7 @@ export default function Editor({
           };
           dispatch(updatePageAction(id, payload));
         }
-      }
-      const interval = setInterval(autoSave.bind(null, editor), 1000 * 30);
+      }, 1000 * 30);
 
       //Clearing the interval
       return () => clearInterval(interval);
@@ -1711,14 +1687,29 @@ export default function Editor({
                 delay={{ show: 10, hide: 20 }}
                 style={{ height: '100%' }}
               >
-                <div style={{ height: '100%', overflow: 'scroll' }}>
+                <div style={{ height: '100%', overflow: 'scroll', width:'300px' }}>
                   <div className="expanded-header">
                     <span className="me-1">
                       {sidebarData.menu.name === 'CMS'
                         ? 'Add Content Elements'
                         : sidebarData.menu.name === 'Compositions'
-                          ? 'Section Template'
-                          : sidebarData.menu.name}
+                        ? 'Section Template'
+                        : sidebarData.menu.name === 'Theme' ?
+                        <div className='d-flex align-items-center text-uppercase'>
+                          {
+                            themeEditing ?
+                            <>
+                            <div onClick={(e)=>setThemeEditing(false)} className='cursor-pointer'>
+                              <ChevronLeft size={20}/>
+                            </div>
+                            {selectedSubMenu}
+                            </> 
+                            :
+                            <div>Theme</div>
+                          }
+                        </div>:
+                        sidebarData.menu.name
+                      }
                     </span>
                     <span className="header-icon" onClick={handleSidebarOpen}>
                       <X size={16} color="#6e6b7b" style={{ cursor: "hand" }} />
@@ -1789,7 +1780,7 @@ export default function Editor({
                               const returnComponent = (
                                 <>
                                   <div
-                                    className="d-flex align-items-center px-50 border-bottom border-top border-bottom border-top cursor-pointer"
+                                    className="d-flex align-items-center px-50 border-bottom border-top border-bottom border-top "
                                     onClick={() => {
                                       handleOnclick(index);
                                     }}
@@ -1916,7 +1907,7 @@ export default function Editor({
                               const returnComponent = (
                                 <>
                                   <div
-                                    className="d-flex align-items-center px-50 border-bottom border-top border-bottom border-top cursor-pointer"
+                                    className="d-flex align-items-center px-50 border-bottom border-top border-bottom border-top "
                                     onClick={() => {
                                       handleOnclick(index);
                                     }}
@@ -2024,7 +2015,7 @@ export default function Editor({
                               const returnComponent = (
                                 <>
                                   <div
-                                    className="d-flex align-items-center px-50 border-bottom border-top cursor-pointer"
+                                    className="d-flex align-items-center px-50 border-bottom border-top"
                                     onClick={() => {
                                       handleOnclick(index);
                                     }}
@@ -2109,6 +2100,9 @@ export default function Editor({
                         </div>
                       )}
                       {sidebarData.menu.id !== 'decorative' &&
+                        sidebarData.menu.id != 'quick-add' &&
+                        sidebarData.menu.id != 'blog' &&
+                        sidebarData.menu.id !='theme'&&
                         sidebarData.menu.id !== 'quick-add' &&
                         sidebarData.menu.id !== 'blog' &&
                         sidebarData.menu.id !== 'cms' &&
@@ -2140,7 +2134,7 @@ export default function Editor({
                                 const returnComponent = (
                                   <>
                                     <div
-                                      className="d-flex align-items-center px-50 border-bottom border-top cursor-pointer"
+                                      className="d-flex align-items-center px-50 border-bottom border-top"
                                       onClick={() => {
                                         handleOnclick(index);
                                       }}
@@ -2224,6 +2218,155 @@ export default function Editor({
                             </div>
                           </div>
                         )}
+                      {sidebarData.menu.id === 'theme' && (
+                        <>
+                        {
+                          !themeEditing &&
+                          <div className='theme-container p-1'>
+                            <div className='color-container'>
+                              <div className='submenu-item d-flex justify-content-between align-items-center' onClick={(e)=>{
+                                  setSelectedSubMenu('colors');
+                                  setThemeEditing(true);
+                              }}>
+                                <span className='fw-bold fs-6'>COLORS</span>
+                                <span>
+                                  <ChevronRight size={20} color="black"/>
+                                </span>
+                              </div>
+                              <div style={{display:'grid', gridTemplateColumns:'auto auto auto auto auto'}}>
+                                {
+                                  formTheme && formTheme.colors && formTheme.colors.map((_color)=>{
+                                    return (
+                                      <div className='d-flex color-outline-element d-flex justify-content-around align-items-center mt-1' onClick={(e)=>{
+                                        setSelectedColor(_color);
+                                        setSelectedSubMenu('colors');
+                                        setThemeEditing(true);
+
+                                      }}>
+                                        <div className='color-item' style={{backgroundColor:_color.value}}>
+                                        </div>
+                                      </div>
+                                    )
+                                  })
+                                }
+                                <div className='d-flex color-outline-element d-flex justify-content-around align-items-center mt-1' onClick={(e)=>addNewThemeColor()}>
+                                  <div className='plus-item'>
+                                    <Plus size={20}/>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className='buttons-container mt-1'>
+                              <div className='submenu-item d-flex justify-content-between align-items-center py-1' onClick={(e)=>{
+                                setSelectedSubMenu('buttons');
+                                setThemeEditing(true);
+                            }}>
+                                <span className='fw-bold fs-6'>BUTTONS</span>
+                                <span>
+                                  <ChevronRight size={20} color="black"/>
+                                </span>
+                              </div>
+                              <div className='d-flex justify-content-around align-items-center buttons-list'>
+                                {
+                                  formTheme && formTheme.buttons && formTheme.buttons.map((_button)=>{
+                                    return(
+                                      <button style={{..._button.attributes}} onClick={(e)=>{
+                                        setSelectedButton(_button);
+                                        setSelectedSubMenu('buttons');
+                                        setThemeEditing(true);
+                                      }}>{_button.type}</button>
+                                    )
+                                  })
+                                }
+                             
+                              </div>
+                              <div>
+
+                              </div>
+                            </div>
+                            <div className='text-container mt-1'>
+                              <div className='submenu-item d-flex justify-content-between align-items-center py-1'>
+                                <span className='fw-bold fs-6'>TEXT</span>
+                                <span>
+                                  <ChevronRight size={20} color="black"/>
+                                </span>
+                              </div>
+                              <div className='text-elements'>
+                                {
+                                  formTheme && formTheme.fonts && formTheme.fonts.map((_font)=>{
+                                    return(
+                                      <div className='d-flex align-items-center cursor-pointer' style={{marginBottom:'10px'}} onClick={(e)=>{
+                                        setSelectedFont(_font);
+                                        setSelectedSubMenu('text');
+                                        setThemeEditing(true);
+                                      }}>
+                                        <div>
+                                          {_font.type}
+                                        </div>
+                                        <div className='ms-1 fw-bold' style={{..._font.attributes}}>
+                                          {_font.attributes.fontFamily} {_font.attributes.fontSize.slice(0, -2)}
+                                        </div>
+                                      </div>
+                                    )
+                                  })
+                                }
+                              </div>
+                            </div>
+                            <div className='images-container'>
+                              <div className='submenu-item d-flex justify-content-between align-items-center py-1' onClick={(e)=>{
+                                    setSelectedSubMenu('images');
+                                    setThemeEditing(true);
+                              }}>
+                                <span className='fw-bold fs-6'>IMAGES</span>
+                                <span>
+                                  <ChevronRight size={20} color="black"/>
+                                </span>
+                              </div>
+                            </div>
+                            <div className='background-container'>
+                              <div className='submenu-item d-flex justify-content-between align-items-center py-1' onClick={(e)=>{
+                                setSelectedSubMenu('backgrounds');
+                                setThemeEditing(true);
+                              }}>
+                                <span className='fw-bold fs-6'>BACKGROUNDS</span>
+                                <span>
+                                  <ChevronRight size={20} color="black"/>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        }
+                        {
+                          themeEditing && 
+                          <>
+                            {
+                              selectedSubMenu === 'colors' &&
+                              <ColorTheme store={store} selectedColor={selectedColor}/>
+                            }
+                            {
+                              selectedSubMenu === 'text' &&
+                              <TextTheme store={store} selectedFont={selectedFont} setSelectedFont={setSelectedFont}/>
+                            }
+                            {
+                              selectedSubMenu === 'buttons' &&
+                              <ButtonTheme store={store} selectedButton={selectedButton} setSelectedButton={setSelectedButton}/>
+                            }
+                            {
+                              selectedSubMenu === 'images' &&
+                              <ImageTheme store={store}/>
+                            }
+                            {
+                              selectedSubMenu === 'rows & columns' &&
+                              <RowsTheme/>
+                            }
+                            {
+                              selectedSubMenu === 'backgrounds' &&
+                              <BackgroundTheme store={store}/>
+                            }
+                          </>
+                        }
+                        </>
+                      )}
                       {sidebarData.menu.id === 'assets' && (
                         <div className="submenu-and-element d-flex">
                           <div className="submenu-list pt-0">
@@ -2248,7 +2391,7 @@ export default function Editor({
                               const returnComponent = (
                                 <>
                                   <div
-                                    className="d-flex align-items-center px-50 border-bottom border-top cursor-pointer"
+                                    className="d-flex align-items-center px-50 border-bottom border-top"
                                     onClick={() => {
                                       handleOnclick(index);
                                     }}
@@ -2622,10 +2765,8 @@ export default function Editor({
                               ))}
                           </div>
                         </div>
-                      )
-                      }
-                      {
-                        sidebarData.menu.id === 'content' && (
+                      )}
+                      {sidebarData.menu.id === 'content' && (
                           <div className='h-100 d-flex flex-column'>
                             <div className='d-flex justify-content-center align-items-center p-2 flex-column'>
                               <div>Send link to customer to manage dataset</div>
@@ -2672,16 +2813,14 @@ export default function Editor({
                               }
                             </div>
                           </div>
-                        )
-                      }
+                      )}
 
                     </div>
                   </div>
                 </div>
               </Collapse>
-            </div>
-          )}
-
+            </div>)
+          }
           {selectedMainNav === 'pages' && (
             <Collapse
               isOpen={addSideBarOpen}

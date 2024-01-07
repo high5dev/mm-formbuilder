@@ -29,6 +29,7 @@ export default function Index() {
   const [rsidebarOpen, setRSidebarOpen] = useState(false);
   const [addSideBarOpen, setAddSideBarOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedSubMenu, setSelectedSubMenu]=useState('');
   const { stepId } = useParams();
   const [openAddElementMdl, setOpenAddElementMdl] = useState(false);
   const [selectedMainNav, setSelectedMainNav] = useState('elements');
@@ -122,6 +123,8 @@ export default function Index() {
               device={device}
               sidebarData={sidebarData}
               setSidebarData={setSidebarData}
+              selectedSubMenu={selectedSubMenu}
+              setSelectedSubMenu={setSelectedSubMenu}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
               openAddElementMdl={openAddElementMdl}
