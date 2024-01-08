@@ -56,7 +56,80 @@ let gridproductgallery = {
       borderwidth: 0,
       buttoncornerradius: 0,
       cloning: false,
-      traits: [],
+      traits: [
+        {
+          type: 'gallery-show-items',
+          name: 'galleryShowItems',
+          label: 'What do you want to show?',
+          changeProp: true,
+        },
+        {
+          type: 'gallery-image-hover-effect',
+          name: 'galleryImageHoverEffect',
+          label: 'What happens when customers hover over the image on desktop?',
+          changeProp: true,
+        },
+        {
+          type: 'gallery-show-cart-button',
+          name: 'galleryShowCartButton',
+          label: '',
+          changeProp: true,
+        },
+        {
+          type: 'gallery-product-display-style',
+          name: 'galleryProductDisplayStyle',
+          label: 'Product display style',
+          changeProp: true,
+        },
+        {
+          type: 'text',
+          name: 'sidepadding',
+          label: 'Image side padding',
+          changeProp: true,
+        },
+        {
+          type: 'text',
+          name: 'tppadding',
+          label: 'Image top and bottom padding',
+          changeProp: true,
+        },
+        {
+          type: 'text',
+          name: 'cornerradius',
+          label: 'Image Corner Radius',
+          changeProp: true,
+        },
+        {
+          type: 'text',
+          name: 'buttontext',
+          label: 'Button Text',
+          changeProp: true,
+        },
+        {
+          type: 'gallery-button-style',
+          name: 'galleryButtonStyle',
+          label: 'Button Design',
+          changeProp: true,
+        },
+        {
+          type: 'text',
+          name: 'fillopacity',
+          label: 'Fill opacity',
+          changeProp: true,
+        },
+        {
+          type: 'text',
+          name: 'borderwidth',
+          label: 'Border Width',
+          changeProp: true,
+        },
+        {
+          type: 'text',
+          name: 'buttoncornerradius',
+          label: 'Corner Radius',
+          changeProp: true,
+        },
+      ],
       styles: `.gridproductgallery {
         display: grid; 
         column-gap: 15px; 

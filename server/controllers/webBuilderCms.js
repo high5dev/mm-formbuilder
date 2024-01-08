@@ -410,7 +410,7 @@ exports.checkProductDataset = asyncHandler(async (req, res) => {
     const collections = await WebSiteCollection.find({
       userId: mongoose.Types.ObjectId(userId),
       organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
-      websiteId: mongoose.Types.ObjectId(websiteId),
+      websiteId: mongoose.Types.ObjectId(id),
       isDelete: false,
     });
     res.status(200).json({ success: true, data: collections });
