@@ -57,8 +57,8 @@ import {
 import { menu } from './util';
 import Settings from '../../../navigation/vertical/settings';
 import { truncate } from 'fs';
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 export default function MainNav({
   setIsBlog,
@@ -105,24 +105,26 @@ export default function MainNav({
   const [devicetype, setDeviceType] = useState('desktop');
   const [showFeatureIcons, setShowFeatureIcons] = useState(false);
   const [showZoomIcons, setShowZoomIcons] = useState(false);
-  const [differentTime, setDifferentTime] = useState("");
+  const [differentTime, setDifferentTime] = useState('');
   const form = store.form;
   const page = store.currentPage;
   const { formData } = form;
   const svgRef = useRef(null);
   const zoomRef = useRef(null);
-  const MySwal = withReactContent(Swal)
+  const MySwal = withReactContent(Swal);
 
   const handleConfirmCancel = () => {
     return MySwal.fire({
       title: '',
-      text: 'Do you want to save Changes?',
+      text: 'Do you want to leave Editor?',
       icon: 'warning',
+      iconColor: '#ea5455',
       showCancelButton: true,
       confirmButtonText: 'Yes',
+      cancelButtonText: 'Discard',
       customClass: {
-        confirmButton: 'btn btn-primary',
-        cancelButton: 'btn btn-outline-danger ms-1'
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger ms-1'
       },
       buttonsStyling: false
     }).then(function (result) {
@@ -131,8 +133,8 @@ export default function MainNav({
       } else if (result.dismiss === MySwal.DismissReason.cancel) {
         handleBackDiscard();
       }
-    })
-  }
+    });
+  };
 
   useEffect(() => {
     let interval = setInterval(() => {
@@ -142,24 +144,26 @@ export default function MainNav({
           if (data._id == page._id) {
             pageData = data;
           }
-        })
+        });
         if (pageData) {
           let today = new Date();
           let diff = today - Date.parse(pageData.updatedAt);
-          let days = Math.floor(diff / 86400000);
-          let hours = Math.floor((diff % 86400000) / 3.6e6);
+          let days = parseInt(Math.floor(diff / 86400000));
+          days = days ? days + ' days ' : null;
+          let hours =parseInt( Math.floor((diff % 86400000) / 3.6e6));
+          hours = hours ? hours + ' hours ' : null;
           let minutes = Math.floor((diff % 3.6e6) / 6e4);
+          minutes = minutes ? minutes + ' minutes ' : null;
           let seconds = Math.floor((diff % 6e4) / 1000);
-          let duration =
-            days + ' days ' + hours + ' hours ' + minutes + ' minutes ' + seconds + ' seconds ago Saved';
-          if (seconds != NaN) {
+          seconds = seconds ? seconds + ' seconds ' : null;
+          let duration = days + hours + minutes + seconds + ' ago Saved';
+          
             setDifferentTime(duration);
-          }
         }
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [form, page])
+  }, [form, page]);
 
   useEffect(() => {
     // Function to handle clicks outside of the SVG element
@@ -242,11 +246,11 @@ export default function MainNav({
 
   const handleBackSave = () => {
     setIsBack(2);
-  }
+  };
 
   const handleBackDiscard = () => {
     setIsBack(1);
-  }
+  };
 
   useEffect(() => {
     if (formData) {
@@ -314,8 +318,12 @@ export default function MainNav({
         </div>
         {/* <div>{diffentTime()}</div> */}
         <div className="additional-bar d-flex align-items-center justify-content-around">
-          <div className='px-2'>{differentTime}</div>
-          <Button className="menu-item text-primary text-dark" color="success" onClick={() => setIsSave(true)}>
+          <div className="px-2">{differentTime}</div>
+          <Button
+            className="menu-item text-primary text-dark"
+            color="success"
+            onClick={() => setIsSave(true)}
+          >
             Save
           </Button>
           <Button
@@ -375,11 +383,14 @@ export default function MainNav({
               Show Features
             </UncontrolledTooltip>
             <div className={showFeatureIcons ? '' : 'd-none'}>
-              <span className="hover-bg" onClick={(e) => {
-                setSelectedMainNav('elements');
-                setAddSideBarOpen(false);
-              }}>
-                <Plus size={24} color={'black'} id="addElements" />
+              <span
+                className="hover-bg"
+                onClick={(e) => {
+                  setSelectedMainNav('elements');
+                  setAddSideBarOpen(false);
+                }}
+              >
+                <Plus size={24}  id="addElements" />
                 <UncontrolledTooltip placement="bottom" target="addElements">
                   Elements
                 </UncontrolledTooltip>
@@ -391,7 +402,7 @@ export default function MainNav({
                   setAddSideBarOpen(true);
                 }}
               >
-                <MdOutlineLibraryBooks size={24} color={'black'} id="pages" />
+                <MdOutlineLibraryBooks size={24}  id="pages" />
                 <UncontrolledTooltip placement="bottom" target="pages">
                   Pages
                 </UncontrolledTooltip>
@@ -403,7 +414,7 @@ export default function MainNav({
                   setAddSideBarOpen(true);
                 }}
               >
-                <MdOutlineNewspaper size={24} color={'black'} id="cms" />
+                <MdOutlineNewspaper size={24}  id="cms" />
                 <UncontrolledTooltip placement="bottom" target="cms">
                   CMS
                 </UncontrolledTooltip>
@@ -412,7 +423,7 @@ export default function MainNav({
                 <span className="hover-bg">
                   <MdOutlineDownloading
                     size={26}
-                    color={'black'}
+                    
                     id="import"
                     onClick={(e) => handleImport(e)}
                   />
@@ -422,7 +433,7 @@ export default function MainNav({
                 </span>
               )}
               <span className="hover-bg">
-                <Trash2 size={24} color={'black'} id="trash2" onClick={handleClear} />
+                <Trash2 size={24}  id="trash2" onClick={handleClear} />
                 <UncontrolledTooltip placement="bottom" target="trash2">
                   Clear
                 </UncontrolledTooltip>
@@ -433,7 +444,7 @@ export default function MainNav({
                   handleAddElement();
                 }}
               >
-                <PlusSquare size={26} color={'black'} id="add-element" />
+                <PlusSquare size={26}  id="add-element" />
                 <UncontrolledTooltip placement="bottom" target="add-element">
                   Add Element
                 </UncontrolledTooltip>
@@ -441,7 +452,7 @@ export default function MainNav({
             </div>
           </span>
           <span
-            className="hover-bg feature-hide"
+            className="hover-bg feature-hide text-dark"
             onClick={(e) => {
               setSelectedMainNav('elements');
               setAddSideBarOpen(false);
@@ -451,13 +462,13 @@ export default function MainNav({
             <UncontrolledTooltip placement="bottom" target="comments">
               Comments
             </UncontrolledTooltip> */}
-            <Plus size={24} color={'black'} id="addElements" />
+            <Plus size={24}  id="addElements" />
             <UncontrolledTooltip placement="bottom" target="addElements">
               Elements
             </UncontrolledTooltip>
           </span>
           <span
-            className="hover-bg feature-hide"
+            className="hover-bg feature-hide text-dark"
             onClick={(e) => {
               setSelectedMainNav('pages');
               setAddSideBarOpen(true);
@@ -467,29 +478,29 @@ export default function MainNav({
             <UncontrolledTooltip placement="bottom" target="comments">
               Comments
             </UncontrolledTooltip> */}
-            <MdOutlineLibraryBooks size={24} color={'black'} id="pages" />
+            <MdOutlineLibraryBooks size={24}  id="pages" />
             <UncontrolledTooltip placement="bottom" target="pages">
               Pages
             </UncontrolledTooltip>
           </span>
           {store?.form?.addedCms && (
             <span
-              className="hover-bg"
+              className="hover-bg text-dark"
               onClick={(e) => {
                 setSelectedMainNav('cms');
                 setAddSideBarOpen(true);
               }}
             >
-              <MdOutlineNewspaper size={24} color={'black'} id="cms" />
+              <MdOutlineNewspaper size={24}  id="cms" />
               <UncontrolledTooltip placement="bottom" target="cms">
                 CMS
               </UncontrolledTooltip>
             </span>
           )}
-          <span className="hover-bg feature-hide">
+          <span className="hover-bg feature-hide text-dark">
             <MdOutlineDownloading
               size={26}
-              color={'black'}
+              
               id="import"
               onClick={(e) => handleImport(e)}
             />
@@ -497,25 +508,25 @@ export default function MainNav({
               Import
             </UncontrolledTooltip>
           </span>
-          <span className="hover-bg feature-hide">
-            <Trash2 size={24} color={'black'} id="trash2" onClick={handleClear} />
+          <span className="hover-bg feature-hide text-dark">
+            <Trash2 size={24}  id="trash2" onClick={handleClear} />
             <UncontrolledTooltip placement="bottom" target="trash2">
               Clear
             </UncontrolledTooltip>
           </span>
           <span
-            className="hover-bg feature-hide"
+            className="hover-bg feature-hide text-dark"
             onClick={() => {
               handleAddElement();
             }}
           >
-            <BiListPlus size={26} color={'black'} id="add-element" />
+            <BiListPlus size={26}  id="add-element" />
             <UncontrolledTooltip placement="bottom" target="add-element">
               Add Element
             </UncontrolledTooltip>
           </span>
         </div>
-        <div className="home-pages d-flex align-items-center">
+        <div className="home-pages d-flex align-items-center text-dark">
           <UncontrolledDropdown style={{ cursor: 'pointer' }}>
             <DropdownToggle tag="div" className="btn btn-sm hover-effect">
               <div className="d-flex">
@@ -538,7 +549,9 @@ export default function MainNav({
                       className="w-100 text-left"
                       onClick={(e) => handlePage(item)}
                     >
-                      <span className="" style={{ color: page == item ? '#174ae7' : '#6e6b7b' }}>{item.name}</span>
+                      <span className="" style={{ color: page == item ? '#174ae7' : '#6e6b7b' }}>
+                        {item.name}
+                      </span>
                     </DropdownItem>
                   );
                 })}
@@ -557,11 +570,10 @@ export default function MainNav({
             </DropdownMenu>
           </UncontrolledDropdown>
         </div>
-        <div className="devices-icons d-flex justify-content-around align-items-center">
-          <span>
+        <div className={`devices-icons d-flex justify-content-around align-items-center` }>
+          <span className={`${devicetype === 'desktop' ? 'text-primary' : 'text-dark'}`}>
             <MdOutlineDesktopMac
               size={22}
-              color={devicetype === 'desktop' ? '#174ae7' : 'black'}
               onClick={() => {
                 setWidth(1280);
                 setCustomWidth(1280);
@@ -569,10 +581,9 @@ export default function MainNav({
               }}
             />
           </span>
-          <span>
+          <span className={`${devicetype === 'tablet' ? 'text-primary' : 'text-dark'}`}>
             <MdOutlineTablet
               size={22}
-              color={devicetype === 'tablet' ? '#174ae7' : 'black'}
               onClick={() => {
                 setWidth(768);
                 setCustomWidth(768);
@@ -580,10 +591,9 @@ export default function MainNav({
               }}
             />
           </span>
-          <span>
+          <span className={`${devicetype === 'mobile' ? 'text-primary' : 'text-dark'}`}>
             <BiMobile
               size={22}
-              color={devicetype === 'mobile' ? '#174ae7' : 'black'}
               onClick={() => {
                 setWidth(320);
                 setCustomWidth(320);
@@ -637,7 +647,11 @@ export default function MainNav({
             }
           >
             <div className="d-flex px-2 ">
-              <span className={`menu-icon ${tab == 'Layers' && rsidebarOpen == true ? 'text-primary' : 'text-dark'}`}>
+              <span
+                className={`menu-icon ${
+                  tab == 'Layers' && rsidebarOpen == true ? 'text-primary' : 'text-dark'
+                }`}
+              >
                 <MdOutlineLayers
                   size={26}
                   id="layers"
@@ -650,7 +664,14 @@ export default function MainNav({
                   Layers
                 </UncontrolledTooltip>
               </span>
-              <span className={`menu-icon ${tab == 'Settings' && rsidebarOpen == true || tab == 'Styles' && rsidebarOpen == true ? 'text-primary' : 'text-dark'}`} >
+              <span
+                className={`menu-icon ${
+                  (tab == 'Settings' && rsidebarOpen == true) ||
+                  (tab == 'Styles' && rsidebarOpen == true)
+                    ? 'text-primary'
+                    : 'text-dark'
+                }`}
+              >
                 <FiSettings
                   size={22}
                   id="CloseSettings"
