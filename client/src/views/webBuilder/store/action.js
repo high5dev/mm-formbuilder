@@ -437,7 +437,7 @@ export const getPageAction = (id) => async (dispatch) => {
       return data.data;
     }
     else {
-      toast.error('Something went wrong! please try again');
+      // toast.error('Something went wrong! please try again');
     }
 
   }

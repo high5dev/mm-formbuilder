@@ -21,6 +21,7 @@ import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { SlArrowDown } from 'react-icons/sl';
+import ReactPlayer from 'react-player';
 import {
   Button,
   ButtonGroup,
@@ -100,6 +101,7 @@ import html2canvas from 'html2canvas';
 import CreateAssetModal from './leftSidebar/assets/CreateAssetModal';
 import RenameAssetModal from './leftSidebar/assets/RenameAssetModal';
 import AddElementModal from './topNav/import/AddElementModal';
+import UploadMediaModal from './topNav/import/UploadMediaModal';
 import RenameModal from './topNav/rename/renameModal';
 import CreateFormModal from '../createForm/CreateFormModal';
 import DuplicateModal from './topNav/duplicate/duplicateModal';
@@ -146,6 +148,9 @@ export default function Editor({
   isclear,
   setIsClear,
   isback,
+  setIsBack,
+  isSave,
+  setIsSave,
   ispreview,
   ispublish,
   setIsPreview,
@@ -249,6 +254,7 @@ export default function Editor({
   const [cdCheckedItems, setCDCheckedItems] = useState({});
   const [customerCollectId, setCustomerCollectId] = useState('');
   const [ClientWaiting, setClientWaiting] = useState(false);
+  const [openUploadModal, setOpenUploadModal] = useState(false);
   const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
 
   const loadedRef = useRef();
@@ -284,10 +290,25 @@ export default function Editor({
     });
   };
 
+  // const PageSave = async () => {
+  //   if (editor) {
+  //     const current_page = editor.Pages.getSelected();
+  //     const html = editor.getHtml({ current_page });
+  //     const css = editor.getCss({ current_page });
+  //     const payload = {
+  //       page: page?._id,
+  //       html: html,
+  //       css: css
+  //     };
+  //     console.log(current_page)
+  //   // return await dispatch(updatePageAction(id, payload));
+  //   }
+  //   setIsSave(false)
+  // };
+
   const toggle = () => {
     setOpen(!open);
   };
-
   const toggleAddPresetMdl = () => {
     setOpenAddPresetMdl(!openAddPresetMdl);
   };
@@ -1124,14 +1145,16 @@ export default function Editor({
 
     const fetchGoogleFonts = async () => {
       const data = await dispatch(getGoogleFontsAction());
-      if(!data) return;
-      const fontData = data.items.map(font => { return { name: font.family, url: font.files.regular }; });
-      const fontFamilyProp = gjsEditor.StyleManager.getProperty('typography', 'font-family');
+      if (!data) return;
+      const fontData = data?.items?.map((font) => {
+        return { name: font.family, url: font.files.regular };
+      });
+      const fontFamilyProp = gjsEditor?.StyleManager.getProperty('typography', 'font-family');
       const options = [];
-      fontData.forEach(font => {
+      fontData?.forEach((font) => {
         options.push({ id: font.name, label: font.name });
-      })
-      
+      });
+
       fontFamilyProp.set('options', options);
       const loadFont = (fontName) => {
         WebFont.load({
@@ -1141,7 +1164,10 @@ export default function Editor({
           active: function () {
             // Append the font stylesheet to the GrapesJS iframe
             const cssLink = gjsEditor.Canvas.getDocument().createElement('link');
-            cssLink.href = `https://fonts.googleapis.com/css?family=${fontName.replace(/\s/g, '+')}`;
+            cssLink.href = `https://fonts.googleapis.com/css?family=${fontName.replace(
+              /\s/g,
+              '+'
+            )}`;
             cssLink.rel = 'stylesheet';
             cssLink.type = 'text/css';
             const head = gjsEditor.Canvas.getDocument().head;
@@ -1160,7 +1186,9 @@ export default function Editor({
       rte.add('fontFamily', {
         icon: `
             <select class="gjs-field" style="width: 100px">
-                ${fontData.map(font => `<option value="${font.name}">${font.name}</option>`).join('')}
+                ${fontData
+                  ?.map((font) => `<option value="${font.name}">${font.name}</option>`)
+                  .join('')}
             </select>
         `,
         event: 'change',
@@ -1170,14 +1198,14 @@ export default function Editor({
           rte.exec('fontName', fontFamilyValue);
         },
         update: (rte, action) => {
-          const value = rte.doc.queryCommandValue("fontName");
+          const value = rte.doc.queryCommandValue('fontName');
           console.log(value);
           if (value) {
             action.btn.firstChild.value = value.replace(/['"]+/g, ''); // Remove quotes
           }
         }
       });
-    }
+    };
 
     fetchGoogleFonts();
 
@@ -1355,11 +1383,19 @@ export default function Editor({
         css: css
       };
       if (isback) {
-        dispatch(updatePageAction(id, payload)).then((res) => {
-          if (res) {
-            history.goBack();
-          }
-        });
+        // console.log(storeRef.current.currentPage._id, page?._id);
+        if (isSave) {
+          console.log(payload);
+          dispatch(updatePageAction(id, payload)).then((res) => {
+            if (res) {
+              history.goBack();
+            }
+          });
+        } else {
+          history.goBack();
+        }
+        setIsSave(false);
+        setIsBack(false);
       }
       if (ispreview) {
         dispatch(updatePageAction(id, payload)).then((res) => {
@@ -1384,15 +1420,18 @@ export default function Editor({
     }
   }, [ispreview, ispublish, isback]);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (page) {
       setIsLoading(true);
       setIsStoreLoading(true);
-      dispatch(getPageAction(page._id)).then((res) => {
+      dispatch(getPageAction(storeRef.current.currentPage._id)).then((res) => {
         if (res) {
           if (editor) {
             editor.setComponents(res);
           }
+          setIsLoading(false);
+          setIsStoreLoading(false);
+        } else {
           setIsLoading(false);
           setIsStoreLoading(false);
         }
@@ -1410,7 +1449,6 @@ export default function Editor({
           dispatch(updatePageAction(id, payload));
         }
       }, 1000 * 30);
-
       //Clearing the interval
       return () => clearInterval(interval);
     }
@@ -1858,7 +1896,7 @@ export default function Editor({
                               const returnComponent = (
                                 <>
                                   <div
-                                    className="d-flex align-items-center px-50 border-bottom border-top border-bottom border-top "
+                                    className="d-flex align-items-center px-50 border-bottom border-top"
                                     onClick={() => {
                                       handleOnclick(index);
                                     }}
@@ -1914,34 +1952,50 @@ export default function Editor({
                             })}
                           </div>
                           <div className="element-container">
-                            <div style={{ width: 300, flexWrap: 'wrap' }} className="d-flex align-items-center text-center border-bottom">
+                            <div
+                              style={{ width: 300, flexWrap: 'wrap' }}
+                              className="d-flex align-items-center text-center border-bottom"
+                            >
                               {blockManager?.blocks
-                                ?.filter((e) => e.get('category').id === selectedCategory) 
+                                ?.filter((e) => e.get('category').id === selectedCategory)
                                 .map((b, ix, array) => {
                                   return (
-                                    <Col sm={2} className={` p-50 ${ix+6>=array.length&&ix+1!==array.length?ix-6<0?'':'border-bottom':'border-bottom'}` }>
-                                     {b.get('media').match('image') ? (
-                                         <div><img width="40" height="40" src={b.get('media')} /></div> 
-                                        ) : null}
-                                        <i className={b.get('media')} style={{ fontSize: 40 }}></i>
-                                        <div
-                                          draggable
-                                          onDragStart={(e) => {
-                                            e.stopPropagation();
-                                            blockManager.dragStart(b, e.nativeEvent);
-                                          }}
-                                          onDragEnd={(e) => {
-                                            e.stopPropagation();
-                                            if (b.get('label') === 'New Form') {
-                                              createForm();
-                                              blockManager.dragStop(false);
-                                            }
-                                            if (b.get('label') === 'Add Existing Form') {
-                                              setAddFormMdl(true);
-                                              blockManager.dragStop(false);
-                                            }
-                                          }}
-                                        ></div>
+                                    <Col
+                                      sm={2}
+                                      className={` p-50 ${
+                                        array.length - 6 > ix + 1
+                                          ? 'border-bottom'
+                                          : ix + 1 == array.length
+                                          ? (ix + 1) % 6 == 0
+                                            ? 'border-bottom'
+                                            : ''
+                                          : 'border-bottom'
+                                      }`}
+                                    >
+                                      {b.get('media').match('image') ? (
+                                        <div>
+                                          <img width="40" height="40" src={b.get('media')} />
+                                        </div>
+                                      ) : null}
+                                      <i className={b.get('media')} style={{ fontSize: 40 }}></i>
+                                      <div
+                                        draggable
+                                        onDragStart={(e) => {
+                                          e.stopPropagation();
+                                          blockManager.dragStart(b, e.nativeEvent);
+                                        }}
+                                        onDragEnd={(e) => {
+                                          e.stopPropagation();
+                                          if (b.get('label') === 'New Form') {
+                                            createForm();
+                                            blockManager.dragStop(false);
+                                          }
+                                          if (b.get('label') === 'Add Existing Form') {
+                                            setAddFormMdl(true);
+                                            blockManager.dragStop(false);
+                                          }
+                                        }}
+                                      ></div>
                                     </Col>
                                   );
                                 })}
@@ -1978,7 +2032,7 @@ export default function Editor({
                               const returnComponent = (
                                 <>
                                   <div
-                                    className="d-flex align-items-center px-50 border-bottom border-top border-bottom border-top "
+                                    className="d-flex align-items-center px-50 border-bottom border-top "
                                     onClick={() => {
                                       handleOnclick(index);
                                     }}
@@ -2186,7 +2240,8 @@ export default function Editor({
                         sidebarData.menu.id !== 'assets' &&
                         sidebarData.menu.id !== 'compositions' &&
                         sidebarData.menu.id !== 'contact-forms' &&
-                        sidebarData.menu.id !== 'content' && (
+                        sidebarData.menu.id !== 'content' &&
+                        sidebarData.menu.id !== 'media' && (
                           <div className="submenu-and-element d-flex">
                             <div className="submenu-list pt-0">
                               {sidebarData?.menu?.subMenu?.map((sub, index) => {
@@ -2574,6 +2629,226 @@ export default function Editor({
                                               </DropdownMenu>
                                             </UncontrolledDropdown>
                                           </div>
+                                        </div>
+                                      </Collapse>
+                                    );
+                                  })}
+                                </>
+                              );
+                              return returnComponent;
+                            })}
+                          </div>
+                          <div className="element-container">
+                            {blockManager?.blocks
+                              ?.filter((e) => e.get('category').id === selectedCategory)
+                              .map((b, ix) => {
+                                if (b.get('menu') == `assets-videos`) {
+                                  return (
+                                    <div key={ix} className="p-1 border-bottom">
+                                      <video
+                                        style={{
+                                          maxWidth: '100%',
+                                          width: '320px',
+                                          margin: '0 auto'
+                                        }}
+                                        playsInline
+                                        loop
+                                        muted
+                                        controls
+                                        alt="All the devices"
+                                        src={b.get('media')}
+                                      />
+                                      <div
+                                        draggable
+                                        onDragStart={(e) => {
+                                          e.stopPropagation();
+                                          blockManager.dragStart(b, e.nativeEvent);
+                                        }}
+                                        onDragEnd={(e) => {
+                                          e.stopPropagation();
+                                          if (b.get('label') === 'New Form') {
+                                            createForm();
+                                          }
+                                          if (b.get('label') === 'Add Existing Form') {
+                                            setAddFormMdl(true);
+                                          }
+                                          blockManager.dragStop(false);
+                                        }}
+                                      ></div>
+                                    </div>
+                                  );
+                                } else if (b.get('menu') == `assets-images`) {
+                                  return (
+                                    <div key={ix} className="p-1 border-bottom">
+                                      <img width="280" src={b.get('media')} />
+                                      <div
+                                        draggable
+                                        onDragStart={(e) => {
+                                          e.stopPropagation();
+                                          blockManager.dragStart(b, e.nativeEvent);
+                                        }}
+                                        onDragEnd={(e) => {
+                                          e.stopPropagation();
+                                          if (b.get('label') === 'New Form') {
+                                            createForm();
+                                          }
+                                          if (b.get('label') === 'Add Existing Form') {
+                                            setAddFormMdl(true);
+                                          }
+                                          blockManager.dragStop(false);
+                                        }}
+                                      ></div>
+                                    </div>
+                                  );
+                                } else if (b.get('menu') == `assets-audios`) {
+                                  return (
+                                    <div key={ix} className="p-1 border-bottom">
+                                      <div>
+                                        <audio controls autoplay muted>
+                                          <source src={b.get('media')} type="audio/ogg" />
+                                          Your browser does not support the audio element.
+                                        </audio>
+                                      </div>
+                                      <div
+                                        draggable
+                                        onDragStart={(e) => {
+                                          e.stopPropagation();
+                                          blockManager.dragStart(b, e.nativeEvent);
+                                        }}
+                                        onDragEnd={(e) => {
+                                          e.stopPropagation();
+                                          if (b.get('label') === 'New Form') {
+                                            createForm();
+                                          }
+                                          if (b.get('label') === 'Add Existing Form') {
+                                            setAddFormMdl(true);
+                                          }
+                                          blockManager.dragStop(false);
+                                        }}
+                                      ></div>
+                                    </div>
+                                  );
+                                }
+                              })}
+                          </div>
+                        </div>
+                      )}
+                      {sidebarData.menu.id === 'media' && (
+                        <div className="submenu-and-element d-flex">
+                          <div className="submenu-list pt-0">
+                            {sidebarData?.menu?.subMenu?.map((sub, index) => {
+                              const categories = [];
+                              const tempBlocks = [];
+                              editor?.BlockManager.blocks.map((e) => {
+                                if (
+                                  e.get('menu') === `${sidebarData.menu.id}-${sub.id}` &&
+                                  categories.findIndex(
+                                    (c) =>
+                                      c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`
+                                  ) === -1
+                                ) {
+                                  categories.push(
+                                    `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`
+                                  );
+                                  tempBlocks.push(e);
+                                }
+                              });
+
+                              const returnComponent = (
+                                <>
+                                  <div
+                                    className="d-flex align-items-center px-50 border-bottom border-top"
+                                    onClick={() => {
+                                      handleOnclick(index);
+                                    }}
+                                  >
+                                    {sub.name == 'Upload Media' ? (
+                                      <div className="d-flex pt-1">
+                                        <div
+                                          hidden={
+                                            OpenCategory.index == index ? OpenCategory.value : false
+                                          }
+                                        >
+                                          <IoMdArrowDropright size={18} />
+                                        </div>
+                                        <div
+                                          hidden={
+                                            OpenCategory.index == index ? !OpenCategory.value : true
+                                          }
+                                        >
+                                          <IoMdArrowDropdown size={18} />
+                                        </div>
+                                        <div className="px-50 ">
+                                          <h5 className="submenu-item px-0 pt-0 mt-0">
+                                            {sub.name}
+                                          </h5>
+                                          <Collapse
+                                            isOpen={
+                                              OpenCategory.index == index
+                                                ? OpenCategory.value
+                                                : false
+                                            }
+                                          >
+                                            <div className="mb-1">
+                                              <Button
+                                                color="primary"
+                                                outline
+                                                className="w-100"
+                                                size="sm"
+                                                onClick={() => {
+                                                  setOpenUploadModal(!openUploadModal);
+                                                }}
+                                              >
+                                                Upload
+                                              </Button>
+                                            </div>
+                                          </Collapse>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <>
+                                        <div
+                                          hidden={
+                                            OpenCategory.index == index ? OpenCategory.value : false
+                                          }
+                                        >
+                                          <IoMdArrowDropright size={18} />
+                                        </div>
+                                        <div
+                                          hidden={
+                                            OpenCategory.index == index ? !OpenCategory.value : true
+                                          }
+                                        >
+                                          <IoMdArrowDropdown size={18} />
+                                        </div>
+                                        <div className="ps-50">
+                                          <h5 className="submenu-item ps-0">{sub.name}</h5>
+                                        </div>
+                                      </>
+                                    )}
+                                  </div>
+                                  {tempBlocks.map((b, ix) => {
+                                    return (
+                                      <Collapse
+                                        isOpen={
+                                          OpenCategory.index == index ? OpenCategory.value : false
+                                        }
+                                      >
+                                        <div
+                                          key={ix}
+                                          className={
+                                            selectedCategory ===
+                                            `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                              ? 'selected-submenu-category'
+                                              : 'submenu-category'
+                                          }
+                                          onClick={() => {
+                                            setSelectedCategory(
+                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                            );
+                                          }}
+                                        >
+                                          {b.get('label')}
                                         </div>
                                       </Collapse>
                                     );
@@ -3042,6 +3317,7 @@ export default function Editor({
                       onClick={(e) => {
                         setAddSideBarOpen(false);
                       }}
+                      style={{ cursor: 'hand' }}
                     />
                   </span>
                 </div>
@@ -3150,6 +3426,12 @@ export default function Editor({
         setEditor={setEditor}
         openAddElementMdl={openAddElementMdl}
         setOpenAddElementMdl={setOpenAddElementMdl}
+      />
+      <UploadMediaModal
+        editor={editor}
+        setEditor={setEditor}
+        openUploadModal={openUploadModal}
+        setOpenUploadModal={setOpenUploadModal}
       />
       <RenameModal store={store} isOpen={renameMdl} toggle={_toggleRename} />
       <CreateFormModal open={createMdl} store={store} dispatch={dispatch} />
