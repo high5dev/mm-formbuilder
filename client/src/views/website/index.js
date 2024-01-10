@@ -244,12 +244,21 @@ export default function Index() {
         });
       }
       else {
+        let payload={id, pageName:name, pageViewed:false, totalViewed:false};
         setCartLink(`/website/${id}/Cart%20Page`);
         setThankyouLink(`/website/${id}/Thankyou%20Page`);
         setProductLink(`/website/${id}/Product%20Page`);
         setIsPageLoading(true);
+        if(localStorage.getItem(name)){
+          payload.pageViewed=true;
+        }
+        if(localStorage.getItem('totalViewed')){
+          payload.totalViewed=true;
+        }
         dispatch(getPublishPageAction(payload)).then((res) => {
           if(res){
+            localStorage.setItem(name, 'true');
+            localStorage.setItem('totalViewed','true');
             const parser = new DOMParser();
             let htmlCmp = parser.parseFromString(res.data, 'text/html');
             let linkElements = htmlCmp.getElementsByTagName('a');
@@ -692,6 +701,17 @@ export default function Index() {
     // };
   }, [pageContent]);
 
+  window.onunload=()=>{
+    let name;
+    if (pageName) {
+      name = pageName;
+    }
+    else {
+      name = "Home";
+    };
+    localStorage.removeItem(name);
+    localStorage.removeItem('totalViewed');
+  }
 
   return (
     <>

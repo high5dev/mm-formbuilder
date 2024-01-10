@@ -3,6 +3,7 @@ import {
   setAllFormsReducer,
   setFormContacts,
   setFormReducer,
+  setFormHistoryReducuer,
   setFormThemeReducer,
   setChildFormReducer,
   setChildFormsReducer,
@@ -244,6 +245,16 @@ export const getWebsiteEntryAction = (id) => async (dispatch) => {
   } catch (error) { }
 }
 
+export const getAllWebsiteEntryAction=(id) =>async(dispatch) =>{
+  try {
+    const { data } = await api.getAllWebsiteEntry(id);
+    if (data?.success === true) {
+      return data.data
+    }
+  } catch (error) { }
+}
+
+
 export const deleteWebsiteEntryAction = (id) => async (dispatch) => {
   try {
     const { data } = await api.deleteWebsiteEntry(id);
@@ -327,6 +338,21 @@ export const getWebsiteAction = (id) => async (dispatch) => {
 
   } catch (error) { }
 };
+
+export const getWebBuilderHistoryAction=(id, payload) =>async(dispatch) =>{
+  try{
+    const {data}=await api.getWebBuilderHistory(id, payload);
+    const {historyData}=data.data;
+    if(data?.success===true){
+      dispatch(setFormHistoryReducuer(historyData));
+      return data
+    }
+  }
+  catch(error){
+
+  }
+
+}
 
 export const renameWebsiteAction = (id, payload) => async (dispatch) => {
   try {
@@ -437,7 +463,7 @@ export const getPageAction = (id) => async (dispatch) => {
       return data.data;
     }
     else {
-      toast.error('Something went wrong! please try again');
+      // toast.error('Something went wrong! please try again');
     }
 
   }
@@ -555,7 +581,9 @@ export const updatePageNameAction = (id, payload) => async (dispatch) => {
 
 export const publishWebsiteAction = (id, payload) => async (dispatch) => {
   try {
+    console.log('id================', id, payload)
     const res = await api.publishWebsite(id, payload);
+    console.log('response==========', res);
     const { data } = res;
     if (data?.success === true) {
       return data.data;
@@ -581,10 +609,17 @@ export const getFormDataAction = (id) => async (dispatch) => {
   try {
     const { data } = await api.getForm(id);
 
-    // dispatch(setFormReducer(data.data));
+    dispatch(setFormReducer(data.data));
 
     dispatch(setFormOrderElementsReducer(data.data?.orderElements || []))
     dispatch(setFormProductsReducer(data.data?.products || []))
+  } catch (error) { }
+};
+export const getFormAction = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.getForm(id);
+
+    dispatch(setFormReducer(data.data));
   } catch (error) { }
 };
 export const getWebsitesCountAction = () => async (dispatch) => {

@@ -24,7 +24,7 @@ import '@src/assets/styles/tasks.scss';
 import '@src/assets/styles/dark-layout.scss';
 
 // ** DATA ACTIONS
-import { getFormDataAction, getFormsEntryAction } from '../store/action';
+import { getFormDataAction, getFormsEntryAction, getWebBuilderHistoryAction, getAllWebsiteEntryAction } from '../store/action';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { getUserData } from '../../../auth/utils';
 import OverviewStep from './tabs/overview';
@@ -52,7 +52,15 @@ const FunnelSettings = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getFormDataAction(id));
+    const websiteId=store.form?._id;
+    const pageNames=store.form.formData && store.form.formData.map((_page)=>{
+      return _page.name;
+    });
+    const payload={
+      pageNames:pageNames
+    };
+    dispatch(getWebBuilderHistoryAction(id, payload));
+    // dispatch(getFormDataAction(id));
     // dispatch(getFormsEntryAction(id));
   }, []);
   useEffect(() => {
@@ -220,7 +228,7 @@ const FunnelSettings = () => {
                   />
               </TabPane>
               <TabPane tabId="2">
-                <Pages />
+                <Pages id={id} />
               </TabPane>
               {/* <TabPane tabId="3">
                 <div>Contacts</div>

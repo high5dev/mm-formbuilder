@@ -1,9 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Bold, X, Trash2, Check, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Plus,  Edit,
-  MoreVertical, Settings } from 'react-feather';
+import {
+  Bold,
+  X,
+  Trash2,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  ChevronUp,
+  Plus,
+  Edit,
+  MoreVertical,
+  Settings
+} from 'react-feather';
 import { CgStyle } from 'react-icons/cg';
-import { IoMdArrowDropright,IoMdArrowDropdown  } from "react-icons/io";
+import { IoMdArrowDropright, IoMdArrowDropdown, IoMdSend } from 'react-icons/io';
 import { RiQuestionMark } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
@@ -28,7 +40,9 @@ import {
   DropdownMenu,
   DropdownToggle,
   UncontrolledDropdown,
-  Input
+  Input,
+  Col,
+  Row
 } from 'reactstrap';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import websitePlugin from 'grapesjs-preset-webpage';
@@ -88,6 +102,7 @@ import html2canvas from 'html2canvas';
 import CreateAssetModal from './leftSidebar/assets/CreateAssetModal';
 import RenameAssetModal from './leftSidebar/assets/RenameAssetModal';
 import AddElementModal from './topNav/import/AddElementModal';
+import UploadMediaModal from './topNav/import/UploadMediaModal';
 import RenameModal from './topNav/rename/renameModal';
 import CreateFormModal from '../createForm/CreateFormModal';
 import DuplicateModal from './topNav/duplicate/duplicateModal';
@@ -136,6 +151,9 @@ export default function Editor(
   isclear,
   setIsClear,
   isback,
+  setIsBack,
+  isSave,
+  setIsSave,
   ispreview,
   ispublish,
   setIsPreview,
@@ -163,8 +181,7 @@ export default function Editor(
   roleMdl,
   setRoleMdl,
   VisibleMenu
-}) 
-{
+}) {
   const [openCreateForm, setOpenCreateForm] = useState();
   const { id } = useParams();
   const form = store.form;
@@ -188,7 +205,7 @@ export default function Editor(
   const [isPublishModal, setIsPublishModal] = useState(false);
   const [publishUrl, setPublishUrl] = useState();
   const [formeditorMdl, setFormEditorMdl] = useState(false);
-  const [themeEditing, setThemeEditing]=useState(false);
+  const [themeEditing, setThemeEditing] = useState(false);
   const [openCreateColMdl, setOpenCreateColMdl] = useState(false);
   const [openCreateAssetMdl, setOpenCreateAssetMdl] = useState(false);
   const [openRenameAssetMdl, setOpenRenameAssetMdl] = useState(false);
@@ -239,15 +256,15 @@ export default function Editor(
   }, [store.form._id]);
 
   useEffect(() => {
-    if(store.webCollections) {
+    if (store.webCollections) {
       store.webCollections.map((collection) => {
-        if(collection.category == "store") {
+        if (collection.category == 'store') {
           setStoreProducts(collection);
           return;
         }
-      })
+      });
     }
-  }, [store.webCollections])
+  }, [store.webCollections]);
 
   const [productDataset, setProductDataset] = useState({});
   const [datasetConnect, setDatasetConnect] = useState([]);
@@ -257,11 +274,13 @@ export default function Editor(
   const [showProductsSettingModal, setShowProductsSettingModal] = useState(false);
   const [showProductPageSettingModal, setShowProductPageSettingModal] = useState(false);
   const [showAddCartButtonModal, setShowAddCartButtonModal] = useState(false);
-  const [cartProductId, setCartProductId] = useState("");
-  const [customerDataset, setCustomerDataset] = useState({ type: "", collectionId: "" });
+  const [cartProductId, setCartProductId] = useState('');
+  const [customerDataset, setCustomerDataset] = useState({ type: '', collectionId: '' });
   const [showCustomerDatasetModal, setShowCustomerDatasetModal] = useState(false);
   const [cdCheckedItems, setCDCheckedItems] = useState({});
-  const [customerCollectId, setCustomerCollectId] = useState("");
+  const [customerCollectId, setCustomerCollectId] = useState('');
+  const [ClientWaiting, setClientWaiting] = useState(false);
+  const [openUploadModal, setOpenUploadModal] = useState(false);
   const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
 
   const loadedRef = useRef();
@@ -271,10 +290,51 @@ export default function Editor(
   storeRef.current = store;
   productRef.current = storeProducts;
 
+  const collectFormSubmission = async () => {
+    Swal.fire({
+      title: 'Submission Forms',
+      text: 'Are you sure you want to submit these forms?',
+      icon: 'warning',
+      iconColor: '#ea5455',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Save',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger ms-1'
+      },
+      buttonsStyling: false
+    }).then((result) => {
+      setClientWaiting(true);
+      if (result.isConfirmed) {
+        setClientWaiting(false);
+      } else {
+        setClientWaiting(false);
+      }
+    });
+  };
+
+  // const PageSave = async () => {
+  //   if (editor) {
+  //     const current_page = editor.Pages.getSelected();
+  //     const html = editor.getHtml({ current_page });
+  //     const css = editor.getCss({ current_page });
+  //     const payload = {
+  //       page: page?._id,
+  //       html: html,
+  //       css: css
+  //     };
+  //     console.log(current_page)
+  //   // return await dispatch(updatePageAction(id, payload));
+  //   }
+  //   setIsSave(false)
+  // };
+
   const toggle = () => {
     setOpen(!open);
   };
-
   const toggleAddPresetMdl = () => {
     setOpenAddPresetMdl(!openAddPresetMdl);
   };
@@ -408,10 +468,7 @@ export default function Editor(
           // Update the name if the ID exists
           if (element.get('type') == 'text') {
             if (element.components().models.length == 0) {
-              element.set(
-                'content',
-                storeProducts?.values[index][data[existingItemIndex].name]
-              );
+              element.set('content', storeProducts?.values[index][data[existingItemIndex].name]);
             } else {
               element
                 .components()
@@ -471,7 +528,7 @@ export default function Editor(
 
   const handleChangeCustomerDataset = (type, collectionId) => {
     setCustomerDataset({ type: type, collectionId: collectionId });
-  }
+  };
 
   const handleCDCheckboxChange = (field, isChecked) => {
     setCDCheckedItems({
@@ -480,23 +537,25 @@ export default function Editor(
         ...cdCheckedItems[`${customerDataset.type}-${customerDataset.collectionId}`],
         [field]: isChecked
       }
-    })
-  }
+    });
+  };
 
   const collectFromClient = async () => {
-    const data = await dispatch(createCustomerCollectAction({
-      websiteId: store?.form?._id,
-      fields: cdCheckedItems[`${customerDataset.type}-${customerDataset.collectionId}`],
-      type: customerDataset.type,
-      collectionId: customerDataset.collectionId
-    }));
+    const data = await dispatch(
+      createCustomerCollectAction({
+        websiteId: store?.form?._id,
+        fields: cdCheckedItems[`${customerDataset.type}-${customerDataset.collectionId}`],
+        type: customerDataset.type,
+        collectionId: customerDataset.collectionId
+      })
+    );
     setCustomerCollectId(data.data._id);
     setShowCustomerDatasetModal(true);
-  }
+  };
 
   const handleConfirmCustomerDataset = (id, payload) => {
     dispatch(confirmCustomerDatasetAction(id, payload));
-  }
+  };
 
   const handleRename = (_b) => {
     setSelectedWebElement(_b);
@@ -508,7 +567,7 @@ export default function Editor(
     //     editor.BlockManager.remove(ccid);
     //   }
     // })
-  }
+  };
   // useEffect(() =>{
   //   let interval;
   //     if(editor && !form.isPublish){
@@ -527,21 +586,20 @@ export default function Editor(
   //     }
   // }, [editor?.getHtml(editor?.Pages.getSelected()), editor?.getCss(editor?.Pages.getSelected()), form, page])
 
-  const addNewThemeColor=()=>{
-    if(formTheme?._id && formTheme?.colors){
-      const themeId=formTheme._id;
-      const colors=formTheme.colors;
-      const payload={
-        name:'Color #'+colors.length.toString(),
-        value:"#000000",
+  const addNewThemeColor = () => {
+    if (formTheme?._id && formTheme?.colors) {
+      const themeId = formTheme._id;
+      const colors = formTheme.colors;
+      const payload = {
+        name: 'Color #' + colors.length.toString(),
+        value: '#000000'
       };
-      dispatch(addWebBuilderThemeColorAction(themeId, payload)).then(res=>{
-        if(res){
+      dispatch(addWebBuilderThemeColorAction(themeId, payload)).then((res) => {
+        if (res) {
           setSelectedSubMenu('colors');
           setThemeEditing(true);
         }
-      })
-
+      });
     }
   }
 
@@ -668,7 +726,7 @@ export default function Editor(
     // dispatch(getBlogsAction(store?.form?._id));
     dispatch(getWebsiteAction(id)).then((res) => {
       if (res) {
-        dispatch(setCurrentPage(res.find(e => e._id === page?._id)));
+        dispatch(setCurrentPage(res.find((e) => e._id === page?._id)));
       }
     });
     const gjsEditor = grapesjs.init({
@@ -686,7 +744,6 @@ export default function Editor(
       styleManager: {
         appendTo: document.querySelector('#style-manager-container'),
         clearProperties: true
-
       },
       selectorManager: {
         custom: true,
@@ -765,7 +822,7 @@ export default function Editor(
     });
 
     gjsEditor.on('component:add', (component) => {
-      if(!component) return;
+      if (!component) return;
       if (
         component.get('type') === 'gridproductgallery' ||
         component.get('type') === 'sliderproductgallery' ||
@@ -951,7 +1008,7 @@ export default function Editor(
     //     } catch (e) { }
     //   }
     // });
-    gjsEditor.on('block:drag:start', function (model) { });
+    gjsEditor.on('block:drag:start', function (model) {});
     gjsEditor.on('block:drag:stop', function (model) {
       setSidebarData({
         ...sidebarData,
@@ -981,14 +1038,14 @@ export default function Editor(
     gjsEditor.on('component:selected', (cmp) => {
       // get the selected componnet and its default toolbar
       const defaultToolbar = cmp.get('toolbar');
-      if(defaultToolbar.filter((tlb) => tlb.id === new_toolbar_id)){
+      if (defaultToolbar.filter((tlb) => tlb.id === new_toolbar_id)) {
         defaultToolbar.unshift({
           id: `RightSidebar-new_toolbar_id`,
           command: 'RightSidebar-component',
           label: settingLabel
         });
       }
-      
+
       setSelectedCmp(cmp);
       console.log('cmp-------------------', cmp);
       if (
@@ -1070,10 +1127,8 @@ export default function Editor(
       });
     });
     gjsEditor.Commands.add('RightSidebar-component', (grapeEditor) => {
-      
       setRSidebarOpen(true);
       setTab('Settings');
-      
     });
     gjsEditor.Commands.add('connect-collection', (geditor) => {
       setConnectData({ ...connectData, isOpen: true });
@@ -1119,65 +1174,70 @@ export default function Editor(
       // ... other font families ...
     ];
 
-    // const fetchGoogleFonts = async () => {
-    //   const data = await dispatch(getGoogleFontsAction());
-    //   if(!data) return;
-    //   const fontData = data.items.map(font => { return { name: font.family, url: font.files.regular }; });
-    //   const fontFamilyProp = gjsEditor.StyleManager.getProperty('typography', 'font-family');
-    //   const options = [];
-    //   fontData.forEach(font => {
-    //     options.push({ id: font.name, label: font.name });
-    //   })
-      
-    //   fontFamilyProp.set('options', options);
-    //   const loadFont = (fontName) => {
-    //     WebFont.load({
-    //       google: {
-    //         families: [fontName]
-    //       },
-    //       active: function () {
-    //         // Append the font stylesheet to the GrapesJS iframe
-    //         const cssLink = gjsEditor.Canvas.getDocument().createElement('link');
-    //         cssLink.href = `https://fonts.googleapis.com/css?family=${fontName.replace(/\s/g, '+')}`;
-    //         cssLink.rel = 'stylesheet';
-    //         cssLink.type = 'text/css';
-    //         const head = gjsEditor.Canvas.getDocument().head;
-    //         head.appendChild(cssLink);
-    //       }
-    //     });
-    //   };
-    //   fontFamilyProp.on('change:value', (model) => {
-    //     // Handle the font family change
-    //     const selectedFontFamily = model.get('value');
-    //     loadFont(selectedFontFamily);
-    //     // Additional actions based on the selected font family
-    //     // ...
-    //   });
-    //   gjsEditor.StyleManager.render();
-    //   rte.add('fontFamily', {
-    //     icon: `
-    //         <select class="gjs-field" style="width: 100px">
-    //             ${fontData.map(font => `<option value="${font.name}">${font.name}</option>`).join('')}
-    //         </select>
-    //     `,
-    //     event: 'change',
-    //     result: (rte, action) => {
-    //       const fontFamilyValue = action.btn.childNodes[1].value;
-    //       loadFont(fontFamilyValue);
-    //       rte.exec('fontName', fontFamilyValue);
-    //     },
-    //     update: (rte, action) => {
-    //       const value = rte.doc.queryCommandValue("fontName");
-    //       console.log(value);
-    //       if (value) {
-    //         action.btn.firstChild.value = value.replace(/['"]+/g, ''); // Remove quotes
-    //       }
-    //     }
-    //   });
-    // }
+    const fetchGoogleFonts = async () => {
+      const data = await dispatch(getGoogleFontsAction());
+      if (!data) return;
+      const fontData = data?.items?.map((font) => {
+        return { name: font.family, url: font.files.regular };
+      });
+      const fontFamilyProp = gjsEditor?.StyleManager.getProperty('typography', 'font-family');
+      const options = [];
+      fontData?.forEach((font) => {
+        options.push({ id: font.name, label: font.name });
+      });
 
-    // fetchGoogleFonts();
-
+      fontFamilyProp.set('options', options);
+      const loadFont = (fontName) => {
+        WebFont.load({
+          google: {
+            families: [fontName]
+          },
+          active: function () {
+            // Append the font stylesheet to the GrapesJS iframe
+            const cssLink = gjsEditor.Canvas.getDocument().createElement('link');
+            cssLink.href = `https://fonts.googleapis.com/css?family=${fontName.replace(
+              /\s/g,
+              '+'
+            )}`;
+            cssLink.rel = 'stylesheet';
+            cssLink.type = 'text/css';
+            const head = gjsEditor.Canvas.getDocument().head;
+            head.appendChild(cssLink);
+          }
+        });
+      };
+      fontFamilyProp.on('change:value', (model) => {
+        // Handle the font family change
+        const selectedFontFamily = model.get('value');
+        loadFont(selectedFontFamily);
+        // Additional actions based on the selected font family
+        // ...
+      });
+      gjsEditor.StyleManager.render();
+      rte.add('fontFamily', {
+        icon: `
+            <select class="gjs-field" style="width: 100px">
+                ${fontData
+                  ?.map((font) => `<option value="${font.name}">${font.name}</option>`)
+                  .join('')}
+            </select>
+        `,
+        event: 'change',
+        result: (rte, action) => {
+          const fontFamilyValue = action.btn.childNodes[1].value;
+          loadFont(fontFamilyValue);
+          rte.exec('fontName', fontFamilyValue);
+        },
+        update: (rte, action) => {
+          const value = rte.doc.queryCommandValue('fontName');
+          console.log(value);
+          if (value) {
+            action.btn.firstChild.value = value.replace(/['"]+/g, ''); // Remove quotes
+          }
+        }
+      });
+    };
+    fetchGoogleFonts();
     rte.add('fontColor', {
       icon: `<input type="color" class="gjs-field" style="width: 27px" />`,
       // Bind the 'result' on 'change' listener
@@ -1191,7 +1251,7 @@ export default function Editor(
         const value = rte.doc.queryCommandValue('foreColor');
         function rgbStringToHex(rgbString) {
           const rgbValues = rgbString.match(/\d+/g).map(Number);
-          const hex = rgbValues.map(val => val.toString(16).padStart(2, '0')).join('');
+          const hex = rgbValues.map((val) => val.toString(16).padStart(2, '0')).join('');
           return `#${hex}`;
         }
         if (value) {
@@ -1352,11 +1412,15 @@ export default function Editor(
         css: css
       };
       if (isback) {
-        dispatch(updatePageAction(id, payload)).then((res) => {
-          if (res) {
-            history.goBack();
-          }
-        });
+        if (isSave) {
+          console.log(id);
+          dispatch(updatePageAction(id, payload));
+          history.goBack();
+        } else {
+          history.goBack();
+        }
+        setIsSave(false);
+        setIsBack(false);
       }
       if (ispreview) {
         dispatch(updatePageAction(id, payload)).then((res) => {
@@ -1367,6 +1431,7 @@ export default function Editor(
         });
       }
       if (ispublish) {
+        console.log(';;;;;;;;;;;;;;;;;')
         dispatch(publishWebsiteAction(id, payload)).then((res) => {
           if (res) {
             const _form = { ...form, ...res };
@@ -1381,35 +1446,38 @@ export default function Editor(
     }
   }, [ispreview, ispublish, isback]);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (page) {
+      console.log(page);
       setIsLoading(true);
-      // setIsStoreLoading(true);
-      dispatch(getPageAction(page._id)).then((res) => {
+      setIsStoreLoading(true);
+      dispatch(getPageAction(storeRef.current.currentPage._id)).then((res) => {
         if (res) {
           if (editor) {
             editor.setComponents(res);
           }
           setIsLoading(false);
-          // setIsStoreLoading(false);
+          setIsStoreLoading(false);
+        } else {
+          setIsLoading(false);
+          setIsStoreLoading(false);
         }
       });
-      // const interval = setInterval(() => {
-      //   if (editor) {
-      //     const current_page = editor.Pages.getSelected();
-      //     const html = editor.getHtml({ current_page });
-      //     const css = editor.getCss({ current_page });
-      //     const payload = {
-      //       page: page?._id,
-      //       html: html,
-      //       css: css
-      //     };
-      //     dispatch(updatePageAction(id, payload));
-      //   }
-      // }, 1000 * 30);
-
-      // //Clearing the interval
-      // return () => clearInterval(interval);
+      const interval = setInterval(() => {
+        if (editor) {
+          const current_page = editor.Pages.getSelected();
+          const html = editor.getHtml({ current_page });
+          const css = editor.getCss({ current_page });
+          const payload = {
+            page: page?._id,
+            html: html,
+            css: css
+          };
+          dispatch(updatePageAction(id, payload));
+        }
+      }, 1000 * 60 * 30);
+      //Clearing the interval
+      return () => clearInterval(interval);
     }
   }, [page?._id]);
 
@@ -1617,18 +1685,21 @@ export default function Editor(
         } else {
           const parser = new DOMParser();
           let htmlCmp = parser.parseFromString(el.html, 'text/html');
-          editor.BlockManager.add(`${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`, {
-            index: el?._id,
-            user: el?.userId,
-            label: el?.category[0]?.name,
-            content: htmlCmp.head.innerHTML + htmlCmp.body.innerHTML,
-            media: el.imageUrl,
-            category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
-            menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
-            mainMenu: `${el?.category[0]?.mainMenu}`,
-            refcategory: `${el?.category[0]?.name}`,
-            submenu: el?.category[0]?.subMenu,
-          });
+          editor.BlockManager.add(
+            `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}-${idx}`,
+            {
+              index: el?._id,
+              user: el?.userId,
+              label: el?.category[0]?.name,
+              content: htmlCmp.head.innerHTML + htmlCmp.body.innerHTML,
+              media: el.imageUrl,
+              category: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}-${el?.category[0]?.name}`,
+              menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
+              mainMenu: `${el?.category[0]?.mainMenu}`,
+              refcategory: `${el?.category[0]?.name}`,
+              submenu: el?.category[0]?.subMenu
+            }
+          );
         }
       });
     }
@@ -1915,7 +1986,7 @@ export default function Editor(
           style={{ height: `calc(100vh - 120px)` }}
         >
           {selectedMainNav === 'elements' && (
-            <div className="d-flex" >
+            <div className="d-flex">
               <Sidebar
                 sidebarData={sidebarData}
                 setSidebarData={setSidebarData}
@@ -1933,29 +2004,32 @@ export default function Editor(
                 <div style={{ height: '100%', overflow: 'scroll' }}>
                   <div className="expanded-header">
                     <span className="me-1">
-                      {sidebarData.menu.name === 'CMS'
-                        ? 'Add Content Elements'
-                        : sidebarData.menu.name === 'Compositions'
-                        ? 'Section Template'
-                        : sidebarData.menu.name === 'Theme' ?
-                        <div className='d-flex align-items-center text-uppercase'>
-                          {
-                            themeEditing ?
+                      {sidebarData.menu.name === 'CMS' ? (
+                        'Add Content Elements'
+                      ) : sidebarData.menu.name === 'Compositions' ? (
+                        'Section Template'
+                      ) : sidebarData.menu.name === 'Theme' ? (
+                        <div className="d-flex align-items-center text-uppercase">
+                          {themeEditing ? (
                             <>
-                            <div onClick={(e)=>setThemeEditing(false)} className='cursor-pointer'>
-                              <ChevronLeft size={20}/>
-                            </div>
-                            {selectedSubMenu}
-                            </> 
-                            :
+                              <div
+                                onClick={(e) => setThemeEditing(false)}
+                                className="cursor-pointer"
+                              >
+                                <ChevronLeft size={20} />
+                              </div>
+                              {selectedSubMenu}
+                            </>
+                          ) : (
                             <div>Theme</div>
-                          }
-                        </div>:
+                          )}
+                        </div>
+                      ) : (
                         sidebarData.menu.name
-                      }
+                      )}
                     </span>
                     <span className="header-icon" onClick={handleSidebarOpen}>
-                      <X size={16} color="#6e6b7b" style={{ cursor: "hand" }} />
+                      <X size={16} color="#6e6b7b" style={{ cursor: 'hand' }} />
                     </span>
                   </div>
                   <div className="expanded-content">
@@ -2023,7 +2097,7 @@ export default function Editor(
                               const returnComponent = (
                                 <>
                                   <div
-                                    className="d-flex align-items-center px-50 border-bottom border-top border-bottom border-top "
+                                    className="d-flex align-items-center px-50 border-bottom border-top"
                                     onClick={() => {
                                       handleOnclick(index);
                                     }}
@@ -2058,7 +2132,7 @@ export default function Editor(
                                           key={ix}
                                           className={
                                             selectedCategory ===
-                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                            `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
                                               ? 'selected-submenu-category'
                                               : 'submenu-category'
                                           }
@@ -2079,22 +2153,31 @@ export default function Editor(
                             })}
                           </div>
                           <div className="element-container">
-                            <div style={{ width: 300, display: 'flex', flexWrap: 'wrap' }}>
+                            <div
+                              style={{ width: 300, flexWrap: 'wrap' }}
+                              className="d-flex align-items-center text-center border-bottom"
+                            >
                               {blockManager?.blocks
                                 ?.filter((e) => e.get('category').id === selectedCategory)
-                                .map((b, ix) => {
+                                .map((b, ix, array) => {
                                   return (
-                                    <div
-                                      className="element"
-                                      style={{
-                                        width: 'fit-content',
-                                        height: 'fit-content',
-                                        margin: 0,
-                                        padding: 5
-                                      }}
-                                      key={ix}
+                                    <Col
+                                      sm={2}
+                                      className={` p-50 ${
+                                        array.length - 6 > ix + 1
+                                          ? 'border-bottom'
+                                          : ix + 1 == array.length
+                                          ? (ix + 1) % 6 == 0
+                                            ? 'border-bottom'
+                                            : ''
+                                          : 'border-bottom'
+                                      }`}
                                     >
-                                      {/* <img width="50" height="50" src={b.get('media')} /> */}
+                                      {b.get('media').match('image') ? (
+                                        <div>
+                                          <img width="40" height="40" src={b.get('media')} />
+                                        </div>
+                                      ) : null}
                                       <i className={b.get('media')} style={{ fontSize: 40 }}></i>
                                       <div
                                         draggable
@@ -2114,7 +2197,7 @@ export default function Editor(
                                           }
                                         }}
                                       ></div>
-                                    </div>
+                                    </Col>
                                   );
                                 })}
                             </div>
@@ -2150,7 +2233,7 @@ export default function Editor(
                               const returnComponent = (
                                 <>
                                   <div
-                                    className="d-flex align-items-center px-50 border-bottom border-top border-bottom border-top "
+                                    className="d-flex align-items-center px-50 border-bottom border-top "
                                     onClick={() => {
                                       handleOnclick(index);
                                     }}
@@ -2184,7 +2267,7 @@ export default function Editor(
                                           key={ix}
                                           className={
                                             selectedCategory ===
-                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                            `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
                                               ? 'selected-submenu-category'
                                               : 'submenu-category'
                                           }
@@ -2210,7 +2293,12 @@ export default function Editor(
                               .map((b, ix) => {
                                 return (
                                   <div className="element" key={ix}>
-                                    <img width="280" src={`https://storage.googleapis.com/mymember-storage/website-builder/menu-image/${b.get('media')}`} />
+                                    <img
+                                      width="280"
+                                      src={`https://storage.googleapis.com/mymember-storage/website-builder/menu-image/${b.get(
+                                        'media'
+                                      )}`}
+                                    />
                                     <div
                                       draggable
                                       onDragStart={(e) => {
@@ -2268,14 +2356,14 @@ export default function Editor(
                                         OpenCategory.index == index ? OpenCategory.value : false
                                       }
                                     >
-                                      <ChevronDown size={18} />
+                                      <IoMdArrowDropright size={18} />
                                     </div>
                                     <div
                                       hidden={
                                         OpenCategory.index == index ? !OpenCategory.value : true
                                       }
                                     >
-                                      <ChevronUp size={18} />
+                                      <IoMdArrowDropdown size={18} />
                                     </div>
                                     <div className="ps-50">
                                       <h5 className="submenu-item ps-0">{sub.name}</h5>
@@ -2292,7 +2380,7 @@ export default function Editor(
                                           key={ix}
                                           className={
                                             selectedCategory ===
-                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                            `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
                                               ? 'selected-submenu-category'
                                               : 'submenu-category'
                                           }
@@ -2345,7 +2433,7 @@ export default function Editor(
                       {sidebarData.menu.id !== 'decorative' &&
                         sidebarData.menu.id != 'quick-add' &&
                         sidebarData.menu.id != 'blog' &&
-                        sidebarData.menu.id !='theme'&&
+                        sidebarData.menu.id != 'theme' &&
                         sidebarData.menu.id !== 'quick-add' &&
                         sidebarData.menu.id !== 'blog' &&
                         sidebarData.menu.id !== 'cms' &&
@@ -2353,7 +2441,8 @@ export default function Editor(
                         sidebarData.menu.id !== 'assets' &&
                         sidebarData.menu.id !== 'compositions' &&
                         sidebarData.menu.id !== 'contact-forms' &&
-                        sidebarData.menu.id !== 'content' && (
+                        sidebarData.menu.id !== 'content' &&
+                        sidebarData.menu.id !== 'media' && (
                           <div className="submenu-and-element d-flex">
                             <div className="submenu-list pt-0">
                               {sidebarData?.menu?.subMenu?.map((sub, index) => {
@@ -2411,7 +2500,7 @@ export default function Editor(
                                             key={ix}
                                             className={
                                               selectedCategory ===
-                                                `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
                                                 ? 'selected-submenu-category'
                                                 : 'submenu-category'
                                             }
@@ -2437,7 +2526,12 @@ export default function Editor(
                                 .map((b, ix) => {
                                   return (
                                     <div className="element" key={ix}>
-                                      <img width="280" src={`https://storage.googleapis.com/mymember-storage/website-builder/menu-image/${b.get('media')}`} />
+                                      <img
+                                        width="280"
+                                        src={`https://storage.googleapis.com/mymember-storage/website-builder/menu-image/${b.get(
+                                          'media'
+                                        )}`}
+                                      />
                                       <div
                                         draggable
                                         onDragStart={(e) => {
@@ -2577,7 +2671,7 @@ export default function Editor(
                             {
                               selectedTheme.value==='Custom' && 
                               <>
-                                                          <div className='color-container'>
+                            <div className='color-container'>
                               <div className='submenu-item d-flex justify-content-between align-items-center' onClick={(e)=>{
                                   setSelectedSubMenu('colors');
                                   setThemeEditing(true);
@@ -2599,87 +2693,105 @@ export default function Editor(
                                       }}>
                                         <div className='color-item' style={{backgroundColor:_color.value}}>
                                         </div>
-                                      </div>
-                                    )
-                                  })
-                                }
-                                <div className='d-flex color-outline-element d-flex justify-content-around align-items-center mt-1' onClick={(e)=>addNewThemeColor()}>
-                                  <div className='plus-item'>
-                                    <Plus size={20}/>
+                                        </div>
+                                      );
+                                    })}
+                                  <div
+                                    className="d-flex color-outline-element d-flex justify-content-around align-items-center mt-1"
+                                    onClick={(e) => addNewThemeColor()}
+                                  >
+                                    <div className="plus-item">
+                                      <Plus size={20} />
+                                    </div>
                                   </div>
+                              </div>
+                              </div>
+                              <div className="buttons-container mt-1">
+                                <div
+                                  className="submenu-item d-flex justify-content-between align-items-center py-1"
+                                  onClick={(e) => {
+                                    setSelectedSubMenu('buttons');
+                                    setThemeEditing(true);
+                                  }}
+                                >
+                                  <span className="fw-bold fs-6">BUTTONS</span>
+                                  <span>
+                                    <IoMdArrowDropright size={20} color="black" />
+                                  </span>
+                                </div>
+                                <div className="d-flex justify-content-around align-items-center buttons-list">
+                                  {formTheme &&
+                                    formTheme.buttons &&
+                                    formTheme.buttons.map((_button) => {
+                                      return (
+                                        <button
+                                          style={{ ..._button.attributes }}
+                                          onClick={(e) => {
+                                            setSelectedButton(_button);
+                                            setSelectedSubMenu('buttons');
+                                            setThemeEditing(true);
+                                          }}
+                                        >
+                                          {_button.type}
+                                        </button>
+                                      );
+                                    })}
+                                </div>
+                                <div></div>
+                              </div>
+                              <div className="text-container mt-1">
+                                <div className="submenu-item d-flex justify-content-between align-items-center py-1">
+                                  <span className="fw-bold fs-6">TEXT</span>
+                                  <span>
+                                    <IoMdArrowDropright size={20} color="black" />
+                                  </span>
+                                </div>
+                                <div className="text-elements">
+                                  {formTheme &&
+                                    formTheme.fonts &&
+                                    formTheme.fonts.map((_font) => {
+                                      return (
+                                        <div
+                                          className="d-flex align-items-center cursor-pointer"
+                                          style={{ marginBottom: '10px' }}
+                                          onClick={(e) => {
+                                            setSelectedFont(_font);
+                                            setSelectedSubMenu('text');
+                                            setThemeEditing(true);
+                                          }}
+                                        >
+                                          <div>{_font.type}</div>
+                                          <div
+                                            className="ms-1 fw-bold"
+                                            style={{ ..._font.attributes }}
+                                          >
+                                            {_font.attributes.fontFamily}{' '}
+                                            {_font.attributes.fontSize.slice(0, -2)}
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
                                 </div>
                               </div>
-                            </div>
-                            <div className='buttons-container mt-1'>
-                              <div className='submenu-item d-flex justify-content-between align-items-center py-1' onClick={(e)=>{
-                                setSelectedSubMenu('buttons');
-                                setThemeEditing(true);
-                            }}>
-                                <span className='fw-bold fs-6'>BUTTONS</span>
-                                <span>
-                                  <ChevronRight size={20} color="black"/>
-                                </span>
-                              </div>
-                              <div className='d-flex justify-content-around align-items-center buttons-list'>
-                                {
-                                  formTheme && formTheme.buttons && formTheme.buttons.map((_button)=>{
-                                    return(
-                                      <button style={{..._button.attributes}} onClick={(e)=>{
-                                        setSelectedButton(_button);
-                                        setSelectedSubMenu('buttons');
-                                        setThemeEditing(true);
-                                      }}>{_button.type}</button>
-                                    )
-                                  })
-                                }
-                             
-                              </div>
-                              <div>
-
-                              </div>
-                            </div>
-                            <div className='text-container mt-1'>
-                              <div className='submenu-item d-flex justify-content-between align-items-center py-1'>
-                                <span className='fw-bold fs-6'>TEXT</span>
-                                <span>
-                                  <ChevronRight size={20} color="black"/>
-                                </span>
-                              </div>
-                              <div className='text-elements'>
-                                {
-                                  formTheme && formTheme.fonts && formTheme.fonts.map((_font)=>{
-                                    return(
-                                      <div className='d-flex align-items-center cursor-pointer' style={{marginBottom:'10px'}} onClick={(e)=>{
-                                        setSelectedFont(_font);
-                                        setSelectedSubMenu('text');
-                                        setThemeEditing(true);
-                                      }}>
-                                        <div>
-                                          {_font.type}
-                                        </div>
-                                        <div className='ms-1 fw-bold' style={{..._font.attributes}}>
-                                          {_font.attributes.fontFamily} {_font.attributes.fontSize.slice(0, -2)}
-                                        </div>
-                                      </div>
-                                    )
-                                  })
-                                }
-                              </div>
-                            </div>
-                            <div className='images-container'>
-                              <div className='submenu-item d-flex justify-content-between align-items-center py-1' onClick={(e)=>{
+                              <div className="images-container">
+                                <div
+                                  className="submenu-item d-flex justify-content-between align-items-center py-1"
+                                  onClick={(e) => {
                                     setSelectedSubMenu('images');
                                     setThemeEditing(true);
-                              }}>
-                                <span className='fw-bold fs-6'>IMAGES</span>
-                                <span>
-                                  <ChevronRight size={20} color="black"/>
-                                </span>
+                                  }}
+                                >
+                                  <span className="fw-bold fs-6">IMAGES</span>
+                                  <span>
+                                    <IoMdArrowDropright size={20} color="black" />
+                                  </span>
+                                </div>
                               </div>
-                            </div>
-                              </>
+
+                            </>
+
                               
-                            }
+                      }
                           </div>
                         }
                         {
@@ -2715,7 +2827,8 @@ export default function Editor(
                                   categories.findIndex(
                                     (c) =>
                                       c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`
-                                  ) === -1 && user.id === e.get('user')
+                                  ) === -1 &&
+                                  user.id === e.get('user')
                                 ) {
                                   categories.push(
                                     `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`
@@ -2744,7 +2857,7 @@ export default function Editor(
                                         OpenCategory.index == index ? !OpenCategory.value : true
                                       }
                                     >
-                                      <IoMdArrowDropdown color='black' size={18} />
+                                      <IoMdArrowDropdown color="black" size={18} />
                                     </div>
                                     <div className="ps-50">
                                       <h5 className="submenu-item ps-0">{sub.name}</h5>
@@ -2761,7 +2874,7 @@ export default function Editor(
                                           key={ix}
                                           className={
                                             selectedCategory ===
-                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                            `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
                                               ? 'd-flex justify-content-between align-items-center selected-submenu-category'
                                               : 'd-flex justify-content-between align-items-center submenu-category'
                                           }
@@ -2771,26 +2884,255 @@ export default function Editor(
                                             );
                                           }}
                                         >
-                                          <div>
-                                            {b.get('label')}
-                                          </div>
-                                          <div className='assets-action'>
+                                          <div>{b.get('label')}</div>
+                                          <div className="assets-action">
                                             <UncontrolledDropdown>
                                               <DropdownToggle tag="div" className="btn btn-sm">
-                                                <MoreVertical size={14} className="cursor-pointer" />
+                                                <MoreVertical
+                                                  size={14}
+                                                  className="cursor-pointer"
+                                                />
                                               </DropdownToggle>
                                               <DropdownMenu positionFixed={true}>
-                                                <DropdownItem tag="span" className="w-100" onClick={() => handleRename(b)}>
+                                                <DropdownItem
+                                                  tag="span"
+                                                  className="w-100"
+                                                  onClick={() => handleRename(b)}
+                                                >
                                                   <Edit size={14} className="me-50" />
                                                   <span className="align-middle">Rename</span>
                                                 </DropdownItem>
-                                                <DropdownItem tag="span" className="w-100" onClick={() => handleRemove(b)}>
-                                                  <Trash size={14} className="me-50" />
+                                                <DropdownItem
+                                                  tag="span"
+                                                  className="w-100"
+                                                  onClick={() => handleRemove(b)}
+                                                >
+                                                  <Trash2 size={14} className="me-50" />
                                                   <span className="align-middle">Delete</span>
                                                 </DropdownItem>
                                               </DropdownMenu>
                                             </UncontrolledDropdown>
                                           </div>
+                                        </div>
+                                      </Collapse>
+                                    );
+                                  })}
+                                </>
+                              );
+                              return returnComponent;
+                            })}
+                          </div>
+                          <div className="element-container">
+                            {blockManager?.blocks
+                              ?.filter((e) => e.get('category').id === selectedCategory)
+                              .map((b, ix) => {
+                                if (b.get('menu') == `assets-videos`) {
+                                  return (
+                                    <div key={ix} className="p-1 border-bottom">
+                                      <video
+                                        style={{
+                                          maxWidth: '100%',
+                                          width: '320px',
+                                          margin: '0 auto'
+                                        }}
+                                        playsInline
+                                        loop
+                                        muted
+                                        controls
+                                        alt="All the devices"
+                                        src={b.get('media')}
+                                      />
+                                      <div
+                                        draggable
+                                        onDragStart={(e) => {
+                                          e.stopPropagation();
+                                          blockManager.dragStart(b, e.nativeEvent);
+                                        }}
+                                        onDragEnd={(e) => {
+                                          e.stopPropagation();
+                                          if (b.get('label') === 'New Form') {
+                                            createForm();
+                                          }
+                                          if (b.get('label') === 'Add Existing Form') {
+                                            setAddFormMdl(true);
+                                          }
+                                          blockManager.dragStop(false);
+                                        }}
+                                      ></div>
+                                    </div>
+                                  );
+                                } else if (b.get('menu') == `assets-images`) {
+                                  return (
+                                    <div key={ix} className="p-1 border-bottom">
+                                      <img width="280" src={b.get('media')} />
+                                      <div
+                                        draggable
+                                        onDragStart={(e) => {
+                                          e.stopPropagation();
+                                          blockManager.dragStart(b, e.nativeEvent);
+                                        }}
+                                        onDragEnd={(e) => {
+                                          e.stopPropagation();
+                                          if (b.get('label') === 'New Form') {
+                                            createForm();
+                                          }
+                                          if (b.get('label') === 'Add Existing Form') {
+                                            setAddFormMdl(true);
+                                          }
+                                          blockManager.dragStop(false);
+                                        }}
+                                      ></div>
+                                    </div>
+                                  );
+                                } else if (b.get('menu') == `assets-audios`) {
+                                  return (
+                                    <div key={ix} className="p-1 border-bottom">
+                                      <div>
+                                        <audio controls autoplay muted>
+                                          <source src={b.get('media')} type="audio/ogg" />
+                                          Your browser does not support the audio element.
+                                        </audio>
+                                      </div>
+                                      <div
+                                        draggable
+                                        onDragStart={(e) => {
+                                          e.stopPropagation();
+                                          blockManager.dragStart(b, e.nativeEvent);
+                                        }}
+                                        onDragEnd={(e) => {
+                                          e.stopPropagation();
+                                          if (b.get('label') === 'New Form') {
+                                            createForm();
+                                          }
+                                          if (b.get('label') === 'Add Existing Form') {
+                                            setAddFormMdl(true);
+                                          }
+                                          blockManager.dragStop(false);
+                                        }}
+                                      ></div>
+                                    </div>
+                                  );
+                                }
+                              })}
+                          </div>
+                        </div>
+                      )}
+                      {sidebarData.menu.id === 'media' && (
+                        <div className="submenu-and-element d-flex">
+                          <div className="submenu-list pt-0">
+                            {sidebarData?.menu?.subMenu?.map((sub, index) => {
+                              const categories = [];
+                              const tempBlocks = [];
+                              editor?.BlockManager.blocks.map((e) => {
+                                if (
+                                  e.get('menu') === `${sidebarData.menu.id}-${sub.id}` &&
+                                  categories.findIndex(
+                                    (c) =>
+                                      c === `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`
+                                  ) === -1
+                                ) {
+                                  categories.push(
+                                    `${sidebarData.menu.id}-${sub.id}-${e.get('label')}`
+                                  );
+                                  tempBlocks.push(e);
+                                }
+                              });
+
+                              const returnComponent = (
+                                <>
+                                  <div
+                                    className="d-flex align-items-center px-50 border-bottom border-top"
+                                    onClick={() => {
+                                      handleOnclick(index);
+                                    }}
+                                  >
+                                    {sub.name == 'Upload Media' ? (
+                                      <div className="d-flex pt-1">
+                                        <div
+                                          hidden={
+                                            OpenCategory.index == index ? OpenCategory.value : false
+                                          }
+                                        >
+                                          <IoMdArrowDropright size={18} />
+                                        </div>
+                                        <div
+                                          hidden={
+                                            OpenCategory.index == index ? !OpenCategory.value : true
+                                          }
+                                        >
+                                          <IoMdArrowDropdown size={18} />
+                                        </div>
+                                        <div className="px-50 ">
+                                          <h5 className="submenu-item px-0 pt-0 mt-0">
+                                            {sub.name}
+                                          </h5>
+                                          <Collapse
+                                            isOpen={
+                                              OpenCategory.index == index
+                                                ? OpenCategory.value
+                                                : false
+                                            }
+                                          >
+                                            <div className="mb-1">
+                                              <Button
+                                                color="primary"
+                                                outline
+                                                className="w-100"
+                                                size="sm"
+                                                onClick={() => {
+                                                  setOpenUploadModal(!openUploadModal);
+                                                }}
+                                              >
+                                                Upload
+                                              </Button>
+                                            </div>
+                                          </Collapse>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <>
+                                        <div
+                                          hidden={
+                                            OpenCategory.index == index ? OpenCategory.value : false
+                                          }
+                                        >
+                                          <IoMdArrowDropright size={18} />
+                                        </div>
+                                        <div
+                                          hidden={
+                                            OpenCategory.index == index ? !OpenCategory.value : true
+                                          }
+                                        >
+                                          <IoMdArrowDropdown size={18} />
+                                        </div>
+                                        <div className="ps-50">
+                                          <h5 className="submenu-item ps-0">{sub.name}</h5>
+                                        </div>
+                                      </>
+                                    )}
+                                  </div>
+                                  {tempBlocks.map((b, ix) => {
+                                    return (
+                                      <Collapse
+                                        isOpen={
+                                          OpenCategory.index == index ? OpenCategory.value : false
+                                        }
+                                      >
+                                        <div
+                                          key={ix}
+                                          className={
+                                            selectedCategory ===
+                                            `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                              ? 'selected-submenu-category'
+                                              : 'submenu-category'
+                                          }
+                                          onClick={() => {
+                                            setSelectedCategory(
+                                              `${sidebarData.menu.id}-${sub.id}-${b.get('label')}`
+                                            );
+                                          }}
+                                        >
+                                          {b.get('label')}
                                         </div>
                                       </Collapse>
                                     );
@@ -2887,7 +3229,7 @@ export default function Editor(
                                             className="d-flex align-items-center"
                                           >
                                             {e.id === 'add-preset' ||
-                                              e.id === 'create-collection' ? (
+                                            e.id === 'create-collection' ? (
                                               <CiCircleChevRight
                                                 className="ms-1 cms-menu-icon"
                                                 size={27}
@@ -3103,60 +3445,146 @@ export default function Editor(
                         </div>
                       )}
                       {sidebarData.menu.id === 'content' && (
-                          <div className='h-100 d-flex flex-column'>
-                            <div className='d-flex justify-content-center align-items-center p-2 flex-column'>
-                              <div>Send link to customer to manage dataset</div>
-                              <div className='round p-1 mt-1' style={{ border: '1px solid', cursor: 'pointer' }} onClick={collectFromClient}>+ Collect From Client</div>
-                            </div>
-                            <div className='mt-2 pe-3' style={{ flex: 1, overflow: "scroll" }}>
-                              <div className='ms-1 font-medium-5'>Collections</div>
-                              {
-                                store?.webCollections?.map(collection => {
-                                  return (
-                                    <div className='ms-2 mt-1'>
-                                      <div className='d-flex align-items-center justify-content-between' style={{ cursor: 'pointer' }} onClick={() => { handleChangeCustomerDataset("cms", collection._id) }} >
-                                        <div className='font-medium-6'>{collection.name} Collection</div>
-                                        <SlArrowDown size={16} />
-                                      </div>
-                                      {
-                                        customerDataset.type === "cms" && customerDataset.collectionId === collection._id &&
-                                        (<div className='mt-1'>
-                                          {collection?.fields?.map((field, idx) => {
-                                            return (<div className='d-flex'>
-                                              <Input type="checkbox" id={collection._id + field.name + idx} checked={cdCheckedItems[`cms-${collection._id}`]?.[field.name]} onChange={(e) => { handleCDCheckboxChange(field.name, e.target.checked) }} />
-                                              <Label className='ms-1' for={collection._id + field.name + idx}>{field.name}</Label>
-                                            </div>);
-                                          })}
-                                        </div>)
-                                      }
-                                    </div>
-                                  );
-                                })
-                              }
-                              <div className='ms-1 font-medium-5 mt-2'>Waiting Clients</div>
-                              {
-                                store?.waitingClients.map((client) => {
-                                  return (
-                                    <div className='d-flex align-items-center justify-content-between ms-1 mt-2 w-100'>
-                                      <div className=''>{client.user.firstName} {client.user.lastName}</div>
-                                      <div className=''>
-                                        <Button color='success' className='me-1' onClick={() => { handleConfirmCustomerDataset(client._id, { isApproved: true, isDeclined: false }) }}><ImCheckmark /></Button>
-                                        <Button onClick={() => { handleConfirmCustomerDataset(client._id, { isApproved: true, isDeclined: true }) }}><ImCross /></Button>
-                                      </div>
-                                    </div>
-                                  )
-                                })
-                              }
+                        <div className="h-100 d-flex flex-column">
+                          <div className="d-flex justify-content-center align-items-center p-2 flex-column">
+                            <div>Send link to customer to manage dataset</div>
+
+                            <div className="d-flex justify-content-around ">
+                              <Button
+                                color="primary"
+                                outline
+                                onClick={collectFromClient}
+                                className="mt-1"
+                              >
+                                + Collect From Client
+                              </Button>
+                              <Button
+                                color="primary d-flex align-items-center mt-1 ms-2"
+                                size="sm"
+                                onClick={collectFormSubmission}
+                              >
+                                <IoMdSend />
+                                <div className="ps-50">SENT FORMS</div>
+                              </Button>
                             </div>
                           </div>
-                      )}
+                          <div className="mt-2 pe-3" style={{ flex: 1, overflow: 'scroll' }}>
+                            <div className="ms-1 font-medium-5">Collections</div>
 
+                            {store?.webCollections?.map((collection) => {
+                              return (
+                                <div className="ms-2 mt-1">
+                                  <div
+                                    className="d-flex align-items-center "
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => {
+                                      handleChangeCustomerDataset('cms', collection._id);
+                                    }}
+                                  >
+                                    <IoMdArrowDropright
+                                      size={18}
+                                      hidden={
+                                        customerDataset.collectionId === collection._id
+                                          ? true
+                                          : false
+                                      }
+                                    />
+                                    <IoMdArrowDropdown
+                                      size={18}
+                                      hidden={
+                                        customerDataset.collectionId === collection._id
+                                          ? false
+                                          : true
+                                      }
+                                    />
+                                    <div className="font-medium-6 ps-50 submenu-item h5 mb-0 ">
+                                      {collection.name} Collection
+                                    </div>
+                                  </div>
+                                  {customerDataset.type === 'cms' &&
+                                    customerDataset.collectionId === collection._id && (
+                                      <div className="mt-1">
+                                        {collection?.fields?.map((field, idx) => {
+                                          return (
+                                            <div className="d-flex">
+                                              <Input
+                                                type="checkbox"
+                                                id={collection._id + field.name + idx}
+                                                checked={
+                                                  cdCheckedItems[`cms-${collection._id}`]?.[
+                                                    field.name
+                                                  ]
+                                                }
+                                                onChange={(e) => {
+                                                  handleCDCheckboxChange(
+                                                    field.name,
+                                                    e.target.checked
+                                                  );
+                                                }}
+                                              />
+                                              <Label
+                                                className="ms-1"
+                                                for={collection._id + field.name + idx}
+                                              >
+                                                {field.name}
+                                              </Label>
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    )}
+                                </div>
+                              );
+                            })}
+
+                            <div
+                              className="ms-1 font-medium-5 mt-2"
+                              hidden={ClientWaiting ? false : true}
+                            >
+                              Waiting Clients ...
+                            </div>
+                            {store?.waitingClients.map((client) => {
+                              return (
+                                <div className="d-flex align-items-center justify-content-between ms-1 mt-2 w-100">
+                                  <div className="">
+                                    {client.user.firstName} {client.user.lastName}
+                                  </div>
+                                  <div className="">
+                                    <Button
+                                      color="success"
+                                      className="me-1"
+                                      onClick={() => {
+                                        handleConfirmCustomerDataset(client._id, {
+                                          isApproved: true,
+                                          isDeclined: false
+                                        });
+                                      }}
+                                    >
+                                      <ImCheckmark />
+                                    </Button>
+                                    <Button
+                                      onClick={() => {
+                                        handleConfirmCustomerDataset(client._id, {
+                                          isApproved: true,
+                                          isDeclined: true
+                                        });
+                                      }}
+                                    >
+                                      <ImCross />
+                                    </Button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
               </Collapse>
-            </div>)
-          }
+            </div>
+          )}
           {selectedMainNav === 'pages' && (
             <Collapse
               isOpen={addSideBarOpen}
@@ -3173,15 +3601,11 @@ export default function Editor(
                       onClick={(e) => {
                         setAddSideBarOpen(false);
                       }}
+                      style={{ cursor: 'hand' }}
                     />
                   </span>
                 </div>
-                <PageSidebar
-                  id={id}
-                  store={store}
-                  editor={editor}
-                  setEditor={setEditor}
-                />
+                <PageSidebar id={id} store={store} editor={editor} setEditor={setEditor} />
               </div>
             </Collapse>
           )}
@@ -3243,8 +3667,8 @@ export default function Editor(
           options={{ suppressScrollX: true }}
           style={{ height: `calc(100vh - 120px)` }}
         >
-          <div className="d-flex" >
-            <div className="col-6  text-center text-dark " hidden={tab=="Layers"? true:false}>
+          <div className="d-flex">
+            <div className="col-6  text-center text-dark " hidden={tab == 'Layers' ? true : false}>
               <Button
                 color={tab === 'Styles' ? 'primary' : 'secondary'}
                 className="w-100 rounded-0"
@@ -3255,7 +3679,7 @@ export default function Editor(
                 <CgStyle size={14} /> Styles
               </Button>
             </div>
-            <div className="col-6 text-center  text-dark" hidden={tab=="Layers"? true:false}>
+            <div className="col-6 text-center  text-dark" hidden={tab == 'Layers' ? true : false}>
               <Button
                 color={tab === 'Settings' ? 'primary' : 'secondary'}
                 className="w-100 rounded-0"
@@ -3267,7 +3691,7 @@ export default function Editor(
               </Button>
             </div>
           </div>
-          <div style={{ display: tab === 'Styles' ? 'block' : 'none' }} >
+          <div style={{ display: tab === 'Styles' ? 'block' : 'none' }}>
             <div id="selector-manager-container" />
             <div id="style-manager-container" />
           </div>
@@ -3286,6 +3710,12 @@ export default function Editor(
         setEditor={setEditor}
         openAddElementMdl={openAddElementMdl}
         setOpenAddElementMdl={setOpenAddElementMdl}
+      />
+      <UploadMediaModal
+        editor={editor}
+        setEditor={setEditor}
+        openUploadModal={openUploadModal}
+        setOpenUploadModal={setOpenUploadModal}
       />
       <RenameModal store={store} isOpen={renameMdl} toggle={_toggleRename} />
       <CreateFormModal open={createMdl} store={store} dispatch={dispatch} />
@@ -3343,8 +3773,19 @@ export default function Editor(
         setSelectedCollection={setSelectedCollection}
         createDatasetToggle={createDatasetToggle}
       />
-      <CreateAssetModal store={store} isOpen={openCreateAssetMdl} editor={editor} toggle={setOpenCreateAssetMdl} />
-      <RenameAssetModal store={store} webElement={selectedWebElement} isOpen={openRenameAssetMdl} editor={editor} toggle={setOpenRenameAssetMdl} />
+      <CreateAssetModal
+        store={store}
+        isOpen={openCreateAssetMdl}
+        editor={editor}
+        toggle={setOpenCreateAssetMdl}
+      />
+      <RenameAssetModal
+        store={store}
+        webElement={selectedWebElement}
+        isOpen={openRenameAssetMdl}
+        editor={editor}
+        toggle={setOpenRenameAssetMdl}
+      />
       <EditProductsModal
         store={store}
         showEditProductsModal={showEditProductsModal}
@@ -3366,10 +3807,10 @@ export default function Editor(
         setShowProductPageSettingModal={setShowProductPageSettingModal}
         selectedCmp={selectedCmp}
       />
-      <CustomerDatasetModal 
-        showCustomerDatasetModal={showCustomerDatasetModal} 
-        setShowCustomerDatasetModal={setShowCustomerDatasetModal} 
-        customerCollectId={customerCollectId} 
+      <CustomerDatasetModal
+        showCustomerDatasetModal={showCustomerDatasetModal}
+        setShowCustomerDatasetModal={setShowCustomerDatasetModal}
+        customerCollectId={customerCollectId}
       />
       <ConnectProductDataSetModal
         store={store}
@@ -3396,6 +3837,6 @@ export default function Editor(
         toggle={toggleAddPresetMdl}
         editCollectionToggle={toggleOpenEditCollection}
       />
-    </div >
+    </div>
   );
 }
