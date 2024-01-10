@@ -220,7 +220,7 @@ const FunnelSettings = () => {
                   />
               </TabPane>
               <TabPane tabId="2">
-                <Pages />
+                <Pages id={id} />
               </TabPane>
               {/* <TabPane tabId="3">
                 <div>Contacts</div>

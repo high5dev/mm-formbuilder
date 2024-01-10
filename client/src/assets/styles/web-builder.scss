@@ -256,7 +256,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 5px;
-  background-color: #dddddd;
+  background-color: white;
 }
 
 .sidebar {
@@ -293,7 +293,6 @@
   background-color: white;
   position: absolute;
   height: calc(100vh - 115px);
-  min-width: 200px;
 
   .expanded-header {
     height: 50px;

@@ -116,6 +116,18 @@ export const menu = [
       {
         id:'assets',
         name:'Assets'
+      },
+      {
+        id:'images',
+        name:'images'
+      },
+      {
+        id:'videos',
+        name:'videos'
+      },
+      {
+        id:'audios',
+        name:'audios'
       }
     ],
   },
