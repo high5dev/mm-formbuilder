@@ -22,6 +22,7 @@ import Swal from 'sweetalert2';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { SlArrowDown } from "react-icons/sl";
 import Select from 'react-select';
+// import WebFont from 'webfontloader';
 import {
   Button,
   ButtonGroup,
@@ -728,11 +729,9 @@ export default function Editor(
     }
   }, [store?.form?._id]);
 
-  useEffect(async () => {
-    console.log('page---->', page);
-    dispatch(getWebElementsAction());
-    dispatch(getChildFormsAction(store?.form?._id));
-    dispatch(getBlogsAction(store?.form?._id));
+  useEffect(() => {
+    // dispatch(getChildFormsAction(store?.form?._id));
+    // dispatch(getBlogsAction(store?.form?._id));
     dispatch(getWebsiteAction(id)).then((res) => {
       if (res) {
         dispatch(setCurrentPage(res.find((e) => e._id === page?._id)));
