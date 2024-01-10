@@ -1383,14 +1383,10 @@ export default function Editor({
         css: css
       };
       if (isback) {
-        // console.log(storeRef.current.currentPage._id, page?._id);
         if (isSave) {
-          console.log(payload);
-          dispatch(updatePageAction(id, payload)).then((res) => {
-            if (res) {
-              history.goBack();
-            }
-          });
+          console.log(id);
+          dispatch(updatePageAction(id, payload));
+          history.goBack();
         } else {
           history.goBack();
         }
@@ -1422,6 +1418,7 @@ export default function Editor({
 
   useEffect(async () => {
     if (page) {
+      console.log(page);
       setIsLoading(true);
       setIsStoreLoading(true);
       dispatch(getPageAction(storeRef.current.currentPage._id)).then((res) => {
@@ -1448,7 +1445,7 @@ export default function Editor({
           };
           dispatch(updatePageAction(id, payload));
         }
-      }, 1000 * 30);
+      }, 1000 * 60 * 30);
       //Clearing the interval
       return () => clearInterval(interval);
     }

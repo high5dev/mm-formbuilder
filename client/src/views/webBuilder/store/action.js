@@ -581,10 +581,17 @@ export const getFormDataAction = (id) => async (dispatch) => {
   try {
     const { data } = await api.getForm(id);
 
-    // dispatch(setFormReducer(data.data));
+    dispatch(setFormReducer(data.data));
 
     dispatch(setFormOrderElementsReducer(data.data?.orderElements || []))
     dispatch(setFormProductsReducer(data.data?.products || []))
+  } catch (error) { }
+};
+export const getFormAction = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.getForm(id);
+
+    dispatch(setFormReducer(data.data));
   } catch (error) { }
 };
 export const getWebsitesCountAction = () => async (dispatch) => {

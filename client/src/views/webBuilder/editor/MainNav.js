@@ -97,7 +97,7 @@ export default function MainNav({
   setRoleMdl,
   viewCMSMenu,
   handelVisibleMenu,
-  VisibleMenu
+  VisibleMenu,
 }) {
   const { id } = useParams();
   const dispatch = useDispatch();
