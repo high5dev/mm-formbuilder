@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, ModalHeader, ModalBody, Input } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, Input, Button } from 'reactstrap';
 
 export const CustomerDatasetModal = ({
   showCustomerDatasetModal,
@@ -33,7 +33,7 @@ export const CustomerDatasetModal = ({
           <div className='font-medium-6 mt-1 text-center'>Copy the link below and send it to your client, so they can upload content for their site. <br />The form will pre-include information that's already been added. </div>
           <div className='d-flex w-100 p-2 mb-2'>
             <Input type="text" value={window.location.origin + "/customercollect/" + customerCollectId} readOnly />
-            <div className='round d-flex align-items-center justify-content-center ms-1' style={{ cursor: 'pointer', border: '1px solid', width: '150px' }} onClick={copyToClipboard}>Copy URL</div>
+            <Button color='primary'  size='sm' className='d-flex align-items-center ms-50' onClick={copyToClipboard} style={{minWidth: 'fit-content'}}>Copy URL</Button>
           </div>
         </div>
       </ModalBody>

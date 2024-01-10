@@ -39,6 +39,7 @@ import { BiCopy, BiDuplicate } from 'react-icons/bi';
 import { GrClone } from 'react-icons/gr';
 import { useUploadSignature } from '../../../../../requests/documents/recipient-doc';
 import { setCurrentPage } from '../../../store/reducer';
+import sectionColumn4 from '../../../../formBuilder/edit/elements/column/column-4';
 export const Pages = ({ id }) => {
   // ** dispatch
   const dispatch = useDispatch();
@@ -63,19 +64,26 @@ export const Pages = ({ id }) => {
       setSeoData(store.currentPage?.seoDetails || {});
     }
   }, [store?.form?.formData]);
-  useEffect(() => {
-    dispatch(getWebsiteAction(id));
-  }, [id]);
 
-  useEffect(() => {
+  useEffect(async () => {
+    let data = await dispatch(getWebsiteAction(id));
+    if (data.length > 0) {
+      if (!store.currentPage) {
+        dispatch(setCurrentPage(data[0]));
+        setActive(data[0]._id);
+        let page = await dispatch(getPageAction(data[0]._id));
+        setPageData(page);
+      }
+    }
+  }, []);
+
+  useEffect(async () => {
     if (active) {
-        console.log(pageData)
       let currnetpage = store.form.formData.filter((item) => item._id == active);
       dispatch(setCurrentPage(currnetpage));
       setSeoData(store.currentPage?.seoDetails || {});
-      dispatch(getPageAction(active)).then((res) => {
-        setPageData(res);
-      });
+      let page = await dispatch(getPageAction(active));
+      setPageData(page);
     }
   }, [active]);
 

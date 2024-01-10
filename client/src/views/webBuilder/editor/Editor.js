@@ -22,7 +22,7 @@ import Swal from 'sweetalert2';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { SlArrowDown } from "react-icons/sl";
 import Select from 'react-select';
-import WebFont from 'webfontloader';
+// import WebFont from 'webfontloader';
 import {
   Button,
   ButtonGroup,
@@ -140,6 +140,8 @@ import {colors, fonts, buttons, background, image} from '../editor/leftSidebar/t
 export default function Editor(
   {
   isblog,
+  thispage,
+  setThispage,
   setIsBlog,
   createMdl,
   setCreateMdl,
@@ -277,6 +279,7 @@ export default function Editor(
   const [cartProductId, setCartProductId] = useState('');
   const [customerDataset, setCustomerDataset] = useState({ type: '', collectionId: '' });
   const [showCustomerDatasetModal, setShowCustomerDatasetModal] = useState(false);
+  const [showCustomerDatasetModalLoading, setShowCustomerDatasetModalLoading] = useState(false);
   const [cdCheckedItems, setCDCheckedItems] = useState({});
   const [customerCollectId, setCustomerCollectId] = useState('');
   const [ClientWaiting, setClientWaiting] = useState(false);
@@ -541,6 +544,7 @@ export default function Editor(
   };
 
   const collectFromClient = async () => {
+    setShowCustomerDatasetModalLoading(true);
     const data = await dispatch(
       createCustomerCollectAction({
         websiteId: store?.form?._id,
@@ -550,7 +554,11 @@ export default function Editor(
       })
     );
     setCustomerCollectId(data.data._id);
-    setShowCustomerDatasetModal(true);
+    const timer = setTimeout(() => {
+      setShowCustomerDatasetModal(true);
+      setShowCustomerDatasetModalLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
   };
 
   const handleConfirmCustomerDataset = (id, payload) => {
@@ -727,6 +735,7 @@ export default function Editor(
     dispatch(getWebsiteAction(id)).then((res) => {
       if (res) {
         dispatch(setCurrentPage(res.find((e) => e._id === page?._id)));
+      } else {
       }
     });
     const gjsEditor = grapesjs.init({
@@ -1401,7 +1410,7 @@ export default function Editor(
     }
   }, [device]);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (editor) {
       const current_page = editor.Pages.getSelected();
       const html = editor.getHtml({ current_page });
@@ -1413,8 +1422,8 @@ export default function Editor(
       };
       if (isback) {
         if (isSave) {
-          console.log(id);
-          dispatch(updatePageAction(id, payload));
+          let res = await dispatch(updatePageAction(id, payload));
+          console.log(res);
           history.goBack();
         } else {
           history.goBack();
@@ -1431,7 +1440,7 @@ export default function Editor(
         });
       }
       if (ispublish) {
-        console.log(';;;;;;;;;;;;;;;;;')
+        console.log(';;;;;;;;;;;;;;;;;');
         dispatch(publishWebsiteAction(id, payload)).then((res) => {
           if (res) {
             const _form = { ...form, ...res };
@@ -1448,7 +1457,6 @@ export default function Editor(
 
   useEffect(async () => {
     if (page) {
-      console.log(page);
       setIsLoading(true);
       setIsStoreLoading(true);
       dispatch(getPageAction(storeRef.current.currentPage._id)).then((res) => {
@@ -3454,8 +3462,15 @@ export default function Editor(
                                 color="primary"
                                 outline
                                 onClick={collectFromClient}
-                                className="mt-1"
+                                className="mt-1 align-items-center"
+                                disabled={showCustomerDatasetModalLoading ? true : false}
                               >
+                                <Spinner
+                                  color="secondary"
+                                  className='mx-50'
+                                  size={'sm'}
+                                  hidden={showCustomerDatasetModalLoading ? false : true}
+                                ></Spinner>
                                 + Collect From Client
                               </Button>
                               <Button
@@ -3646,7 +3661,6 @@ export default function Editor(
         ) : (
           <></>
         )}
-
         <div id="editor"></div>
       </div>
       {/* {isStoreLoading ? (
