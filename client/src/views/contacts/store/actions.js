@@ -106,7 +106,7 @@ export const getTotalContactsCountsActions = (params) => async (dispatch) => {
     const { data } = await api.getTotalContactsCounts(params);
     dispatch(totalContactsCountReducer(data));
   } catch (err) {
-    toast.error('Something went wrong');
+    // toast.error('Something went wrong');
   }
 };
 export const getContactTypesAction = () => async (dispatch) => {

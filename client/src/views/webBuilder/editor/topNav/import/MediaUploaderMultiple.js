@@ -6,22 +6,23 @@ import { Button, ListGroup, ListGroupItem } from 'reactstrap';
 
 // ** Third Party Imports
 import { useDropzone } from 'react-dropzone';
-import { FileText, X, DownloadCloud } from 'react-feather';
+import { FileText, X, DownloadCloud, Headphones} from 'react-feather';
 import { MdOutlineOndemandVideo } from 'react-icons/md';
 import { DocumentContext } from '../../../../../utility/context/Document';
 import { toast } from 'react-toastify';
 import ReactPlayer from 'react-player';
+import { translate } from 'pdf-lib';
+import { render } from 'react-dom';
 
-const FileUploaderMultiple = ({ files, setFiles, setCode }) => {
+const MediaUploaderMultiple = ({ files, setFiles, setCode }) => {
   // ** State
   const { setDocumentFiles } = useContext(DocumentContext);
-  const fileTypes = ['text/html', 'image/svg+xml', 'video/mp4', 'audio/mpeg'];
+  const fileTypes = ['text/html','image/png', 'image/svg+xml', 'video/mp4', 'audio/mpeg'];
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => {
       let accept = [];
       for (const f of acceptedFiles) {
-        console.log(f.type);
         if (!fileTypes.includes(f.type)) {
           toast.error('Invalid file type. Only accept PDF, Word and Image');
         } else {
@@ -39,20 +40,21 @@ const FileUploaderMultiple = ({ files, setFiles, setCode }) => {
           className="rounded"
           alt={file.name}
           src={URL.createObjectURL(file)}
-          height="28"
-          width="28"
+          height="50"
+          width="50"
         />
       );
     } else if (file.type.startsWith('video')) {
       return (
-        <div className='player-wrapper'>
-            <ReactPlayer
-            url= {URL.createObjectURL(file)}
-            width='100%'
-            height='100%'
-            controls = {true}
-
-            />
+        <div className="text-center">
+          <MdOutlineOndemandVideo size={50} />
+        </div>
+      );
+    }
+    else if (file.type.startsWith('audio')) {
+      return (
+        <div className="text-center">
+          <Headphones size={50} />
         </div>
       );
     } else {
@@ -75,6 +77,55 @@ const FileUploaderMultiple = ({ files, setFiles, setCode }) => {
     }
   };
 
+  // const fileList = files.map((file, index) => {
+  //   if (file.type.startsWith('video')) {
+  //     return (
+  //       <ListGroupItem
+  //         key={`${file.name}-${index}`}
+  //         className="d-flex align-items-start justify-content-start"
+  //       >
+  //         <div className="file-details d-flex align-items-center">
+  //           <div className="file-preview ">{renderFilePreview(file)}</div>
+  //         </div>
+  //         <div>
+  //           <Button
+  //             color="danger"
+  //             outline
+  //             size="sm"
+  //             className="btn-icon"
+  //             onClick={() => handleRemoveFile(file)}
+  //           >
+  //             <X size={14} />
+  //           </Button>
+  //         </div>
+  //       </ListGroupItem>
+  //     );
+  //   } else if (file.type.startsWith('image')) {
+  //     return (
+  //       <ListGroupItem
+  //         key={`${file.name}-${index}`}
+  //         className="d-flex align-items-center justify-content-between"
+  //       >
+  //         <div className="file-details d-flex align-items-center">
+  //           <div className="file-preview me-1">{renderFilePreview(file)}</div>
+  //           <div>
+  //             <p className="file-name mb-0">{file.name}</p>
+  //             <p className="file-size mb-0">{renderFileSize(file.size)}</p>
+  //           </div>
+  //         </div>
+  //         <Button
+  //           color="danger"
+  //           outline
+  //           size="sm"
+  //           className="btn-icon"
+  //           onClick={() => handleRemoveFile(file)}
+  //         >
+  //           <X size={14} />
+  //         </Button>
+  //       </ListGroupItem>
+  //     );
+  //   }
+  // });
   const fileList = files.map((file, index) => (
     <ListGroupItem
       key={`${file.name}-${index}`}
@@ -106,7 +157,7 @@ const FileUploaderMultiple = ({ files, setFiles, setCode }) => {
   return (
     <div className="d-flex flex-column flex-1">
       <div {...getRootProps({ className: 'dropzone mb-1 pt-1' })}>
-        <input {...getInputProps()} accept=".html" />
+        <input {...getInputProps()} accept={[ 'image/gif', 'image/png','image/svg+xml', 'video/mp4', 'audio/mpeg']} />
         <div className="d-flex align-items-center justify-content-center flex-column">
           <DownloadCloud size={50} />
           <h5>Drop Files here or click to upload</h5>
@@ -127,4 +178,4 @@ const FileUploaderMultiple = ({ files, setFiles, setCode }) => {
   );
 };
 
-export default FileUploaderMultiple;
+export default MediaUploaderMultiple;

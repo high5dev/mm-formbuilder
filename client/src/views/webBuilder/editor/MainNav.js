@@ -97,7 +97,7 @@ export default function MainNav({
   setRoleMdl,
   viewCMSMenu,
   handelVisibleMenu,
-  VisibleMenu
+  VisibleMenu,
 }) {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -149,16 +149,16 @@ export default function MainNav({
           let today = new Date();
           let diff = today - Date.parse(pageData.updatedAt);
           let days = parseInt(Math.floor(diff / 86400000));
-          days = days ? days + ' days ' : null;
+          days = days ? days + ' days ' : '';
           let hours =parseInt( Math.floor((diff % 86400000) / 3.6e6));
-          hours = hours ? hours + ' hours ' : null;
+          hours = hours ? hours + ' hours ' : '';
           let minutes = Math.floor((diff % 3.6e6) / 6e4);
-          minutes = minutes ? minutes + ' minutes ' : null;
+          minutes = minutes ? minutes + ' minutes ' : '';
           let seconds = Math.floor((diff % 6e4) / 1000);
-          seconds = seconds ? seconds + ' seconds ' : null;
-          let duration = days + hours + minutes + seconds + ' ago Saved';
-          
-            setDifferentTime(duration);
+          seconds = seconds ? seconds + ' seconds ago Saved' : '';
+          let duration = days + hours + minutes + seconds ;
+          console.log(duration)
+          setDifferentTime(duration);
         }
       }
     }, 1000);
@@ -245,11 +245,13 @@ export default function MainNav({
   };
 
   const handleBackSave = () => {
-    setIsBack(2);
+    setIsSave(true)
+    setIsBack(true);
   };
 
   const handleBackDiscard = () => {
-    setIsBack(1);
+    setIsSave(false)
+    setIsBack(true);
   };
 
   useEffect(() => {
