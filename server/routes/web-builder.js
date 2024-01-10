@@ -3,6 +3,7 @@ const isAuthenticated = require("../middleware/auth");
 
 const {
   getWebsite,
+  getHistory,
   createWebsite,
   editWebsite,
   getWebSites,
@@ -27,6 +28,7 @@ const {
 //web builder
 router.get("/website/:id", isAuthenticated, getWebsite);
 router.get("/websites/", isAuthenticated, getWebSites);
+router.get("/history/:id", isAuthenticated, getHistory);
 router.get("/templates", isAuthenticated, getTemplates);
 router.post("/create", isAuthenticated, createWebsite);
 router.post("/duplicate", isAuthenticated, duplicateWebsite);

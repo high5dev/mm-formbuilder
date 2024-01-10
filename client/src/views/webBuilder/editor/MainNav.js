@@ -333,7 +333,6 @@ export default function MainNav({
             color="primary"
             onClick={(e) => {
               setIsPublish(true);
-              dispatch('website');
               // localStorage.setItem('linkUrl', 'website');
             }}
           >

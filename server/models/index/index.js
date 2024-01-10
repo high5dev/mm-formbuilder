@@ -176,6 +176,9 @@ const SocialProofDisplayUrl = require("../SocialProofDisplayUrl");
 
 const WebBuilderBlog = require("../WebBuilderBlog");
 const WebBuilder = require("../WebBuilder");
+const WebBuilderHistory=require('../WebBuilderHistory');
+const WebBuilderActivity=require('../WebBuilderActivity');
+const WebBuilderPageHistory=require('../WebBuilderPageHistory');
 const WebPage = require("../WebPage");
 const WebBuilderElement = require("../WebBuilderElement");
 const WebBuilderElementCategory = require("../WebElementCategory");
@@ -353,6 +356,9 @@ const models = {
   // Tournament,
   WebBuilderBlog,
   WebBuilder,
+  WebBuilderHistory,
+  WebBuilderActivity,
+  WebBuilderPageHistory,
   WebBuilderTheme,
   WebPage,
   WebBuilderElement,

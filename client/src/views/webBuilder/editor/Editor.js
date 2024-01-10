@@ -179,6 +179,7 @@ export default function Editor({
   setRoleMdl,
   VisibleMenu
 }) {
+  console.log('ispublish============', ispublish)
   const [openCreateForm, setOpenCreateForm] = useState();
   const { id } = useParams();
   const form = store.form;
@@ -1143,6 +1144,7 @@ export default function Editor({
       // ... other font families ...
     ];
 
+
     const fetchGoogleFonts = async () => {
       const data = await dispatch(getGoogleFontsAction());
       if (!data) return;
@@ -1206,9 +1208,7 @@ export default function Editor({
         }
       });
     };
-
     fetchGoogleFonts();
-
     rte.add('fontColor', {
       icon: `<input type="color" class="gjs-field" style="width: 27px" />`,
       // Bind the 'result' on 'change' listener
@@ -1402,6 +1402,7 @@ export default function Editor({
         });
       }
       if (ispublish) {
+        console.log(';;;;;;;;;;;;;;;;;')
         dispatch(publishWebsiteAction(id, payload)).then((res) => {
           if (res) {
             const _form = { ...form, ...res };
