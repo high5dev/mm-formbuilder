@@ -5,10 +5,12 @@ import { Modal } from 'reactstrap';
 import MainNav from './MainNav';
 import Sidebar from './Sidebar';
 import Editor from './Editor';
+import { getWebsiteAction } from '../store/action';
+import { setCurrentPage } from '../store/reducer';
 export default function Index() {
+  const dispatch = useDispatch();
   const [impStatus, setImpStatus] = useState(false);
   const [open, setOpen] = useState(false);
-  const [page, setPage] = useState();
   const [device, setDevice] = useState('desktop');
   const [ispreview, setIsPreview] = useState(false);
   const [isSave, setIsSave] = useState(false);
@@ -29,13 +31,14 @@ export default function Index() {
   const [rsidebarOpen, setRSidebarOpen] = useState(false);
   const [addSideBarOpen, setAddSideBarOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedSubMenu, setSelectedSubMenu]=useState('');
-  const { stepId } = useParams();
+  const [selectedSubMenu, setSelectedSubMenu] = useState('');
+  const { stepId, id } = useParams();
   const [openAddElementMdl, setOpenAddElementMdl] = useState(false);
   const [selectedMainNav, setSelectedMainNav] = useState('elements');
   const [roleMdl, setRoleMdl] = useState(false);
   const [viewCMSMenu, setViewCMSMenu] = useState(false);
   const [VisibleMenu, setVisibleMenu] = useState(false);
+  const [thispage, setThispage] = useState()
   const store = useSelector((state) => {
     return {
       ...state.websiteEditor
@@ -44,6 +47,16 @@ export default function Index() {
 
   const handelVisibleMenu = () => setVisibleMenu(!VisibleMenu);
 
+  useEffect(async () => {
+    let data = await dispatch(getWebsiteAction(id));
+    if (data.length > 0) {
+      if (!store.currentPage) {
+        dispatch(setCurrentPage(data[0]));
+      }
+    }
+  }, [store.currentPage]);
+
+
   return (
     <>
       <div className="editor-body">
@@ -51,6 +64,8 @@ export default function Index() {
           <MainNav
             isblog={isblog}
             setIsBlog={setIsBlog}
+            thispage = {thispage}
+            setThispage = {setThispage}
             createMdl={createMdl}
             setCreateMdl={setCreateMdl}
             renameMdl={renameMdl}
@@ -92,6 +107,8 @@ export default function Index() {
           <div className="editor-content">
             <Editor
               isblog={isblog}
+              thispage = {thispage}
+              setThispage = {setThispage}
               setIsBlog={setIsBlog}
               createMdl={createMdl}
               setCreateMdl={setCreateMdl}

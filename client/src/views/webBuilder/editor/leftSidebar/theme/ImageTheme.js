@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Form, Input } from 'reactstrap';
+import { Button, Form, Input, Label } from 'reactstrap';
 import { selectThemeColors } from '@utils';
 import {Edit2, Plus} from 'react-feather';
 import Slider from 'rc-slider';
@@ -7,10 +7,10 @@ import 'rc-slider/assets/index.css';
 import { useDispatch } from 'react-redux';
 import Select from 'react-select';
 import { updateWebBuilderThemeAction } from '../../../store/action';
-export default function ImageTheme({store}) {
+export default function ImageTheme({store, selectedImage, setSelectedImage}) {
     const formTheme=store.formTheme;
+    setSelectedImage(formTheme.image);
     const dispatch=useDispatch();
-    const [selectedImage, setSelectedImage]=useState(formTheme?.image);
     const borderOptiions=[
         {label:'All', value:'All'},
         {label:'Top', value:'Top'},
@@ -150,6 +150,7 @@ export default function ImageTheme({store}) {
         setBorderColor(_value);
         let tempImage=JSON.parse(JSON.stringify(selectedImage));
         tempImage.attributes.borderColor=_value;
+        delete tempImage.attributes['themeColor'];
         setSelectedImage(tempImage);
         const payload={
             image:tempImage
@@ -209,6 +210,18 @@ export default function ImageTheme({store}) {
         dispatch(updateWebBuilderThemeAction(themeId, payload));
     }
 
+    const selectThemeBorderColor =(_color)=>{
+        setBorderColor(_color.value);
+        let tempImage=JSON.parse(JSON.stringify(selectedImage));
+        tempImage.attributes.borderColor=_color.value;
+        tempImage.attributes['themeColor']=_color.name;
+        setSelectedImage(tempImage);
+        const payload={
+            image:tempImage
+          }
+        const themeId=formTheme._id;
+        dispatch(updateWebBuilderThemeAction(themeId, payload));
+    }
 
     useEffect(()=>{
        if(selectedImage){
@@ -244,7 +257,7 @@ export default function ImageTheme({store}) {
     return(
         <div className='p-1'>
             <div className='d-flex justify-content-around mt-2 mb-2'>
-                <img src="../../assets/images/back.jpg" width="120px" height="120px" style={{...selectedImage.attributes}}/>
+                <img src="../../assets/images/back.jpg" width="120px" height="120px" style={{...selectedImage?.attributes}}/>
             </div>
             <div className='mt-2'>
                 <div>
@@ -264,10 +277,33 @@ export default function ImageTheme({store}) {
                             <Input type='text' value={borderWidth} onChange={(e)=>handleBorderWidthChange(e.target.value)} style={{padding:'7px', marginRight:'5px'}}/>
                             px
                         </div> 
-                        <div className="color-selection" style={{width:'50px'}}>
+                        {/* <div className="color-selection" style={{width:'50px'}}>
                             <Input type='color' value={borderColor} onChange={(e)=>handleBorderColorChange(e.target.value)}/>
-                        </div> 
+                        </div>  */}
                     </div>
+                    <div className='ms-1'>
+                            <div>
+                                <Label>Border Color</Label>
+                                <div className='d-flex justify-content-around align-items-center mt-1' style={{width:'200px'}}>
+                                {
+                                formTheme && formTheme.colors && formTheme.colors.map((_color)=>{
+                                    return(
+                                    <div style={{width:'30px', height:'30px',backgroundColor:_color.value}} onClick={(e)=>{
+                                        selectThemeBorderColor(_color);
+                                    }}>
+                                    </div>
+                                    )
+                                })
+                                }
+                                </div>
+                            </div>
+                            <div className='mt-1'>
+                                <Label>Custom Color</Label>
+                                <div className="mt-1" style={{ width: '100px' }}>
+                                <Input type="color" value={borderColor} onChange={(e)=>handleBorderColorChange(e.target.value)}/>
+                                </div>
+                            </div>
+                        </div>
                 </div>
                 <div className='mt-2'>
                     <div className='fw-bold'>Corner</div>

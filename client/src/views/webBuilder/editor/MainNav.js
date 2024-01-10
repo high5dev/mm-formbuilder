@@ -157,7 +157,6 @@ export default function MainNav({
           let seconds = Math.floor((diff % 6e4) / 1000);
           seconds = seconds ? seconds + ' seconds ago Saved' : '';
           let duration = days + hours + minutes + seconds ;
-          console.log(duration)
           setDifferentTime(duration);
         }
       }
@@ -550,7 +549,7 @@ export default function MainNav({
                       className="w-100 text-left"
                       onClick={(e) => handlePage(item)}
                     >
-                      <span className="" style={{ color: page == item ? '#174ae7' : '#6e6b7b' }}>
+                      <span className="" style={{ color: page?._id == item._id ? '#174ae7' : '#6e6b7b' }}>
                         {item.name}
                       </span>
                     </DropdownItem>

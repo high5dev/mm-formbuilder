@@ -4,8 +4,8 @@ import { useDispatch } from 'react-redux';
 import {Edit2, Plus} from 'react-feather';
 import ColorModal from './modal/ColorModal';
 import {updateWebBuilderThemeAction} from '../../../store/action'
-export default function ColorTheme({store, selectedColor}) {
-  const formTheme=store.formTheme;
+export default function ColorTheme({store, selectedColor, setSelectedColor}) {
+  const formTheme=store.formTheme; 
   const dispatch=useDispatch();
   const [color, setColor]=useState();
   const [colorMdl, setColorMDL]=useState(false);
@@ -15,10 +15,37 @@ export default function ColorTheme({store, selectedColor}) {
 
   const handleThemeColor=(value, item)=>{
     let colors=formTheme.colors;
+    const buttons=formTheme.buttons;
+    const fonts=formTheme.fonts;
+    const image=formTheme.image;
+    let newButtons;
+    let newFonts;
+    let newImage;
     let newColors=colors && colors.map((_color)=>{
       if(_color._id===item._id){
         let tempColor=JSON.parse(JSON.stringify(_color));
         tempColor.value=value;
+        newButtons=buttons && buttons.map((_button)=>{
+          let tempButton=JSON.parse(JSON.stringify(_button));
+          if(_button.attributes.themeColor && _button.attributes.themeColor===selectedColor.name){
+              tempButton.attributes.color=value;
+          }
+          if(_button.attributes.themeBackgroundColor && _button.attributes.themeBackgroundColor===selectedColor.name){
+            tempButton.attributes.backgroundColor=value;
+          }
+          return tempButton
+        });
+        newFonts=fonts && fonts.map((_font)=>{
+          let tempFont=JSON.parse(JSON.stringify(_font));
+          if(_font.attributes.themeColor && _font.attributes.themeColor===selectedColor.name){
+            tempFont.attributes.color=value;
+          }
+          return tempFont
+        });
+        newImage=JSON.parse(JSON.stringify(image));
+        if(newImage.attributes.themeColor && newImage.attributes.themeColor===selectedColor.name){
+          newImage.attributes.borderColor=value;
+        }        
         return tempColor
       }
       else{
@@ -26,7 +53,10 @@ export default function ColorTheme({store, selectedColor}) {
       }
     });
     const payload={
-      colors:newColors
+      colors:newColors,
+      buttons:newButtons,
+      fonts:newFonts,
+      image:newImage
     }
     const themeId=formTheme._id;
     dispatch(updateWebBuilderThemeAction(themeId, payload));
