@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import Select from 'react-select';
 import { updateWebBuilderThemeAction, getToImageLibraryAction} from '../../../store/action';
 import ImagesModal from '../theme/modal/ImagesModal';
-export default function BackgroundTheme({store}) {
+export default function BackgroundTheme({store, selectedBackground, setSelectedBackground}) {
     const formTheme=store.formTheme;
     const formData=store.form.formData;
     let pages=[];
@@ -17,7 +17,6 @@ export default function BackgroundTheme({store}) {
         pages.push(item);
     });
     const dispatch=useDispatch();
-    const [background, setBackground]=useState(formTheme.background);
     const [backgroundColor, setBackgroundColor]=useState();
     const [images, setImages]=useState([]);
     const [selectedImage, setSelectedImage]=useState();
@@ -32,9 +31,9 @@ export default function BackgroundTheme({store}) {
     }
 
     const handleBackgroundColorChange=(_color)=>{
-        let tempbackground=JSON.parse(JSON.stringify(background));
+        let tempbackground=JSON.parse(JSON.stringify(selectedBackground));
         tempbackground.backgroundColor=_color;
-        setBackground(tempbackground);
+        setSelectedBackground(tempbackground);
         const payload={
             background:tempbackground
           }
@@ -44,7 +43,7 @@ export default function BackgroundTheme({store}) {
 
     const handlePageBgColorChange=(_color)=>{
         setSelectedBgColor(_color);
-        let tempbackground=JSON.parse(JSON.stringify(background));
+        let tempbackground=JSON.parse(JSON.stringify(selectedBackground));
         let pages=tempbackground.pages;
         pages && pages.map((_page)=>{
             if(_page._id===selectedPage._id){
@@ -55,7 +54,7 @@ export default function BackgroundTheme({store}) {
                 return _page
             }
         });
-        setBackground(tempbackground);
+        setSelectedBackground(tempbackground);
         const payload={
             background:tempbackground
           }
@@ -78,18 +77,18 @@ export default function BackgroundTheme({store}) {
 
 
     useEffect(()=>{
-        if(background){
-            const _backgroundColor=background.backgroundColor;
+        if(selectedBackground){
+            const _backgroundColor=selectedBackground.backgroundColor;
             setBackgroundColor(_backgroundColor);
         }
-    }, [background]);
+    }, [selectedBackground]);
 
     useEffect(()=>{
         let imageUrl='';
         if(selectedImage){
             imageUrl=selectedImage;
         }
-        let tempbackground=JSON.parse(JSON.stringify(background));
+        let tempbackground=JSON.parse(JSON.stringify(selectedBackground));
         let pages=tempbackground.pages;
         pages && pages.map((_page)=>{
             if(_page._id===selectedPage._id){
@@ -100,7 +99,7 @@ export default function BackgroundTheme({store}) {
                 return _page
             }
         });
-        setBackground(tempbackground);
+        setSelectedBackground(tempbackground);
         const payload={
             background:tempbackground
           }
@@ -111,7 +110,7 @@ export default function BackgroundTheme({store}) {
 
     useEffect(()=>{
         if(selectedPage){
-            let tempbackground=JSON.parse(JSON.stringify(background));
+            let tempbackground=JSON.parse(JSON.stringify(selectedBackground));
             let pages=tempbackground.pages;
             if(pages.length>0){
                 pages.map((_page)=>{

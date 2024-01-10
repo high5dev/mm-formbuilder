@@ -1,20 +1,12 @@
 export const colors=[
     {
         name:'Primary',
-        value:"#ff0000"
+        value:"#174ae7"
     },
     {
         name:'Secondary',
-        value:"#0000ff"
-    },
-    {
-        name:'Color #3',
-        value:"#3cb371"
-    },
-    {
-        name:'Color #4',
-        value:"#ee82ee"
-    },
+        value:"#6c757d"
+    }
 ];
 
 export const buttons=[
@@ -30,6 +22,7 @@ export const buttons=[
             fontStyle:'normal',
             color:'#ffffff',
             backgroundColor:'#174ae7',
+            themeBackgroundColor:'Primary',
             borderRadius:'0px',
             minWidth:'80px'
         }
@@ -46,6 +39,7 @@ export const buttons=[
             fontStyle:'normal',
             color:'#ffffff',
             backgroundColor:'#6c757d',
+            themeBackgroundColor:'Secondary',
             borderRadius:'0px',
             minWidth:'80px'
         }
@@ -73,7 +67,7 @@ export const fonts=[
     {
         type:'DFLT',
         attributes:{
-            fontSize:"14px",
+            fontSize:"12px",
             fontFamily:"Arial",
             fontWeight:'normal',
             textDecoration:'none',
@@ -84,7 +78,7 @@ export const fonts=[
     {
         type:'PAR',
         attributes:{
-            fontSize:"14px",
+            fontSize:"15px",
             fontFamily:"Arial",
             fontWeight:'normal',
             textDecoration:'none',
@@ -95,7 +89,7 @@ export const fonts=[
     {
         type:'H1',
         attributes:{
-            fontSize:"14px",
+            fontSize:"34px",
             fontFamily:"Arial",
             fontWeight:'normal',
             textDecoration:'none',
@@ -106,7 +100,7 @@ export const fonts=[
     {
         type:'H2',
         attributes:{
-            fontSize:"14px",
+            fontSize:"30px",
             fontFamily:"Arial",
             fontWeight:'normal',
             textDecoration:'none',
@@ -117,7 +111,7 @@ export const fonts=[
     {
         type:'H3',
         attributes:{
-            fontSize:"14px",
+            fontSize:"24px",
             fontFamily:"Arial",
             fontWeight:'normal',
             textDecoration:'none',
@@ -128,7 +122,7 @@ export const fonts=[
     {
         type:'H4',
         attributes:{
-            fontSize:"14px",
+            fontSize:"20px",
             fontFamily:"Arial",
             fontWeight:'normal',
             textDecoration:'none',
@@ -139,7 +133,7 @@ export const fonts=[
     {
         type:'H5',
         attributes:{
-            fontSize:"14px",
+            fontSize:"18px",
             fontFamily:"Arial",
             fontWeight:'normal',
             textDecoration:'none',
@@ -150,7 +144,7 @@ export const fonts=[
     {
         type:'H6',
         attributes:{
-            fontSize:"14px",
+            fontSize:"16px",
             fontFamily:"Arial",
             fontWeight:'normal',
             textDecoration:'none',

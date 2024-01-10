@@ -8,8 +8,11 @@ import Select from 'react-select';
 import { useEdges } from 'react-flow-renderer';
 import { useDispatch } from 'react-redux';
 import { updateWebBuilderThemeAction } from '../../../store/action';
-export default function ButtonTheme({ store, selectedButton, setSelectedButton }) {
+export default function ButtonTheme({ store, selectedButton, selectedColor, setSelectedButton}) {
+  console.log('selectedColor', selectedColor, selectedButton)
   const formTheme = store.formTheme;
+  const [themeColor, setThemeColor]=useState();
+  const [themeBackgroundColor, setThemeBackgroundColor]=useState();
   const dispatch=useDispatch();
   const fontOptiions = [
     { label: 'Arial', value: 'Arial' },
@@ -141,7 +144,8 @@ export default function ButtonTheme({ store, selectedButton, setSelectedButton }
     let newButtons=buttons && buttons.map((_button)=>{
         if(_button.type===selectedButton.type){
             let tempButton=JSON.parse(JSON.stringify(_button));
-            tempButton.attributes.color=_color
+            tempButton.attributes.color=_color;
+            delete tempButton.attributes['themeColor'];
             setSelectedButton({...tempButton});
             return tempButton
         }
@@ -193,7 +197,51 @@ export default function ButtonTheme({ store, selectedButton, setSelectedButton }
     let newButtons=buttons && buttons.map((_button)=>{
         if(_button.type===selectedButton.type){
             let tempButton=JSON.parse(JSON.stringify(_button));
-            tempButton.attributes.backgroundColor=_bgColor
+            tempButton.attributes.backgroundColor=_bgColor;
+            delete tempButton.attributes['themeBackgroundColor'];
+            setSelectedButton({...tempButton});
+            return tempButton
+        }
+        else{
+            return _button
+        }
+    });
+    const payload={
+        buttons:newButtons
+      }
+      const themeId=formTheme._id;
+      dispatch(updateWebBuilderThemeAction(themeId, payload));
+  }
+
+  const selectThemeFontColor =(_color)=>{
+    const buttons=formTheme.buttons;
+    let newButtons=buttons && buttons.map((_button)=>{
+        if(_button.type===selectedButton.type){
+            let tempButton=JSON.parse(JSON.stringify(_button));
+            tempButton.attributes.color=_color.value;
+            tempButton.attributes['themeColor']=_color.name;
+            setSelectedButton({...tempButton});
+            return tempButton
+        }
+        else{
+            return _button
+        }
+    });
+    const payload={
+        buttons:newButtons
+      }
+      const themeId=formTheme._id;
+      dispatch(updateWebBuilderThemeAction(themeId, payload));
+  }
+
+  
+  const selectThemeBackgroundColor =(_color)=>{
+    const buttons=formTheme.buttons;
+    let newButtons=buttons && buttons.map((_button)=>{
+        if(_button.type===selectedButton.type){
+            let tempButton=JSON.parse(JSON.stringify(_button));
+            tempButton.attributes.backgroundColor=_color.value;
+            tempButton.attributes['themeBackgroundColor']=_color.name;
             setSelectedButton({...tempButton});
             return tempButton
         }
@@ -326,11 +374,15 @@ export default function ButtonTheme({ store, selectedButton, setSelectedButton }
   useEffect(()=>{
     if(selectedButton){
         const attributes=selectedButton.attributes;
+        const themeColor=selectedButton.attributes.themeColor; 
+        setThemeColor(themeColor);  
         const fontFamily=attributes.fontFamily;
         const fontSize=attributes.fontSize;
         const fontColor=attributes.color;
         const fontWeight=attributes.fontWeight;
         const backgroundColor=attributes.backgroundColor;
+        const themeBackgroundColor=selectedButton.attributes.selectThemeBackgroundColor;
+        setThemeBackgroundColor(themeBackgroundColor);
         // const borderTopLeftRadius=attributes.borderTopLeftRadius;
         // const borderTopRightRadius=attributes.borderTopRightRadius;
         // const borderBottomLeftRadius=attributes.borderBottomLeftRadius;
@@ -393,10 +445,15 @@ export default function ButtonTheme({ store, selectedButton, setSelectedButton }
         }
 
         setFont({label:fontFamily, value:fontFamily});
-        setColor(fontColor);
-        setBackgroundColor(backgroundColor);
+        if(!themeColor){
+          setColor(fontColor);
+        }
+        if(!themeBackgroundColor){
+          setBackgroundColor(backgroundColor);
+        }
     }
   }, [selectedButton])
+
   return (
     <div className="p-1">
       {formTheme &&
@@ -435,10 +492,30 @@ export default function ButtonTheme({ store, selectedButton, setSelectedButton }
                       />
                     </div>
                   </div>
-                  <div className="color-row d-flex align-items-center justify-content-between mt-1">
+                  <div className="color-row mt-1">
                     <Label>Color</Label>
-                    <div style={{ width: '70px' }}>
-                      <Input type="color" value={color} onChange={(e)=>handleChangeFontColor(e.target.value)}/>
+                    <div className='ms-1'>
+                      <div>
+                        <Label>Theme Color</Label>
+                        <div className='d-flex justify-content-around align-items-center mt-1'>
+                        {
+                          formTheme && formTheme.colors && formTheme.colors.map((_color)=>{
+                            return(
+                              <div style={{width:'30px', height:'30px',backgroundColor:_color.value}} onClick={(e)=>{
+                                selectThemeFontColor(_color);
+                              }}>
+                              </div>
+                            )
+                          })
+                        }
+                        </div>
+                      </div>
+                      <div className='mt-1'>
+                        <Label>Custom Color</Label>
+                        <div className="mt-1" style={{ width: '100px' }}>
+                          <Input type="color" value={color} onChange={(e)=>handleChangeFontColor(e.target.value)}/>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div className="font-format-row d-flex align-items-center justify-content-between mt-1">
@@ -470,10 +547,30 @@ export default function ButtonTheme({ store, selectedButton, setSelectedButton }
                 </div>
                 <div className="mt-2">
                   <div className="fw-bolder">Background</div>
-                  <div className="font-row d-flex align-items-center justify-content-between mt-1">
+                  <div className="font-row mt-1">
                     <Label>Background Color</Label>
-                    <div style={{ width: '70px' }}>
-                      <Input type="color" value={backgroundColor} onChange={(e)=>handleChangeBackgroundColor(e.target.value)}/>
+                    <div className='ms-1'>
+                      <div>
+                        <Label>Theme Color</Label>
+                        <div className='d-flex justify-content-around align-items-center mt-1'>
+                        {
+                          formTheme && formTheme.colors && formTheme.colors.map((_color)=>{
+                            return(
+                              <div style={{width:'30px', height:'30px',backgroundColor:_color.value}} onClick={(e)=>{
+                                selectThemeBackgroundColor(_color);
+                              }}>
+                              </div>
+                            )
+                          })
+                        }
+                        </div>
+                      </div>
+                      <div className='mt-1'>
+                        <Label>Custom Color</Label>
+                        <div className="mt-1" style={{ width: '100px' }}>
+                          <Input type="color" value={color} onChange={(e)=>handleChangeBackgroundColor(e.target.value)}/>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
