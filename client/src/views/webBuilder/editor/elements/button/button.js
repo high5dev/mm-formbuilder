@@ -9,7 +9,7 @@ let linkButton = {
         components: (props) => {
             const elProp = props.attributes.elProps[0];
             return(
-                <button id={elProp.id} name={elProp.name} class="input-link-element">{elProp.label}</button> 
+                <input type='button' id={elProp.id} name={elProp.name} value={elProp.label} class="input-link-element"/> 
             )
           },
         elProps:[

@@ -554,34 +554,34 @@ exports.getWebsite= asyncHandler(async(req, res) =>{
   const user = req.user;
   try{
     const websiteData=await WebBuilder.findOne({_id:id});
-    if(websiteData){;
+    if(websiteData){
       const themeData=await WebBuilderTheme.findOne({websiteId:mongoose.Types.ObjectId(websiteData._id)});
-      const collectionData = await WebSiteCollection.find({ websiteId: mongoose.Types.ObjectId(id), name: "PROFILE" });
-      let isExist = false;
-      collectionData.map((data) => {
-        data.fields.map((field) => {
-          if(field.name == 'Business name') {
-            isExist = true;
-          }
-        })
-      });
-      if(!isExist) {
-        await WebSiteCollection.create({
-          userId: mongoose.Types.ObjectId(user._id),
-          organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
-          websiteId: mongoose.Types.ObjectId(id),
-          name: "PROFILE",
-          fields: [{ name: 'Business name', type: 'text', default: true }, 
-                   { name: 'Business type', type: 'text', default: true },
-                   { name: 'About Us', type: 'text', default: true },
-                   { name: 'Company Overview', type: 'text', default: true },
-                   { name: 'Business Services', type: 'text', default: true },
-                   { name: 'Logo', type: 'Image', default: true }],
-          values: [],
-          type: "single",
-          isDelete: false
-        })
-      }
+      // const collectionData = await WebSiteCollection.find({ websiteId: mongoose.Types.ObjectId(id), name: "PROFILE" });
+      // let isExist = false;
+      // collectionData.map((data) => {
+      //   data.fields.map((field) => {
+      //     if(field.name == 'Business name') {
+      //       isExist = true;
+      //     }
+      //   })
+      // });
+      // if(!isExist) {
+      //   await WebSiteCollection.create({
+      //     userId: mongoose.Types.ObjectId(user._id),
+      //     organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+      //     websiteId: mongoose.Types.ObjectId(id),
+      //     name: "PROFILE",
+      //     fields: [{ name: 'Business name', type: 'text', default: true }, 
+      //              { name: 'Business type', type: 'text', default: true },
+      //              { name: 'About Us', type: 'text', default: true },
+      //              { name: 'Company Overview', type: 'text', default: true },
+      //              { name: 'Business Services', type: 'text', default: true },
+      //              { name: 'Logo', type: 'Image', default: true }],
+      //     values: [],
+      //     type: "single",
+      //     isDelete: false
+      //   })
+      // }
 
       const pageData=await WebPage.find({websiteId:mongoose.Types.ObjectId(websiteData._id), isDelete: false});
       let query = {
@@ -589,7 +589,7 @@ exports.getWebsite= asyncHandler(async(req, res) =>{
         websiteId: mongoose.Types.ObjectId(id),
         organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
         isDelete: false,
-    };
+      };
     const forms = await WebBuilderForm.aggregate([
       {$match: query},
       {

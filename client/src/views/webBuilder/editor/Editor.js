@@ -9,6 +9,8 @@ import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { SlArrowDown } from "react-icons/sl";
+import Select from 'react-select';
+import WebFont from 'webfontloader';
 import {
   Button,
   ButtonGroup,
@@ -117,8 +119,9 @@ import { CustomerDatasetModal } from './store/customerDataset/CustomerDatasetMod
 import RoleModal from './topNav/role';
 import AddPresetModal from './cms/AddPresetModal';
 import CMS from './topNav/cms';
+import { fontWebStyle } from './leftSidebar/theme/defaultTheme/variable';
 import { ImCheckmark, ImCross } from "react-icons/im";
-
+import {colors, fonts, buttons, background, image} from '../editor/leftSidebar/theme/defaultTheme'
 export default function Editor(
   {
   isblog,
@@ -166,6 +169,13 @@ export default function Editor(
   const { id } = useParams();
   const form = store.form;
   const formTheme=store.formTheme;
+  const defaultTheme={
+    buttons,
+    fonts,
+    colors,
+    background,
+    image
+  }
   const page = store.currentPage;
   const dispatch = useDispatch();
   const history = useHistory();
@@ -195,10 +205,26 @@ export default function Editor(
   const [selectedFormBlock, setSelectedFormBlock] = useState(null);
   const [OpenCategory, setOpenCategory] = useState({ index: 0, value: true });
   //theme section
+  const [selectedTheme, setSelectedTheme]=useState({
+    label:'Select', value:'Select'
+  });
   const [selectedColor, setSelectedColor]=useState();
   const [selectedButton, setSelectedButton]=useState();
   const [selectedFont, setSelectedFont]=useState();
+  const [selectedImage, setSelectedImage]=useState(formTheme?.image);
+  const [selectedBackground, setSelectedBackground]=useState(formTheme?.background);
   const [storeProducts, setStoreProducts] = useState({});
+  const themeOptions=[
+    {
+      label:'Select', value:'Select'
+    },
+    {
+      label:'Default', value:'Default'
+    },
+    {
+      label:'Custom', value:'Custom'
+    }
+  ];
   const user = getUserData();
   useEffect(() => {
     if (store?.form?._id) {
@@ -519,7 +545,9 @@ export default function Editor(
     }
   }
 
-
+ const handleThemeChange=(_theme)=>{
+  setSelectedTheme(_theme);
+ }
 
 
   useEffect(() => {
@@ -636,9 +664,8 @@ export default function Editor(
   }, [store?.form?._id]);
 
   useEffect(() => {
-    dispatch(getWebElementsAction());
-    dispatch(getChildFormsAction(store?.form?._id));
-    dispatch(getBlogsAction(store?.form?._id));
+    // dispatch(getChildFormsAction(store?.form?._id));
+    // dispatch(getBlogsAction(store?.form?._id));
     dispatch(getWebsiteAction(id)).then((res) => {
       if (res) {
         dispatch(setCurrentPage(res.find(e => e._id === page?._id)));
@@ -941,6 +968,7 @@ export default function Editor(
       editor.setDevice('mobilePortrait');
     });
     gjsEditor.on('block:custom', (props) => {
+      console.log('uuuuuuuuuuuuuuu')
       // The `props` will contain all the information you need in order to update your UI.
       // props.blocks (Array<Block>) - Array of all blocks
       // props.dragStart (Function<Block>) - A callback to trigger the start of block dragging.
@@ -1091,64 +1119,64 @@ export default function Editor(
       // ... other font families ...
     ];
 
-    const fetchGoogleFonts = async () => {
-      const data = await dispatch(getGoogleFontsAction());
-      if(!data) return;
-      const fontData = data.items.map(font => { return { name: font.family, url: font.files.regular }; });
-      const fontFamilyProp = gjsEditor.StyleManager.getProperty('typography', 'font-family');
-      const options = [];
-      fontData.forEach(font => {
-        options.push({ id: font.name, label: font.name });
-      })
+    // const fetchGoogleFonts = async () => {
+    //   const data = await dispatch(getGoogleFontsAction());
+    //   if(!data) return;
+    //   const fontData = data.items.map(font => { return { name: font.family, url: font.files.regular }; });
+    //   const fontFamilyProp = gjsEditor.StyleManager.getProperty('typography', 'font-family');
+    //   const options = [];
+    //   fontData.forEach(font => {
+    //     options.push({ id: font.name, label: font.name });
+    //   })
       
-      fontFamilyProp.set('options', options);
-      const loadFont = (fontName) => {
-        WebFont.load({
-          google: {
-            families: [fontName]
-          },
-          active: function () {
-            // Append the font stylesheet to the GrapesJS iframe
-            const cssLink = gjsEditor.Canvas.getDocument().createElement('link');
-            cssLink.href = `https://fonts.googleapis.com/css?family=${fontName.replace(/\s/g, '+')}`;
-            cssLink.rel = 'stylesheet';
-            cssLink.type = 'text/css';
-            const head = gjsEditor.Canvas.getDocument().head;
-            head.appendChild(cssLink);
-          }
-        });
-      };
-      fontFamilyProp.on('change:value', (model) => {
-        // Handle the font family change
-        const selectedFontFamily = model.get('value');
-        loadFont(selectedFontFamily);
-        // Additional actions based on the selected font family
-        // ...
-      });
-      gjsEditor.StyleManager.render();
-      rte.add('fontFamily', {
-        icon: `
-            <select class="gjs-field" style="width: 100px">
-                ${fontData.map(font => `<option value="${font.name}">${font.name}</option>`).join('')}
-            </select>
-        `,
-        event: 'change',
-        result: (rte, action) => {
-          const fontFamilyValue = action.btn.childNodes[1].value;
-          loadFont(fontFamilyValue);
-          rte.exec('fontName', fontFamilyValue);
-        },
-        update: (rte, action) => {
-          const value = rte.doc.queryCommandValue("fontName");
-          console.log(value);
-          if (value) {
-            action.btn.firstChild.value = value.replace(/['"]+/g, ''); // Remove quotes
-          }
-        }
-      });
-    }
+    //   fontFamilyProp.set('options', options);
+    //   const loadFont = (fontName) => {
+    //     WebFont.load({
+    //       google: {
+    //         families: [fontName]
+    //       },
+    //       active: function () {
+    //         // Append the font stylesheet to the GrapesJS iframe
+    //         const cssLink = gjsEditor.Canvas.getDocument().createElement('link');
+    //         cssLink.href = `https://fonts.googleapis.com/css?family=${fontName.replace(/\s/g, '+')}`;
+    //         cssLink.rel = 'stylesheet';
+    //         cssLink.type = 'text/css';
+    //         const head = gjsEditor.Canvas.getDocument().head;
+    //         head.appendChild(cssLink);
+    //       }
+    //     });
+    //   };
+    //   fontFamilyProp.on('change:value', (model) => {
+    //     // Handle the font family change
+    //     const selectedFontFamily = model.get('value');
+    //     loadFont(selectedFontFamily);
+    //     // Additional actions based on the selected font family
+    //     // ...
+    //   });
+    //   gjsEditor.StyleManager.render();
+    //   rte.add('fontFamily', {
+    //     icon: `
+    //         <select class="gjs-field" style="width: 100px">
+    //             ${fontData.map(font => `<option value="${font.name}">${font.name}</option>`).join('')}
+    //         </select>
+    //     `,
+    //     event: 'change',
+    //     result: (rte, action) => {
+    //       const fontFamilyValue = action.btn.childNodes[1].value;
+    //       loadFont(fontFamilyValue);
+    //       rte.exec('fontName', fontFamilyValue);
+    //     },
+    //     update: (rte, action) => {
+    //       const value = rte.doc.queryCommandValue("fontName");
+    //       console.log(value);
+    //       if (value) {
+    //         action.btn.firstChild.value = value.replace(/['"]+/g, ''); // Remove quotes
+    //       }
+    //     }
+    //   });
+    // }
 
-    fetchGoogleFonts();
+    // fetchGoogleFonts();
 
     rte.add('fontColor', {
       icon: `<input type="color" class="gjs-field" style="width: 27px" />`,
@@ -1356,32 +1384,32 @@ export default function Editor(
   useEffect(() => {
     if (page) {
       setIsLoading(true);
-      setIsStoreLoading(true);
+      // setIsStoreLoading(true);
       dispatch(getPageAction(page._id)).then((res) => {
         if (res) {
           if (editor) {
             editor.setComponents(res);
           }
           setIsLoading(false);
-          setIsStoreLoading(false);
+          // setIsStoreLoading(false);
         }
       });
-      const interval = setInterval(() => {
-        if (editor) {
-          const current_page = editor.Pages.getSelected();
-          const html = editor.getHtml({ current_page });
-          const css = editor.getCss({ current_page });
-          const payload = {
-            page: page?._id,
-            html: html,
-            css: css
-          };
-          dispatch(updatePageAction(id, payload));
-        }
-      }, 1000 * 30);
+      // const interval = setInterval(() => {
+      //   if (editor) {
+      //     const current_page = editor.Pages.getSelected();
+      //     const html = editor.getHtml({ current_page });
+      //     const css = editor.getCss({ current_page });
+      //     const payload = {
+      //       page: page?._id,
+      //       html: html,
+      //       css: css
+      //     };
+      //     dispatch(updatePageAction(id, payload));
+      //   }
+      // }, 1000 * 30);
 
-      //Clearing the interval
-      return () => clearInterval(interval);
+      // //Clearing the interval
+      // return () => clearInterval(interval);
     }
   }, [page?._id]);
 
@@ -1705,6 +1733,180 @@ export default function Editor(
     }
   });
 
+  useEffect(()=>{
+    if(selectedFont){
+      const elType=selectedFont.type;
+      let newElType;
+      if(editor && selectedCmp){
+        switch(elType){
+          case 'PAR':
+            newElType='p';
+            break;
+          case 'H1':
+            newElType='h1';
+            break;
+          case 'H2':
+            newElType='h2';
+            break;
+          case 'H3':
+            newElType='h3';
+            break;
+          case 'H4':
+            newElType='h4';
+            break;
+          case 'H5':
+            newElType='h5';
+            break;
+          case 'H6':
+            newElType='h6';
+            break;
+          default:
+            newElType='default';
+            break;
+        }
+        let wrapper=selectedCmp.getEl();
+        const attributes=selectedFont.attributes;
+        const values=Object.values(attributes);
+        if(newElType==='default'){
+          attributes && Object.keys(attributes).map((_attribute,i)=>{
+            wrapper.style[_attribute]=values[i];
+          })
+        }
+        else{
+          let elements=wrapper.getElementsByTagName(newElType);
+          if(elements){
+            for (let element of elements){
+              attributes && Object.keys(attributes).map((_attribute,i)=>{
+                element.style[_attribute]=values[i];
+              })
+            } 
+          }
+        }
+      }
+    }
+  }, [selectedFont])
+
+
+  useEffect(()=>{
+    if(selectedButton){
+      if(editor && selectedCmp){
+        let wrapper=selectedCmp.getEl();
+        console.log('wrapper==========', wrapper);
+        const attributes=selectedButton.attributes;
+        const values=Object.values(attributes);
+          let elements = wrapper.querySelectorAll("input[type=button]"); 
+          if(elements){
+            for (let element of elements){
+              attributes && Object.keys(attributes).map((_attribute,i)=>{
+                element.style[_attribute]=values[i];
+              })
+            } 
+          }
+        }
+      }
+  }, [selectedButton])
+
+
+
+
+  useEffect(()=>{
+    if(selectedImage){
+      let elType='img';
+      if(editor && selectedCmp){
+        let wrapper=selectedCmp.getEl();
+        const attributes=selectedImage.attributes;
+        const values=Object.values(attributes);
+        let elements=wrapper.getElementsByTagName(elType);
+        if(elements){
+          for (let element of elements){
+            attributes && Object.keys(attributes).map((_attribute,i)=>{
+              element.style[_attribute]=values[i];
+            })
+          } 
+        }
+      }
+    }
+  }, [selectedImage])
+
+  useEffect(()=>{
+    if(selectedTheme.value!='Select'){
+      if(editor && selectedCmp){
+        let themeFonts;
+        let themeImage;
+        let themeButtons;
+        if(selectedTheme.value==='Default'){
+          themeFonts=fonts;
+          themeButtons=buttons;
+          themeImage=image;
+        }
+        else if(selectedTheme.value==='Custom'){
+          themeFonts=formTheme?.fonts;
+          themeImage=formTheme?.image;
+          themeButtons=formTheme?.buttons;
+        }
+        let wrapper=selectedCmp.getEl();
+        for(let i=0; i<themeFonts.length;i++){
+          const themeFont=themeFonts[i];
+          const elType=themeFont.type;
+          let newElType;
+          switch(elType){
+            case 'PAR':
+              newElType='p';
+              break;
+            case 'H1':
+              newElType='h1';
+              break;
+            case 'H2':
+              newElType='h2';
+              break;
+            case 'H3':
+              newElType='h3';
+              break;
+            case 'H4':
+              newElType='h4';
+              break;
+            case 'H5':
+              newElType='h5';
+              break;
+            case 'H6':
+              newElType='h6';
+              break;
+            default:
+              newElType='default';
+              break;
+          }
+          const attributes=themeFont.attributes;
+          const values=Object.values(attributes);
+          if(newElType==='default'){
+            attributes && Object.keys(attributes).map((_attribute,i)=>{
+              wrapper.style[_attribute]=values[i];
+            })
+          }
+          else{
+            let elements=wrapper.getElementsByTagName(newElType);
+            if(elements){
+              for (let element of elements){
+                attributes && Object.keys(attributes).map((_attribute,i)=>{
+                  element.style[_attribute]=values[i];
+                })
+              } 
+            }
+          }
+        }
+        const attributes=themeImage.attributes;
+        const values=Object.values(attributes);
+        let elements=wrapper.getElementsByTagName('img');
+        if(elements){
+          for (let element of elements){
+            attributes && Object.keys(attributes).map((_attribute,i)=>{
+              element.style[_attribute]=values[i];
+            })
+          } 
+        }
+      }
+    }
+
+  }, [selectedTheme])
   return (
     <div className="d-flex">
       <div className="expanded-sidebar shadow-lg" hidden={VisibleMenu}>
@@ -2264,7 +2466,118 @@ export default function Editor(
                         {
                           !themeEditing &&
                           <div className='theme-container p-1'>
-                            <div className='color-container'>
+                            <div className='theme-elements-container'>
+                             <div className='submenu-item d-flex justify-content-between align-items-center'>
+                                <span className='fw-bold fs-6'>THEMES</span>
+                                <span>
+                                  <ChevronRight size={20} color="black"/>
+                                </span>
+                              </div>
+                              <div className='d-flex justify-content-around mt-1 mb-1'>
+                                <div style={{width:'200px'}}>
+                                    <Select
+                                        className="react-select ms-1 mobile-view-responsive-ybusiness-react-select"
+                                        classNamePrefix="select"
+                                        options={themeOptions}
+                                        onChange={(data) => handleThemeChange(data)}
+                                        value={selectedTheme}
+                                    />
+                                </div>
+                              </div>
+                            </div>
+                            {
+                              selectedTheme.value==='Default' && 
+                              <>
+                              <div className='color-container'>
+                              <div className='submenu-item d-flex justify-content-between align-items-center'>
+                                <span className='fw-bold fs-6'>COLORS</span>
+                                <span>
+                                  <ChevronRight size={20} color="black"/>
+                                </span>
+                              </div>
+                              <div style={{display:'grid', gridTemplateColumns:'auto auto auto auto auto'}}>
+                                {
+                                  defaultTheme && defaultTheme.colors && defaultTheme.colors.map((_color)=>{
+                                    return (
+                                      <div className='d-flex color-outline-element d-flex justify-content-around align-items-center mt-1' onClick={(e)=>{
+                                        setSelectedColor(_color);
+                                      }}>
+                                        <div className='color-item' style={{backgroundColor:_color.value}}>
+                                        </div>
+                                      </div>
+                                    )
+                                  })
+                                }
+                                <div className='d-flex color-outline-element d-flex justify-content-around align-items-center mt-1' onClick={(e)=>addNewThemeColor()}>
+                                  <div className='plus-item'>
+                                    <Plus size={20}/>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className='buttons-container mt-1'>
+                              <div className='submenu-item d-flex justify-content-between align-items-center py-1'>
+                                <span className='fw-bold fs-6'>BUTTONS</span>
+                                <span>
+                                  <ChevronRight size={20} color="black"/>
+                                </span>
+                              </div>
+                              <div className='d-flex justify-content-around align-items-center buttons-list'>
+                                {
+                                  defaultTheme && defaultTheme.buttons && defaultTheme.buttons.map((_button)=>{
+                                    return(
+                                      <button style={{..._button.attributes}} onClick={(e)=>{
+                                        setSelectedButton(_button);
+                                      }}>{_button.type}</button>
+                                    )
+                                  })
+                                }
+                             
+                              </div>
+                              <div>
+
+                              </div>
+                            </div>
+                            <div className='text-container mt-1'>
+                              <div className='submenu-item d-flex justify-content-between align-items-center py-1'>
+                                <span className='fw-bold fs-6'>TEXT</span>
+                                <span>
+                                  <ChevronRight size={20} color="black"/>
+                                </span>
+                              </div>
+                              <div className='text-elements'>
+                                {
+                                  defaultTheme && defaultTheme.fonts && defaultTheme.fonts.map((_font)=>{
+                                    return(
+                                      <div className='d-flex align-items-center cursor-pointer' style={{marginBottom:'10px'}} onClick={(e)=>{
+                                        setSelectedFont(_font);
+                                      }}>
+                                        <div>
+                                          {_font.type}
+                                        </div>
+                                        <div className='ms-1 fw-bold' style={{..._font.attributes}}>
+                                          {_font.attributes.fontFamily} {_font.attributes.fontSize.slice(0, -2)}
+                                        </div>
+                                      </div>
+                                    )
+                                  })
+                                }
+                              </div>
+                            </div>
+                            <div className='images-container'>
+                              <div className='submenu-item d-flex justify-content-between align-items-center py-1'>
+                                <span className='fw-bold fs-6'>IMAGES</span>
+                                <span>
+                                  <ChevronRight size={20} color="black"/>
+                                </span>
+                              </div>
+                            </div>
+                             </>
+                            }
+                            {
+                              selectedTheme.value==='Custom' && 
+                              <>
+                                                          <div className='color-container'>
                               <div className='submenu-item d-flex justify-content-between align-items-center' onClick={(e)=>{
                                   setSelectedSubMenu('colors');
                                   setThemeEditing(true);
@@ -2364,49 +2677,31 @@ export default function Editor(
                                 </span>
                               </div>
                             </div>
-                            <div className='background-container'>
-                              <div className='submenu-item d-flex justify-content-between align-items-center py-1' onClick={(e)=>{
-                                setSelectedSubMenu('backgrounds');
-                                setThemeEditing(true);
-                              }}>
-                                <span className='fw-bold fs-6'>BACKGROUNDS</span>
-                                <span>
-                                  <ChevronRight size={20} color="black"/>
-                                </span>
-                              </div>
-                            </div>
+                              </>
+                              
+                            }
                           </div>
                         }
                         {
                           themeEditing && 
                           <>
-                            {
-                              selectedSubMenu === 'colors' &&
-                              <ColorTheme store={store} selectedColor={selectedColor}/>
-                            }
-                            {
-                              selectedSubMenu === 'text' &&
-                              <TextTheme store={store} selectedFont={selectedFont} setSelectedFont={setSelectedFont}/>
-                            }
-                            {
-                              selectedSubMenu === 'buttons' &&
-                              <ButtonTheme store={store} selectedButton={selectedButton} setSelectedButton={setSelectedButton}/>
-                            }
-                            {
-                              selectedSubMenu === 'images' &&
-                              <ImageTheme store={store}/>
-                            }
-                            {
-                              selectedSubMenu === 'rows & columns' &&
-                              <RowsTheme/>
-                            }
-                            {
-                              selectedSubMenu === 'backgrounds' &&
-                              <BackgroundTheme store={store}/>
-                            }
+                          {
+                            selectedSubMenu ==='colors' && <ColorTheme store={store} selectedColor={selectedColor} setSelectedColor={setSelectedColor}/>
+                          }
+                          {
+                            selectedSubMenu ==='text' && <TextTheme store={store} selectedFont={selectedFont} setSelectedFont={setSelectedFont}/>
+                          }
+                          {
+                            selectedSubMenu ==='images' && <ImageTheme store={store} selectedImage={selectedImage} setSelectedImage={setSelectedImage}/>
+                          }
+                          {
+                            selectedSubMenu ==='buttons' && <ButtonTheme store={store} selectedColor={selectedColor} selectedButton={selectedButton} setSelectedButton={setSelectedButton}/>
+                          }
                           </>
+    
                         }
                         </>
+                        
                       )}
                       {sidebarData.menu.id === 'assets' && (
                         <div className="submenu-and-element d-flex">
@@ -2930,7 +3225,7 @@ export default function Editor(
 
         <div id="editor"></div>
       </div>
-      {isStoreLoading ? (
+      {/* {isStoreLoading ? (
         <div className="loadingLayer">
           <div
             className="d-flex  justify-content-center mb-2 mt-2"
@@ -2941,7 +3236,7 @@ export default function Editor(
         </div>
       ) : (
         <></>
-      )}
+      )} */}
       <div className="property-sidebar" hidden={rsidebarOpen?false:true}>
         <PerfectScrollbar
           className="scrollable-content"

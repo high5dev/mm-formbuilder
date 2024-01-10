@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Button, Form, Nav, NavItem, NavLink, Input } from 'reactstrap';
+import { Button, Form, Nav, NavItem, NavLink, Input, Label } from 'reactstrap';
 import {Edit2, Plus} from 'react-feather';
 import Select from 'react-select';
 import { useDispatch } from 'react-redux';
@@ -60,7 +60,29 @@ export default function TextTheme({store, selectedFont, setSelectedFont}) {
         let newFonts=fonts && fonts.map((_font)=>{
             if(_font.type===selectedFont.type){
                 let tempFont=JSON.parse(JSON.stringify(_font));
-                tempFont.attributes.color=_color
+                tempFont.attributes.color=_color;
+                delete tempFont.attributes['themeColor'];
+                setSelectedFont({...tempFont});
+                return tempFont
+            }
+            else{
+                return _font;
+            }
+        });
+        const payload={
+            fonts:newFonts
+          }
+        const themeId=formTheme._id;
+        dispatch(updateWebBuilderThemeAction(themeId, payload));
+    }
+
+    const selectThemeFontColor=(_color)=>{
+        const fonts=formTheme.fonts;
+        let newFonts=fonts && fonts.map((_font)=>{
+            if(_font.type===selectedFont.type){
+                let tempFont=JSON.parse(JSON.stringify(_font));
+                tempFont.attributes.color=_color.value;
+                tempFont.attributes['themeColor']=_color.name;
                 setSelectedFont({...tempFont});
                 return tempFont
             }
@@ -231,10 +253,30 @@ export default function TextTheme({store, selectedFont, setSelectedFont}) {
                 </div>
                 <div className='color-row d-flex justify-content-between mt-1'>
                     <div>
-                        Font Color
-                    </div>
-                    <div>
-                        <Input type='color' style={{width:'70px'}} value={fontColor} onChange={(e)=>handleFontColorChange(e.target.value)}/>
+                        <Label>Font Color</Label>
+                        <div className='ms-1'>
+                            <div>
+                                <Label>Theme Color</Label>
+                                <div className='d-flex justify-content-around align-items-center mt-1' style={{width:'200px'}}>
+                                {
+                                formTheme && formTheme.colors && formTheme.colors.map((_color)=>{
+                                    return(
+                                    <div style={{width:'30px', height:'30px',backgroundColor:_color.value}} onClick={(e)=>{
+                                        selectThemeFontColor(_color);
+                                    }}>
+                                    </div>
+                                    )
+                                })
+                                }
+                                </div>
+                            </div>
+                            <div className='mt-1'>
+                                <Label>Custom Color</Label>
+                                <div className="mt-1" style={{ width: '100px' }}>
+                                <Input type="color" value={handleFontColorChange} onChange={(e)=>handleFontColorChange(e.target.value)}/>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className='hover-row mt-1'>
