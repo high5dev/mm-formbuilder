@@ -167,6 +167,10 @@ export const getWebBuilder = (id) => {
   return API.get(`/web-builder/website/${id}`);
 }
 
+export const getWebBuilderHistory =(id, payload) =>{
+  return API.get(`/web-builder/history/${id}`, {params:payload})
+}
+
 export const addLeads = (id, payload) => {
   return API.post('/form-builder/addleads/' + id, payload);
 };
@@ -175,6 +179,10 @@ export const addLeads = (id, payload) => {
 
 export const getWebsiteEntry = (id) => {
   return API.get('/web-builder-form-entry/dataset/' + id);
+}
+
+export const getAllWebsiteEntry=(id)=>{
+  return API.get('/web-builder-form-entry/all/' + id);
 }
 
 export const deleteWebsiteEntry = (id) => {

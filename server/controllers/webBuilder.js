@@ -5,6 +5,10 @@ const fetch = require('node-fetch');
 
 const {
   WebBuilder,
+  WebsiteEntry,
+  WebBuilderHistory,
+  WebBuilderActivity,
+  WebBuilderPageHistory,
   WebBuilderForm,
   WebBuilderTheme,
   Authenticate,
@@ -556,32 +560,32 @@ exports.getWebsite= asyncHandler(async(req, res) =>{
     const websiteData=await WebBuilder.findOne({_id:id});
     if(websiteData){;
       const themeData=await WebBuilderTheme.findOne({websiteId:mongoose.Types.ObjectId(websiteData._id)});
-      const collectionData = await WebSiteCollection.find({ websiteId: mongoose.Types.ObjectId(id), name: "PROFILE" });
-      let isExist = false;
-      collectionData.map((data) => {
-        data.fields.map((field) => {
-          if(field.name == 'Business name') {
-            isExist = true;
-          }
-        })
-      });
-      if(!isExist) {
-        await WebSiteCollection.create({
-          userId: mongoose.Types.ObjectId(user._id),
-          organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
-          websiteId: mongoose.Types.ObjectId(id),
-          name: "PROFILE",
-          fields: [{ name: 'Business name', type: 'text', default: true }, 
-                   { name: 'Business type', type: 'text', default: true },
-                   { name: 'About Us', type: 'text', default: true },
-                   { name: 'Company Overview', type: 'text', default: true },
-                   { name: 'Business Services', type: 'text', default: true },
-                   { name: 'Logo', type: 'Image', default: true }],
-          values: [],
-          type: "single",
-          isDelete: false
-        })
-      }
+      // const collectionData = await WebSiteCollection.find({ websiteId: mongoose.Types.ObjectId(id), name: "PROFILE" });
+      // let isExist = false;
+      // collectionData.map((data) => {
+      //   data.fields.map((field) => {
+      //     if(field.name == 'Business name') {
+      //       isExist = true;
+      //     }
+      //   })
+      // });
+      // if(!isExist) {
+      //   await WebSiteCollection.create({
+      //     userId: mongoose.Types.ObjectId(user._id),
+      //     organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+      //     websiteId: mongoose.Types.ObjectId(id),
+      //     name: "PROFILE",
+      //     fields: [{ name: 'Business name', type: 'text', default: true }, 
+      //              { name: 'Business type', type: 'text', default: true },
+      //              { name: 'About Us', type: 'text', default: true },
+      //              { name: 'Company Overview', type: 'text', default: true },
+      //              { name: 'Business Services', type: 'text', default: true },
+      //              { name: 'Logo', type: 'Image', default: true }],
+      //     values: [],
+      //     type: "single",
+      //     isDelete: false
+      //   })
+      // }
 
       const pageData=await WebPage.find({websiteId:mongoose.Types.ObjectId(websiteData._id), isDelete: false});
       let query = {
@@ -608,6 +612,129 @@ exports.getWebsite= asyncHandler(async(req, res) =>{
           formData:pageData,
           forms:forms,
           themeData:themeData
+        },
+      });
+    }
+  }
+  catch(err){
+    res.send({ msg: err.message.replace(/\'/g, ""), success: false });
+  }
+})
+
+exports.getHistory= asyncHandler(async(req, res) =>{
+  const {id} =req.params;
+  let {pageNames} = req.query;
+  const { organization } = req.headers;
+  const user = req.user;
+  try{
+    const websiteData=await WebBuilder.findOne({_id:id});
+    if(websiteData){
+      //Total Site Viewed Amount
+       const countSiteViewed=await WebBuilderHistory.find({websiteId:mongoose.Types.ObjectId(id)}).count();
+       //Per Month Site Viewed Amount
+       let countPerMonthSiteViewed=[];
+       const year=new Date().getFullYear();
+       for(let i=1; i<13; i++){
+        const startDate=new Date(`${year}-${i}-1`);
+        const endDate=new Date(`${year}-${i+1}-1`);
+        const perMonthUniqueViewed=await WebBuilderHistory.aggregate([
+          {
+            $match:{
+              websiteId:mongoose.Types.ObjectId(id),
+              createdAt:
+                {
+                  $gte:startDate,
+                  $lt:endDate
+                }
+            }
+          }
+        ]
+        );
+        countPerMonthSiteViewed.push({
+          month:i,
+          count:perMonthUniqueViewed.length
+        })
+       }
+       const tempCountUniqueViewed=await WebBuilderHistory.aggregate([
+        {$match: {websiteId:mongoose.Types.ObjectId(id)}},
+        {"$group":{_id:"$ipAddress", count:{$sum:1}}}]);
+        //Total Unique Site Viewed Amount
+       let countUniqueViewed=0;
+       tempCountUniqueViewed && tempCountUniqueViewed.map((_item)=>{
+         countUniqueViewed+=_item.count;
+       });
+       //Per Month Unique Site Viewed Amount
+       let countPerMonthUniqueViewed=[];
+       for(let i=1; i<13; i++){
+        const startDate=new Date(`${year}-${i}-1`);
+        let endDate;
+        if(i===12){
+          endDate=new Date(`${year+1}-${1}-1`);
+        }
+        else{
+          endDate=new Date(`${year}-${i+1}-1`);
+        }
+        const perMonthUniqueViewed=await WebBuilderHistory.distinct("ipAddress",
+        { websiteId:mongoose.Types.ObjectId(id),
+          createdAt:
+          {
+            $gte:startDate,
+            $lt:endDate
+          }
+        }
+        );
+        countPerMonthUniqueViewed.push({
+          month:i,
+          count:perMonthUniqueViewed.length
+        });
+       }
+       //Per page Viewed Amount
+       let countPageViewed=[];
+       const webPages=await WebPage.aggregate([
+        {
+          $match:{
+            websiteId:mongoose.Types.ObjectId(id)
+          }
+        }
+       ]);
+       for(let i=0; i<webPages.length; i++){
+         const pageName=webPages[i].name;
+         const pageViewed=await WebBuilderPageHistory.find({ websiteId:mongoose.Types.ObjectId(id), pageName:pageName}).count();
+         const item={
+          pageName:pageName,
+          amount:pageViewed
+         };
+         countPageViewed.push(item);
+       };
+       let query = {
+        websiteId:mongoose.Types.ObjectId(id),
+        isDelete: false,
+      };
+      const entryFilled = await WebsiteEntry.aggregate([
+        {$match: query},
+        {"$group":{_id:"$formId", count:{$sum:1}}}
+      ]);
+      const activityData=await WebBuilderActivity.aggregate([
+        {
+          $match: {
+            websiteId:mongoose.Types.ObjectId(id)
+          }
+        },
+        { $limit : 10 }
+      ]);
+      const historyData={
+        countSiteViewed,
+        countPerMonthSiteViewed,
+        countUniqueViewed,
+        countPerMonthUniqueViewed,
+        countPageViewed,
+        entryFilled,
+        activityData
+       };
+       return res.send({
+        success: true,
+        data: {
+          historyData
         },
       });
     }
@@ -826,7 +953,6 @@ exports.publishWebsite = asyncHandler(async (req, res) => {
 
 exports.updatePageName = asyncHandler(async (req, res) => {
   let { id } = req.params;
-  console.log('id============', id);
   try {
     const Obj=req.body;
     const _page=await WebPage.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, Obj);
@@ -866,13 +992,29 @@ exports.getPage = asyncHandler(async (req, res) => {
 });
 
 exports.getPublishPage = asyncHandler(async (req, res) => {
-  let {id, pageName} = req.query;
+  let {id, pageName, pageViewed, totalViewed} = req.query;
+  const ipAddress = req.ip;
   try {
     const data = await WebBuilder.findOne({_id: id});
     const page = await WebPage.findOne({ name: pageName, websiteId: mongoose.Types.ObjectId(id), isDelete: false });
+    if(totalViewed==="false"){
+      const payload={
+        websiteId:mongoose.Types.ObjectId(id),
+        ipAddress:ipAddress
+      };
+      const siteHistory=await WebBuilderHistory.create(payload);
+    }
+    if(pageViewed==="false"){
+      const payload={
+        websiteId:mongoose.Types.ObjectId(id),
+        pageName:pageName,
+        ipAddress:ipAddress
+      };
+      const pageHistory=await WebBuilderPageHistory.create(payload);
+    }
     if(data && data.isPublish){
       const result=await googleCloudStorageWebBuilder.readPage(`${data._id}/${page._id}`);
-      return res.status(200).json({ success: true, data:result, pageInfo: page });
+      return res.status(200).json({ success: true, data:result, pageInfo: page});
     }
     return res.status(404).json({ success: false, message: `Page not found` });
   } catch (err) {

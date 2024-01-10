@@ -3,7 +3,8 @@ const { default: mongoose } = require("mongoose");
 const asyncHandler = require("express-async-handler");
 const {
   WebsiteEntry, 
-  WebBuilderForm
+  WebBuilderForm,
+  WebBuilderActivity
 } = require("../models/index/index");
 
 exports.createWebsiteEntry = asyncHandler(async (req, res) => {
@@ -16,6 +17,13 @@ exports.createWebsiteEntry = asyncHandler(async (req, res) => {
         fields:fields,
         values:values
       };
+    const formName=await WebBuilderForm.findOne({_id:mongoose.Types.ObjectId(formId)});
+    const activity={
+      websiteId:mongoose.Types.ObjectId(websiteId),
+      formName:formName,
+      type:'filled'
+    };
+    await WebBuilderActivity.create(activity);
     const data= await WebsiteEntry.create(websiteDataset);
     if(data){
       return res.send({
@@ -51,6 +59,24 @@ exports.getWebsiteEntries = asyncHandler(async (req, res) => {
       res.status(500).send({ msg: err.message });
     }
   });
+
+  exports.getAllWebsiteEntries = asyncHandler(async (req, res) => {
+    let { id } = req.params;
+    id = mongoose.Types.ObjectId(id);
+    try {
+      let query = {
+          websiteId:id,
+          isDelete: false,
+      };
+      const data = await WebsiteEntry.aggregate([
+        {$match: query}
+      ]);
+  
+      return res.status(200).json({ success: true, data: data});
+    } catch (err) {
+      res.status(500).send({ msg: err.message });
+    }
+});
 
 exports.deleteWebsiteEntry = asyncHandler(async (req, res) => {
 let { id } = req.params;

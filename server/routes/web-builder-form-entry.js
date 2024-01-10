@@ -4,6 +4,7 @@ const isAuthenticated = require("../middleware/auth");
 const {
  createWebsiteEntry,
  getWebsiteEntry,
+ getAllWebsiteEntries,
  getWebsiteEntries,
  editWebsiteEntry,
  deleteWebsiteEntry
@@ -12,6 +13,7 @@ const {
 router.post("/create", createWebsiteEntry);
 router.get("/dataset/:id", isAuthenticated, getWebsiteEntry);
 router.get("/datasets/", isAuthenticated, getWebsiteEntries);
+router.get("/all/", isAuthenticated, getAllWebsiteEntries);
 router.put("/edit/:id", isAuthenticated,  editWebsiteEntry);
 router.delete("/delete/:id", isAuthenticated, deleteWebsiteEntry);
 

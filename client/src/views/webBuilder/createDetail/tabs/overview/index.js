@@ -32,32 +32,78 @@ import { MdOutlineDomainAdd, MdDriveFileRenameOutline  } from "react-icons/md";
 import { FaInternetExplorer } from 'react-icons/fa';
 import { BsArrowLeftShort, BsArrowRightShort, BsGraphUp } from 'react-icons/bs';
 import DataTable from 'react-data-table-component';
-import { Edit, Eye, File, FileText, Menu, MoreVertical, Share, Trash, Upload } from 'react-feather';
+import moment from 'moment';
+import { Edit, Eye, File, FileText, Menu, MoreVertical, Share, Trash, Upload, ChevronDown } from 'react-feather';
 
 // ** Styles
 import '@styles/react/apps/app-email.scss';
-import moment from 'moment';
 
 const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
+  const formHistory=store?.formHistory;
+  const childForms=store?.childForms;
+  const [tab, setTab]=useState('Site')
+  const entryFilled=store?.formHistory?.entryFilled;
+  let newEntry=[];
+  entryFilled && entryFilled.map((_form)=>{
+    const formId=_form._id;
+    childForms && childForms.map((_childForm)=>{
+      if(_childForm._id===formId){
+        newEntry.push({
+          name:_childForm.name,
+          amount:_form.count
+        })
+      }
+    })
+  });
+  const pages=store?.form?.formData;
   const chartWidth = isMobileView ? window.innerWidth - 40 : 900;
   const chartHeight = isMobileView ? 250 : 400;
-  const chartData = [
-    { key: 0, month: 'Jan', value: 100 },
-    { key: 1, month: 'Feb', value: 30 },
-    { key: 2, month: 'march', value: 40 },
-    { key: 3, month: 'Apr', value: 0 },
-    { key: 4, month: 'May', value: 0 },
-    { key: 5, month: 'June', value: 0 },
-    { key: 6, month: 'Jul', value: 0 },
-    { key: 7, month: 'Aug', value: 0 },
-    { key: 8, month: 'Sept', value: 0 },
-    { key: 9, month: 'Oct', value: 0 },
-    { key: 10, month: 'Nov', value: 0 },
-    { key: 11, month: 'Dec', value: 0 }
+  let chartSiteViewedData=[];
+  const months=['Jan', 'Feb', 'March', 'Apr', 'May', 'June', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+  formHistory?.countPerMonthSiteViewed && formHistory?.countPerMonthSiteViewed.map((_perMonthViewed, i)=>{
+    chartSiteViewedData.push({
+      key:i, month:months[i], value:_perMonthViewed.count
+    })
+  });
+  let chartPageViewedData=[];
+  formHistory?.countPerMonthUniqueViewed && formHistory?.countPerMonthUniqueViewed.map((_perMonthUniqueViewed, i)=>{
+    chartPageViewedData.push({
+      key:i, month:months[i], value:_perMonthUniqueViewed.count
+    })
+  });
+  const columns = [
+    {
+      name: 'Name',
+      sortable: 'true',
+      selector: (row) => row.formName,
+      cell: (row) => <span>{row.formName}</span>
+    },
+    {
+      name: 'Created At',
+      sortable: 'true',
+      selector: (row) => row.createdAt,
+      cell: (row) => (
+        <span>
+          <Badge color="light-primary" style={{ paddingTop: '6px' }}>
+            {moment(row?.createdAt)?.format("MM/DD/yyyy")}
+          </Badge>
+        </span>
+      )
+    },
+
+    {
+      name: 'type',
+      selector: (row) => row.memberType,
+      cell: (row) => (
+        <Badge color="light-primary">
+         {row?.type}
+        </Badge>
+      )
+    },
   ];
   return (
     <>
-      {store && (
+      {formHistory && (
         <Row style={{ width: '100%', margin: '0px', padding: '0px' }}>
           <Col xl="12" xs={{ order: 0 }} md={{ order: 1, size: 12 }} style={{ padding: '0px' }}>
             <div className="tasks-border">
@@ -76,35 +122,39 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                                 <div className='p-1'>
                                   <div className="d-flex align-items-center">
                                     <div>Pages</div>
-                                    <span className="fw-bold ms-3 text-primary">2</span>
+                                    <span className="fw-bold ms-3 text-primary">{pages.length}</span>
                                   </div>
                                     <div className="mt-1 fw-bold">Viewed Amount Per Page</div>
-                                    <div className="d-flex align-items-center py-1">
-                                      <div>Home Page</div>
-                                      <span className="fw-bold ms-3 text-primary">2</span>
-                                    </div>
-                                    <div className="d-flex align-items-center">
-                                      <div>Contact Page</div>
-                                      <span className="fw-bold ms-3 text-primary">2</span>
-                                    </div>
+                                    {
+                                      formHistory && formHistory.countPageViewed && formHistory.countPageViewed.map((_pageView)=>{
+                                        return(
+                                          <div className="d-flex align-items-center py-1">
+                                          <div>{_pageView.pageName} Page</div>
+                                          <span className="fw-bold ms-3 text-primary">{_pageView.amount}</span>
+                                        </div>
+                                        )
+                                      })
+                                    }
                                 </div>
                               </Col>
                               <Col md={6}>
                                 <div>
                                   <div className="d-flex align-items-center">
                                     <div>Forms</div>
-                                    <span className="fw-bold ms-3 text-primary">2</span>
+                                    <span className="fw-bold ms-3 text-primary">{childForms.length}</span>
                                   </div>
                                   <div className="mt-1 fw-bold">Filled Amount Per Form</div>
-                                  <div className="">
-                                    <div className="d-flex align-items-center py-1">
-                                      <div>Form1</div>
-                                      <span className="fw-bold ms-3 text-primary">2</span>
-                                    </div>
-                                    <div className="d-flex align-items-center">
-                                      <div className=''>Form2</div>
-                                      <span className="fw-bold ms-3 text-primary">2</span>
-                                    </div>
+                                  <div className="mt-1">
+                                    {
+                                      newEntry && newEntry.map((_entry)=>{
+                                        return(
+                                          <div className="d-flex align-items-center">
+                                              <div className=''>{_entry.name}</div>
+                                              <span className="fw-bold ms-3 text-primary">{_entry.amount}</span>
+                                          </div>
+                                        )
+                                      })
+                                    }
                                   </div>
                                 </div>
                               </Col>
@@ -147,7 +197,7 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                                 <FiUsers size={30} />
                               </span>
                             </div>
-                            <div className="fw-bold">100</div>
+                            <div className="fw-bold">{formHistory?.countSiteViewed}</div>
                           </CardBody>
                         </Card>
                       </Col>
@@ -160,7 +210,7 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                                 <FiUser size={30} />
                               </span>
                             </div>
-                            <div className="fw-bold">52</div>
+                            <div className="fw-bold">{formHistory?.countUniqueViewed}</div>
                           </CardBody>
                         </Card>
                       </Col>
@@ -187,9 +237,26 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                             <div className="d-flex justify-content-between">
                               <span>Activity Feed</span>
                             </div>
-                            <div className="d-flex align-items-center mt-2 text-center justify-content-around">
-                              No recent activity to show
-                            </div>
+                            {formHistory?.activityData && formHistory?.activityData?.length ? (
+                              <DataTable
+                                header
+                                sortServer
+                                responsive
+                                className="react-dataTable"
+                                data={formHistory?.activityData}
+                                style={{ cursor: 'pointer' }}
+                                sortIcon={<ChevronDown size={14} />}
+                                columns={columns}
+                                pointerOnHover="cursor"
+                              />
+                            ) : (
+                              <div
+                                className="d-flex justify-content-center align-items-center"
+                                style={{fontSize:'16px' }}
+                              >
+                                No data available
+                              </div>
+                            )}
                           </CardBody>
                         </Card>
                       </Col>
@@ -209,14 +276,14 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                             </div>
                             <div className='d-flex justify-content-around'>
                                 <div className='d-flex'>
-                                                                    <div className='d-flex flex-column align-items-center justify-content-around site' style={{width:'80px', height:'80px', border:'1px solid blue', borderRadius:'10%'}}>
+                                      <div className='d-flex flex-column align-items-center justify-content-around site' style={{width:'80px', height:'80px', border:tab==='Site'?'1px solid blue':'1px dashed lightgray', borderRadius:'10%'}} onClick={(e)=>setTab('Site')}>
                                         <div>
                                             Site
                                         </div>
                                         <FiUsers size={20} />
 
                                 </div>
-                                <div className='d-flex flex-column align-items-center justify-content-around site ms-2' style={{width:'80px', height:'80px', border:'1px dashed lightgray', borderRadius:'10%'}}>
+                                <div className='d-flex flex-column align-items-center justify-content-around site ms-2' style={{width:'80px', height:'80px', border:tab==='Visitors'?'1px solid blue':'1px dashed lightgray', borderRadius:'10%'}} onClick={(e)=>setTab('Visitors')}>
                                         <div>
                                             Visitors
                                         </div>
@@ -231,7 +298,7 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                                     id="unique-chart"
                                     width={chartWidth}
                                     height={chartHeight}
-                                    data={chartData}
+                                    data={tab==='Site'?chartSiteViewedData:chartPageViewedData}
                                   >
                                     <CartesianGrid
                                       stroke="rgb(218 218 218)"
@@ -242,9 +309,13 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                                     <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                                     <YAxis />
                                     <Bar dataKey="value" barSize={25}>
-                                      {chartData.map((entry, index) => (
+                                      {tab==='Site'?chartSiteViewedData && chartSiteViewedData.map((entry, index) => (
                                         <Cell key={index} fill={'rgb(1, 132, 255)'} />
-                                      ))}
+                                      )):
+                                      chartPageViewedData && chartPageViewedData.map((entry, index) => (
+                                        <Cell key={index} fill={'rgb(1, 132, 255)'} />
+                                      ))
+                                      }
                                     </Bar>
                                   </BarChart>
                                 </ResponsiveContainer>
