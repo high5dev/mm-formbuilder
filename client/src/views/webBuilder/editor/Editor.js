@@ -730,6 +730,7 @@ export default function Editor(
   }, [store?.form?._id]);
 
   useEffect(() => {
+    dispatch(getWebElementsAction());
     // dispatch(getChildFormsAction(store?.form?._id));
     // dispatch(getBlogsAction(store?.form?._id));
     dispatch(getWebsiteAction(id)).then((res) => {
