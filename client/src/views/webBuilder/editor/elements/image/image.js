@@ -6,8 +6,10 @@ let imageItem = {
         tagName: 'img',
         draggable: true,
         droppable: true,
-        attributes: { class: 'image-item', src:'https://i.ibb.co/xM56xB3/image-large-3.png' },
-        styles: `.image-item {background-color: #b9dbcb; width:100px; height:100px}`,
+        attributes: { class: 'image-item theme-image', src:'https://i.ibb.co/xM56xB3/image-large-3.png' },
+        styles: `
+        .image-item {background-color: #b9dbcb; width:100px; height:100px}
+        `,
         stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
         images:[],
         traits: [

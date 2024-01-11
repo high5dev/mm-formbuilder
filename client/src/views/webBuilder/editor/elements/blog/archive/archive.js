@@ -13,9 +13,9 @@ let archiveMenu = {
             <div class="post-category-menu">
                 {postList && postList.map((post) =>{
                     return(
-                        `<div class="post-item">
-                        ${post.date}
-                        <span>(${post.amount})</span>
+                        `<div class="post-item theme-text-default">
+                          ${post.date}
+                        <span class="theme-text-default">(${post.amount})</span>
                     </div>`
                     )
 
@@ -60,9 +60,9 @@ let archiveMenu = {
             <div class="post-category-menu">
                 {postList && postList.map((post) =>{
                     return(
-                        `<div class="post-item">
+                        `<div class="post-item theme-text-default">
                         ${post.date}
-                        <span>(${post.amount})</span>
+                        <span class="theme-text-default">(${post.amount})</span>
                     </div>`
                     )
 

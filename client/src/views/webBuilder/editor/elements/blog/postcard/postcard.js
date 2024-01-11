@@ -17,23 +17,23 @@ let postCard = {
                   <div class="post-large-item">
                     <div class="post-large-item-header">
                       <img src={blog.avatar} class="item-image-avatar" width="10%" />
-                      <div class="post-large-item-name">{blog.name}</div>
+                      <div class="post-large-item-name theme-text-default">{blog.name}</div>
                     </div>
                     <div class="post-large-item-image">
                       <img src={blog.imageUrl} width="100%" height="180px" />
                     </div>
                     <div class="post-large-item-body">
                       <div class="post-large-item-title">
-                        <h2>{blog.title}</h2>
+                        <h2 class="theme-text-h2">{blog.title}</h2>
                       </div>
-                      <div class="post-large-item-description">{blog.description}</div>
+                      <div class="post-large-item-description theme-text-default">{blog.description}</div>
                       <div class="post-comment">
                         <div class="customer-visit-history">
                           <div class="customer-visit-comment">
                             <img src="https://i.ibb.co/9TptRDC/eye.png" width="16px" style="margin-right:5px"/>
-                            <div>0</div>
+                            <div class="theme-text-default">0</div>
                             <img src="https://i.ibb.co/YbVMJrd/message.png" width="16px" style="margin-left:20px; margin-right:5px"/>
-                            <div>0</div>
+                            <div class="theme-text-default">0</div>
                           </div>
                           <img src="https://i.ibb.co/Zx2T8G3/heart.png" width="16px"/>
                         </div>
@@ -161,7 +161,7 @@ let postCard = {
                   <div class="post-large-item-header">
                     <img src={blog.avatar} class="item-image-avatar" width="10%" />
                     <div>
-                      <div class="post-large-item-name">{blog.name}</div>
+                      <div class="post-large-item-name theme-text-default">{blog.name}</div>
                       <div style="margin-top:10px;font-size:14px;">{post_time}</div>
                     </div>
 
@@ -172,7 +172,7 @@ let postCard = {
                   <div class="post-large-item-body">
                     <div class="post-large-item-title">
                       <a href={`/${blog.websiteId}/${blog.pageName}/${blog._id}`}>
-                       <h2>{blog.title}</h2>
+                       <h2 class="theme-text-h2">{blog.title}</h2>
                       </a>
                     </div>
                     <div class="post-large-item-description">
@@ -184,9 +184,9 @@ let postCard = {
                     <div class="customer-visit-history">
                           <div class="customer-visit-comment">
                             <img src="https://i.ibb.co/9TptRDC/eye.png" width="16px" style="margin-right:5px"/>
-                            <div>0</div>
+                            <div class="theme-text-default">0</div>
                             <img src="https://i.ibb.co/YbVMJrd/message.png" width="16px" style="margin-left:20px; margin-right:5px"/>
-                            <div>0</div>
+                            <div class="theme-text-default">0</div>
                           </div>
                           <img src="https://i.ibb.co/Zx2T8G3/heart.png" width="16px"/>
                         </div>

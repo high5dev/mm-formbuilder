@@ -877,6 +877,12 @@ export const webBuilderPlugin = (editor) => {
                 <option value='phone'>Call</option>
               </select>
             </div>
+            <div>
+              <select id='trait-button-selection' class='trait-button-selection'>
+                  <option value='primary'>Primary</option>
+                  <option value='secondary'>Secondary</option>
+              </select>
+            </div>
             <div class='trait-pages'>
             </div>
             <div>
@@ -965,6 +971,13 @@ export const webBuilderPlugin = (editor) => {
         let tempElProps=[];
         const value=ev.target.value;
         elProp={...elProp, tab:value};
+        tempElProps.push(elProp);
+        component.set('elProps', tempElProps);
+      });
+      el.querySelector('.trait-button-selection').addEventListener('change', (ev)=>{
+        let tempElProps=[];
+        const value=ev.target.value;
+        elProp={...elProp, theme:value};
         tempElProps.push(elProp);
         component.set('elProps', tempElProps);
       });

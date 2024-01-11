@@ -17,16 +17,16 @@ let postSidebar = {
                         <div class="post-sidebar-item">
                             <div class="post-sidebar-header">
                             <img src={blog.avatar} class="sidebar-avatar" width="30px"/>
-                            <div class="post-sidebar-name">
+                            <div class="post-sidebar-name theme-text-default">
                                 {blog.name}
                             </div>
                         </div>
                         <div class="post-sidebar-body">
                             <div class="post-sidebar-left">
                                 <div class="post-sidebar-title">
-                                <span>{blog.title}</span>
+                                <span class="theme-text-default">{blog.title}</span>
                             </div>
-                            <div class="post-sidebar-description">
+                            <div class="post-sidebar-description theme-text-default">
                                 {blog.description}
                             </div>
                             </div>
@@ -160,18 +160,18 @@ let postSidebar = {
                         <div class="post-sidebar-header">
                           <div class="post-avatar-image">
                             <img src={blog.avatar} class="sidebar-avatar" width="30px"/>
-                            <div class="post-sidebar-name">
+                            <div class="post-sidebar-name theme-text-default">
                                 {blog.name}
                             </div>
                           </div>
   
-                          <div style="margin-left:5px;">{post_time}</div>
+                          <div class="theme-default-text" style="margin-left:5px;">{post_time}</div>
                         </div>
                     <div class="post-sidebar-body">
                         <div class="post-sidebar-left">
                             <div class="post-sidebar-title">
                             <a href={`/${blog.websiteId}/${blog.pageName}/${blog._id}`}>
-                              <span>{blog.title}</span>
+                              <span class="theme-text-default">{blog.title}</span>
                             </a>
                         </div>
                         <div class="post-sidebar-description">
