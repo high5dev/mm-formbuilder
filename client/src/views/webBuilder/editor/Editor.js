@@ -22,7 +22,7 @@ import Swal from 'sweetalert2';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { SlArrowDown } from "react-icons/sl";
 import Select from 'react-select';
-// import WebFont from 'webfontloader';
+import WebFont from 'webfontloader';
 import {
   Button,
   ButtonGroup,
@@ -1129,7 +1129,7 @@ export default function Editor(
     });
     gjsEditor.Commands.add('RightSidebar-component', (grapeEditor) => {
       setRSidebarOpen(true);
-      setTab('Settings');
+      setTab('Styles');
     });
     gjsEditor.Commands.add('connect-collection', (geditor) => {
       setConnectData({ ...connectData, isOpen: true });
@@ -1177,6 +1177,7 @@ export default function Editor(
 
     const fetchGoogleFonts = async () => {
       const data = await dispatch(getGoogleFontsAction());
+      console.log(data)
       if (!data) return;
       const fontData = data?.items?.map((font) => {
         return { name: font.family, url: font.files.regular };
@@ -1479,7 +1480,7 @@ export default function Editor(
           };
           dispatch(updatePageAction(id, payload));
         }
-      }, 1000 * 60 * 30);
+      }, 1000 * 30);
       //Clearing the interval
       return () => clearInterval(interval);
     }

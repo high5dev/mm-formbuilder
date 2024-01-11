@@ -549,8 +549,8 @@ export default function MainNav({
                       className="w-100 text-left"
                       onClick={(e) => handlePage(item)}
                     >
-                      <span className="" style={{ color: page?._id == item._id ? '#174ae7' : '#6e6b7b' }}>
-                        {item.name}
+                      <span className="" style={{ color: page?._id == item?._id ? '#174ae7' : '#6e6b7b' }}>
+                        {item?.name}
                       </span>
                     </DropdownItem>
                   );
@@ -676,7 +676,7 @@ export default function MainNav({
                   size={22}
                   id="CloseSettings"
                   onClick={(e) => {
-                    setTab('Settings');
+                    setTab('Styles');
                     setRSidebarOpen(!rsidebarOpen);
                   }}
                 />
