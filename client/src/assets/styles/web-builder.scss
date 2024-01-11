@@ -67,8 +67,6 @@
 
   span {
     padding: 5px;
-    color: white;
-
     &:hover {
       // background-color: #e4e4e4;
       cursor: pointer;
@@ -144,7 +142,7 @@
         display: none;
         position: relative;
 
-        >div {
+        > div {
           position: absolute;
           display: flex;
           background: white;
@@ -153,7 +151,7 @@
           padding: 3px;
           border-radius: 5px;
 
-          >span {
+          > span {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -214,7 +212,7 @@
       @media (max-width: 850px) {
         width: 80px;
 
-        >div {
+        > div {
           display: none !important;
         }
 
@@ -490,7 +488,13 @@
 }
 
 .property-sidebar {
+  width: 500px;
+  max-width: 300px;
+  z-index: 11;
   background-color: white;
+  position: absolute;
+  float: right;
+  right: 0;
 
   #selector-manager-container {
     width: 300px;
@@ -731,7 +735,6 @@
 }
 
 .gjs-field-page-link {
-
   .trait-link-element-label,
   .trait-page-setting,
   .trait-tab-selection,
@@ -840,7 +843,6 @@
   align-self: center;
 }
 
-
 .gjs-rte-action {
   width: inherit !important;
   min-width: 25px;
@@ -893,7 +895,7 @@
 }
 
 .theme-color-item {
-  padding: 10px
+  padding: 10px;
 }
 
 .theme-color-panel {
