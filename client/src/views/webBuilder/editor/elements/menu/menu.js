@@ -11,7 +11,7 @@ let menu = {
 
         let components = '';
         menus.map(m => {
-          components = components + `<a class="menu-item" href="${m.pageLink}" style="color: ${m.isActive ? 'blue' : 'black'};">${m.name}</a>`
+          components = components + `<a class="menu-item" href="${m.pageLink}" >${m.name}</a>`
         });
 
         return components;
@@ -54,7 +54,7 @@ let menu = {
       const menus = this.model.get('menus');
       comps.reset();
       menus.map(m => {
-        comps.push(<a href={m.pageLink} class="menu-item" style={`color: ${m.isActive ? 'blue' : 'black'};`}>{m.name}</a>);
+        comps.push(<a href={m.pageLink} class="menu-item">{m.name}</a>);
       });
       this.render();
     },
