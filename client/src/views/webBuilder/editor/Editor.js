@@ -757,7 +757,7 @@ export default function Editor(
       },
       selectorManager: {
         custom: true,
-        // componentFirst: true,
+        componentFirst: true,
         appendTo: document.querySelector('#selector-manager-container')
       },
       layerManager: {
