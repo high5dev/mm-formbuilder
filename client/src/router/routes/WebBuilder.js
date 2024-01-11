@@ -42,8 +42,8 @@ const WebBuilderRoutes = [
     }
   },
   {
-    path: '/customercollect/:id',
-    component: lazy(() => import('../../views/webBuilder/editor/store/collectCustomer/CollectCustomer')),
+    path: '/customercollect/:websiteId/:collectionId',
+    component: lazy(() => import('../../views/webBuilder/editor/leftSidebar/content/CollectCustomerForm')),
     exact: true,
     appLayout: false,
     layout: 'BlankLayout',

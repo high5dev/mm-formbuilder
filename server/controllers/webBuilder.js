@@ -2,6 +2,7 @@
 const { default: mongoose } = require("mongoose");
 const asyncHandler = require("express-async-handler");
 const fetch = require('node-fetch');
+const { profileCollectionFields } = require('../constants/profileCollectionFields');
 
 const {
   WebBuilder,
@@ -230,6 +231,25 @@ exports.createWebsite = asyncHandler(async (req, res) => {
       });
       await WebSiteRole.insertMany(defaultRoleDocs);
 
+      const profileCollection = await WebSiteCollection.create({
+        userId: mongoose.Types.ObjectId(user._id),
+        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+        websiteId: websiteData._id,
+        name: "PROFILE",
+        fields: profileCollectionFields,
+        values: [],
+        type: "single",
+        isDelete: false,
+        isProfile: true,
+      });
+
+      await WebSiteDataSet.create({
+        userId: mongoose.Types.ObjectId(user._id),
+        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+        collectionId: profileCollection._id,
+        name: "Profile Dataset",
+      });
+
       return res.send({
         success: true,
         message: "Website created successfully",
@@ -308,6 +328,25 @@ exports.createWebsite = asyncHandler(async (req, res) => {
       });
       await WebSiteRole.insertMany(defaultRoleDocs);
 
+      const profileCollection = await WebSiteCollection.create({
+        userId: mongoose.Types.ObjectId(user._id),
+        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+        websiteId: data._id,
+        name: "PROFILE",
+        fields: profileCollectionFields,
+        values: [],
+        type: "single",
+        isDelete: false,
+        isProfile: true,
+      });
+
+      await WebSiteDataSet.create({
+        userId: mongoose.Types.ObjectId(user._id),
+        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+        collectionId: profileCollection._id,
+        name: "Profile Dataset",
+      });
+
       return res.send({
         success: true,
         message: "Website created successfully",
@@ -376,6 +415,25 @@ exports.createWebsite = asyncHandler(async (req, res) => {
         });
       });
       await WebSiteRole.insertMany(defaultRoleDocs);
+
+      const profileCollection = await WebSiteCollection.create({
+        userId: mongoose.Types.ObjectId(user._id),
+        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+        websiteId: data._id,
+        name: "PROFILE",
+        fields: profileCollectionFields,
+        values: [],
+        type: "single",
+        isDelete: false,
+        isProfile: true,
+      });
+
+      await WebSiteDataSet.create({
+        userId: mongoose.Types.ObjectId(user._id),
+        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+        collectionId: profileCollection._id,
+        name: "Profile Dataset",
+      });
 
       return res.send({
         success: true,
@@ -560,32 +618,27 @@ exports.getWebsite= asyncHandler(async(req, res) =>{
     const websiteData=await WebBuilder.findOne({_id:id});
     if(websiteData){
       const themeData=await WebBuilderTheme.findOne({websiteId:mongoose.Types.ObjectId(websiteData._id)});
-      // const collectionData = await WebSiteCollection.find({ websiteId: mongoose.Types.ObjectId(id), name: "PROFILE" });
-      // let isExist = false;
-      // collectionData.map((data) => {
-      //   data.fields.map((field) => {
-      //     if(field.name == 'Business name') {
-      //       isExist = true;
-      //     }
-      //   })
-      // });
-      // if(!isExist) {
-      //   await WebSiteCollection.create({
-      //     userId: mongoose.Types.ObjectId(user._id),
-      //     organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
-      //     websiteId: mongoose.Types.ObjectId(id),
-      //     name: "PROFILE",
-      //     fields: [{ name: 'Business name', type: 'text', default: true }, 
-      //              { name: 'Business type', type: 'text', default: true },
-      //              { name: 'About Us', type: 'text', default: true },
-      //              { name: 'Company Overview', type: 'text', default: true },
-      //              { name: 'Business Services', type: 'text', default: true },
-      //              { name: 'Logo', type: 'Image', default: true }],
-      //     values: [],
-      //     type: "single",
-      //     isDelete: false
-      //   })
-      // }
+      const collectionData = await WebSiteCollection.findOne({ websiteId: mongoose.Types.ObjectId(id), isProfile: true });
+      if(!collectionData) {
+        await WebSiteCollection.create({
+          userId: mongoose.Types.ObjectId(user._id),
+          organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+          websiteId: mongoose.Types.ObjectId(id),
+          name: "PROFILE",
+          fields: profileCollectionFields,
+          values: [],
+          type: "single",
+          isDelete: false,
+          isProfile: true,
+        });
+
+        await WebSiteDataSet.create({
+          userId: mongoose.Types.ObjectId(user._id),
+          organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+          collectionId: collectionData._id,
+          name: "Profile Dataset",
+        });
+      }
 
       const pageData=await WebPage.find({websiteId:mongoose.Types.ObjectId(websiteData._id), isDelete: false});
       let query = {

@@ -140,7 +140,7 @@ export default function MainNav({
     let interval = setInterval(() => {
       if (form && page) {
         let pageData;
-        form.formData.forEach((data) => {
+        form.formData?.forEach((data) => {
           if (data._id == page._id) {
             pageData = data;
           }

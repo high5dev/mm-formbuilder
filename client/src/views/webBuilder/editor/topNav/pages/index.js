@@ -39,6 +39,12 @@ export default function Index({ setPage, id, store, editor, setEditor, setPageTa
   const [selectedPage, setSelectedPage]=useState();
   const dispatch=useDispatch();
   const [seoModalData, setSeoModalData] = useState({isOpen: false, data: null});
+
+  useEffect(() => {
+    if (form?.formData?.length > 0)
+      setCurrentPage(form.formData[0]);
+  }, []);
+
   const addNewPage = () => {
       const pageNum=form.formData.length;
       const name=`Page${pageNum}`;

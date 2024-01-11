@@ -122,7 +122,7 @@ const EditCollectionModal = ({ store, editor, setEditor, openCollection, setOpen
                           <th style={{padding: '8px 10px 8px 10px', borderRight: '1px solid #cbdfff', borderBottom: '1px solid #cbdfff', backgroundColor: '#e7f0ff'}}></th>
                           {
                             collection.fields?.length > 0 && collection.fields.map(e => {
-                              const icon = types.find(ty => ty.name === e.type).icon;
+                              const icon = types.find(ty => ty.name === e.type)?.icon;
                               if (!e.default) {
                                 return (
                                   <th style={{padding: '8px 20px 8px 20px', borderRight: '1px solid #cbdfff', borderBottom: '1px solid #cbdfff', backgroundColor: '#e7f0ff'}}>
