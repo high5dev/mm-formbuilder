@@ -49,7 +49,7 @@ export const formEditor = createSlice({
     currentPage: {},
     customerCollect: {},
     waitingClients: [],
-    contentCollect: {},
+    contentCollect: [],
     siteImages: [],
   },
   reducers: {

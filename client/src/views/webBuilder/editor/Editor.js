@@ -3517,7 +3517,7 @@ export default function Editor({
                         </div>
                       )}
                       {sidebarData.menu.id === 'content' && (
-                        <ContentSideBar store={store} />
+                        <ContentSideBar store={store} openCreateModalToggle={createColMdlToggle} />
                       )}
                     </div>
                   </div>

@@ -3,10 +3,13 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import './CollectCustomerForm.scss';
 import { getContentCollectAction, getWebCollectionsAction, saveContentDataAction, uploadContentImageAction } from '../../../store/action';
-import { Button, Input } from 'reactstrap';
+import { Button, Input, Label } from 'reactstrap';
 import FileUploaderMultiple from '../../topNav/import/FileUploaderMultiple';
-import { Check, DownloadCloud, UploadCloud, X } from 'react-feather';
+import { Check, DownloadCloud, Plus, UploadCloud, X } from 'react-feather';
 import { toast } from 'react-toastify';
+import AddItemField from '../../cms/collection/addItemFields';
+import FileSelectUploadModal from './FileSelectUploadModal';
+import ImageURLModal from '../../cms/collection/addItemFields/ImageURLModal';
 
 export default function CollectCustomerForm() {
     const { websiteId, collectionId } = useParams();
@@ -18,6 +21,10 @@ export default function CollectCustomerForm() {
     const [imagesToUpload, setImagesToUpload] = useState([]);
     const [filesToUpload, setFilesToUpload] = useState([]);
     const [webCollection, setWebCollection] = useState({});
+    const [openSelectImageModal, setOpenSelectImageModal] = useState(false);
+    const [files, setFiles] = useState([]);
+    const [openURLModal, setOpenURLModal] = useState(false);
+    const [selectedField, setSelectedField] = useState('');
 
     const store = useSelector((state) => {
         return {
@@ -44,8 +51,8 @@ export default function CollectCustomerForm() {
         }
     }, [store?.contentCollect, store?.webCollections]);
 
-    const handleChangeValue = (key, value) => {
-        setEditValues({ ...editValues, [key]: value });
+    const handleChangeValue = (newValueObj) => {
+        setEditValues({ ...editValues, ...newValueObj });
     }
 
     const handleClickSave = async () => {
@@ -129,6 +136,14 @@ export default function CollectCustomerForm() {
         return true;
     };
 
+    const toggleURLModal = () => {
+        setOpenURLModal(!openURLModal);
+    }
+
+    const onChangeFile = (url) => {
+        handleChangeValue({[selectedField]: url});
+    }
+
     return (
         <div>
             {
@@ -142,7 +157,7 @@ export default function CollectCustomerForm() {
                         <Button color='primary' outline onClick={() => setIsSaved(false)}>Back to edit</Button>
                     </div>
                 ):(
-                        <div className='customerContent w-100 h-100 d-flex flex-column align-items-center pt-4'>
+                        <div className='customerContent w-100 h-100 d-flex flex-column align-items-center py-4'>
                             <h2>CONTENT COLLECTION FORM</h2>
                             <h4>Help us build your site by adding content with this form.</h4>
                             <div className='collectContent mt-2 pt-2 collectEditContent'>
@@ -230,34 +245,74 @@ export default function CollectCustomerForm() {
                                         }
                                     </div>
                                     {
-                                        contentCollect && contentCollect.fields && contentCollect.fields.length > 0 && Object.entries(contentCollect?.fields[0] || {}).filter(([key, value]) =>
-                                            value === true && webCollection?.fields?.some(field => field.name === key && field.type !== "Image" && field.type !== "Rich text" && field.type !== "Array")
-                                        ).map(([key]) => (
-                                            <div className='editItem w-100'>
-                                                <div className='font-medium-2'>{key}</div>
-                                                <Input type="text" value={editValues[key]} onChange={(e) => { handleChangeValue(key, e.target.value) }} />
-                                            </div>
-                                        ))
+                                        contentCollect?.fields?.map((field, i) => {
+                                            if (field.type === 'Date' || field.type === 'Time') {
+                                                return <div>
+                                                    <div className='font-medium-2'>{field.name}</div>
+                                                    <AddItemField key={'form-field-' + i} field={field} type={field?.type} onChange={(e) => {handleChangeValue(e)}} />
+                                                </div>;
+                                            } else if (field.type !== 'Image' && field.type !== 'Video' && field.type !== 'Audio' && field.type !== 'Rich text' && field.type !== 'Rich content' && field.type !== 'Address' && field.type !== 'Object' && field.type !== 'Array') {
+                                                return <div>
+                                                    <div className='font-medium-2'>{field.name}</div>
+                                                    <AddItemField key={'form-field-' + i} field={field} type={'Text'} onChange={(e) => {handleChangeValue(e)}} />
+                                                </div>;
+                                            }
+                                        })
                                     }
                                 </div>
                                 {
-                                    contentCollect && contentCollect.fields && contentCollect.fields.length > 0 && Object.entries(contentCollect?.fields[0] || {}).filter(([key, value]) =>
-                                        value === true && webCollection?.fields?.some(field => field.name === key && field.type === "Rich text")
-                                    ).map(([key]) => (
-                                        <div className='editItem w-100 mt-1'>
-                                            <div className='font-medium-2'>{key}</div>
-                                            <Input type="textarea" value={editValues[key]} onChange={(e) => { handleChangeValue(key, e.target.value) }} />
-                                        </div>
-                                    ))
+                                    contentCollect?.fields?.map((field, i) => {
+                                        if ( field.type === 'Rich text' || field.type === 'Rich content' || field.type === 'Address' || field.type === 'Object' || field.type === 'Array') {
+                                            return <div className='mt-1'>
+                                                <div className='font-medium-2'>{field.name}</div>
+                                                <AddItemField key={'form-field-' + i} field={field} type={'Array'} onChange={(e) => {handleChangeValue(e)}} />
+                                            </div>;
+                                        }
+                                        if (field.type === 'Image' || field.type === 'Video' || field.type === 'Audio') {
+                                            return <div className='mt-1'>
+                                                <div className='font-medium-2'>{field.name}</div>
+                                                <div className='d-flex mt-1'>
+                                                    <div
+                                                        className='rounded d-flex flex-column align-items-center justify-content-center' 
+                                                        style={{borderStyle: 'dashed', border: '1px dashed #2c7dff', color: '#2c7dff', width: 100, height: 100}}
+                                                        onClick={() => {
+                                                            setSelectedField(field.name);
+                                                            setOpenSelectImageModal(true);
+                                                        }}>
+                                                        <Plus size={20} color='#2c7dff' />
+                                                        <div>Select File</div>
+                                                    </div>
+                                                    <div className='ms-1'>
+                                                        File Url: <br/>{editValues[field.name] || ''}
+                                                    </div>
+                                                </div>
+                                                Upload a file or <a style={{color: '#2c7dff', borderBottom: '1px solid #2c7dff'}} onClick={() => {
+                                                    setSelectedField(field.name);
+                                                    toggleURLModal();
+                                                }}>add a file URL</a>
+                                            </div>;
+                                        }
+                                    })
                                 }
                                 <hr className='mt-2'/>
                                 <div className='w-100 d-flex mt-1 justify-content-end'>
                                     <Button color='primary' disabled={isSaving} onClick={handleClickSave}>Submit</Button>
                                 </div>
                             </div>
-                        </div >
+                        </div>
                 )
             }
+            <FileSelectUploadModal
+                store={store}
+                open={openSelectImageModal}
+                toggle={() => {setOpenSelectImageModal(!openSelectImageModal)}}
+                images={files || []}
+                multiple={false}
+                onSelect={(files) => {
+                    handleChangeValue({[selectedField]: files[0]});
+                }}
+            />
+            <ImageURLModal open={openURLModal} toggle={toggleURLModal} onChange={onChangeFile} />
         </div>
     );
 }

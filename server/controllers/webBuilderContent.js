@@ -48,9 +48,9 @@ exports.getContentCollect = asyncHandler(async (req, res) => {
 exports.getContentCollectByCol = asyncHandler(async (req, res) => {
     try {
         const {websiteId, collectionId} = req.body;
-        const data = await WebContentCollection.findOne({
+        const data = await WebContentCollection.find({
             websiteId: mongoose.Types.ObjectId(websiteId),
-            collectionId: mongoose.Types.ObjectId(collectionId)
+            isApproved: 'pending',
         });
         return res.send({ success: true, data: data });
     } catch (err) {
