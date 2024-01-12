@@ -137,7 +137,7 @@ import CMS from './topNav/cms';
 import { fontWebStyle } from './leftSidebar/theme/defaultTheme/variable';
 import { ImCheckmark, ImCross } from "react-icons/im";
 import {colors, fonts, buttons, background, image, property} from '../editor/leftSidebar/theme/defaultTheme'
-import { attr } from 'highcharts';
+// import { attr } from 'highcharts';
 import RichTextEditor from './leftSidebar/content/RichTextEditor';
 import ContentSideBar from './leftSidebar/content/ContentSideBar';
 export default function Editor({
@@ -715,6 +715,11 @@ export default function Editor({
       container: '#editor',
       height: window.innerHeight - 117,
       plugins: [basicBlockPlugin, (editor) => webBuilderPlugin(editor), websitePlugin],
+      pluginsOpts: {
+        [basicBlockPlugin]: {
+          flexGrid: true
+        }
+      },
       fromElement: true,
       richTextEditor: {
         actions: []
@@ -1490,6 +1495,25 @@ export default function Editor({
     if (editor) {
       const head=editor?.Canvas?.getDocument()?.head;
       if(head){
+        const css = editor.Css;
+        css.addRules(`.gjs-row {
+          display: flex;
+          justify-content: flex-start;
+          align-items: stretch;
+          flex-wrap: nowrap;
+          padding: 10px;
+        }
+        @media (max-width: 768px) {
+          .gjs-row {
+            flex-wrap: wrap;
+          }
+        }
+              
+        .gjs-cell {
+          min-height: 75px;
+          flex-grow: 1;
+          flex-basis: 100%;
+        }`);
         formTheme?.buttons?.map((_button)=>{
           let attributes=_button.attributes;
           let btnAttr={};
