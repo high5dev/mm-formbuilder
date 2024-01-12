@@ -38,6 +38,8 @@ import thankyoupage from "./thankyoupage/thankyoupage";
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import menu from "./menu/menu";
+import map from "./map/map";
+
 const testImageUrls = [
   'https://i.ibb.co/ZWnZPqr/tiktok.png',
   'https://i.ibb.co/tm0rJ2c/youtube-1.png',
@@ -240,6 +242,7 @@ export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('productpage', productpage);
   editor.DomComponents.addType('cartpage', cartpage);
   editor.DomComponents.addType('thankyoupage', thankyoupage);
+  editor.DomComponents.addType('map-location', map);
   editor.TraitManager.addType('social-link', {
     noLabel: true,
     // Expects as return a simple HTML string or an HTML element
@@ -1975,6 +1978,75 @@ export const webBuilderPlugin = (editor) => {
           // Add your click event logic here
         });
       });
+    }
+  });
+
+  editor.TraitManager.addType('addresses', {
+    noLabel: true,
+    // Expects as return a simple HTML string or an HTML element
+    createInput({trait, component}) {
+      const traitName = trait.get('name');
+      const traitLabel = trait.get('label');
+      const addresses = component.props().addresses;
+      console.log('Addresses:', addresses);
+      let showItems = `<div class="address-container"></div><hr/>
+        <h6>Add New Address</h6>
+        <div class="mt-1">
+        <input type="text" class="border rounded new-address-input" value="">
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-primary mt-1 trait-new-address-add-btn">Add</button>
+        </div>
+      </div>`;
+      const el = document.createElement('div');
+      el.className = 'map-addresses';
+      el.innerHTML = `
+        <h6 class="mb-1">${traitLabel}</h6>
+        ${showItems}
+      `;
+
+      let newAddr = '';
+      const newAddressEl = el.querySelector('.new-address-input');
+      newAddressEl.addEventListener('change', (e) => {
+        newAddr = e.target.value;
+      })
+
+      const addBtn = el.querySelector('.trait-new-address-add-btn');
+      addBtn.addEventListener('click', (e) => {
+        component.set('addresses', [...component.props().addresses, newAddr]);
+        newAddr = '';
+        newAddressEl.value = '';
+      })
+
+      return el;
+    },
+    onUpdate({elInput, component}) {
+      const addresses = component.props().addresses;
+      
+      const itemsContainer = elInput.querySelector('.address-container');
+
+      while (itemsContainer.hasChildNodes()) {
+        itemsContainer.removeChild(itemsContainer.firstChild);
+      }
+
+      let addressesStr = '';
+      addresses.forEach((item, index) => {
+        addressesStr = addressesStr + `
+          <div class="d-flex mb-1">
+            <input id="address${index}" type="text" class="border rounded me-1" value="${item}">
+            <button class="trait-address-delete"><i class="fa fa-trash"></i></button>
+          </div>
+        `;
+      });
+      itemsContainer.innerHTML = addressesStr;
+
+      itemsContainer.querySelectorAll('.trait-address-delete').forEach((item, index) => {
+        item.addEventListener('click', event => {
+          //handle click
+          const tempList = [...addresses];
+          tempList.splice(index, 1);
+          component.set('addresses', tempList);
+        })
+      })
     }
   });
 

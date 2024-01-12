@@ -790,6 +790,9 @@ export default function Editor({
       },
       commands: {
         defaults: [{}]
+      },
+      canvas: {
+        scripts: ["https://maps.googleapis.com/maps/api/js?key=AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o&libraries=places&callback=myMap"],
       }
     });
 
