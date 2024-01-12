@@ -153,3 +153,29 @@ export const fonts=[
         }
     }
 ]
+
+export const property={
+    "backgroundColor":"background-color",
+    "border":"border",
+    "borderColor":"border-color",
+    "borderWidth":"border-width",
+    "borderRadius":"border-radius",
+    "borderTopLeftRadius":"border-top-left-radius",
+    "borderTopRightRadius":"border-top-right-radius",
+    "borderBottomLeftRadius":"border-bottom-left-radius",
+    "borderBottomRightRadius":"border-bottom-right-radius",
+    "borderTopStyle":"border-top-style",
+    "borderLeftStyle":"border-left-style",
+    "borderRightStyle":"border-right-style",
+    "borderBottomStyle":"border-bottom-style",
+    "color":"color",
+    "fontFamily":"font-family",
+    "fontSize":"font-size",
+    "fontStyle":"font-style",
+    "fontWeight":"font-weight",
+    "minWidth":"min-width",
+    "padding":"padding",
+    "textDecoration":"text-decoration",
+    "themeColor":"theme-color",
+    "themeBackgroundColor":"theme-background-color"
+}

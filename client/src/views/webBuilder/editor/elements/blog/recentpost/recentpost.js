@@ -16,16 +16,16 @@ let recentPost = {
                     <div class="post-large-item">
                       <div class="post-large-item-header">
                         <img src={blog.avatar} class="item-image-avatar" width="10%" />
-                        <div class="post-large-item-name">{blog.name}</div>
+                        <div class="post-large-item-name theme-text-default theme-text-default">{blog.name}</div>
                       </div>
                       <div class="post-large-item-image">
                         <img src={blog.imageUrl} width="100%" height="180px" />
                       </div>
                       <div class="post-large-item-body">
                         <div class="post-large-item-title">
-                          <h2>{blog.title}</h2>
+                          <h2 class="theme-text-h2">{blog.title}</h2>
                         </div>
-                        <div class="post-large-item-description">{blog.description}</div>
+                        <div class="post-large-item-description theme-text-default">{blog.description}</div>
                       </div>
                     </div>
                   );
@@ -82,7 +82,7 @@ let recentPost = {
                   <div class="post-large-item">
                     <div class="post-large-item-header">
                       <img src={blog.avatar} class="item-image-avatar" width="10%" />
-                      <div class="post-large-item-name">{blog.name}</div>
+                      <div class="post-large-item-name theme-text-default">{blog.name}</div>
                     </div>
                     <div class="post-large-item-image">
                       <img src={blog.imageUrl} width="100%" height="180px" />
@@ -90,7 +90,7 @@ let recentPost = {
                     <div class="post-large-item-body">
                       <div class="post-large-item-title">
                        <a href={`/${blog.websiteId}/${blog.pageName}/${blog._id}`}>
-                        <h2>{blog.title}</h2>
+                        <h2 class="theme-text-h2">{blog.title}</h2>
                         </a>
                       </div>
                       <div class="post-large-item-description">

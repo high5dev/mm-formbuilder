@@ -257,11 +257,11 @@ export default function TextTheme({store, selectedFont, setSelectedFont}) {
                         <div className='ms-1'>
                             <div>
                                 <Label>Theme Color</Label>
-                                <div className='d-flex justify-content-around align-items-center mt-1' style={{width:'200px'}}>
+                                <div className='d-flex flex-wrap align-items-center mt-1' style={{width:'200px'}}>
                                 {
                                 formTheme && formTheme.colors && formTheme.colors.map((_color)=>{
                                     return(
-                                    <div style={{width:'30px', height:'30px',backgroundColor:_color.value}} onClick={(e)=>{
+                                    <div style={{width:'30px', height:'30px',margin:'3px',backgroundColor:_color.value}} onClick={(e)=>{
                                         selectThemeFontColor(_color);
                                     }}>
                                     </div>

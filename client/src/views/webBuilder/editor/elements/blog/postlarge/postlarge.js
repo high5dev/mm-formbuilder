@@ -19,15 +19,15 @@ let postLarge = {
                 <div class="post-large-container-right">
                   <span class="post-large-header">
                     <img src={blog.avatar} class="image-avatar" width="100px"/>
-                    <div class="post-large-name">
+                    <div class="post-large-name theme-text-default">
                       {blog.name}
                     </div>
                   </span>
                   <div class="post-large-body">
                       <div class="post-large-title">
-                          <h2>{blog.title}</h2>
+                          <h2 class="theme-text-h2">{blog.title}</h2>
                       </div>
-                      <div class="post-large-description">
+                      <div class="post-large-description theme-text-default">
                           {blog.description}
                       </div>
                   </div>
@@ -141,7 +141,7 @@ let postLarge = {
           <div class="post-large-container-right">
             <span class="post-large-header">
               <img src={blog.avatar} class="image-avatar" width="20%"/>
-              <div class="post-large-name">
+              <div class="post-large-name theme-text-default">
                 {blog.name}
                 <div style="margin-top:10px;font-size:14px;">{post_time}</div>
               </div>
@@ -150,7 +150,7 @@ let postLarge = {
             <div class="post-large-body">
                   <div class="post-large-title">
                       <a href={`/${blog.websiteId}/${blog.pageName}/${blog._id}`} target='_blank'>
-                       <h2>{blog.title}</h2>
+                       <h2 class="theme-text-h2">{blog.title}</h2>
                       </a>
                   </div>
                   <div class="post-large-description">
