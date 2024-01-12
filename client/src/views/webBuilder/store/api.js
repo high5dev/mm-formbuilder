@@ -435,3 +435,31 @@ export const confirmCustomerDataset = (id, payload) => {
 export const getGoogleFonts = () => {
   return API.get(`web-builder/getGoogleFonts`);
 }
+
+export const createContentCollect = (payload) => {
+  return API.post(`web-builder-content/create`, payload);
+}
+
+export const getContentCollect = (id) => {
+  return API.get(`web-builder-content/get/${id}`);
+}
+
+export const getContentCollectByCol = (payload) => {
+  return API.post(`web-builder-content/getByCol`, payload);
+}
+
+export const uploadContentImage = (payload, websiteId) => {
+  return API.post(`web-builder-content/uploadImage/${websiteId}`, payload);
+}
+
+export const confirmContentData = (id, payload) => {
+  return API.post(`web-builder-content/confirm/${id}`, payload);
+}
+
+export const saveContentData = (id, payload) => {
+  return API.post(`web-builder-content/save/${id}`, payload);
+}
+
+export const getWebsiteImages = (id) => {
+  return API.get(`web-builder-content/getImages/${id}`);
+}

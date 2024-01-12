@@ -130,46 +130,48 @@ export default function CMS({ store, setAddSideBarOpen, openEditCollection, setO
           <div className='px-2 py-1 border-bottom'>collections created by a site collaborator</div>
           {
             collections.map((c, ci) => {
-              return <div key={ci} className='d-flex align-items-center justify-content-between px-2 py-1 border-bottom collection-item'
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setOpenEditCollection({isOpen: true, data: c});
-                  }}
-                >
-                <div className='d-flex align-items-center'>
-                  <List size={17} className='me-1' color='#66b1f0' />
-                  <div className='fs-6'>
-                    {c.name} <br/>
-                    {c.values.length === 1 ? `${c.values.length} item` : c.values.length === 0 ? 'No item' : `${c.values.length} items`}
+              if (!c.isProfile) {
+                return <div key={ci} className='d-flex align-items-center justify-content-between px-2 py-1 border-bottom collection-item'
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setOpenEditCollection({isOpen: true, data: c});
+                    }}
+                  >
+                  <div className='d-flex align-items-center'>
+                    <List size={17} className='me-1' color='#66b1f0' />
+                    <div className='fs-6'>
+                      {c.name} <br/>
+                      {c.values.length === 1 ? `${c.values.length} item` : c.values.length === 0 ? 'No item' : `${c.values.length} items`}
+                    </div>
                   </div>
-                </div>
-                <UncontrolledDropdown className='more-dropdown'>
-                  <DropdownToggle tag='span' onClick={(e) => {e.stopPropagation(); e.preventDefault();}}>
-                    <MoreHorizontal size={17} className='more-icon'/>
-                  </DropdownToggle>
-                  <DropdownMenu end className='more-menu'>
-                    <DropdownItem className='w-100' onClick={(e) => {e.stopPropagation(); e.preventDefault();}}>
-                      <Edit size={15} className='me-1'/>
-                      Edit settings
-                    </DropdownItem>
-                    <DropdownItem className='w-100' onClick={(e) => {e.stopPropagation(); e.preventDefault();}}>
-                      <Key size={15} className='me-1'/>
-                      Permissions & privacy
-                    </DropdownItem>
-                    <DropdownItem className='w-100' onClick={(e) => {e.stopPropagation(); e.preventDefault();}}>
-                      <Link size={15} className='me-1'/>
-                      Add dynamic page
-                    </DropdownItem>
-                    <DropdownItem className='w-100' onClick={(e) => {
-                        e.stopPropagation(); e.preventDefault();
-                        dispatch(deleteWebCollectionAction(c._id));
-                      }}>
-                      <Trash size={15} className='me-1'/>
-                      Delete collection
-                    </DropdownItem>
-                  </DropdownMenu>
-                </UncontrolledDropdown>
-              </div>;
+                  <UncontrolledDropdown className='more-dropdown'>
+                    <DropdownToggle tag='span' onClick={(e) => {e.stopPropagation(); e.preventDefault();}}>
+                      <MoreHorizontal size={17} className='more-icon'/>
+                    </DropdownToggle>
+                    <DropdownMenu end className='more-menu'>
+                      <DropdownItem className='w-100' onClick={(e) => {e.stopPropagation(); e.preventDefault();}}>
+                        <Edit size={15} className='me-1'/>
+                        Edit settings
+                      </DropdownItem>
+                      <DropdownItem className='w-100' onClick={(e) => {e.stopPropagation(); e.preventDefault();}}>
+                        <Key size={15} className='me-1'/>
+                        Permissions & privacy
+                      </DropdownItem>
+                      <DropdownItem className='w-100' onClick={(e) => {e.stopPropagation(); e.preventDefault();}}>
+                        <Link size={15} className='me-1'/>
+                        Add dynamic page
+                      </DropdownItem>
+                      <DropdownItem className='w-100' onClick={(e) => {
+                          e.stopPropagation(); e.preventDefault();
+                          dispatch(deleteWebCollectionAction(c._id));
+                        }}>
+                        <Trash size={15} className='me-1'/>
+                        Delete collection
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                </div>;
+              }
             })
           }
           <Button
