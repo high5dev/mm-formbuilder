@@ -12,7 +12,8 @@ import {
   Plus,
   Edit,
   MoreVertical,
-  Settings
+  Settings,
+  ChevronsRight
 } from 'react-feather';
 import { CgStyle } from 'react-icons/cg';
 import { IoMdArrowDropright, IoMdArrowDropdown, IoMdSend } from 'react-icons/io';
@@ -76,9 +77,7 @@ import {
   getProductCategoryAction,
   getWebsiteRolesAction,
   addWebBuilderThemeColorAction,
-  createCustomerCollectAction,
   getWaitingClientsAction,
-  confirmCustomerDatasetAction,
   updateFormAction,
   getGoogleFontsAction,
   createShopPagesAction
@@ -136,9 +135,11 @@ import AddPresetModal from './cms/AddPresetModal';
 import CMS from './topNav/cms';
 import { fontWebStyle } from './leftSidebar/theme/defaultTheme/variable';
 import { ImCheckmark, ImCross } from "react-icons/im";
-import {colors, fonts, buttons, background, image} from '../editor/leftSidebar/theme/defaultTheme'
-export default function Editor(
-  {
+import {colors, fonts, buttons, background, image} from '../editor/leftSidebar/theme/defaultTheme';
+import RichTextEditor from './leftSidebar/content/RichTextEditor';
+import ContentSideBar from './leftSidebar/content/ContentSideBar';
+
+export default function Editor({
   isblog,
   thispage,
   setThispage,
@@ -285,6 +286,8 @@ export default function Editor(
   const [ClientWaiting, setClientWaiting] = useState(false);
   const [openUploadModal, setOpenUploadModal] = useState(false);
   const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
+
+  const [selectedConnectedData, setSelectedConnectedData] = useState('');
 
   const loadedRef = useRef();
   const storeRef = useRef();
@@ -541,28 +544,6 @@ export default function Editor(
         [field]: isChecked
       }
     });
-  };
-
-  const collectFromClient = async () => {
-    setShowCustomerDatasetModalLoading(true);
-    const data = await dispatch(
-      createCustomerCollectAction({
-        websiteId: store?.form?._id,
-        fields: cdCheckedItems[`${customerDataset.type}-${customerDataset.collectionId}`],
-        type: customerDataset.type,
-        collectionId: customerDataset.collectionId
-      })
-    );
-    setCustomerCollectId(data.data._id);
-    const timer = setTimeout(() => {
-      setShowCustomerDatasetModal(true);
-      setShowCustomerDatasetModalLoading(false);
-    }, 3000);
-    return () => clearTimeout(timer);
-  };
-
-  const handleConfirmCustomerDataset = (id, payload) => {
-    dispatch(confirmCustomerDatasetAction(id, payload));
   };
 
   const handleRename = (_b) => {
@@ -1105,6 +1086,12 @@ export default function Editor(
             }
 
             if (cmp.get('type') === 'image') {
+              // cmp.setAttributes({src: collection.values[1][connection.connectedField]});
+              // cmp.attributes.src = collection.values[1][connection.connectedField];
+              console.log(' cmp html ---------------------', cmp, cmp.toHTML());
+            }
+
+            if (cmp.get('type') === 'map') {
               // cmp.setAttributes({src: collection.values[1][connection.connectedField]});
               // cmp.attributes.src = collection.values[1][connection.connectedField];
               console.log(' cmp html ---------------------', cmp, cmp.toHTML());
@@ -3455,146 +3442,7 @@ export default function Editor(
                         </div>
                       )}
                       {sidebarData.menu.id === 'content' && (
-                        <div className="h-100 d-flex flex-column">
-                          <div className="d-flex justify-content-center align-items-center p-2 flex-column">
-                            <div>Send link to customer to manage dataset</div>
-
-                            <div className="d-flex justify-content-around ">
-                              <Button
-                                color="primary"
-                                outline
-                                onClick={collectFromClient}
-                                className="mt-1 align-items-center"
-                                disabled={showCustomerDatasetModalLoading ? true : false}
-                              >
-                                <Spinner
-                                  color="secondary"
-                                  className='mx-50'
-                                  size={'sm'}
-                                  hidden={showCustomerDatasetModalLoading ? false : true}
-                                ></Spinner>
-                                + Collect From Client
-                              </Button>
-                              <Button
-                                color="primary d-flex align-items-center mt-1 ms-2"
-                                size="sm"
-                                onClick={collectFormSubmission}
-                              >
-                                <IoMdSend />
-                                <div className="ps-50">SENT FORMS</div>
-                              </Button>
-                            </div>
-                          </div>
-                          <div className="mt-2 pe-3" style={{ flex: 1, overflow: 'scroll' }}>
-                            <div className="ms-1 font-medium-5">Collections</div>
-
-                            {store?.webCollections?.map((collection) => {
-                              return (
-                                <div className="ms-2 mt-1">
-                                  <div
-                                    className="d-flex align-items-center "
-                                    style={{ cursor: 'pointer' }}
-                                    onClick={() => {
-                                      handleChangeCustomerDataset('cms', collection._id);
-                                    }}
-                                  >
-                                    <IoMdArrowDropright
-                                      size={18}
-                                      hidden={
-                                        customerDataset.collectionId === collection._id
-                                          ? true
-                                          : false
-                                      }
-                                    />
-                                    <IoMdArrowDropdown
-                                      size={18}
-                                      hidden={
-                                        customerDataset.collectionId === collection._id
-                                          ? false
-                                          : true
-                                      }
-                                    />
-                                    <div className="font-medium-6 ps-50 submenu-item h5 mb-0 ">
-                                      {collection.name} Collection
-                                    </div>
-                                  </div>
-                                  {customerDataset.type === 'cms' &&
-                                    customerDataset.collectionId === collection._id && (
-                                      <div className="mt-1">
-                                        {collection?.fields?.map((field, idx) => {
-                                          return (
-                                            <div className="d-flex">
-                                              <Input
-                                                type="checkbox"
-                                                id={collection._id + field.name + idx}
-                                                checked={
-                                                  cdCheckedItems[`cms-${collection._id}`]?.[
-                                                    field.name
-                                                  ]
-                                                }
-                                                onChange={(e) => {
-                                                  handleCDCheckboxChange(
-                                                    field.name,
-                                                    e.target.checked
-                                                  );
-                                                }}
-                                              />
-                                              <Label
-                                                className="ms-1"
-                                                for={collection._id + field.name + idx}
-                                              >
-                                                {field.name}
-                                              </Label>
-                                            </div>
-                                          );
-                                        })}
-                                      </div>
-                                    )}
-                                </div>
-                              );
-                            })}
-
-                            <div
-                              className="ms-1 font-medium-5 mt-2"
-                              hidden={ClientWaiting ? false : true}
-                            >
-                              Waiting Clients ...
-                            </div>
-                            {store?.waitingClients.map((client) => {
-                              return (
-                                <div className="d-flex align-items-center justify-content-between ms-1 mt-2 w-100">
-                                  <div className="">
-                                    {client.user.firstName} {client.user.lastName}
-                                  </div>
-                                  <div className="">
-                                    <Button
-                                      color="success"
-                                      className="me-1"
-                                      onClick={() => {
-                                        handleConfirmCustomerDataset(client._id, {
-                                          isApproved: true,
-                                          isDeclined: false
-                                        });
-                                      }}
-                                    >
-                                      <ImCheckmark />
-                                    </Button>
-                                    <Button
-                                      onClick={() => {
-                                        handleConfirmCustomerDataset(client._id, {
-                                          isApproved: true,
-                                          isDeclined: true
-                                        });
-                                      }}
-                                    >
-                                      <ImCross />
-                                    </Button>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
+                        <ContentSideBar store={store} />
                       )}
                     </div>
                   </div>

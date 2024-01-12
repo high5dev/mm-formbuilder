@@ -26,7 +26,9 @@ import {
   setWebRolesReducer,
   setCategoriesReducer,
   setCustomerCollectReducer,
-  setWaitingClientsReducer
+  setWaitingClientsReducer,
+  setContentCollectReducer,
+  setSiteImagesReducer
 } from './reducer';
 import * as api from './api';
 import { toast } from 'react-toastify';
@@ -1192,9 +1194,9 @@ export const saveCustomerDatasetAction = (payload) => async (dispatch) => {
   }
 }
 
-export const uploadCustomerImageAction = (payload) => async (dispatch) => {
+export const uploadCustomerImageAction = (payload, websiteId) => async (dispatch) => {
   try {
-    const { data } = await api.uploadCustomerImage(payload);
+    const { data } = await api.uploadCustomerImage(payload, websiteId);
     return data;
   } catch (err) {
 
@@ -1230,6 +1232,81 @@ export const getGoogleFontsAction = () => async (dispatch) => {
       return data.data;
     } else {
       return null;
+    }
+  } catch (err) {
+
+  }
+}
+
+
+export const createContentCollectAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.createContentCollect(payload);
+    return data;
+  } catch (err) {
+
+  }
+}
+
+export const getContentCollectAction = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.getContentCollect(id);
+    if (data.success) {
+      dispatch(setContentCollectReducer(data.data));
+    }
+  } catch (err) {
+
+  }
+}
+
+export const getContentCollectByColAction = (payload) => async (dispatch) => {
+  try {
+    const { data } = await api.getContentCollectByCol(payload);
+    if (data.success && data.data) {
+      dispatch(setContentCollectReducer(data.data));
+    }
+  } catch (err) {
+
+  }
+}
+
+export const saveContentDataAction = (id, payload) => async (dispatch) => {
+  try {
+    const { data } = await api.saveContentData(id, payload);
+    if (data.success) {
+      dispatch(setContentCollectReducer(data.data));
+      return data;
+    }
+  } catch (err) {
+
+  }
+}
+
+export const uploadContentImageAction = (payload, websiteId) => async (dispatch) => {
+  try {
+    const { data } = await api.uploadContentImage(payload, websiteId);
+    return data;
+  } catch (err) {
+
+  }
+}
+
+export const confirmContentDataAction = (id, payload) => async (dispatch) => {
+  try {
+    const { data } = await api.confirmContentData(id, payload);
+    if(data.success) {
+      // dispatch(setWaitingClientsReducer(data.data));
+    }
+  } catch (err) {
+
+  }
+}
+
+export const getWebsiteImagesAction = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.getWebsiteImages(id);
+    if(data.success) {
+      dispatch(setSiteImagesReducer(data.data));
     }
   } catch (err) {
 

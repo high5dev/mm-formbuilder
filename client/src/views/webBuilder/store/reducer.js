@@ -48,7 +48,9 @@ export const formEditor = createSlice({
     webRoles: [],
     currentPage: {},
     customerCollect: {},
-    waitingClients: []
+    waitingClients: [],
+    contentCollect: {},
+    siteImages: [],
   },
   reducers: {
     setLinkUrlReducer: (state, action) => {
@@ -172,7 +174,13 @@ export const formEditor = createSlice({
     },
     setWaitingClientsReducer: (state, action) => {
       state.waitingClients = action?.payload;
-    }
+    },
+    setContentCollectReducer: (state, action) => {
+      state.contentCollect = action?.payload;
+    },
+    setSiteImagesReducer: (state, action) => {
+      state.siteImages = action?.payload;
+    },
   }
 });
 
@@ -208,6 +216,8 @@ export const {
   setThankyouProductsReducer,
   setCurrentPage,
   setCustomerCollectReducer,
-  setWaitingClientsReducer
+  setWaitingClientsReducer,
+  setContentCollectReducer,
+  setSiteImagesReducer,
 } = formEditor.actions;
 export default formEditor.reducer;

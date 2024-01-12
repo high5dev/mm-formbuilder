@@ -51,6 +51,47 @@ function googleCloudStorageWebBuilder() {
     return `https://storage.googleapis.com/${process.env.GCS_BUCKET}/${pageDoc.name}`;
   }
 
+  this.upload = (file, websiteId) => {
+    const fileName = file.originalname.replace(/ /g, "-");
+    const newFileName = `${uuidv4()}-${fileName}`;
+    const doc = bucket.file(`website-builder/${websiteId}/library/${newFileName}`);   
+
+    const blogStream = doc.createWriteStream({ resumable: false });
+    async function configureBucketCors() {
+      await bucket.setCorsConfiguration([
+        {
+          method: ["GET", "POST", "HEAD"],
+          origin: ["*"],
+          responseHeader: ["*"],
+        },
+      ]);
+    }
+
+    // eslint-disable-next-line no-console
+    configureBucketCors().catch(console.error);
+
+    return new Promise((resolve, reject) => {
+      blogStream.on("error", (err) => reject(err));
+      blogStream.on("finish", () => {
+        const publicUrl = `https://storage.googleapis.com/${process.env.GCS_BUCKET}/${doc.name}`;
+        resolve(publicUrl);
+      });
+      blogStream.end(file.buffer);
+    });
+  };
+
+  this.getWebsiteImageUrls = async(websiteId) => {
+    const imageUrls = [];
+    await bucket.getFiles({ prefix: `website-builder/${websiteId}/library`, autoPaginate: false }).then((imageFiles) => {
+      if (imageFiles && imageFiles[0]?.length > 0) {
+        for (i = 0; i < imageFiles[0].length; i++) {
+          imageUrls.push(`https://storage.googleapis.com/${process.env.GCS_BUCKET}/${imageFiles[0][i].name}`);
+        }
+      }
+    });
+    return imageUrls;
+  };
+
   this.readPage = async(pageDirectory) => {
     configureBucketCors().catch(console.error);
     const pageDoc = bucket.file(`website-builder/${pageDirectory}/index.html`);

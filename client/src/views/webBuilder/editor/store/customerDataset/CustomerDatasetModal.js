@@ -4,11 +4,13 @@ import { Modal, ModalHeader, ModalBody, Input, Button } from 'reactstrap';
 export const CustomerDatasetModal = ({
   showCustomerDatasetModal,
   setShowCustomerDatasetModal,
-  customerCollectId
+  customerCollectId,
+  store
 }) => {
+  
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.origin + "/customercollect/" + customerCollectId);
+      await navigator.clipboard.writeText(window.location.origin + "/customercollect/" + store?.form?._id + "/" + customerCollectId);
     } catch (err) {
       console.log(err);
     }
@@ -32,8 +34,16 @@ export const CustomerDatasetModal = ({
           <div className='font-medium-5 mt-1'>Collect content from customer</div>
           <div className='font-medium-6 mt-1 text-center'>Copy the link below and send it to your client, so they can upload content for their site. <br />The form will pre-include information that's already been added. </div>
           <div className='d-flex w-100 p-2 mb-2'>
-            <Input type="text" value={window.location.origin + "/customercollect/" + customerCollectId} readOnly />
-            <Button color='primary'  size='sm' className='d-flex align-items-center ms-50' onClick={copyToClipboard} style={{minWidth: 'fit-content'}}>Copy URL</Button>
+            <Input type="text" value={window.location.origin + "/customercollect/" + store?.form?._id + "/" + customerCollectId} readOnly />
+            <Button
+              color="primary"
+              outline
+              className='ms-1'
+              style={{width: 150}}
+              onClick={copyToClipboard}
+            >
+              Copy URL
+            </Button>
           </div>
         </div>
       </ModalBody>
