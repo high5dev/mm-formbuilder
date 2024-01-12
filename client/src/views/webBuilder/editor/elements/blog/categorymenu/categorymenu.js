@@ -10,7 +10,7 @@ let categoryMenu = {
           const num = props.attributes.num;
           return (
             `<div class="post-category-menu">
-                <span class="category-item">All Posts (${num})</span>
+                <span class="category-item theme-text-default">All Posts (${num})</span>
             </div>`
           );
         },
@@ -42,7 +42,7 @@ let categoryMenu = {
           comps.pop();
         }
         const cmp =`<div class="post-category-menu">
-            <span class="category-item">All Posts (${num})</span>
+            <span class="category-item theme-text-default">All Posts (${num})</span>
         </div>`
         comps.push(cmp);
         this.render();

@@ -234,7 +234,6 @@ export default function ButtonTheme({ store, selectedButton, selectedColor, setS
       dispatch(updateWebBuilderThemeAction(themeId, payload));
   }
 
-  
   const selectThemeBackgroundColor =(_color)=>{
     const buttons=formTheme.buttons;
     let newButtons=buttons && buttons.map((_button)=>{
@@ -371,6 +370,7 @@ export default function ButtonTheme({ store, selectedButton, selectedColor, setS
       dispatch(updateWebBuilderThemeAction(themeId, payload));
   }
 
+
   useEffect(()=>{
     if(selectedButton){
         const attributes=selectedButton.attributes;
@@ -497,11 +497,11 @@ export default function ButtonTheme({ store, selectedButton, selectedColor, setS
                     <div className='ms-1'>
                       <div>
                         <Label>Theme Color</Label>
-                        <div className='d-flex justify-content-around align-items-center mt-1'>
+                        <div className='d-flex flex-wrap align-items-center mt-1' style={{width:'200px'}}>
                         {
                           formTheme && formTheme.colors && formTheme.colors.map((_color)=>{
                             return(
-                              <div style={{width:'30px', height:'30px',backgroundColor:_color.value}} onClick={(e)=>{
+                              <div style={{width:'30px', height:'30px',margin:'3px', backgroundColor:_color.value}} onClick={(e)=>{
                                 selectThemeFontColor(_color);
                               }}>
                               </div>
@@ -552,11 +552,11 @@ export default function ButtonTheme({ store, selectedButton, selectedColor, setS
                     <div className='ms-1'>
                       <div>
                         <Label>Theme Color</Label>
-                        <div className='d-flex justify-content-around align-items-center mt-1'>
+                        <div className='d-flex flex-wrap align-items-center mt-1' style={{width:'200px'}}>
                         {
                           formTheme && formTheme.colors && formTheme.colors.map((_color)=>{
                             return(
-                              <div style={{width:'30px', height:'30px',backgroundColor:_color.value}} onClick={(e)=>{
+                              <div style={{width:'30px', height:'30px',margin:'3px',backgroundColor:_color.value}} onClick={(e)=>{
                                 selectThemeBackgroundColor(_color);
                               }}>
                               </div>

@@ -14,6 +14,7 @@ export default function ColorTheme({store, selectedColor, setSelectedColor}) {
   }
 
   const handleThemeColor=(value, item)=>{
+    setSelectedColor({...selectedColor, value:value});
     let colors=formTheme.colors;
     const buttons=formTheme.buttons;
     const fonts=formTheme.fonts;
