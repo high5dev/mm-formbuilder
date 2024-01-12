@@ -1163,12 +1163,23 @@ export default function Editor({
 
     const fetchGoogleFonts = async () => {
       const data = await dispatch(getGoogleFontsAction());
-      console.log(data)
       if (!data) return;
       const fontData = data?.items?.map((font) => {
         return { name: font.family, url: font.files.regular };
       });
       const fontFamilyProp = gjsEditor?.StyleManager.getProperty('typography', 'font-family');
+      const decorationOptions=[
+          {id:'none', label:'none'},
+          {id:'underline', label:'underline'},
+          {id:'line-through', label:'line-through'}
+      ];
+      const property = gjsEditor?.StyleManager.addProperty('typography', {
+        label: 'Text-decoration',
+        property: 'text-decoration',
+        type: 'select',
+        default: 'none',
+        options: decorationOptions,
+      }, { at: -2 });
       const options = [];
       fontData?.forEach((font) => {
         options.push({ id: font.name, label: font.name });
