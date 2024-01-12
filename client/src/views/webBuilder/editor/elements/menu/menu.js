@@ -11,7 +11,7 @@ let menu = {
 
         let components = '';
         menus.map(m => {
-          components = components + `<a class="menu-item" href="${m.pageLink}" >${m.name}</a>`
+          components = components + `<a class="menu-item" href="${m.pageLink}">${m.name}</a>`
         });
 
         return components;
