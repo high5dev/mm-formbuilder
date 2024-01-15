@@ -738,19 +738,25 @@
   .trait-link-element-label,
   .trait-page-setting,
   .trait-tab-selection,
+  .trait-icon-selection,
+  .trait-direction-selection,
   .trait-button-selection,
   .trait-pages-selection {
     margin-bottom: 10px;
     border: 1px solid lightgrey;
+    padding:7px;
+  }
+  .trait-input-address-container,
+  .trait-tab-selection-container{
+    display: none;
   }
 
   .trait-input-address {
-    display: none;
     border: 1px solid lightgrey;
   }
 
   .trait-tab-selection {
-    display: none;
+    border: 1px solid lightgrey;
   }
 }
 

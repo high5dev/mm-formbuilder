@@ -791,7 +791,10 @@ export default function Editor({
         defaults: [{}]
       },
       canvas: {
-        scripts: ["https://maps.googleapis.com/maps/api/js?key=AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o&libraries=places&callback=myMap"],
+        scripts: [
+          "https://maps.googleapis.com/maps/api/js?key=AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o&libraries=places&callback=myMap",
+        ],
+        styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css']
       }
     });
 
