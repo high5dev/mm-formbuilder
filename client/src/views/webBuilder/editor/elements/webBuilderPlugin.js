@@ -881,6 +881,7 @@ export const webBuilderPlugin = (editor) => {
               </select>
             </div>
             <div>
+              <label>Type</label>
               <select id='trait-button-selection' class='trait-button-selection'>
                   <option value='primary'>Primary</option>
                   <option value='secondary'>Secondary</option>
@@ -888,14 +889,37 @@ export const webBuilderPlugin = (editor) => {
             </div>
             <div class='trait-pages'>
             </div>
-            <div>
+            <div class="trait-tab-selection-container">
+              <label>Position</label>
               <select id='trait-tab-selection' class='trait-tab-selection'>
-                  <option value='_blank'>New Tab</option>
+                  <option value='none'>New Tab</option>
                   <option value='_parent'>Current Tab</option>
               </select>
             </div>
-            <div>
+            <div class="trait-input-address-container">
+              <label>URL</label>
               <input type='text' class='trait-input-address' placeholder="please input link information"/>
+            </div>
+            <div>
+                <label>Icon</label>
+                <select id='trait-icon-selection' class='fa trait-icon-selection'>
+                   <option class="fa" value='None'>None</option>
+                   <option class="fa" value='fa fa-search'>&#xf002 Search</option>
+                   <option class="fa" value='fa fa-angle-down'>&#xf107 Down</option>
+                   <option class="fa" value='fa fa-angle-left'>&#xf104 Left</option>
+                   <option class="fa" value='fa fa-angle-right'>&#xf105 Right</option>
+                   <option class="fa" value='fa fa-angle-up'>&#xf106 Up</option>
+                   <option class="fa" value='fa fa-redo'>&#xf01e Redo</option>
+                </select>
+            </div>
+            <div>
+              <label>Icon Direction</label>
+              <select id='trait-direction-selection' class='fa trait-direction-selection'>
+                <option class="fa" value='fa-roate-0'>None</option>
+                <option class="fa" value='fa-rotate-90'>90</option>
+                <option class="fa" value='fa-rotate-180'>180</option>
+                <option class="fa" value='fa-rotate-180'>270</option>
+              </select>
             </div>
       `;
       el.querySelector('.trait-link-element-label').addEventListener('change', (ev)=>{
@@ -940,7 +964,7 @@ export const webBuilderPlugin = (editor) => {
                 tempElProps.push(elProp);
                 component.set('elProps', tempElProps);
               })
-              el.querySelector('.trait-input-address').style.display='none';
+              el.querySelector('.trait-input-address-container').style.display='none';
             }
           })
         }
@@ -954,7 +978,7 @@ export const webBuilderPlugin = (editor) => {
           else if(ev.target.value==='mail'){
             el.querySelector('.trait-input-address').placeholder='ex:superadmin@outlook.com';
           }
-          el.querySelector('.trait-input-address').style.display='block';
+          el.querySelector('.trait-input-address-container').style.display='block';
           el.querySelector(".trait-pages").innerHTML=``;
           let tempElProps = [];
           const value=ev.target.value;
@@ -963,17 +987,31 @@ export const webBuilderPlugin = (editor) => {
           component.set('elProps', tempElProps);
         }
         if(ev.target.value==='button'){
-          el.querySelector('.trait-input-address').style.display='none';
-          el.querySelector('.trait-tab-selection').style.display='none';
+          el.querySelector('.trait-input-address-container').style.display='none';
+          el.querySelector('.trait-tab-selection-container').style.display='none';
         }
         else{
-          el.querySelector('.trait-tab-selection').style.display='block';
+          el.querySelector('.trait-tab-selection-container').style.display='block';
         }
       });
       el.querySelector('.trait-tab-selection').addEventListener('change', (ev)=>{
         let tempElProps=[];
         const value=ev.target.value;
         elProp={...elProp, tab:value};
+        tempElProps.push(elProp);
+        component.set('elProps', tempElProps);
+      });
+      el.querySelector('.trait-icon-selection').addEventListener('change', (ev)=>{
+        let tempElProps=[];
+        const value=ev.target.value;
+        elProp={...elProp, icon:value};
+        tempElProps.push(elProp);
+        component.set('elProps', tempElProps);
+      });
+      el.querySelector('.trait-direction-selection').addEventListener('change', (ev)=>{
+        let tempElProps=[];
+        const value=ev.target.value;
+        elProp={...elProp, iconDirection:value};
         tempElProps.push(elProp);
         component.set('elProps', tempElProps);
       });
