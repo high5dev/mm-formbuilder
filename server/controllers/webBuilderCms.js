@@ -15,12 +15,24 @@ exports.createCollection = asyncHandler(async (req, res) => {
   const websiteId = payload.websiteId;
 
   try {
-      const newCollection = await WebSiteCollection.create({
-        userId: mongoose.Types.ObjectId(userId),
-        organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
-        ...payload,
-        websiteId: mongoose.Types.ObjectId(websiteId),
-      });
+      const colsWithName = await WebSiteCollection.find({websiteId: mongoose.Types.ObjectId(websiteId), name: payload.name}).sort({nameDuplicatedIndex: 1});
+      let newCollection;
+      if (colsWithName.length > 0) {
+        newCollection = await WebSiteCollection.create({
+          userId: mongoose.Types.ObjectId(userId),
+          organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+          ...payload,
+          websiteId: mongoose.Types.ObjectId(websiteId),
+          nameDuplicatedIndex: colsWithName[colsWithName.length - 1].duplicatedIndex || 1,
+        });
+      } else {
+        newCollection = await WebSiteCollection.create({
+          userId: mongoose.Types.ObjectId(userId),
+          organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
+          ...payload,
+          websiteId: mongoose.Types.ObjectId(websiteId),
+        });
+      }
 
       res.status(200).json({ success: true, data: newCollection });    
   } catch (err) {

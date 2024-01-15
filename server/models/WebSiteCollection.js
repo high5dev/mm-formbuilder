@@ -20,7 +20,6 @@ const WebSiteCollectionSchema = new mongoose.Schema(
     },
     name: {
       type: String,
-      // unique: true,
       required: true,
     },
     fields: [{
@@ -44,6 +43,10 @@ const WebSiteCollectionSchema = new mongoose.Schema(
     isProfile: {
       type: Boolean,
       default: false,
+    },
+    nameDuplicatedIndex: {
+      type: Number,
+      default: 0,
     }
   },
   {
