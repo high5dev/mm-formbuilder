@@ -978,7 +978,7 @@ exports.updatePage = asyncHandler(async (req, res) => {
   let { id } = req.params;
   const { html, css, page} = req.body;
   try {
-    const _page = await WebPage.findOneAndUpdate({ _id: page }, { _id: page });
+    const _page = await WebPage.findOne({ _id: page });
     const data = await WebBuilder.findOne({_id: mongoose.Types.ObjectId(id)});
     const url=await googleCloudStorageWebBuilder.createAndUpdatePage(`${data._id}/${_page._id}`, `${html} <style>${css}</style>`);
     return res.status(200).json({ success: true, data, url });

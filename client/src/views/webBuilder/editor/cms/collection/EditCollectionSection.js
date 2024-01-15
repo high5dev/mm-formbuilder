@@ -111,7 +111,7 @@ const EditCollectionSection = ({ store, editor, setEditor, openCollection, setOp
                     Add Item
                   </Button>
                 </div>
-                <div className='mb-2 mt-1'>
+                <div className='mb-2 mt-1 overflow-scroll'>
                   {
                     collection && (
                       <table>
