@@ -231,6 +231,10 @@ export const getImageLibrary = (payload) => {
   return API.get('/image-library', { params: { ...payload } });
 };
 
+export const getImageFromMedia =(payload) =>{
+  return API.get('/web-builder-element/image', { params: { ...payload } });
+}
+
 export const delImageFromLibrary = (id) => {
   return API.delete('/image-library/' + id);
 }

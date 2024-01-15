@@ -84,7 +84,7 @@ export const webBuilderPlugin = (editor) => {
       const newLinkElement = document.createElement('div');
       newLinkElement.className = 'trait-image-url';
       newLinkElement.innerHTML = `
-        <input class="input-image-url" type="url" placeholder="Insert link URL" value=${src}>/>
+        <input id="input-image-url" type="url" placeholder="Insert link URL" value=${src}>/>
         <button class="btn-primary trait-image-btn">...</button>`;
       const modalElement = document.createElement('div');
       modalElement.innerHTML = `
@@ -124,7 +124,7 @@ export const webBuilderPlugin = (editor) => {
             page: pageNum,
             pageSize
           }
-          api.getImageLibrary(payload).then((res) => {
+          api.getImageFromMedia(payload).then((res) => {
             if (res.data) {
               pageNum += 1;
               const result = res.data;
@@ -137,7 +137,7 @@ export const webBuilderPlugin = (editor) => {
                 document.querySelector(".gallery-image-list").innerHTML =
                   temp_images && temp_images.map((item) => {
                     return (
-                      `<img class="select-image-item" id=${item.id} src=${item.url} width="110" height="110"/>`
+                      `<img class="select-image-item" id=${item.id} src=${item.imageUrl} width="110" height="110"/>`
                     )
                   }).join('');
                 modalElement.querySelectorAll('.select-image-item').forEach((item, index) => {
@@ -145,7 +145,7 @@ export const webBuilderPlugin = (editor) => {
                     _url = event.target.src;
                     _id = event.target.id;
                     selected_index = index;
-                    newLinkElement.querySelector('.input-image-url').value = _url;
+                    newLinkElement.querySelector('#input-image-url').value = _url;
                     for (let i = 0; i < modalElement.querySelectorAll('.select-image-item').length; i++) {
                       const el = modalElement.querySelectorAll('.select-image-item')[i];
                       if (selected_index === i) {
@@ -178,7 +178,7 @@ export const webBuilderPlugin = (editor) => {
           _url = event.target.src;
           _id = event.target.id;
           selected_index = index;
-          newLinkElement.querySelector('.input-image-url').value = _url;
+          newLinkElement.querySelector('#input-image-url').value = _url;
           for (let i = 0; i < modalElement.querySelectorAll('.select-image-item').length; i++) {
             const el = modalElement.querySelectorAll('.select-image-item')[i];
             if (selected_index === i) {
@@ -224,9 +224,14 @@ export const webBuilderPlugin = (editor) => {
         }
         // api.addToImageLibrary({image:image_url});
       });
+      newLinkElement.querySelector('#input-image-url').addEventListener('change', (ev)=>{
+        component.set(trait_name, ev.target.value);
+      })
       modalElement.querySelector('#cancel-btn').addEventListener('click', (ev) => {
         editor.Modal.close();
       });
+      
+
       return newLinkElement;
     }
   });
