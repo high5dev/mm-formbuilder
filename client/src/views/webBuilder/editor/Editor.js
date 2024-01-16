@@ -748,6 +748,12 @@ export default function Editor({
     let gjsEditor = grapesjs.init({
       container: '#editor',
       height: window.innerHeight - 117,
+      canvas: {
+        scripts: [
+          "https://maps.googleapis.com/maps/api/js?key=AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o&libraries=places&callback=myMap",
+        ],
+        styles: ["https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"]
+      },
       plugins: [basicBlockPlugin, (editor) => webBuilderPlugin(editor), websitePlugin],
       pluginsOpts: {
         [basicBlockPlugin]: {
@@ -824,12 +830,6 @@ export default function Editor({
       commands: {
         defaults: [{}]
       },
-      canvas: {
-        scripts: [
-          "https://maps.googleapis.com/maps/api/js?key=AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o&libraries=places&callback=myMap",
-        ],
-        styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css']
-      }
     });
 
     let compoId = '';
