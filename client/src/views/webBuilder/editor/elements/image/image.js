@@ -29,11 +29,11 @@ let imageItem = {
     view: {
       async init() {
         const payload={page:1, pageSize:21};
-        const {data}=await api.getImageLibrary(payload);
+        const {data}=await api.getImageFromMedia(payload);
         if(data.data){
           let temp_images=[];
           for(let i=0; i<data.data.length; i++){
-            temp_images.push({id:data.data[i]._id, url:data.data[i].image});
+            temp_images.push({id:data.data[i]._id, url:data.data[i].imageUrl});
           };
         this.model.set('images', temp_images);
         }

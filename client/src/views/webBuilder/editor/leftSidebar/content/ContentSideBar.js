@@ -244,7 +244,7 @@ const ContentSideBar = ({store, openCreateModalToggle}) => {
                             setSelectedIncomeData({...selectedIncomeData, contentCol: c, webCol: tempCol});
                             setSelectedConnectedData('dataToApprove');
                           }}>
-                          {tempCol?.name || ''}
+                          {`${tempCol?.name} (${tempCol?.nameDuplicatedIndex || ''})`}
                         </div>
                       })
                     }
@@ -279,7 +279,7 @@ const ContentSideBar = ({store, openCreateModalToggle}) => {
                         <div className='d-flex align-items-center'>
                           <List size={17} className='me-1' color='#66b1f0' />
                           <div className='fs-6'>
-                            {c.name} <br/>
+                            {`${c?.name}${c?.nameDuplicatedIndex > 0 ? ' (' + c.nameDuplicatedIndex + ')' : ''}`} <br/>
                             {c.values.length === 1 ? `${c.values.length} item` : c.values.length === 0 ? 'No item' : `${c.values.length} items`}
                           </div>
                         </div>

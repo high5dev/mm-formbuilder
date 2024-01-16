@@ -101,7 +101,7 @@ export default function MainNav({
 }) {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const [width, setWidth] = useState(1280);
+  const [width, setWidth] = useState(1680);
   const [devicetype, setDeviceType] = useState('desktop');
   const [showFeatureIcons, setShowFeatureIcons] = useState(false);
   const [showZoomIcons, setShowZoomIcons] = useState(false);
@@ -219,10 +219,10 @@ export default function MainNav({
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      if (width > 1280) {
+      if (width >=1280) {
         setDeviceType('desktop');
       }
-      if (width <= 1280 && width > 768) {
+      if (width < 1280 && width >= 768) {
         setDeviceType('tablet');
       }
       if (width >= 320 && width < 768) {
@@ -575,8 +575,8 @@ export default function MainNav({
             <MdOutlineDesktopMac
               size={22}
               onClick={() => {
-                setWidth(1280);
-                setCustomWidth(1280);
+                setWidth(1680);
+                setCustomWidth(1680);
                 setDeviceType('desktop');
               }}
             />

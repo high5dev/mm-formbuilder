@@ -184,3 +184,36 @@ exports.getCategories = asyncHandler(async (req, res) => {
     res.send({ msg: err.message.replace(/\'/g, ""), success: false });
   }
 });
+
+exports.getImageFromMedia =asyncHandler(async(req, res)=>{
+  try{
+    const {page, pageSize}=req.query;
+    let _page=parseInt(page);
+    let _pageSize=parseInt(pageSize);
+    const skip=(_page-1)*_pageSize;
+    const categories = await WebBuilderElementCategory.find({
+      mainMenu:'media',
+      subMenu:'images',
+    });
+    const ids=categories && categories.map((_category)=>{
+      return _category._id;
+    });
+    if(ids.length>0){
+        const data = await WebBuilderElement.aggregate([
+          {
+              $match: { category: { $in: ids } },
+          },
+          {
+              $skip:skip
+          },
+          {
+              $limit:_pageSize
+          }
+      ]);
+        res.send({ success: true, data:data});
+    }
+  }
+  catch (error) {
+    res.send({ success: false, message: error.message.replace(/"/g, "") });
+}
+})

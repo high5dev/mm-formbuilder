@@ -801,19 +801,19 @@ export default function Editor({
           {
             id: 'desktop',
             name: 'Desktop',
-            width: '1280px',
-            widthMedia: '1920px'
+            width: '1680px',
+            widthMedia: '1680px'
           },
           {
             id: 'tablet',
             name: 'Tablet',
             width: '768px',
-            widthMedia: '992px'
+            widthMedia: '768px'
           },
           {
             id: 'mobilePortrait',
             name: 'Mobile portrait',
-            width: '320px',
+            width: '480px',
             widthMedia: '480px'
           }
         ]
@@ -825,7 +825,10 @@ export default function Editor({
         defaults: [{}]
       },
       canvas: {
-        scripts: ["https://maps.googleapis.com/maps/api/js?key=AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o&libraries=places&callback=myMap"],
+        scripts: [
+          "https://maps.googleapis.com/maps/api/js?key=AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o&libraries=places&callback=myMap",
+        ],
+        styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css']
       }
     });
 
@@ -1222,6 +1225,12 @@ export default function Editor({
         default: 'none',
         options: decorationOptions,
       }, { at: -2 });
+      const zIndex = gjsEditor?.StyleManager.addProperty('typography', {
+        label: 'Z-Index',
+        property: 'z-index',
+        type: 'input',
+        default: 'none',
+      }, { at: -3 });
       const options = [];
       fontData?.forEach((font) => {
         options.push({ id: font.name, label: font.name });
@@ -1395,7 +1404,7 @@ export default function Editor({
   }, [formTheme])
 
   useEffect(() => {
-    if (customwidth && customwidth != 320 && customwidth != 768 && customwidth != 1280) {
+    if (customwidth && customwidth != 480 && customwidth != 768 && customwidth != 1680) {
       const device_name = (Math.random() + 1).toString();
       const command_name = (Math.random() + 2).toString();
       editor?.DeviceManager.add({
