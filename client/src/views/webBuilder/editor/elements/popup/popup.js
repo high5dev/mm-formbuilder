@@ -23,8 +23,9 @@ let popup = {
       droppable: true,
       attributes: { class: 'popup' },
       components: () => {
-        const id = `popup-${new Date().getTime()}`;
-        const trigerId = `popup-triger-${new Date().getTime()}`;
+        const time = new Date().getTime();
+        const id = `popup-wrapper-${time}`;
+        const trigerId = `popup-trigger-${time}`;
         return `
           <button class="btn btn-primary modal-open-button" id=${trigerId}>Open Modal</button>
           <div class="modal-wrapper" id=${id}>
@@ -114,28 +115,91 @@ let popup = {
           height: 50px;
           border-radius: 5px;
         }
+
+        .popup {
+          width: fit-content;
+          padding: 10px;
+        }
       `,
-      popup_rule: {
-        isTimer: false,
-        isRepeat: false,
-        cycle: 'day',
-        eventDetails: {
-          isAllDay: true,
-          startTime: '09:00:00',
-          endTime: '17:00:00',
-          timeZone: 'UTC',
-        },
-        endDate: null,
-      },
+      startTime: '',
+      endTime: '',
+      cycle: 'click_btn',
+      cycleDetails: {},
       traits: [
         {
-          type: 'popup',
-          name: 'popup_rule',
+          id: 'start-time',
+          type: 'date',
+          label: 'Start Time',
+          name: 'startTime',
           changeProp: true,
         },
+        {
+          id: 'end-time',
+          type: 'date',
+          label: 'End Time',
+          name: 'endTime',
+          changeProp: true,
+        },
+        {
+          id: 'select-cycle',
+          type: 'select',
+          name: 'cycle',
+          label: 'Cycle',
+          options: [
+            { id: 'click_btn', name: 'Click Button'},
+            { id: 'start_page', name: 'Start Page'},
+            { id: 'daily', name: 'Daily'},
+            { id: 'weekly', name: 'Weekly'},
+            { id: 'monthly', name: 'Monthly'},
+          ],
+          changeProp: true,
+        },
+        {
+          id: 'cycle-detail',
+          type: 'popup-cycle',
+          name: 'cycleDetails',
+          label: 'Setting',
+          changeProp: true,
+        }
       ],
     }
   },
+  view: {
+    init() {
+      this.listenTo(this.model, 'change:cycle', this.handleChangeCycle);
+    },
+    handleChangeCycle(e) {
+      const cycle = this.model.get('cycle');
+      let cycleDetails;
+      if (cycle === 'start_page') {
+        cycleDetails = {
+          afterSeconds: 1,
+        };
+      }
+      if (cycle === 'daily') {
+        cycleDetails = {
+          time: '09:00',
+        };
+      }
+      if (cycle === 'weekly') {
+        cycleDetails = {
+          days: ['Mon'],
+          time: '09:00',
+        };
+      }
+      if (cycle === 'monthly') {
+        cycleDetails = {
+          dates: 1,
+          time: '09:00',
+        };
+      }
+      if (cycle === 'click_btn') {
+        cycleDetails = {};
+      }
+      this.model.set('cycleDetails', cycleDetails);
+      this.render();
+    },
+  }
 };
 
 export default popup;

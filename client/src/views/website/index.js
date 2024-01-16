@@ -23,7 +23,7 @@ import {
 import { updateCartProductsAction, getProductDatasetAction, createDatasetAction } from '../webBuilder/store/action';
 import {setFormDatasetReducer} from '../webBuilder/store/reducer';
 const days = [
-  'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'
+  'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
 ];
 import { Helmet } from 'react-helmet';
 import Cartsidebar from '../pages/cart/cartsidebar';
@@ -228,8 +228,7 @@ export default function Index() {
     let name;
     if (pageName) {
       name = pageName;
-    }
-    else {
+    } else {
       name = "Home";
     };
     const payload = { id, pageName: name };
@@ -349,94 +348,70 @@ export default function Index() {
   useEffect(() => {
     if (popupData?.length > 0) {
       const currentDate = new Date();
-      const currentDay = currentDate.getDay();
-      const currentDateNum = currentDate.getDate();
       const hour = currentDate.getHours();
       const min = currentDate.getMinutes();
       const second = currentDate.getSeconds();
-      const currentSecondTime = hour * 3600 + min * 60 + second;
       let scriptContent = '';
       setIsPageLoading(true);
       popupData.map((e, i) => {
-        if (e.isTimer) {
-          scriptContent = scriptContent + `
-            document.getElementById("${e.triggerId}").style.display = "none";
-          `;
-        }
-        if (e.cycle === 'day') {
-          if (e.eventDetails.isAllDay) {
-            scriptContent = scriptContent + `
-              document.getElementById("${e.wrapperId}").style.display = "block";
-            `;
-          } else {
-            const startTimeArray = e.eventDetails.startTime.split(':');
-            const endTimeArray = e.eventDetails.endTime.split(':');
-            const startHour = parseInt(startTimeArray[0], 10);
-            const startMin = parseInt(startTimeArray[1], 10);
-            const startSecond = parseInt(startTimeArray[2], 10);
-            const endHour = parseInt(endTimeArray[0], 10);
-            const endMin = parseInt(endTimeArray[1], 10);
-            const endSecond = parseInt(endTimeArray[2], 10);
-            const startSecondTime = startHour * 3600 + startMin * 60 + startSecond;
-            const endSecondTime = endHour * 3600 + endMin * 60 + endSecond;
+        const startTime = e.startTime;
+        const endTime = e.endTime;
+        const cycle = e.cycle;
+        const cycleDetails = e.cycleDetails;
+        const triggerId = e.triggerId;
+        const wrapperId = e.wrapperId;
+        const currentTime = currentDate.getTime();
 
-            if (currentSecondTime >= startSecondTime && currentSecondTime <= endSecondTime) {
-              scriptContent = scriptContent + `
-                document.getElementById("${e.wrapperId}").style.display = "block";
-              `;
-            }
+        if (startTime && new Date(startTime).getTime() <= currentTime && endTime && new Date(endTime).getTime() >= currentTime) {
+          if (cycle === 'start_page') {
+            scriptContent = `setTimeout(() => {
+              document.getElementById("${wrapperId}").style.display = "block";
+            }, ${cycleDetails.afterSeconds * 1000})`;
           }
-        }
-        if (e.cycle === 'week') {
-          if (e.eventDetails?.availableDays && e.eventDetails.availableDays[days[currentDay]]) {
-            if (e.eventDetails.isAllDay) {
-              scriptContent = scriptContent + `
-                document.getElementById("${e.wrapperId}").style.display = "block";
-              `;
-            } else {
-              const startTimeArray = e.eventDetails.startTime.split(':');
-              const endTimeArray = e.eventDetails.endTime.split(':');
-              const startHour = parseInt(startTimeArray[0], 10);
-              const startMin = parseInt(startTimeArray[1], 10);
-              const startSecond = parseInt(startTimeArray[2], 10);
-              const endHour = parseInt(endTimeArray[0], 10);
-              const endMin = parseInt(endTimeArray[1], 10);
-              const endSecond = parseInt(endTimeArray[2], 10);
-              const startSecondTime = startHour * 3600 + startMin * 60 + startSecond;
-              const endSecondTime = endHour * 3600 + endMin * 60 + endSecond;
-
-              if (currentSecondTime >= startSecondTime && currentSecondTime <= endSecondTime) {
-                scriptContent = scriptContent + `
-                  document.getElementById("${e.wrapperId}").style.display = "block";
-                `;
-              }
-            }
+  
+          if (cycle === 'daily') {
+            const time = cycleDetails.time;
+            scriptContent = `
+              document.getElementById("${triggerId}").style.display = "none";
+              setInterval(() => {
+                if (new Date().getHours() === parseInt("${time}".split(':')[0], 10) && new Date().getMinutes() === parseInt("${time}".split(':')[1], 10)) {
+                  document.getElementById("${wrapperId}").style.display = "block";
+                }
+              }, 30000)`;
           }
-        }
-        if (e.cycle === 'month') {
-          if (e.eventDetails?.dateOfMonth && currentDateNum === e.eventDetails.dateOfMonth) {
-            if (e.eventDetails.isAllDay) {
-              scriptContent = scriptContent + `
-                document.getElementById("${e.wrapperId}").style.display = "block";
-              `;
-            } else {
-              const startTimeArray = e.eventDetails.startTime.split(':');
-              const endTimeArray = e.eventDetails.endTime.split(':');
-              const startHour = parseInt(startTimeArray[0], 10);
-              const startMin = parseInt(startTimeArray[1], 10);
-              const startSecond = parseInt(startTimeArray[2], 10);
-              const endHour = parseInt(endTimeArray[0], 10);
-              const endMin = parseInt(endTimeArray[1], 10);
-              const endSecond = parseInt(endTimeArray[2], 10);
-              const startSecondTime = startHour * 3600 + startMin * 60 + startSecond;
-              const endSecondTime = endHour * 3600 + endMin * 60 + endSecond;
-
-              if (currentSecondTime >= startSecondTime && currentSecondTime <= endSecondTime) {
-                scriptContent = scriptContent + `
-                  document.getElementById("${e.wrapperId}").style.display = "block";
-                `;
+  
+          if (cycle === 'weekly') {
+            const time = cycleDetails.time;
+            const selectedDays = cycleDetails.days;
+            let daysStr = '';
+            days.map((day, i) => {
+              if (selectedDays.indexOf(day) !== -1) {
+                daysStr += selectedDays.indexOf(day);
               }
-            }
+            });
+            scriptContent = `
+              document.getElementById("${triggerId}").style.display = "none";
+              setInterval(() => {
+                if ("${daysStr}".includes(new Date().getDay().toString()) && new Date().getHours() === parseInt("${time}".split(':')[0], 10) && new Date().getMinutes() === parseInt("${time}".split(':')[1], 10)) {
+                  document.getElementById("${wrapperId}").style.display = "block";
+                }
+              }, 30000)`;
+          }
+  
+          if (cycle === 'monthly') {
+            const time = cycleDetails.time;
+            const dates = cycleDetails.dates;
+            scriptContent = `
+              document.getElementById("${triggerId}").style.display = "none";
+              setInterval(() => {
+                if ("${dates}" === new Date().getDate().toString() && new Date().getHours() === parseInt("${time}".split(':')[0], 10) && new Date().getMinutes() === parseInt("${time}".split(':')[1], 10)) {
+                  document.getElementById("${wrapperId}").style.display = "block";
+                }
+              }, 30000)`;
+          }
+
+          if (cycle === 'click_btn') {
+            scriptContent = `document.getElementById("${triggerId}").style.display = "block";`
           }
         }
       });
