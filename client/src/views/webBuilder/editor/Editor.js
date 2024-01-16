@@ -767,19 +767,19 @@ export default function Editor({
           {
             id: 'desktop',
             name: 'Desktop',
-            width: '1280px',
-            widthMedia: '1920px'
+            width: '1680px',
+            widthMedia: '1680px'
           },
           {
             id: 'tablet',
             name: 'Tablet',
             width: '768px',
-            widthMedia: '992px'
+            widthMedia: '768px'
           },
           {
             id: 'mobilePortrait',
             name: 'Mobile portrait',
-            width: '320px',
+            width: '480px',
             widthMedia: '480px'
           }
         ]
@@ -1364,7 +1364,7 @@ export default function Editor({
   }, [formTheme])
 
   useEffect(() => {
-    if (customwidth && customwidth != 320 && customwidth != 768 && customwidth != 1280) {
+    if (customwidth && customwidth != 480 && customwidth != 768 && customwidth != 1680) {
       const device_name = (Math.random() + 1).toString();
       const command_name = (Math.random() + 2).toString();
       editor?.DeviceManager.add({
