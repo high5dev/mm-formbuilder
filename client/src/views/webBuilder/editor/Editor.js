@@ -1191,6 +1191,12 @@ export default function Editor({
         default: 'none',
         options: decorationOptions,
       }, { at: -2 });
+      const zIndex = gjsEditor?.StyleManager.addProperty('typography', {
+        label: 'Z-Index',
+        property: 'z-index',
+        type: 'input',
+        default: 'none',
+      }, { at: -3 });
       const options = [];
       fontData?.forEach((font) => {
         options.push({ id: font.name, label: font.name });
