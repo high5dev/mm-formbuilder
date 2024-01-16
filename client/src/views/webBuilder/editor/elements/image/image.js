@@ -1,13 +1,21 @@
 import * as api from  '../../../store/api';
 let imageItem = {
-    isComponent: el => (el.tagName === 'IMG' && el.classList.contains('image-item')),
+    isComponent: el => (el.tagName === 'A' && el.classList.contains('photo-element')),
     model: {
       defaults: {
-        tagName: 'img',
+        tagName: 'a',
         draggable: true,
         droppable: true,
-        attributes: { class: 'image-item', src:'https://i.ibb.co/xM56xB3/image-large-3.png' },
-        styles: `.image-item {width:100px; height:100px}`,
+        attributes: { class: 'photo-element'},
+        components: (props) => {
+          return (
+            <img src="https://i.ibb.co/xM56xB3/image-large-3.png" class='theme-image image-item'/>
+          )
+        },
+        styles: `
+        .photo-element{display:block; width:fit-content}
+        .image-item {width:100px; height:100px}
+        `,
         stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
         images:[],
         traits: [
@@ -20,6 +28,12 @@ let imageItem = {
           {
             type: 'image-url',
             name: 'url',
+            changeProp: true,
+            min: 1,
+          },
+          {
+            type: 'href',
+            name: 'href',
             changeProp: true,
             min: 1,
           }
@@ -38,13 +52,21 @@ let imageItem = {
         this.model.set('images', temp_images);
         }
         this.listenTo(this.model, 'change:url', this.handleChangeUrl);
+        this.listenTo(this.model, 'change:href', this.handleChangeUrl);
         this.listenTo(this.model, 'change:images', this.handleChangeImages);
       },
       handleChangeUrl(e) {
-        const url=this.model.get('url');
-        this.model.attributes.attributes.src=url;
-        this.model.attributes.src=url;
-        // this.model.setAttributes({ src: url });
+        let url=this.model.get('url');
+        if(url==='' || url===undefined){
+          url="https://i.ibb.co/xM56xB3/image-large-3.png";
+        };
+        const href=this.model.get('href');
+        this.model.attributes.attributes.href=href;
+        this.model.attributes.href=href;
+        this.model.get('components').pop();
+        this.model.get('components').push(
+          `<img src=${url} class='theme-image image-item'/>`
+        );
         this.render();
       },
       async handleChangeImages(e){

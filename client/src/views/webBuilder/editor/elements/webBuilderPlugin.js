@@ -55,7 +55,7 @@ export const webBuilderPlugin = (editor) => {
   editor.DomComponents.addType('repeater', repeater);
   editor.DomComponents.addType('gallery-item', galleryItem);
   editor.DomComponents.addType('gallery', gallery);
-  editor.DomComponents.addType('image', imageItem);
+  editor.DomComponents.addType('photo', imageItem);
   editor.DomComponents.addType('post-list-large', postLarge);
   editor.DomComponents.addType('post-card-large', postCard);
   editor.DomComponents.addType('post-list-sidebar', postSidebar);
