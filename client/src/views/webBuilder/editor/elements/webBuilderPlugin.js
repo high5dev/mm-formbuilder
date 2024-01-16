@@ -642,6 +642,7 @@ export const webBuilderPlugin = (editor) => {
       flatpickr(flatpickrElStart, {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
+        time_24hr: true,
       });
       flatpickrElStart.value = time;
   
@@ -654,6 +655,109 @@ export const webBuilderPlugin = (editor) => {
   
       return el;
     },
+  });
+
+  editor.TraitManager.addType('popup-cycle', {
+    noLabel: true,
+    // Expects as return a simple HTML string or an HTML element
+    createInput({trait, component}) {
+      const traitLabel = trait.get('label');
+      const el = document.createElement('div');
+      el.className = 'trait-popup-cycle';
+      const cycleDetailContainer = document.createElement('div');
+      cycleDetailContainer.className = 'cycle-details';
+      el.appendChild(cycleDetailContainer);
+      return el;
+    },
+    onUpdate({elInput, component}) {
+      const cycleDetailContainer = elInput.querySelector('.cycle-details');
+      const cycleDetails = component.props().cycleDetails;
+      let tempHtmlStr = '';
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      if ('afterSeconds' in cycleDetails) {
+        tempHtmlStr += `
+          <div class="d-flex align-items-center">
+            <h6 class="mb-0">After Seconds</h6>
+            <input class="popup-trait-afterseconds border border-secondary" type="number"  style="border-radius: 3px;" value="${cycleDetails.afterSeconds}" />
+          </div>
+        `;
+      }
+      if ('days' in cycleDetails) {
+        tempHtmlStr += `<h6>Days</h6><div class="d-flex flex-wrap mb-1">`;
+        days.map(d => {
+          tempHtmlStr += `
+            <div class="form-check me-1">
+              <input class="form-check-input border-primary trait-popup-day" name="${d}" ${cycleDetails.days.indexOf(d) !== -1 && 'checked'} style="width: 20px; height: 20px; margin-right: 5px;" type="checkbox" value="" id="trait-check-${d}">
+              <label class="form-check-label trait-popup-day-label" for="trait-check-${d}">
+                ${d}
+              </label>
+            </div>
+          `;
+        })
+        tempHtmlStr += `</div>`;
+      }
+      if ('dates' in cycleDetails) {
+        tempHtmlStr += `
+          <div class="d-flex align-items-center mb-1">
+            <h6 class="mb-0">Dates</h6>
+            <input class="popup-trait-dates border border-secondary ms-1" type="text" style="border-radius: 3px;" value="${cycleDetails.dates}" />
+          </div>
+        `;
+      }
+      
+      cycleDetailContainer.innerHTML = tempHtmlStr;
+      if ('time' in cycleDetails) {
+        const timeLabelEl = document.createElement('h6');
+        timeLabelEl.innerText = 'Time';
+        timeLabelEl.className = 'mb-0';
+        const timeElement = document.createElement('div');
+        timeElement.className = 'trait-date-flatpicker d-flex align-items-center';
+        timeElement.appendChild(timeLabelEl);
+        const flatpickrEl = document.createElement('input');
+        flatpickrEl.className = 'flatpickr-input ms-1'
+        flatpickr(flatpickrEl, {
+          enableTime: true,
+          noCalendar: true,
+          dateFormat: "H:i",
+          time_24hr: true
+        });
+        flatpickrEl.value = cycleDetails.time;
+    
+        timeElement.appendChild(flatpickrEl);
+        cycleDetailContainer.appendChild(timeElement);
+
+        flatpickrEl.addEventListener('change', e => {
+          component.set('cycleDetails', {...cycleDetails, time: e.target.value});
+        });
+      }
+      elInput.appendChild(cycleDetailContainer);
+
+      const afterSecondsEl = elInput.querySelector('.popup-trait-afterseconds');
+      const dayEls = elInput.getElementsByClassName('trait-popup-day');
+      const datesEl = elInput.querySelector('.popup-trait-dates');
+
+      afterSecondsEl?.addEventListener('change', e => {
+        component.set('cycleDetails', {...cycleDetails, afterSeconds: e.target.value});
+      });
+
+      for (let i=0; i<dayEls.length; i++) {
+        dayEls[i].addEventListener('click', e => {
+          console.log(e.target.checked, e.target.name);
+          const tempDays = [...cycleDetails.days];
+          if (!e.target.checked) {
+            const index = days.indexOf(e.target.name);
+            tempDays.splice(index, 1);
+          } else {
+            tempDays.push(e.target.name);
+          }
+          component.set('cycleDetails', {...cycleDetails, days: tempDays});
+        });
+      }
+
+      datesEl?.addEventListener('change', e => {
+        component.set('cycleDetails', {...cycleDetails, dates: e.target.value});
+      });
+    }
   });
 
   editor.TraitManager.addType('count-down-view-items', {

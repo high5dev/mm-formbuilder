@@ -302,6 +302,40 @@ export default function Editor({
     });
   };
 
+  const getPopups = (editor) => {
+    const allComponents = editor.getWrapper().components().models;
+    const popups = [];
+    allComponents.forEach(c => {
+      let popupData = {};
+      if (c.get('type') === 'popup') {
+        c.components().models.map(e => {
+          if (e.ccid.includes('popup-trigger')) {
+            popupData = {
+              ...popupData,
+              triggerId: e.ccid,
+            };
+          }
+          if (e.ccid.includes('popup-wrapper')) {
+            popupData = {
+              ...popupData,
+              wrapperId: e.ccid,
+            };
+          }
+        });
+
+        c.getTraits().map(t => {
+          popupData = {
+            ...popupData,
+            [t.attributes.name]: t.attributes.value,
+          };
+        });
+
+        popups.push(popupData);
+      }
+    });
+    return popups;
+  }
+
   // const PageSave = async () => {
   //   if (editor) {
   //     const current_page = editor.Pages.getSelected();
@@ -1418,10 +1452,12 @@ export default function Editor({
       const current_page = editor.Pages.getSelected();
       const html = editor.getHtml({ current_page });
       const css = editor.getCss({ current_page });
+      const popups = getPopups(editor);
       const payload = {
         page: page?._id,
         html: html,
-        css: css
+        css: css,
+        popups,
       };
       if (isback) {
         if (isSave) {
@@ -1478,10 +1514,12 @@ export default function Editor({
           const current_page = editor.Pages.getSelected();
           const html = editor.getHtml({ current_page });
           const css = editor.getCss({ current_page });
+          const popups = getPopups(editor);
           const payload = {
             page: page?._id,
             html: html,
-            css: css
+            css: css,
+            popups,
           };
           dispatch(updatePageAction(id, payload));
         }
