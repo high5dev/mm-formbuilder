@@ -8,57 +8,59 @@ let socialBar = {
       attributes: { class: 'social-bar' },
       components: (props) => {
         const socialList = props.attributes.socialList;
-        return (
-          <div class="social-bar-container">
-            {
-              socialList && socialList.map((socialItem)=>{
-                return(
-                  `
-                  <a href=${socialItem.url} target='_parent'>
-                    <img src=${socialItem.image} class="social-icon" alt=${socialItem.name}>
-                  </a>
-                  `
-                )
-              })
-            }
-          </div>
-        )
+        let tempStr='';
+        socialList && socialList.map((socialItem)=>{
+          tempStr+=
+            `
+            <a href=${socialItem.url} target='_parent' class="social-item">
+              <i class="fab ${socialItem.icon}"></i>
+            </a>
+            `            
+         });
+        return tempStr;
+          
       },
       socialList: [
         {
           name: 'Instagram',
           url: 'https://www.instagram.com',
           image: 'https://i.ibb.co/XWvs3qw/instagram.png',
+          icon:"fa-instagram",
           type: 'webaddress'
         },
         {
           name: 'Facebook',
           url: 'https://www.facebook.com',
           image: 'https://i.ibb.co/0BCsZKL/facebook-1.png',
+          icon:"fa-facebook",
           type: 'webaddress'
         },
         {
           name: 'Twitter',
           url: 'https://www.twitter.com',
           image: 'https://i.ibb.co/BCwkqfN/twitter.png',
+          icon:"fa-twitter",
           type: 'webaddress'
         },
         {
           name: 'LinkedIn',
           url: 'https://www.linkedin.com',
           image: 'https://i.ibb.co/8sL8mF4/linkedin.png',
+          icon:"fa-linkedin",
           type: 'webaddress'
         },
         {
           name: 'Youtube',
           url: 'https://www.youtube.com',
           image: 'https://i.ibb.co/tm0rJ2c/youtube-1.png',
+          icon:"fa-youtube",
           type: 'webaddress'
         },
         {
           name: 'TikTok',
           url: 'https://www.tiktok.com',
           image: 'https://i.ibb.co/ZWnZPqr/tiktok.png',
+          icon:"fa-tiktok",
           type: 'webaddress'
         }
       ],
@@ -74,6 +76,7 @@ let socialBar = {
       styles: `
         .social-bar {display: flex; flex-direction: row; width: fit-content; height:60px}
         .social-bar-container{display:flex}
+        .social-item{display:block; align-items:center;text-decoration:none;text-align:center; padding:16px; color:black; font-size:20px;}
         .social-icon {width: 40px; height: 40px; margin: 5px; border-radius: 5px;}
       `,
       stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius'],
@@ -95,8 +98,9 @@ let socialBar = {
         const social_item=socialList[i];
         tempTmp.setAttributes({href:social_item.url});
         tempTmp.attributes.href=social_item.url;
-        tempTmp.components().models[0].setAttributes({src:social_item.image});
-        tempTmp.components().models[0].attributes.src=social_item.image;
+        tempTmp.components.models=[];
+        tempTmp.components().models[0].setAttributes({class:`fab ${social_item.icon}`});
+        tempTmp.components().models[0].attributes.class=`fab ${social_item.icon}`;
         tempComponents.push(tempTmp)
       };
       let comps = this.model.get('components');

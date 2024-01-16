@@ -256,6 +256,7 @@ export const webBuilderPlugin = (editor) => {
       let newName = '';
       let newUrl = '';
       let newImage = '';
+      let newIcon='';
       // Here we can decide to use properties from the trait
       // const traitOpts = trait.get('options') || [];
       // const options = traitOpts.length ? traitOpts : [
@@ -316,46 +317,8 @@ export const webBuilderPlugin = (editor) => {
         newUrl = ev.target.value;
       })
 
-      const modalElement = document.createElement('div');
-      modalElement.className = "select-image-modal";
-
-      modalElement.innerHTML = `
-        <div class="select-image-view-image">
-          ${testImageUrls.map((imageUrl, idx) => {
-        return (
-          `<img class="select-image-item" src=${imageUrl} width="70" height="70"/>`
-        );
-      })
-        }
-        </div>
-        <div class="select-image-upload-image">
-          <input id="file-browser" type="file" class="upload-image-input" multiple hidden />
-          <label for="file-browser" class="drop-file-panel mb-1">Drop files here or click to upload</label>
-          <button class="btn btn-primary mb-1 mt-1 img-upload-btn">Upload</button>
-        </div>
-      `;
-
-      modalElement.querySelector('.upload-image-input').addEventListener('change', (ev) => {
-        const tempElement = document.createElement('div');
-        tempElement.innerHTML = ev.target.value;
-        const uploadBtnElm = modalElement.querySelector('.img-upload-btn')
-        modalElement.querySelector('.select-image-upload-image').insertBefore(tempElement, uploadBtnElm);
-      });
-
-      modalElement.querySelectorAll('.select-image-item').forEach((item, index) => {
-        item.addEventListener('click', event => {
-          const url = event.target.src;
-          newImage = url;
-          newLinkIcon.value = url;
-          editor.Modal.close();
-        })
-      });
-
-      newLinkIcon.addEventListener('focus', ev => {
-        editor.Modal.open({
-          title: 'Select new link Image', // string | HTMLElement
-          content: modalElement, // string | HTMLElement
-        });
+      newLinkIcon.addEventListener('change', ev => {
+        newIcon=ev.target.value;
       })
 
       el.querySelectorAll('.trait-social-link-delete').forEach((item, index) => {
@@ -376,6 +339,7 @@ export const webBuilderPlugin = (editor) => {
           {
             name: newName,
             url: newUrl,
+            icon:newIcon,
             image: newImage,
             type: 'webaddress'
           }
@@ -410,7 +374,9 @@ export const webBuilderPlugin = (editor) => {
       socialList.forEach((item, index) => {
         socialItems.push(`
           <div class="trait-social-link-item">
-            <img id="link-img-id-${index}" name="image" class="trait-social-link-item-img" src=${item.image || "https://i.ibb.co/1Q0tjDs/image-7.png"} width="50" height="50"/>
+            <div>
+                <i id="link-img-id-${index}" name="image" class="fab ${item.icon}"></i>
+            </div>
             <div class="trait-social-link-item-detail">
               <input id="link-name-id-${index}" name="name" class="trait-social-link-name" type="text" placeholder="Insert link name" value="${item.name}"/>
               <input id="link-url-id-${index}" name="url" class="trait-social-link-url" type="url" placeholder="Insert link URL" value="${item.url}"/>
@@ -420,7 +386,6 @@ export const webBuilderPlugin = (editor) => {
         `);
       });
       itemsContainer.innerHTML = socialItems.join('');
-
       itemsContainer.querySelectorAll('.trait-social-link-delete').forEach((item, index) => {
         item.addEventListener('click', event => {
           const tempList = [...socialList];
