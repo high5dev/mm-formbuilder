@@ -743,6 +743,7 @@
   .trait-icon-selection,
   .trait-direction-selection,
   .trait-button-selection,
+  .trait-submenu-page-selection
   .trait-pages-selection {
     margin-bottom: 10px;
     border: 1px solid lightgrey;
@@ -839,8 +840,35 @@
   border: none;
 }
 
+.mainmenu-container,
+.pages-container,
+.submenu-name-container
+{
+  margin-top: 10px;
+}
+
+.submenu-label{
+  font-weight: bold;
+}
+.submenu-btn-container{
+  display: flex;
+  justify-content: space-around;
+  align-items:center;
+}
+.subMenu-item{
+  padding-left: 10px;
+}
+.menu-item{
+  color:#116dff;
+}
+
 .trait-new-menu-item-pagelink,
-.trait-new-menu-item-link__name {
+.trait-new-menu-item-link__name,
+.trait-menu-selection,
+.trait-page-selection,
+.trait-submenu-page-selection,
+.trait-submenu-name-element
+{
   border: solid 1px !important;
   border-radius: 3px;
   margin-top: 5px;
