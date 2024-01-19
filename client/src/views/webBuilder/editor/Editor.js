@@ -1083,138 +1083,36 @@ export default function Editor({
         console.log('------->', cmp.getClasses());
         if (cmp.get('type') == 'count-down') {
           cmp.set('style', {
-            width: '320px',
+            width: customwidth,
             'text-align': 'center',
             'padding-left': '0.5rem',
-            'padding-left': '0.5rem'
+            'padding-right': '0.5rem'
           });
           getAllChildComponents(cmp).map((children) => {
-            children.set('style', { 'font-size': '20px' });
+            children.set('style', { 'font-size': '18px' });
           });
-        }
-        if (cmp.get('type') == 'text') {
-          cmp.set('style', { 'padding-left': '0.5rem', 'padding-left': '0.5rem' });
-        }
-        if (cmp.get('type') == 'video') {
-          cmp.set('style', { width: '320px', height: '200px' });
-        }
-        if (cmp.getClasses().filter((item) => item == 'banner-9-wrapper')) {
+        } else if (cmp.get('type') == 'text') {
+          cmp.set('style', { 'padding-left': '0.5rem', 'padding-right': '0.5rem' });
+        } else if (cmp.get('type') == 'video') {
+          cmp.set('style', {
+            width: '320px',
+            height: '200px',
+            'padding-left': '0.5rem',
+            'padding-right': '0.5rem'
+          });
+        } else {
+          cmp.set('style', {
+            width: customwidth,
+            'padding-left': '0.5rem',
+            'padding-right': '0.5rem'
+          });
           getAllChildComponents(cmp).map((children) => {
-            // console.log(children.get('tagName'), children)
-            if (children.get('type') == 'image') {
-              children.set('style', { width: '200px', display: 'block', 'text-align': 'center' });
-            }
-            if (children.get('type') == 'text') {
-              children.set('style', { 'padding-left': '0.5rem', 'padding-left': '0.5rem', 'text-align': 'center' });
-            }
+            if(children.get('tagName')=='h1'){
+              children.set('style', { 'font-size': '30px' });
+            }if(children.get('tagName')=='img')
+            children.set('style', { 'max-width': '200px', 'min-width': '200px' });
           });
         }
-        if (cmp.getClasses().filter((item) => item == 'banner-11-wrapper')) {
-          getAllChildComponents(cmp).map((children) => {
-            if (children.get('type') == 'image') {
-              children.set('style', { width: '20px' });
-            }
-            if (children.get('type') == 'text') {
-              children.set('style', { 'font-size': '25px', 'text-align': 'start' });
-            }
-            if (children.get('tagName') == 'button') {
-              children.set('style', { display: 'flex', 'align-items': 'center' });
-            }
-          });
-        }
-        if (cmp.getClasses().filter((item) => item == 'banner-3-wrapper')) {
-          getAllChildComponents(cmp).map((children) => {
-            console.log(children.get('type'))
-            if (children.get('tagName') == 'div') {
-              // children.set('style', { display: 'block' });
-            }
-            if (children.get('type') == 'text') {
-              children.set('style', {
-                'text-align': 'center',
-                'align-items': 'center',
-                'font-size': '20px'
-              });
-            }
-          });
-        }
-        if (cmp.getClasses().filter((item) => item == 'banner-8-wrapper')) {
-          getAllChildComponents(cmp).map((children) => {
-            if (children.get('tagName') == 'div') {
-              children.set('style', { display: 'd-flex' });
-            }
-            if (children.get('tagName') == 'h1') {
-              children.set('style', {
-                display: 'flex',
-                'text-align': 'center',
-                'align-items': 'center',
-                'font-size': '30px'
-              });
-            }
-            if (children.get('tagName') == 'h5') {
-              children.set('style', {
-                display: 'd-flex',
-                'text-align': 'center',
-                'align-items': 'center',
-                'font-size': '12px'
-              });
-            }
-            if (children.get('tagName') == 'button') {
-              children.set('style', {
-                'font-size': '12px',
-                display: 'initial',
-                'align-items': 'center',
-                padding: '0.5rem'
-              });
-            }
-          });
-        }
-        if (cmp.getClasses().filter((item) => item == 'banner-5-wrapper')) {
-          getAllChildComponents(cmp).map((children) => {
-            if (children.get('tagName') == 'div') {
-              children.set('style', { display: 'block' });
-            }
-            if (children.get('tagName') == 'p') {
-              children.set('style', { 'font-size': '15px' });
-            }
-          });
-        }
-        if (cmp.getClasses().filter((item) => item == 'featuresSix')) {
-          getAllChildComponents(cmp).map((children) => {
-            if (children.get('tagName') == 'img') {
-              children.set('style', { width: '280px' });
-            }
-          });
-        }
-        if (cmp.getClasses().filter((item) => item == 'news-4-wrapper')) {
-          getAllChildComponents(cmp).map((children) => {
-            if (children.get('tagName') == 'img') {
-              children.set('style', { width: '180px' });
-            }
-          });
-        }
-        if (cmp.getClasses().filter((item) => item == 'opening-hours-1-wrapper')) {
-          getAllChildComponents(cmp).map((children) => {
-            if (children.get('tagName') == 'img') {
-              children.set('style', { width: '180px', height:'180px' });
-            }
-          });
-        }
-        // if (cmp.getClasses().filter((item) => item == 'product-1-wrapper')) {
-        //   getAllChildComponents(cmp).map((children) => {
-        //     console.log(children.get('type'))
-        //     if (children.get('type') == 'text') {
-        //       children.set('style', { 'text-align':'start', 'padding-left': '0rem',
-        //       'padding-left': '0rem' });
-        //     }
-        //   });
-        // }
-        // getAllChildComponents(cmp).map(children =>{
-        //   // console.log(children.get('tagName'), children)
-        //   if(children.get('type')=='image'){
-        //     children.set('style', {width: '200px', display: 'block', 'text-align':'center'})
-        //   }
-        // })
-        //  cmp.set('style', {width: '310px'})
       });
     });
     gjsEditor.on('block:custom', (props) => {
@@ -1512,7 +1410,7 @@ export default function Editor({
                 command: 'connect-collection',
                 label: connectionLabel
               });
-              
+
               if (
                 elType.id === 'post-list-large' ||
                 elType.id === 'post-card-large' ||
@@ -1836,8 +1734,8 @@ export default function Editor({
                 components: (props) => {
                   return <div></div>;
                 },
-                attributes: { class: 'new-form', type:'GET' },
-                formType:'',
+                attributes: { class: 'new-form', type: 'GET' },
+                formType: '',
                 traits: [
                   {
                     type: 'form-type',
@@ -1859,13 +1757,13 @@ export default function Editor({
                 ]
               }
             },
-            view:{
+            view: {
               init() {
                 this.listenTo(this.model, 'change:formType', this.handleChangeType);
               },
-              handleChangeType(e){
-                let formType=this.model.get('formType');
-                this.model.attributes.type=formType;
+              handleChangeType(e) {
+                let formType = this.model.get('formType');
+                this.model.attributes.type = formType;
                 this.render();
               }
             }
