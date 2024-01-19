@@ -1,44 +1,42 @@
 const script = function(props) {
     alert('Hi');
     // `this` is bound to the component element
-    console.log('the element', props.repeaterWidth, props.myprop2);
-    return 111;
   };
   
-  let shortanswerEl = {
-    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('short-answer-element')),
+  let zipcodeEl = {
+    isComponent: el => (el.tagName === 'DIV' && el.classList.contains('zipcode-element')),
     model: {
       defaults: {
         // script,
         tagName: 'div',
         draggable: '*',
         droppable: false,
-        attributes: { class: 'short-answer-element', id:'short-answer-element'+new Date().getTime() },
+        attributes: { class: 'zipcode-element', id: 'zipcode_element'+new Date().getTime()},
         components: (props) => {
             const elProp = props.attributes.elProps[0];
             return(
                     <div>
-                        <div class="short-answer-label">
+                        <div class="zipcode-label">
                           <label for={elProp.id}>{elProp.label}</label>
                         </div>
-                        <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-short-answer-element" placeholder={elProp.placeholder} required={elProp.required}/> 
-                    </div>    
+                        <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-zipcode-element" placeholder={elProp.placeholder} required={elProp.required}/> 
+                    </div>   
             )
           },
         elProps:[
             {   
-                id: 'short_answer'+ new Date().getTime(),
-                label:'Short answer',
+                id: 'zipcode_'+ new Date().getTime(),
+                label:'Zipcode',
                 type:'text',
-                name:'shortanswer',
-                placeholder:'Enter your short answer',
+                name:'zipcode',
+                placeholder:'Enter Zip Code.',
                 required: true
             }
         ],
         styles: `
-        .short-answer-element {padding:10px; display:flex; justify-content:space-around}
-        .short-answer-label{margin-bottom:10px}
-        .input-short-answer-element {padding:10px; font-size:14px; width:480px}
+        .zipcode-element {padding:10px; display:flex; justify-content:space-around}
+        .zipcode-label{margin-bottom:10px}
+        .input-zipcode-element {padding:10px; font-size:14px; width:480px}
       `,
         stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius'],
       },
@@ -55,10 +53,10 @@ const script = function(props) {
         };
         const item=
         <div>
-          <div class="short-answer-label">
+          <div class="zipcode-label">
             <label for={elProp.id}>{elProp.label}</label>
           </div>
-          <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-short-answer-element" placeholder={elProp.placeholder} required={elProp.required}/> 
+          <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-zipcode-element" placeholder={elProp.placeholder} required={elProp.required}/> 
         </div>;
         comps.push(item);
         this.render();
@@ -66,5 +64,5 @@ const script = function(props) {
     }
   };
   
-  export default shortanswerEl;
+  export default zipcodeEl;
   

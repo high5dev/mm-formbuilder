@@ -167,7 +167,6 @@ export default function Index({store, toggle, saveFormBlock}) {
     }
   };
 
-
   const previewForm = () => {
     if(name!=''){
       const filteredForms=store.childForms && store.childForms.filter((_childForm)=>_childForm.name=name);
@@ -633,6 +632,7 @@ export default function Index({store, toggle, saveFormBlock}) {
     })
 
     form_gjsEditor.on('component:add', (cmp) =>{
+      form_gjsEditor.refresh();
       if(cmp && cmp.get('type')){
         const item=defaultBlocks.find((defaultBlock)=>{
           if(defaultBlock.value===cmp.get('type')){

@@ -53,6 +53,14 @@ export const formblocks = [
         category: 'Form',
       },
       {
+        id: 'zipcode',
+        label: 'Zipcode',
+        attributes: { class: 'fa fa-text' },
+        content: { type: 'zipcode' },
+        media: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" id="map"><g fill="none" fill-rule="evenodd" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" transform="translate(1 1)"><path d="M18 9c0 7-9 13-9 13S0 16 0 9a9 9 0 0 1 18 0z"></path><circle cx="9" cy="9" r="3"></circle></g></svg>`,
+        category: 'Form',
+      },
+      {
         id: 'subscribe',
         label: 'Subscribe',
         attributes: { class: 'fa fa-text' },
