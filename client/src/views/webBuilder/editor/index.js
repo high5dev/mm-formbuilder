@@ -49,7 +49,7 @@ export default function Index() {
 
   useEffect(async () => {
     let data = await dispatch(getWebsiteAction(id));
-    if (data.length > 0) {
+    if (data?.length > 0) {
       if (!store.currentPage) {
         dispatch(setCurrentPage(data[0]));
       }

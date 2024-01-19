@@ -575,6 +575,7 @@ export default function MainNav({
             <MdOutlineDesktopMac
               size={22}
               onClick={() => {
+                // console.log(editor)
                 setWidth(1680);
                 setCustomWidth(1680);
                 setDeviceType('desktop');
