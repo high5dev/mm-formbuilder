@@ -889,8 +889,8 @@ for (const [key, value] of searchParams.entries()) {
       <div className='main'>
         {(!store.linkUrl || store.linkUrl === 'website') && pageContent &&
           <iframe srcDoc={`<head><script
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o&libraries=places&callback=myMap"
-        ></script></head>${pageContent}`} width={window.innerWidth} height={window.innerHeight} ref={iframeRef} />
+              src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCG1_opG1B7MRaTXYYy0B_fTPWg-RI3Mcs&libraries=places&callback=myMap"
+            ></script></head>${pageContent}`} width={window.innerWidth} height={window.innerHeight} ref={iframeRef} />
         }
         <Cartsidebar store={store} showCartSidebar={showCartSidebar} setShowCartSidebar={setShowCartSidebar} cartLink={cartLink} />
         {store.linkUrl === 'preview' &&
@@ -916,10 +916,10 @@ for (const [key, value] of searchParams.entries()) {
               <div className="text-white" onClick={() => history.goBack()} style={{ cursor: 'pointer' }}>Back to Editor</div>
             </div>
             <div className='bg-grey d-flex justify-content-around'>
-            <iframe className="bg-white" width={width} height={window.innerHeight - 50} srcDoc={pageContent} ref={iframeRef} />
-              {/* <iframe className="bg-white" width={width} height={window.innerHeight - 50} srcDoc={`<head><script
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o&libraries=places&callback=myMap"
-        ></script></head>${pageContent}`} ref={iframeRef} /> */}
+            
+              <iframe className="bg-white" width={width} height={window.innerHeight - 50} srcDoc={`<head><script
+                  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCG1_opG1B7MRaTXYYy0B_fTPWg-RI3Mcs&libraries=places&callback=myMap"
+                ></script></head>${pageContent}`} ref={iframeRef} />
 
             </div>
 

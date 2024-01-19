@@ -21,6 +21,14 @@ const WebBuilderElementSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    name: {
+      type: String,
+      default: '',
+    },
+    mediaType: {
+      type: String,
+      default: '',
+    },
     isDefault: {
       type: Boolean,
       default: false,

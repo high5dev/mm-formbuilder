@@ -14,7 +14,7 @@ const path = require('path');
 
 exports.createElement = asyncHandler(async (req, res) => {
   let userId = req.user._id;
-  const { category, mainMenu, subMenu, html, imageUrl } = req.body;
+  const { category, mainMenu, subMenu, html, imageUrl, mediaType, name } = req.body;
 
   try {
     // for (let i=299 ; i<303; i++) {
@@ -33,6 +33,8 @@ exports.createElement = asyncHandler(async (req, res) => {
         category: selectedCategory._id,
         html,
         imageUrl,
+        mediaType: mediaType || '',
+        name: name || '',
       });
   
       res.status(200).json({ success: true, data: newElement });
@@ -47,6 +49,8 @@ exports.createElement = asyncHandler(async (req, res) => {
         category: newCategory._id,
         html,
         imageUrl,
+        mediaType: mediaType || '',
+        name: name || '',
       });
   
       res.status(200).json({ success: true, data: newElement });

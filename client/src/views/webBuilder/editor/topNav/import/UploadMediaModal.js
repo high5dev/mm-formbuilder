@@ -21,8 +21,8 @@ import { setFontAndSize } from 'pdf-lib';
 import { isObjEmpty, selectThemeColors } from '@utils';
 import { menu } from '../../util';
 import Select, { components } from 'react-select';
-import { createWebElementAction } from '../../../store/action';
-import { useDispatch } from 'react-redux';
+import { createWebElementAction, uploadContentImageAction } from '../../../store/action';
+import { useDispatch, useSelector } from 'react-redux';
 import * as htmlToImage from 'html-to-image';
 
 const UploadMediaModal = ({ editor, setEditor, openUploadModal, setOpenUploadModal }) => {
@@ -35,42 +35,54 @@ const UploadMediaModal = ({ editor, setEditor, openUploadModal, setOpenUploadMod
   const [selectedSubMenu, setSelectedSubMenu] = useState(null);
   const [category, setCategory] = useState('');
 
+  const store = useSelector((state) => {
+    return {
+      ...state.websiteEditor
+    };
+  });
+
   const fileTypes = ['video/mp4', 'audio/mpeg'];
   useEffect(() => {
     if (files.length === 1) {
       const reader = new FileReader();
-      if (files[0].type.startsWith('video')) {
-        reader.readAsDataURL(files[0]);
-        reader.onload = function (e) {
-          const fileContents = e?.target?.result;
-          setCode(fileContents);
-        };
-      } else if (files[0].type == 'image/svg+xml') {
-        reader.readAsText(files[0]);
-        reader.onload = function (e) {
-          const fileContents = e?.target?.result;
-          setCode(fileContents);
-        };
-      } else if (files[0].type == 'image/png') {
-        reader.readAsDataURL(files[0]);
-        reader.onload = function (e) {
-          const fileContents = e?.target?.result;
-          setCode(fileContents);
-        };
-      } else if (files[0].type.startsWith('audio')) {
-        reader.readAsDataURL(files[0]);
-        reader.onload = function (e) {
-          const fileContents = e?.target?.result;
-          setCode(fileContents);
-        };
-      }
+      const formData = new FormData();
+      formData.append("file", files[0]);
+      console.log('formData------------------------',files[0]);
+      // if (files[0].type.startsWith('video')) {
+      //   console.log('files================', files)
+      //   reader.readAsDataURL(files[0]);
+      //   reader.onload = function (e) {
+      //     const fileContents = e?.target?.result;
+      //     setCode(fileContents);
+      //   };
+      // } else if (files[0].type == 'image/svg+xml') {
+      //   reader.readAsText(files[0]);
+      //   reader.onload = function (e) {
+      //     const fileContents = e?.target?.result;
+      //     setCode(fileContents);
+      //   };
+      // } else if (files[0].type == 'image/png') {
+      //   reader.readAsDataURL(files[0]);
+      //   reader.onload = function (e) {
+      //     const fileContents = e?.target?.result;
+      //     setCode(fileContents);
+      //   };
+      // } else if (files[0].type.startsWith('audio')) {
+      //   reader.readAsDataURL(files[0]);
+      //   reader.onload = function (e) {
+      //     const fileContents = e?.target?.result;
+      //     setCode(fileContents);
+      //   };
+      // }
     }
   }, [files]);
 
   useEffect(() => {
     const tempMenu = [];
     menu.forEach((e) => {
-      tempMenu.push({ value: e.id, label: e.name });
+      if (e.id === 'media') {
+        tempMenu.push({ value: e.id, label: e.name });
+      }
     });
     setMainMenus(tempMenu);
   }, []);
@@ -216,6 +228,71 @@ const UploadMediaModal = ({ editor, setEditor, openUploadModal, setOpenUploadMod
     }
   };
 
+  const saveMedia = (files) => {
+    let html;
+    files.map(async(f) => {
+      const formData = new FormData();
+      formData.append("file", f);
+      const data = await dispatch(uploadContentImageAction(formData, store.form._id));
+      if (data?.success) {
+        if (f.type == 'image/svg+xml') {
+          const reader = new FileReader();
+          reader.readAsText(f);
+          reader.onload = function (e) {
+            html = e?.target?.result;
+            dispatch(
+              createWebElementAction({
+                mainMenu: selectedMenu?.value || '',
+                subMenu: selectedSubMenu?.value || '',
+                category,
+                html,
+                imageUrl: data.data,
+                name: f.name,
+                mediaType: f.type,
+              })
+            ).then((res) => {
+              setOpenUploadModal(false);
+            });
+          };
+        } else {
+          if (f.type.startsWith('image')) {
+            html = `
+              <img src="${data.data}" width="400" />
+            `;
+          }
+    
+          if (f.type.startsWith('video')) {
+            html = `
+              <video width="400" height="300" controls src="${data.data}" type="${f.type}" />
+            `;
+          }
+    
+          if (f.type.startsWith('audio')) {
+            html = `
+              <audio controls>
+                <source src="${data.data}" type="${f.type}"/>
+                Your browser does not support the audio element.
+              </audio>
+            `;
+          }
+          dispatch(
+            createWebElementAction({
+              mainMenu: selectedMenu?.value || '',
+              subMenu: selectedSubMenu?.value || '',
+              category,
+              html,
+              imageUrl: data.data,
+              name: f.name,
+              mediaType: f.type,
+            })
+          ).then((res) => {
+            setOpenUploadModal(false);
+          });
+        }
+      }
+    });
+  };
+
   return (
     <>
       <Modal
@@ -284,7 +361,8 @@ const UploadMediaModal = ({ editor, setEditor, openUploadModal, setOpenUploadMod
             color="primary"
             className="add-todo-item me-1 align-self-end"
             onClick={() => {
-              saveNewElement(files[0]);
+              // saveNewElement(files[0]);
+              saveMedia(files);
             }}
           >
             Save

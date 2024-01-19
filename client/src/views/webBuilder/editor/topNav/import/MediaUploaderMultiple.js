@@ -24,7 +24,7 @@ const MediaUploaderMultiple = ({ files, setFiles, setCode }) => {
       let accept = [];
       for (const f of acceptedFiles) {
         if (!fileTypes.includes(f.type)) {
-          toast.error('Invalid file type. Only accept PDF, Word and Image');
+          toast.error('Invalid file type. Only accept Video, Audio, and Image');
         } else {
           accept.push(f);
         }

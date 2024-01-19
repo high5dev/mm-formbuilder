@@ -1954,7 +1954,9 @@ export default function Editor({
               menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
               mainMenu: `${el?.category[0]?.mainMenu}`,
               refcategory: `${el?.category[0]?.name}`,
-              submenu: el?.category[0]?.subMenu
+              submenu: el?.category[0]?.subMenu,
+              mediaType: el?.mediaType || '',
+              mediaName: el?.name || '',
             }
           );
         }
@@ -3421,24 +3423,69 @@ export default function Editor({
                               .map((b, ix) => {
                                 return (
                                   <div className="element" key={ix}>
-                                    <img width="280" src={b.get('media')} />
-                                    <div
-                                      draggable
-                                      onDragStart={(e) => {
-                                        e.stopPropagation();
-                                        blockManager.dragStart(b, e.nativeEvent);
-                                      }}
-                                      onDragEnd={(e) => {
-                                        e.stopPropagation();
-                                        if (b.get('label') === 'New Form') {
-                                          createForm();
-                                        }
-                                        if (b.get('label') === 'Add Existing Form') {
-                                          setAddFormMdl(true);
-                                        }
-                                        blockManager.dragStop(false);
-                                      }}
-                                    ></div>
+                                    {
+                                      b.get('mediaType').startsWith('video') && (
+                                        <>
+                                          <video width="280" controls>
+                                          <source src={b.get('media')} type={b.get('mediaType')} />
+                                            Your browser does not support HTML video.
+                                          </video>
+                                          <div
+                                            draggable
+                                            onDragStart={(e) => {
+                                              e.stopPropagation();
+                                              blockManager.dragStart(b, e.nativeEvent);
+                                            }}
+                                            onDragEnd={(e) => {
+                                              e.stopPropagation();
+                                              blockManager.dragStop(false);
+                                            }}
+                                          ></div>
+                                        </>
+                                      )
+                                    }
+
+                                    {
+                                      b.get('mediaType').startsWith('audio') && (
+                                        <div style={{width: 140, position: 'relative'}}>
+                                          <div style={{width: 140}}>
+                                            <img width="140" src={require('@src/assets/images/audio.png').default} />
+                                            <div>{b.mediaName}</div>
+                                          </div>
+                                          <div
+                                            style={{position: 'absolute', top: 0, width: 140, height: 150}}
+                                            draggable
+                                            onDragStart={(e) => {
+                                              e.stopPropagation();
+                                              blockManager.dragStart(b, e.nativeEvent);
+                                            }}
+                                            onDragEnd={(e) => {
+                                              e.stopPropagation();
+                                              blockManager.dragStop(false);
+                                            }}
+                                          ></div>
+                                        </div>
+                                      )
+                                    }
+
+                                    {
+                                      b.get('mediaType').startsWith('image') && (
+                                        <>
+                                          <img width="280" src={b.get('media')} />
+                                          <div
+                                            draggable
+                                            onDragStart={(e) => {
+                                              e.stopPropagation();
+                                              blockManager.dragStart(b, e.nativeEvent);
+                                            }}
+                                            onDragEnd={(e) => {
+                                              e.stopPropagation();
+                                              blockManager.dragStop(false);
+                                            }}
+                                          ></div>
+                                        </>
+                                      )
+                                    }
                                   </div>
                                 );
                               })}
