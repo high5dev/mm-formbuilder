@@ -42,21 +42,21 @@ let multiChoiceEl = {
               id: 'multi_choice'+ new Date().getTime(),
               label:'Option1',
               type:'checkbox',
-              name:'Multi Choice',
+              name:'multichoice',
               checked:true
           },
           {   
             id: 'multi_choice'+ new Date().getTime(),
             label:'Option2',
             type:'checkbox',
-            name:'Multi Choice',
+            name:'multichoice',
             checked:false
           },
           {   
             id: 'multi_choice'+new Date().getTime(),
             label:'Option3',
             type:'checkbox',
-            name:'Multi Choice',
+            name:'multichoice',
             checked:false
           }
       ],

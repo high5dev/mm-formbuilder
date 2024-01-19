@@ -1065,6 +1065,14 @@ export const getConnectionsByWebsiteAction = (websiteId) => async (dispatch) => 
   } catch (error) { }
 };
 
+export const getWebConnectionValuesAction =(id, payload)=>async (dispatch) =>{
+  try {
+    const { data } = await api.getWebConnectionValuesAction(id, payload);
+    return data;
+  } catch (error) { }
+}
+
+
 export const createOrUpdateConnectionAction = (payload) => async (dispatch) => {
   try {
     const { data } = await api.createOrUpdateConnect(payload);

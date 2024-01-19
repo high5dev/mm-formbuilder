@@ -377,12 +377,16 @@ export const updateWebsiteRole = (id, payload) => {
 export const deleteWebsiteRole = (id) => {
   return API.delete(`/web-builder-role/delete/${id}`);
 }
-export const createWebsiteInvitationRole = (payload) => {
+export const createWebsiteInvitationRole = (payload) => { 
   return API.post(`/web-builder-role/create-invite`, payload);
 }
 
 export const getConnectsByWebsite = (id) => {
   return API.get(`/web-builder-cms/connections-of-website/${id}`);
+}
+
+export const getWebConnectionValuesAction =(id, payload)=>{
+  return API.get(`/web-builder-cms/connected-dataset-website/${id}`, {params:payload});
 }
 
 export const createOrUpdateConnect = (payload) => {

@@ -22,7 +22,7 @@ let submitButton = {
               id: 'submit_'+ new Date().getTime(),
               label:'Submit',
               type:'button',
-              name:'submit_'+ new Date().getTime(),
+              name:'submit',
               description:'Thanks, we received your submission.',
               isButton:true,
               isUrl:false,
@@ -43,7 +43,7 @@ let submitButton = {
       .submit-parent-element {display:flex; justify-content:space-around}
       .input-submit-element {padding:10px; font-size:14px; width:100px; background-color:#174ae7; color:white; border:1px solid}
       .message{text-align:center; margin-top:10px; display:none}
-      .submit-link-element{text-decoration:none; text-color:black}
+      .form-submit-link-element{text-decoration:none; text-color:black}
     `,
       stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius'],
     },
@@ -71,7 +71,7 @@ let submitButton = {
       if(elProp.isUrl){
         if(elProp.isNewTab){
             item=
-            <a href={elProp.url} class="submit-link-element" target="_blank">
+            <a href={elProp.url} class="form-submit-link-element" target="_blank">
               <div>
                 <div class="submit-parent-element">
                   <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
@@ -81,7 +81,7 @@ let submitButton = {
         }
         else{
           item=
-          <a href={elProp.url} class="submit-link-element">
+          <a href={elProp.url} class="form-submit-link-element">
             <div>
               <div class="submit-parent-element">
                 <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
@@ -93,7 +93,7 @@ let submitButton = {
       if(elProp.isEmail){
         const mail_href='mailto:'+elProp.email;
         item=
-        <a href={mail_href} class="submit-link-element" target="_blank">
+        <a href={mail_href} class="form-submit-link-element" target="_blank">
           <div>
             <div class="submit-parent-element">
               <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
@@ -103,7 +103,7 @@ let submitButton = {
       }
       if(elProp.isPage){
         item=
-          <a href={elProp.pageUrl.value} class="submit-link-element" target="_blank">
+          <a href={elProp.pageUrl.value} class="form-submit-link-element" target="_blank">
             <div>
               <div class="submit-parent-element">
                 <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
@@ -114,7 +114,7 @@ let submitButton = {
       if(elProp.isCall){
         const tel_href='tel:'+elProp.email;
         item=
-        <a href={tel_href} class="submit-link-element" target="_blank">
+        <a href={tel_href} class="form-submit-link-element" target="_blank">
           <div>
             <div class="submit-parent-element">
               <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
@@ -124,7 +124,7 @@ let submitButton = {
       }
       if(elProp.isDownload){
         item=
-        <a href={elProp.fileUrl} file={true} class="submit-link-element" target="_blank" raw_url={elProp.fileUrl}>
+        <a href={elProp.fileUrl} file={true} class="form-submit-link-element" target="_blank" raw_url={elProp.fileUrl}>
           <div>
             <div class="submit-parent-element">
               <input id={elProp.id} type={elProp.type} name={elProp.name} class="input-submit-element" value={elProp.label}/> 
