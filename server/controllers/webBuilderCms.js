@@ -145,6 +145,58 @@ exports.getAllDatasets = asyncHandler(async (req, res) => {
   }
 });
 
+exports.getConnectedDataset = asyncHandler(async (req, res) => {
+  let userId = req.user._id;
+  const { organization } = req.headers;
+  const websiteId = req.params.id;
+  const { ids } = req.query;
+  try {
+    const connections = await WebSiteConnection.find({
+      userId: mongoose.Types.ObjectId(userId),
+      websiteId: mongoose.Types.ObjectId(websiteId),
+      componentId:{$in:ids},
+      isDelete: false,
+    });
+    const keys=connections && connections.map((connection)=>{
+       if(connection){
+        return connection.connectedField;
+       }
+    })
+    const connection =connections[0];
+    if(connection){
+      const datasetId=connection.datasetId;
+      const query={
+        _id:mongoose.Types.ObjectId(datasetId)
+      };
+      const datasets = await WebSiteDataSet.aggregate([
+        {
+          $match:query
+        },
+        {
+          $lookup: {
+            from: "web-collections",
+            localField: "collectionId",
+            foreignField: "_id",
+            as: "collection",
+          }
+        }   
+      ]);
+      const values=datasets[0].collection[0].values;
+      const data={
+        connectedkeys:keys,
+        connectedvalues:values
+      }
+      res.status(200).json({ success: true, data:data });
+
+    }
+    }
+   catch (err) {
+    res.send({ msg: err.message.replace(/\'/g, ""), success: false });
+  }
+});
+
+
+
 exports.updateDataset = asyncHandler(async (req, res) => {
   let { id } = req.params;
   const payload = req.body;

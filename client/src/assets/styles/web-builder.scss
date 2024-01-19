@@ -741,8 +741,18 @@
 }
 
 .post-description {
-  padding: 10px;
+  padding: 5px;
   border: 1px solid lightgray;
+}
+
+.trait-form-type-container{
+  display: flex;
+  justify-content: space-around;
+  .trait-form-type-selection{
+    margin-top: 20px;
+    border: 1px solid lightgrey;
+    padding:7px;
+  }
 }
 
 .gjs-field-page-link {

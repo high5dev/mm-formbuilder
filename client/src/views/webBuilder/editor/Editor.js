@@ -1506,6 +1506,13 @@ export default function Editor({
                 });
                 this.set('toolbar', toolbar);
               }
+
+              toolbar.unshift({
+                id: 'connect-collection',
+                command: 'connect-collection',
+                label: connectionLabel
+              });
+              
               if (
                 elType.id === 'post-list-large' ||
                 elType.id === 'post-card-large' ||
@@ -1518,13 +1525,6 @@ export default function Editor({
                   id: 'blog-management',
                   command: 'blog-management',
                   label: blogmanagementLabel
-                });
-              }
-              if (elType.id === 'repeater' || elType.id === 'gallery') {
-                toolbar.unshift({
-                  id: 'connect-collection',
-                  command: 'connect-collection',
-                  label: connectionLabel
                 });
               }
               if (
@@ -1704,7 +1704,6 @@ export default function Editor({
           dispatch(updatePageAction(id, payload));
         }
       }, 1000 * 30);
-      //Clearing the interval
       return () => clearInterval(interval);
     }
   }, [page?._id]);
@@ -1827,17 +1826,26 @@ export default function Editor({
       store.webElements.map((el, idx) => {
         if (el?.category[0]?.name === 'New Form') {
           let formItem = {
-            isComponent: (el) => el.tagName === 'DIV' && el.classList.contains('new-form'),
+            isComponent: (el) => el.tagName === 'FORM' && el.classList.contains('new-form'),
             model: {
               defaults: {
-                tagName: 'div',
+                tagName: 'form',
                 draggable: true,
                 droppable: true,
                 selectable: true,
                 components: (props) => {
                   return <div></div>;
                 },
-                attributes: { class: 'new-form' },
+                attributes: { class: 'new-form', type:'GET' },
+                formType:'',
+                traits: [
+                  {
+                    type: 'form-type',
+                    name: 'Type',
+                    changeProp: true,
+                    min: 1
+                  }
+                ],
                 styles: `.new-form {height:fit-content; width:500px; background-color:white}`,
                 stylable: [
                   'width',
@@ -1849,6 +1857,16 @@ export default function Editor({
                   'justify-content',
                   'display'
                 ]
+              }
+            },
+            view:{
+              init() {
+                this.listenTo(this.model, 'change:formType', this.handleChangeType);
+              },
+              handleChangeType(e){
+                let formType=this.model.get('formType');
+                this.model.attributes.type=formType;
+                this.render();
               }
             }
           };
@@ -1869,10 +1887,10 @@ export default function Editor({
         }
         if (el?.category[0]?.name === 'Add Existing Form') {
           let formItem = {
-            isComponent: (el) => el.tagName === 'DIV' && el.classList.contains('add-form'),
+            isComponent: (el) => el.tagName === 'FORM' && el.classList.contains('add-form'),
             model: {
               defaults: {
-                tagName: 'div',
+                tagName: 'form',
                 draggable: true,
                 droppable: true,
                 selectable: true,

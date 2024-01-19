@@ -17,6 +17,7 @@ import dropdown from '../elements/form/dropdown';
 import submit from '../elements/form/submit';
 import birthday from '../elements/form/birthday';
 import subscribe from '../elements/form/subscribe';
+import zipcode from '../elements/form/zipcode';
 import { formblocks } from "./FormBlocks";
 
 export const formBuilderPlugin = (editor) => {
@@ -39,6 +40,7 @@ export const formBuilderPlugin = (editor) => {
   editor.DomComponents.addType('multi-choice', multichoice);
   editor.DomComponents.addType('dropdown', dropdown);
   editor.DomComponents.addType('submit', submit);
+  editor.DomComponents.addType('zipcode', zipcode);
   formblocks.forEach(block => {
     editor.Blocks.add(block.id, block);
   })

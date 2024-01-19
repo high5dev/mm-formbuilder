@@ -29,6 +29,7 @@ let map = {
       tagName: 'div',
       draggable: '*',
       droppable: false,
+      selectable:true,
       attributes: { class: 'map-location' },
       components: [{
         tagName: 'div',
