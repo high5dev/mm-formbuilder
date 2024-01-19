@@ -1645,6 +1645,21 @@ export default function Editor({
           imgStyle+="}</style>";
         head.insertAdjacentHTML('beforeend', `${imgStyle}`)
       }
+      let menuStyle=`
+          <style>
+          .trait-menu-item-container{
+            &:hover{
+              .trait-submenus-container{
+                display: block;
+              }
+            }
+          }
+          </style>
+      `;
+      if(head){
+        head.insertAdjacentHTML('beforeend', `${menuStyle}`)
+      }
+
       }
       store.webElements.map((el, idx) => {
         if (el?.category[0]?.name === 'New Form') {
