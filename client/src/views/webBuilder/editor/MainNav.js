@@ -71,6 +71,7 @@ export default function MainNav({
   customwidth,
   setCustomWidth,
   ispreview,
+  ispublish,
   isSave,
   setIsSave,
   setIsClear,
@@ -325,7 +326,7 @@ export default function MainNav({
             color="success"
             onClick={() => setIsSave(true)}
           >
-            Save
+            {isSave ? <Spinner color='white' size='sm' /> : 'Save'}
           </Button>
           <Button
             className="menu-item btn btn-primary"
@@ -335,7 +336,7 @@ export default function MainNav({
               // localStorage.setItem('linkUrl', 'website');
             }}
           >
-            Publish
+            {ispublish ? <Spinner color='white' size='sm' /> : 'Publish'}
           </Button>
           <Button
             className="menu-item text-primary text-dark"
@@ -346,7 +347,7 @@ export default function MainNav({
             }}
             outline
           >
-            Preview
+            {ispreview ? <Spinner color='secondary' size='sm' /> : 'Preview'}
           </Button>
         </div>
       </div>

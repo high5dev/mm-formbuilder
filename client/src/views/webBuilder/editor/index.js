@@ -38,7 +38,7 @@ export default function Index() {
   const [roleMdl, setRoleMdl] = useState(false);
   const [viewCMSMenu, setViewCMSMenu] = useState(false);
   const [VisibleMenu, setVisibleMenu] = useState(false);
-  const [thispage, setThispage] = useState()
+  const [thispage, setThispage] = useState();
   const store = useSelector((state) => {
     return {
       ...state.websiteEditor
@@ -76,6 +76,7 @@ export default function Index() {
             setCustomWidth={setCustomWidth}
             setIsClear={setIsClear}
             ispreview={ispreview}
+            ispublish={ispublish}
             setIsBack={setIsBack}
             isSave={isSave}
             setIsPreview={setIsPreview}
