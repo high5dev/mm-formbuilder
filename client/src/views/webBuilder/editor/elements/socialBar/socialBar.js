@@ -76,7 +76,7 @@ let socialBar = {
       styles: `
         .social-bar {display: flex; flex-direction: row; width: fit-content; height:60px}
         .social-bar-container{display:flex}
-        .social-item{display:block; align-items:center;text-decoration:none;text-align:center; padding:16px; color:black; font-size:20px;}
+        .social-item{display:block; align-items:center;text-decoration:none;text-align:center; padding:16px; color:black; font-size:30px;}
         .social-icon {width: 40px; height: 40px; margin: 5px; border-radius: 5px;}
       `,
       stylable: ['width', 'background-color', 'margin', 'padding', 'border', 'border-radius'],

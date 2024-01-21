@@ -841,8 +841,8 @@ export default function Editor({
           {
             id: 'mobilePortrait',
             name: 'Mobile portrait',
-            width: '480px',
-            widthMedia: '480px'
+            width: '320px',
+            widthMedia: '320px'
           }
         ]
       },
@@ -874,7 +874,57 @@ export default function Editor({
     });
 
     gjsEditor.on('component:add', (component) => {
-      console.log('_____>', component);
+      let device = gjsEditor.getDevice();
+      if (device !== 'desktop' && device !== 'tablet') {
+        if (component.get('type') == 'count-down') {
+          component.set('template', component.getAttributes().template);
+          component.set('style', {
+            'text-align': 'center',
+            'padding-left': '10px',
+            'padding-right': '10px',
+            // width: 'fit-content',
+          });
+          getAllChildComponents(component).map((children) => {
+            children.set('style', { 'font-size': '15px', 'padding-left':'2px', 'padding-right':'2px' });
+          });
+        } else if (component.get('type') == 'text') {
+          component.set('style', { 'padding-left': '0.5rem', 'padding-right': '0.5rem' });
+        } else if (component.get('type') == 'video') {
+          component.set('style', {
+            width: '320px',
+            height: '200px',
+            'padding-left': '0.5rem',
+            'padding-right': '0.5rem'
+          });
+          getAllChildComponents(component).map((children) => {
+            children.set('style', { 'font-size': '16px' });
+          });
+        } 
+        else if (component.get('type') == 'social-bar') {
+          component.set('style', {
+            display: 'flex',
+            'flex-direction': 'row',
+            width: 'fit-content',
+            height: '60px'
+          })
+          getAllChildComponents(component).map((children) => {
+            children.set('style', { 'font-size': '20px' });
+          })
+         }
+        else {
+          component.set('style', {
+            'padding-left': '0.5rem',
+            'padding-right': '0.5rem'
+          });
+          getAllChildComponents(component).map((children) => {
+            if (children.get('tagName') == 'h1') {
+              children.set('style', { 'font-size': '30px' });
+            }
+            if (children.get('tagName') == 'img')
+              children.set('style', { 'max-width': '200px', 'min-width': '200px' });
+          });
+        }
+      }
       if (!component) return;
       if (
         component.get('type') === 'gridproductgallery' ||
@@ -1069,30 +1119,42 @@ export default function Editor({
       });
     });
     gjsEditor.Commands.add('set-device-desktop', (editor) => {
-      console.log('----------->here', editor);
       editor.setDevice('desktop');
+      const allComponents = editor.getWrapper().components().models;
+      allComponents.map((cmp) => {
+        console.log('------->', cmp.getClasses());
+        if (cmp.get('type') == 'video') {
+          cmp.set('style', {
+            width: '615px',
+            height: '350px'
+          });
+        }
+      });
     });
     gjsEditor.Commands.add('set-device-tablet', (editor) => {
       editor.setDevice('tablet');
-      console.log('----------->here', editor);
+      const allComponents = editor.getWrapper().components().models;
+      allComponents.map((cmp) => {
+        console.log('------->', cmp.getClasses());
+        if (cmp.get('type') == 'video') {
+          cmp.set('style', {
+            width: '615px',
+            height: '350px'
+          });
+        }
+      });
     });
     gjsEditor.Commands.add('set-device-mobile', (editor) => {
       editor.setDevice('mobilePortrait');
       const allComponents = editor.getWrapper().components().models;
       allComponents.map((cmp) => {
-        console.log('------->', cmp.getClasses());
+        console.log('------->', cmp.get('type'));
         if (cmp.get('type') == 'count-down') {
-          cmp.set('style', {
-            width: customwidth,
-            'text-align': 'center',
-            'padding-left': '0.5rem',
-            'padding-right': '0.5rem'
-          });
           getAllChildComponents(cmp).map((children) => {
-            children.set('style', { 'font-size': '18px' });
+            children.set('style', { 'font-size': '15px', 'padding-left':'0.5rem', 'padding-right':'0.5rem' });
           });
-        } else if (cmp.get('type') == 'text') {
-          cmp.set('style', { 'padding-left': '0.5rem', 'padding-right': '0.5rem' });
+        } else if (cmp.get('tagName') == 'h1' || cmp.get('tagName') == 'h5'  ||cmp.get('tagName') == 'p' ) {
+          // cmp.set('style', { 'padding-left': '0.5rem', 'padding-right': '0.5rem' });
         } else if (cmp.get('type') == 'video') {
           cmp.set('style', {
             width: '320px',
@@ -1100,17 +1162,28 @@ export default function Editor({
             'padding-left': '0.5rem',
             'padding-right': '0.5rem'
           });
+        } else if (cmp.get('type') == 'social-bar') {
+          cmp.set('style', {
+            display: 'flex',
+            'flex-direction': 'row',
+            width: 'fit-content',
+            height: '60px'
+          });
+          getAllChildComponents(cmp).map((children) => {
+            children.set('style', { 'font-size': '20px' });
+          });
         } else {
           cmp.set('style', {
-            width: customwidth,
+            width: '320px',
             'padding-left': '0.5rem',
             'padding-right': '0.5rem'
           });
           getAllChildComponents(cmp).map((children) => {
-            if(children.get('tagName')=='h1'){
+            if (children.get('tagName') == 'h1') {
               children.set('style', { 'font-size': '30px' });
-            }if(children.get('tagName')=='img')
-            children.set('style', { 'max-width': '200px', 'min-width': '200px' });
+            }
+            if (children.get('tagName') == 'img')
+              children.set('style', { 'max-width': '200px', 'min-width': '200px' });
           });
         }
       });
@@ -1956,7 +2029,7 @@ export default function Editor({
               refcategory: `${el?.category[0]?.name}`,
               submenu: el?.category[0]?.subMenu,
               mediaType: el?.mediaType || '',
-              mediaName: el?.name || '',
+              mediaName: el?.name || ''
             }
           );
         }
@@ -3423,69 +3496,71 @@ export default function Editor({
                               .map((b, ix) => {
                                 return (
                                   <div className="element" key={ix}>
-                                    {
-                                      b.get('mediaType').startsWith('video') && (
-                                        <>
-                                          <video width="280" controls>
+                                    {b.get('mediaType').startsWith('video') && (
+                                      <>
+                                        <video width="280" controls>
                                           <source src={b.get('media')} type={b.get('mediaType')} />
-                                            Your browser does not support HTML video.
-                                          </video>
-                                          <div
-                                            draggable
-                                            onDragStart={(e) => {
-                                              e.stopPropagation();
-                                              blockManager.dragStart(b, e.nativeEvent);
-                                            }}
-                                            onDragEnd={(e) => {
-                                              e.stopPropagation();
-                                              blockManager.dragStop(false);
-                                            }}
-                                          ></div>
-                                        </>
-                                      )
-                                    }
+                                          Your browser does not support HTML video.
+                                        </video>
+                                        <div
+                                          draggable
+                                          onDragStart={(e) => {
+                                            e.stopPropagation();
+                                            blockManager.dragStart(b, e.nativeEvent);
+                                          }}
+                                          onDragEnd={(e) => {
+                                            e.stopPropagation();
+                                            blockManager.dragStop(false);
+                                          }}
+                                        ></div>
+                                      </>
+                                    )}
 
-                                    {
-                                      b.get('mediaType').startsWith('audio') && (
-                                        <div style={{width: 140, position: 'relative'}}>
-                                          <div style={{width: 140}}>
-                                            <img width="140" src={require('@src/assets/images/audio.png').default} />
-                                            <div>{b.mediaName}</div>
-                                          </div>
-                                          <div
-                                            style={{position: 'absolute', top: 0, width: 140, height: 150}}
-                                            draggable
-                                            onDragStart={(e) => {
-                                              e.stopPropagation();
-                                              blockManager.dragStart(b, e.nativeEvent);
-                                            }}
-                                            onDragEnd={(e) => {
-                                              e.stopPropagation();
-                                              blockManager.dragStop(false);
-                                            }}
-                                          ></div>
+                                    {b.get('mediaType').startsWith('audio') && (
+                                      <div style={{ width: 140, position: 'relative' }}>
+                                        <div style={{ width: 140 }}>
+                                          <img
+                                            width="140"
+                                            src={require('@src/assets/images/audio.png').default}
+                                          />
+                                          <div>{b.mediaName}</div>
                                         </div>
-                                      )
-                                    }
+                                        <div
+                                          style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            width: 140,
+                                            height: 150
+                                          }}
+                                          draggable
+                                          onDragStart={(e) => {
+                                            e.stopPropagation();
+                                            blockManager.dragStart(b, e.nativeEvent);
+                                          }}
+                                          onDragEnd={(e) => {
+                                            e.stopPropagation();
+                                            blockManager.dragStop(false);
+                                          }}
+                                        ></div>
+                                      </div>
+                                    )}
 
-                                    {
-                                      b.get('mediaType').startsWith('image') && (
-                                        <>
-                                          <img width="280" src={b.get('media')} />
-                                          <div
-                                            draggable
-                                            onDragStart={(e) => {
-                                              e.stopPropagation();
-                                              blockManager.dragStart(b, e.nativeEvent);
-                                            }}
-                                            onDragEnd={(e) => {
-                                              e.stopPropagation();
-                                              blockManager.dragStop(false);
-                                            }}
-                                          ></div>
-                                        </>
-                                      )
-                                    }
+                                    {b.get('mediaType').startsWith('image') && (
+                                      <>
+                                        <img width="280" src={b.get('media')} />
+                                        <div
+                                          draggable
+                                          onDragStart={(e) => {
+                                            e.stopPropagation();
+                                            blockManager.dragStart(b, e.nativeEvent);
+                                          }}
+                                          onDragEnd={(e) => {
+                                            e.stopPropagation();
+                                            blockManager.dragStop(false);
+                                          }}
+                                        ></div>
+                                      </>
+                                    )}
                                   </div>
                                 );
                               })}
