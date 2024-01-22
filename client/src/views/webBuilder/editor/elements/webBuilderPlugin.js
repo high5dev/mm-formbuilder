@@ -81,11 +81,32 @@ export const webBuilderPlugin = (editor) => {
       const trait_name = trait.get('name');
       let images = component.get('images');
       let src='';
+      const newLinkContainer=document.createElement('div');
+      newLinkContainer.className ='image-url-container';
       const newLinkElement = document.createElement('div');
       newLinkElement.className = 'trait-image-url';
       newLinkElement.innerHTML = `
         <input id="input-image-url" type="url" placeholder="Insert link URL" value=${src}>/>
         <button class="btn-primary trait-image-btn">...</button>`;
+      const newUploadElement=document.createElement('div');
+      newUploadElement.className="upload-file-element";
+      newUploadElement.innerHTML=`
+      <div>
+          <input type="file" id="file" name="file" class="upload-image-element"/>
+      </div>
+      `;
+      document.querySelector('#trait-manager-container').append(newUploadElement);
+      document.querySelector('.upload-image-element').addEventListener('change', function(e){
+        const file=e.target.files[0];
+        if(file){
+          const formData = new FormData();
+          formData.append("file", file);
+          api.uploadFile(formData).then((res)=>{
+            console.log('response', response)
+            // newLinkElement.querySelector('#input-image-url').value = _url;
+          })
+        }
+      })
       const modalElement = document.createElement('div');
       modalElement.innerHTML = `
         <div class="gallery-image-list">
@@ -227,11 +248,27 @@ export const webBuilderPlugin = (editor) => {
       newLinkElement.querySelector('#input-image-url').addEventListener('change', (ev)=>{
         component.set(trait_name, ev.target.value);
       })
+      document.querySelector('.upload-image-element').addEventListener('change', function(e){
+        const file=e.target.files[0];
+        if(file){
+          const formData = new FormData();
+          formData.append("file", file);
+          api.uploadFile(formData).then((res)=>{
+            if(res){
+              const {data}=res;
+              newLinkElement.querySelector('#input-image-url').value = data.data;
+              if(data.data!=''){
+                component.set(trait_name, data.data);
+              }
+              
+            }
+          })
+        }
+      })
       modalElement.querySelector('#cancel-btn').addEventListener('click', (ev) => {
         editor.Modal.close();
       });
       
-
       return newLinkElement;
     }
   });
