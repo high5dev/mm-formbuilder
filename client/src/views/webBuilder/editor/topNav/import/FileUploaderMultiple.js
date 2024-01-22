@@ -23,7 +23,7 @@ const FileUploaderMultiple = ({ files, setFiles, setCode }) => {
       for (const f of acceptedFiles) {
         console.log(f.type);
         if (!fileTypes.includes(f.type)) {
-          toast.error('Invalid file type. Only accept PDF, Word and Image');
+          toast.error('Invalid file type. Only accept HTML, Video, Audio, and Image');
         } else {
           accept.push(f);
         }

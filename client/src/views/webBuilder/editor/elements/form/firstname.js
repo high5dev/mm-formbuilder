@@ -31,7 +31,7 @@ const script = function(props) {
                 id:'first_name'+new Date().getTime(),
                 label:'First name',
                 type:'text',
-                name:'first name',
+                name:'firstname',
                 placeholder:'Enter your first name',
                 required: true
             }

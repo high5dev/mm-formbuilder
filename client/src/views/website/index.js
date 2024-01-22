@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams, useLocation } from 'react-router-dom';
 import { Input, Spinner } from 'reactstrap'
 import { Modal } from 'reactstrap';
 import { getPreviewPageAction, getPublishPageAction, getPreviewBlogPageAction, getPublishBlogPageAction, updateThankyouProductsAction, updateSelectedProductAction, getWebCollectionsAction } from "../webBuilder/store/action";
 import renderHTML from 'react-render-html';
 import { BiMobile } from 'react-icons/bi';
+import {Loader, LoaderOptions} from 'google-maps';
 import {
   MdOutlineDesktopMac,
   MdOutlineTablet,
@@ -20,7 +21,7 @@ import {
   MdOutlineInsertComment,
   MdOutlineLensBlur
 } from 'react-icons/md';
-import { updateCartProductsAction, getProductDatasetAction, createDatasetAction } from '../webBuilder/store/action';
+import { updateCartProductsAction, getProductDatasetAction, createDatasetAction, getWebConnectionValuesAction } from '../webBuilder/store/action';
 import {setFormDatasetReducer} from '../webBuilder/store/reducer';
 const days = [
   'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
@@ -30,6 +31,15 @@ import Cartsidebar from '../pages/cart/cartsidebar';
 
 export default function Index() {
   const { id, pageName, blogId } = useParams();
+  const { search } = useLocation();
+// Iterating the search parameters
+const searchParams = new URLSearchParams(search);
+let paramKeys=[];
+let paramValues=[];
+for (const [key, value] of searchParams.entries()) {
+  paramKeys.push(key);
+  paramValues.push(value);
+};
   const history = useHistory();
   const [pageContent, setPageContent] = useState();
   const [popupData, setPopupData] = useState([]);
@@ -212,6 +222,44 @@ export default function Index() {
     }
   };
 
+  function degreesToRadians(degrees){
+    return degrees * Math.PI / 180;
+  }
+
+
+  function filterByDistance(google, locationsToFilter, referencePoint, radius) {
+    
+    var j;
+    var results = [];
+    for (j = 0; j < locationsToFilter.length; j++) {
+        var location = locationsToFilter[j];
+        console.log('j', location)
+        let R = 6378137;
+        let dLat = degreesToRadians(parseFloat(location.lat) - referencePoint.lat());
+        let dLong = degreesToRadians(parseFloat(location.lng) - referencePoint.lng());
+        let a = Math.sin(dLat / 2)
+                *
+                Math.sin(dLat / 2) 
+                +
+                Math.cos(degreesToRadians(referencePoint.lat())) 
+                * 
+                Math.cos(degreesToRadians(referencePoint.lng())) 
+                *
+                Math.sin(dLong / 2) 
+                * 
+                Math.sin(dLong / 2);
+
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        let distance = R * c;
+        if(distance<radius){
+          location={...location, distance:distance*0.000621371192};
+          results.push(location);
+        }
+    }
+     
+    return results;
+  }
+
   useEffect(() => {
     if(store.webCollections) {
       store.webCollections.map((collection) => {
@@ -268,9 +316,99 @@ export default function Index() {
               }
               linkElements[i].setAttribute('href', link_href);
             };
-            var tmp = document.createElement("div");
-            tmp.append(htmlCmp.body)
-            setPageContent(tmp.innerHTML);
+            let ids=[];
+            const repeaterEl=htmlCmp.querySelector('.repeater');
+            if(repeaterEl){
+              const componentId=repeaterEl.id;
+              const repeaterItems=repeaterEl.children;
+              const repeaterItem=repeaterItems[0];
+              const clonerepeaterItem=repeaterItem.cloneNode(true);
+              const connectedEls=repeaterItem.children;
+              for(let i=0; i<connectedEls.length;i++){
+                ids.push(connectedEls[i].id);
+              }
+              if(componentId!=''){
+                const payload={
+                  ids:ids
+                }
+                dispatch(getWebConnectionValuesAction(id, payload)).then((res)=>{
+                  if(res){
+                    const {connectedkeys, connectedvalues}=res.data;
+                    if(paramKeys && paramKeys.length===1 && paramKeys[0]==='zipcode'){
+                      const zipcode=paramValues[0];
+                      const radius_m=15000000000000000;
+                      const options={};
+                      const loader = new Loader('AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o', options);     
+                      loader.load().then(function (google){
+                        var mapOptions = {
+                          zoom: 14,
+                          fullscreenControl: false,
+                          clickableIcons: false,
+                          mapTypeControl: false,
+                          streetViewControl: false,
+                          center: new google.maps.LatLng(37.7749295, -122.4194155)
+                        };
+                        const geocoder = new google.maps.Geocoder();
+                        // const mapResult = new google.maps.Map(mapEl, mapOptions);
+                        geocoder.geocode({ address: zipcode, componentRestrictions: { country: 'us' }} , function(results, status) {
+                          if (status === google.maps.GeocoderStatus.OK){
+                            if(results && results.length>0){
+                              var filteredLocations = filterByDistance(google, connectedvalues, results[0].geometry.location, radius_m);
+                              while (repeaterEl.firstChild) {
+                                repeaterEl.firstChild.remove();
+                              };
+                              if(filteredLocations && filteredLocations.length>0){
+                                for(let i=0; i<filteredLocations.length;i++){
+                                  const filteredlocation=filteredLocations[i];
+                                  let connectedItems=clonerepeaterItem.children;
+                                  for(let j=0; j<(connectedItems.length); j++){
+                                      const connectedkey=connectedkeys[j];
+                                      let connectedItem=connectedItems[j];                      
+                                      connectedItem.innerText=filteredlocation[connectedkey];
+                                  };
+                                  const item=clonerepeaterItem.cloneNode(true);
+                                  repeaterEl.append(item);
+                                }
+                              }
+
+                              var tmp = document.createElement("div");
+                              tmp.append(htmlCmp.body)
+                              setPageContent(tmp.innerHTML);
+                              // const position = { position: {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()}, map: mapResult };
+                              // const marker = new google.maps.Marker(position);
+                            }
+                          }
+                        });
+                      });
+                    }
+                    else{
+                      while (repeaterEl.firstChild) {
+                        repeaterEl.firstChild.remove();
+                      };
+                      for(let i=0; i<connectedvalues.length;i++){
+                        const connectedValue=connectedvalues[i];
+                        let connectedItems=clonerepeaterItem.children;
+                        for(let j=0; j<connectedItems.length; j++){
+                            const connectedkey=connectedkeys[j];
+                            let connectedItem=connectedItems[j];                      
+                            connectedItem.innerText=connectedValue[connectedkey];
+                        };
+                        const item=clonerepeaterItem.cloneNode(true);
+                        repeaterEl.append(item);
+                      }
+                      var tmp = document.createElement("div");
+                      tmp.append(htmlCmp.body)
+                      setPageContent(tmp.innerHTML);
+                    }
+                }
+                })
+              }
+            }
+            else{
+              var tmp = document.createElement("div");
+              tmp.append(htmlCmp.body)
+              setPageContent(tmp.innerHTML);
+            }
             setIsPageLoading(false);
             setPageInfo(res.pageInfo);
             setPopupData(res.pageInfo.popups || []);
@@ -425,13 +563,12 @@ export default function Index() {
   }, [id]);
 
   useEffect(() => {
-    console.log('pageContent--------------------', pageContent)
     const iframe = iframeRef.current;
     if (!iframe) return;
     // Ensure iframe is fully loaded
     const onLoad = () => {
       const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-
+      
       if(pageName === "Cart%20Page" || pageName === "Cart Page") {
         setCartProducts();
       } else if(pageName === "Thankyou%20Page" || pageName === "Thankyou Page") {
@@ -469,7 +606,6 @@ export default function Index() {
       // Event handler
       const clickHandler = (event) => {
         let target = event.target;
-        // console.log(target);
         // Check if the clicked element is your specific element
         if (target.matches('.addtocartbutton')) {
           // Handle the click event
@@ -525,120 +661,122 @@ export default function Index() {
           dispatch(updateSelectedProductAction(selectedProduct));
           history.push(productLink);
         }
+        else if(target.matches('.form-submit-link-element')){
+        }
         else if(target.matches('.input-submit-element')){
           const formId=target.id;
           const submitContainer=target.parentElement.parentElement;
           const messageContainer=submitContainer.querySelector('.message');
-          const parentContainer=target.parentElement.parentElement.parentElement.parentElement;
+          const parentContainer=target.parentElement.parentElement.parentElement.parentElement.parentElement;
           const childrenEls=parentContainer.children;
           let fields=[];
           let values=[];
           if(childrenEls.length>0){
              for(let i=0; i<childrenEls.length;i++){
               const childEl=childrenEls[i];
-              if(!childEl.matches('.submit-element')){
-                if(childEl.matches('.birthday-element')){
-                  const _selectEl=childEl.getElementsByTagName('select')[0];
-                  const inputEls=childEl.getElementsByTagName('input');
-                  const month=_selectEl.value;
-                  const day=inputEls[0].value;
-                  const year=inputEls[1].value;
-                  const value=new Date(year, month-1, day);
-                  const name='birthday';
-                  const type='date';
-                  const required=true;
-                  fields.push({
-                    type,
-                    name,
-                    required
-                  });
-                  values.push({
-                    name,
-                    value
-                  })
-                }
-                else if(childEl.matches('.dropdown-element')){
-                  const _selectEl=childEl.getElementsByTagName('select')[0];
-                  const id=_selectEl.id;
-                  const name=_selectEl.name;
-                  const type='select';
-                  const value=_selectEl.value;
-                  const required=_selectEl.required?true:false;
-                  fields.push({
-                    id,
-                    type,
-                    name,
-                    required
-                  });
-                  values.push({
-                    id,
-                    name,
-                    value
-                  })
-  
-                }
-                else if(childEl.matches('.single-choice-element')){
-                  const inputElements=childEl.getElementsByTagName('input');
-                  for(let j=0; j<inputElements.length;j++){
-                    const _inputEl=inputElements[j];
-                    if(_inputEl.checked){
-                      const id=_inputEl.id;
-                      const type=_inputEl.type;
-                      const name=_inputEl.name;
-                      const value=_inputEl.value;
-                      fields.push({
-                        id,
-                        type,
-                        name,
-                      });
-                      values.push({
-                        id,
-                        name,
-                        value
-                      })
-                    }
-                  }
-                }
-                else if(childEl.matches('.multi-choice-element')){
-                  const inputElements=childEl.getElementsByTagName('input');
-                  let _values=[];
-                  let _names=[];
-                  let _ids=[];
-                  let _types=[];
-                  for(let j=0; j<inputElements.length;j++){
-                    const _inputEl=inputElements[j];
-                    if(_inputEl.checked){
-                      const id=_inputEl.id;
-                      const type=_inputEl.type;
-                      const name=_inputEl.name;
-                      const value=_inputEl.value;
-                      _values.push(value);
-                      _ids.push(id);
-                      _names.push(name);
-                      _types.push(type);
-                    }
-                  }
-                  fields.push({
-                    id:_ids,
-                    type:_types,
-                    name:_names
-                  });
-                  values.push({
-                    id:_ids,
-                    name:_names,
-                    value:_values
-                  })
-                }
-                else{
-                  const inputElements=childEl.getElementsByTagName('input');
-                  if(inputElements.length>0){
-                    const _inputEl=inputElements[0];
+              if(childEl.matches('.birthday-element')){
+                const _selectEl=childEl.getElementsByTagName('select')[0];
+                const inputEls=childEl.getElementsByTagName('input');
+                const month=_selectEl.value;
+                const day=inputEls[0].value;
+                const year=inputEls[1].value;
+                const value=new Date(year, month-1, day);
+                const name='birthday';
+                const type='date';
+                const required=true;
+                fields.push({
+                  type,
+                  name,
+                  required
+                });
+                values.push({
+                  name,
+                  value
+                })
+              }
+              else if(childEl.matches('.dropdown-element')){
+                const _selectEl=childEl.getElementsByTagName('select')[0];
+                const id=_selectEl.id;
+                const name=_selectEl.name;
+                const type='select';
+                const value=_selectEl.value;
+                const required=_selectEl.required?true:false;
+                fields.push({
+                  id,
+                  type,
+                  name,
+                  required
+                });
+                values.push({
+                  id,
+                  name,
+                  value
+                })
+
+              }
+              else if(childEl.matches('.single-choice-element')){
+                const inputElements=childEl.getElementsByTagName('input');
+                for(let j=0; j<inputElements.length;j++){
+                  const _inputEl=inputElements[j];
+                  if(_inputEl.checked){
                     const id=_inputEl.id;
-                    const value=_inputEl.value;
                     const type=_inputEl.type;
                     const name=_inputEl.name;
-                    const placeholder=_inputEl.placeholder;
-                    const required=_inputEl.required;
+                    const value=_inputEl.value;
+                    fields.push({
+                      id,
+                      type,
+                      name,
+                    });
+                    values.push({
+                      id,
+                      name,
+                      value
+                    })
+                  }
+                }
+              }
+              else if(childEl.matches('.multi-choice-element')){
+                const inputElements=childEl.getElementsByTagName('input');
+                let _values=[];
+                let _names=[];
+                let _ids=[];
+                let _types=[];
+                for(let j=0; j<inputElements.length;j++){
+                  const _inputEl=inputElements[j];
+                  if(_inputEl.checked){
+                    const id=_inputEl.id;
+                    const type=_inputEl.type;
+                    const name=_inputEl.name;
+                    const value=_inputEl.value;
+                    _values.push(value);
+                    _ids.push(id);
+                    _names.push(name);
+                    _types.push(type);
+                  }
+                }
+                fields.push({
+                  id:_ids,
+                  type:_types,
+                  name:_names
+                });
+                values.push({
+                  id:_ids,
+                  name:_names,
+                  value:_values
+                })
+              }
+              else{
+                const inputElements=childEl.getElementsByTagName('input');
+                if(inputElements.length>0){
+                  const _inputEl=inputElements[0];
+                  const id=_inputEl.id;
+                  const value=_inputEl.value;
+                  const type=_inputEl.type;
+                  const name=_inputEl.name;
+                  const placeholder=_inputEl.placeholder;
+                  const required=_inputEl.required;
+                  if(type!='button'){
                     fields.push({
                       id,
                       type,
@@ -654,9 +792,27 @@ export default function Index() {
                   }
                 }
               }
-             }
-          }
-          formHandler(formId, fields, values, messageContainer);
+             };
+             const parentLinkEL=parentContainer.querySelector('.form-submit-link-element');
+             const type=parentContainer.getAttribute('type');
+             let requestParams='';
+             if(type==='GET'){
+              requestParams='/?';
+              values && values.map((_field, i)=>{
+                const param=_field.name+'='+_field.value;
+                if(i===0){
+                  requestParams+=param;
+                }
+                else{
+                  requestParams+='&&'+param;
+                }
+              });
+             };
+             formHandler(formId, fields, values, messageContainer);
+             if(parentLinkEL){
+              parentLinkEL.href=parentLinkEL.href+requestParams;
+             } 
+          } 
         }
       };
 
@@ -733,8 +889,8 @@ export default function Index() {
       <div className='main'>
         {(!store.linkUrl || store.linkUrl === 'website') && pageContent &&
           <iframe srcDoc={`<head><script
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o&libraries=places&callback=myMap"
-        ></script></head>${pageContent}`} width={window.innerWidth} height={window.innerHeight} ref={iframeRef} />
+              src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCG1_opG1B7MRaTXYYy0B_fTPWg-RI3Mcs&libraries=places&callback=myMap"
+            ></script></head>${pageContent}`} width={window.innerWidth} height={window.innerHeight} ref={iframeRef} />
         }
         <Cartsidebar store={store} showCartSidebar={showCartSidebar} setShowCartSidebar={setShowCartSidebar} cartLink={cartLink} />
         {store.linkUrl === 'preview' &&
@@ -760,9 +916,10 @@ export default function Index() {
               <div className="text-white" onClick={() => history.goBack()} style={{ cursor: 'pointer' }}>Back to Editor</div>
             </div>
             <div className='bg-grey d-flex justify-content-around'>
+            
               <iframe className="bg-white" width={width} height={window.innerHeight - 50} srcDoc={`<head><script
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o&libraries=places&callback=myMap"
-        ></script></head>${pageContent}`} ref={iframeRef} />
+                  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCG1_opG1B7MRaTXYYy0B_fTPWg-RI3Mcs&libraries=places&callback=myMap"
+                ></script></head>${pageContent}`} ref={iframeRef} />
 
             </div>
 

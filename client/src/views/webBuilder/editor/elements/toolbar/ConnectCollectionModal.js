@@ -96,7 +96,16 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, getProduct
         }
         setRepeaterChildCmps(tempModels);
       }
-
+      else{
+        let tempModelsToConnect=[];
+        const models=selectedCmp.components().models;
+        models && models.map(m=>{
+        if (m.attributes.type === 'image' || m.attributes.type === 'text') {
+            tempModelsToConnect.push(m);
+          }
+        })
+        setModelsToConnect(tempModelsToConnect);
+      }
       setSelectedCollection(collection);
       
       const tempFields = [];
@@ -159,10 +168,8 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, getProduct
     const componentType = selectedModel?.attributes.type;
     const websiteId = store.form._id;
     const connectedField = data.value;
-
     dispatch(createOrUpdateConnectionAction({datasetId, componentId, websiteId, componentType, connectedField}));
   };
-
   return (
     <>
       <Modal isOpen={connectData.isOpen} toggle={() => { setConnectData({...connectData, isOpen: false}); setViewConnection(false); }} centered size='md'>
@@ -252,6 +259,7 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, getProduct
                     Connections
                   </Label>
                 </div>
+                {console.log('checkedConModales', checkedConModels)}
                 {
                   checkedConModels.length > 0 && (
                     <ListGroup>

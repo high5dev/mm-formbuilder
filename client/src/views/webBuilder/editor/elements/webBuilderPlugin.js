@@ -889,6 +889,30 @@ export const webBuilderPlugin = (editor) => {
     },
   })
 
+  editor.TraitManager.addType('form-type',{
+    noLabel: true,
+    // Expects as return a simple HTML string or an HTML element
+    createInput({ trait, component }) {
+      const el = document.createElement('div');
+      el.className = 'new-form-element';
+      el.innerHTML=`
+        <label>Type</label>
+        <div class="trait-form-type-container">
+          <select class="trait-form-type-selection">
+            <option value="POST">GET</option>
+            <option value="GET">POST</option>
+          </select>
+        </div>
+      `;
+      const selectionEl=el.querySelector('.trait-form-type-selection');
+      selectionEl.addEventListener('change', function(e){
+        component.set('formType', e.target.value);
+      })
+      return el;
+    },
+
+  })
+
   editor.TraitManager.addType('date', {
     noLabel: true,
     // Expects as return a simple HTML string or an HTML element

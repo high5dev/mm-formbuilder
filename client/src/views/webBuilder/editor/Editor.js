@@ -21,7 +21,7 @@ import { RiQuestionMark } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { Link, useHistory, useParams } from 'react-router-dom';
-import { SlArrowDown } from "react-icons/sl";
+import { SlArrowDown } from 'react-icons/sl';
 import Select from 'react-select';
 import WebFont from 'webfontloader';
 import {
@@ -135,8 +135,15 @@ import RoleModal from './topNav/role';
 import AddPresetModal from './cms/AddPresetModal';
 import CMS from './topNav/cms';
 import { fontWebStyle } from './leftSidebar/theme/defaultTheme/variable';
-import { ImCheckmark, ImCross } from "react-icons/im";
-import {colors, fonts, buttons, background, image, property} from '../editor/leftSidebar/theme/defaultTheme'
+import { ImCheckmark, ImCross } from 'react-icons/im';
+import {
+  colors,
+  fonts,
+  buttons,
+  background,
+  image,
+  property
+} from '../editor/leftSidebar/theme/defaultTheme';
 // import { attr } from 'highcharts';
 import RichTextEditor from './leftSidebar/content/RichTextEditor';
 import ContentSideBar from './leftSidebar/content/ContentSideBar';
@@ -189,7 +196,7 @@ export default function Editor({
   const [openCreateForm, setOpenCreateForm] = useState();
   const { id } = useParams();
   const form = store.form;
-  const formTheme=store.formTheme;
+  const formTheme = store.formTheme;
   const page = store.currentPage;
   const dispatch = useDispatch();
   const history = useHistory();
@@ -219,11 +226,11 @@ export default function Editor({
   const [selectedFormBlock, setSelectedFormBlock] = useState(null);
   const [OpenCategory, setOpenCategory] = useState({ index: 0, value: true });
   //theme section
-  const [selectedColor, setSelectedColor]=useState();
-  const [selectedButton, setSelectedButton]=useState();
-  const [selectedFont, setSelectedFont]=useState();
-  const [selectedImage, setSelectedImage]=useState(formTheme?.image);
-  const [selectedBackground, setSelectedBackground]=useState(formTheme?.background);
+  const [selectedColor, setSelectedColor] = useState();
+  const [selectedButton, setSelectedButton] = useState();
+  const [selectedFont, setSelectedFont] = useState();
+  const [selectedImage, setSelectedImage] = useState(formTheme?.image);
+  const [selectedBackground, setSelectedBackground] = useState(formTheme?.background);
   const [storeProducts, setStoreProducts] = useState({});
   const user = getUserData();
   useEffect(() => {
@@ -305,28 +312,28 @@ export default function Editor({
   const getPopups = (editor) => {
     const allComponents = editor.getWrapper().components().models;
     const popups = [];
-    allComponents.forEach(c => {
+    allComponents.forEach((c) => {
       let popupData = {};
       if (c.get('type') === 'popup') {
-        c.components().models.map(e => {
+        c.components().models.map((e) => {
           if (e.ccid.includes('popup-trigger')) {
             popupData = {
               ...popupData,
-              triggerId: e.ccid,
+              triggerId: e.ccid
             };
           }
           if (e.ccid.includes('popup-wrapper')) {
             popupData = {
               ...popupData,
-              wrapperId: e.ccid,
+              wrapperId: e.ccid
             };
           }
         });
 
-        c.getTraits().map(t => {
+        c.getTraits().map((t) => {
           popupData = {
             ...popupData,
-            [t.attributes.name]: t.attributes.value,
+            [t.attributes.name]: t.attributes.value
           };
         });
 
@@ -334,6 +341,22 @@ export default function Editor({
       }
     });
     return popups;
+  };
+  function getAllChildComponents(component) {
+    var allChildComponents = [];
+
+    // Get direct children of the current component
+    var directChildren = component.get('components');
+
+    // Recursively traverse each direct child
+    directChildren.forEach(function (childComponent) {
+      allChildComponents.push(childComponent);
+      // Recursively get children of the current child
+      var grandChildComponents = getAllChildComponents(childComponent);
+      allChildComponents = allChildComponents.concat(grandChildComponents);
+    });
+
+    return allChildComponents;
   }
 
   // const PageSave = async () => {
@@ -604,12 +627,12 @@ export default function Editor({
         // }
       });
     }
-  }
+  };
 
-  const handleThemeColor=(value, item)=>{
-    let tempColor=JSON.parse(JSON.stringify(item));
-    setSelectedColor({...tempColor, value:value});
-  }
+  const handleThemeColor = (value, item) => {
+    let tempColor = JSON.parse(JSON.stringify(item));
+    setSelectedColor({ ...tempColor, value: value });
+  };
   useEffect(() => {
     if (editor && store.selectedProduct) {
       const components = editor.getWrapper().components().models;
@@ -744,15 +767,14 @@ export default function Editor({
     //   return result; // Result should be ALWAYS an array
     // };
 
-
     let gjsEditor = grapesjs.init({
       container: '#editor',
       height: window.innerHeight - 117,
       canvas: {
         scripts: [
-          "https://maps.googleapis.com/maps/api/js?key=AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o&libraries=places&callback=myMap",
+          'https://maps.googleapis.com/maps/api/js?key=AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o&libraries=places&callback=myMap'
         ],
-        styles: ["https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"]
+        styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css']
       },
       plugins: [basicBlockPlugin, (editor) => webBuilderPlugin(editor), websitePlugin],
       pluginsOpts: {
@@ -819,8 +841,8 @@ export default function Editor({
           {
             id: 'mobilePortrait',
             name: 'Mobile portrait',
-            width: '480px',
-            widthMedia: '480px'
+            width: '320px',
+            widthMedia: '320px'
           }
         ]
       },
@@ -829,7 +851,7 @@ export default function Editor({
       },
       commands: {
         defaults: [{}]
-      },
+      }
     });
 
     let compoId = '';
@@ -852,6 +874,57 @@ export default function Editor({
     });
 
     gjsEditor.on('component:add', (component) => {
+      let device = gjsEditor.getDevice();
+      if (device !== 'desktop' && device !== 'tablet') {
+        if (component.get('type') == 'count-down') {
+          component.set('template', component.getAttributes().template);
+          component.set('style', {
+            'text-align': 'center',
+            'padding-left': '10px',
+            'padding-right': '10px',
+            // width: 'fit-content',
+          });
+          getAllChildComponents(component).map((children) => {
+            children.set('style', { 'font-size': '15px', 'padding-left':'2px', 'padding-right':'2px' });
+          });
+        } else if (component.get('type') == 'text') {
+          component.set('style', { 'padding-left': '0.5rem', 'padding-right': '0.5rem' });
+        } else if (component.get('type') == 'video') {
+          component.set('style', {
+            width: '320px',
+            height: '200px',
+            'padding-left': '0.5rem',
+            'padding-right': '0.5rem'
+          });
+          getAllChildComponents(component).map((children) => {
+            children.set('style', { 'font-size': '16px' });
+          });
+        } 
+        else if (component.get('type') == 'social-bar') {
+          component.set('style', {
+            display: 'flex',
+            'flex-direction': 'row',
+            width: 'fit-content',
+            height: '60px'
+          })
+          getAllChildComponents(component).map((children) => {
+            children.set('style', { 'font-size': '20px' });
+          })
+         }
+        else {
+          component.set('style', {
+            'padding-left': '0.5rem',
+            'padding-right': '0.5rem'
+          });
+          getAllChildComponents(component).map((children) => {
+            if (children.get('tagName') == 'h1') {
+              children.set('style', { 'font-size': '30px' });
+            }
+            if (children.get('tagName') == 'img')
+              children.set('style', { 'max-width': '200px', 'min-width': '200px' });
+          });
+        }
+      }
       if (!component) return;
       if (
         component.get('type') === 'gridproductgallery' ||
@@ -1047,12 +1120,73 @@ export default function Editor({
     });
     gjsEditor.Commands.add('set-device-desktop', (editor) => {
       editor.setDevice('desktop');
+      const allComponents = editor.getWrapper().components().models;
+      allComponents.map((cmp) => {
+        console.log('------->', cmp.getClasses());
+        if (cmp.get('type') == 'video') {
+          cmp.set('style', {
+            width: '615px',
+            height: '350px'
+          });
+        }
+      });
     });
     gjsEditor.Commands.add('set-device-tablet', (editor) => {
       editor.setDevice('tablet');
+      const allComponents = editor.getWrapper().components().models;
+      allComponents.map((cmp) => {
+        console.log('------->', cmp.getClasses());
+        if (cmp.get('type') == 'video') {
+          cmp.set('style', {
+            width: '615px',
+            height: '350px'
+          });
+        }
+      });
     });
     gjsEditor.Commands.add('set-device-mobile', (editor) => {
       editor.setDevice('mobilePortrait');
+      const allComponents = editor.getWrapper().components().models;
+      allComponents.map((cmp) => {
+        console.log('------->', cmp.get('type'));
+        if (cmp.get('type') == 'count-down') {
+          getAllChildComponents(cmp).map((children) => {
+            children.set('style', { 'font-size': '15px', 'padding-left':'0.5rem', 'padding-right':'0.5rem' });
+          });
+        } else if (cmp.get('tagName') == 'h1' || cmp.get('tagName') == 'h5'  ||cmp.get('tagName') == 'p' ) {
+          // cmp.set('style', { 'padding-left': '0.5rem', 'padding-right': '0.5rem' });
+        } else if (cmp.get('type') == 'video') {
+          cmp.set('style', {
+            width: '320px',
+            height: '200px',
+            'padding-left': '0.5rem',
+            'padding-right': '0.5rem'
+          });
+        } else if (cmp.get('type') == 'social-bar') {
+          cmp.set('style', {
+            display: 'flex',
+            'flex-direction': 'row',
+            width: 'fit-content',
+            height: '60px'
+          });
+          getAllChildComponents(cmp).map((children) => {
+            children.set('style', { 'font-size': '20px' });
+          });
+        } else {
+          cmp.set('style', {
+            width: '320px',
+            'padding-left': '0.5rem',
+            'padding-right': '0.5rem'
+          });
+          getAllChildComponents(cmp).map((children) => {
+            if (children.get('tagName') == 'h1') {
+              children.set('style', { 'font-size': '30px' });
+            }
+            if (children.get('tagName') == 'img')
+              children.set('style', { 'max-width': '200px', 'min-width': '200px' });
+          });
+        }
+      });
     });
     gjsEditor.on('block:custom', (props) => {
       // The `props` will contain all the information you need in order to update your UI.
@@ -1213,24 +1347,32 @@ export default function Editor({
         return { name: font.family, url: font.files.regular };
       });
       const fontFamilyProp = gjsEditor?.StyleManager.getProperty('typography', 'font-family');
-      const decorationOptions=[
-          {id:'none', label:'none'},
-          {id:'underline', label:'underline'},
-          {id:'line-through', label:'line-through'}
+      const decorationOptions = [
+        { id: 'none', label: 'none' },
+        { id: 'underline', label: 'underline' },
+        { id: 'line-through', label: 'line-through' }
       ];
-      const property = gjsEditor?.StyleManager.addProperty('typography', {
-        label: 'Text-decoration',
-        property: 'text-decoration',
-        type: 'select',
-        default: 'none',
-        options: decorationOptions,
-      }, { at: -2 });
-      const zIndex = gjsEditor?.StyleManager.addProperty('typography', {
-        label: 'Z-Index',
-        property: 'z-index',
-        type: 'input',
-        default: 'none',
-      }, { at: -3 });
+      const property = gjsEditor?.StyleManager.addProperty(
+        'typography',
+        {
+          label: 'Text-decoration',
+          property: 'text-decoration',
+          type: 'select',
+          default: 'none',
+          options: decorationOptions
+        },
+        { at: -2 }
+      );
+      const zIndex = gjsEditor?.StyleManager.addProperty(
+        'typography',
+        {
+          label: 'Z-Index',
+          property: 'z-index',
+          type: 'input',
+          default: 'none'
+        },
+        { at: -3 }
+      );
       const options = [];
       fontData?.forEach((font) => {
         options.push({ id: font.name, label: font.name });
@@ -1335,6 +1477,13 @@ export default function Editor({
                 });
                 this.set('toolbar', toolbar);
               }
+
+              toolbar.unshift({
+                id: 'connect-collection',
+                command: 'connect-collection',
+                label: connectionLabel
+              });
+
               if (
                 elType.id === 'post-list-large' ||
                 elType.id === 'post-card-large' ||
@@ -1347,13 +1496,6 @@ export default function Editor({
                   id: 'blog-management',
                   command: 'blog-management',
                   label: blogmanagementLabel
-                });
-              }
-              if (elType.id === 'repeater' || elType.id === 'gallery') {
-                toolbar.unshift({
-                  id: 'connect-collection',
-                  command: 'connect-collection',
-                  label: connectionLabel
                 });
               }
               if (
@@ -1397,16 +1539,16 @@ export default function Editor({
     setEditor(gjsEditor);
   }, []);
 
-  useEffect(()=>{
-    if(formTheme){
-
+  useEffect(() => {
+    if (formTheme) {
     }
-  }, [formTheme])
+  }, [formTheme]);
 
   useEffect(() => {
     if (customwidth && customwidth != 480 && customwidth != 768 && customwidth != 1680) {
       const device_name = (Math.random() + 1).toString();
       const command_name = (Math.random() + 2).toString();
+      editor?.runCommand('set-device-mobile');
       editor?.DeviceManager.add({
         id: device_name,
         name: device_name,
@@ -1461,23 +1603,22 @@ export default function Editor({
       const current_page = editor.Pages.getSelected();
       const html = editor.getHtml({ current_page });
       const css = editor.getCss({ current_page });
+      console.log(editor);
       const popups = getPopups(editor);
       const payload = {
         page: page?._id,
         html: html,
         css: css,
-        popups,
+        popups
       };
       if (isback) {
-        if (isSave) {
-          let res = await dispatch(updatePageAction(id, payload));
-          console.log(res);
-          history.goBack();
-        } else {
-          history.goBack();
-        }
-        setIsSave(false);
+        dispatch(updatePageAction(id, payload));
+        history.goBack();
         setIsBack(false);
+      }
+      if (isSave) {
+        let res = await dispatch(updatePageAction(id, payload));
+        setIsSave(false);
       }
       if (ispreview) {
         dispatch(updatePageAction(id, payload)).then((res) => {
@@ -1500,7 +1641,7 @@ export default function Editor({
         });
       }
     }
-  }, [ispreview, ispublish, isback]);
+  }, [ispreview, ispublish, isback, isSave]);
 
   useEffect(async () => {
     if (page) {
@@ -1528,20 +1669,20 @@ export default function Editor({
             page: page?._id,
             html: html,
             css: css,
-            popups,
+            popups
           };
+          console.log('interval============0', payload);
           dispatch(updatePageAction(id, payload));
         }
       }, 1000 * 30);
-      //Clearing the interval
       return () => clearInterval(interval);
     }
   }, [page?._id]);
 
   useEffect(() => {
     if (editor) {
-      const head=editor?.Canvas?.getDocument()?.head;
-      if(head){
+      const head = editor?.Canvas?.getDocument()?.head;
+      if (head) {
         const css = editor.Css;
         css.addRules(`.gjs-row {
           display: flex;
@@ -1561,92 +1702,84 @@ export default function Editor({
           flex-grow: 1;
           flex-basis: 100%;
         }`);
-        formTheme?.buttons?.map((_button)=>{
-          let attributes=_button.attributes;
-          let btnAttr={};
-          const keys=Object.keys(attributes);
-          const values=Object.values(attributes);
-          for(let i=0;i<keys.length;i++){
-             const newKey=property[keys[i]];
-             btnAttr[newKey]=values[i]
+        formTheme?.buttons?.map((_button) => {
+          let attributes = _button.attributes;
+          let btnAttr = {};
+          const keys = Object.keys(attributes);
+          const values = Object.values(attributes);
+          for (let i = 0; i < keys.length; i++) {
+            const newKey = property[keys[i]];
+            btnAttr[newKey] = values[i];
           }
-          let btnStyle="<style>";
-          const newKeys=Object.keys(btnAttr);
-          if(_button.type==='Primary'){
-            btnStyle+='.theme-button-primary{';
-            for(let i=0; i<keys.length; i++){
-              btnStyle+=`${newKeys[i]}:${btnAttr[newKeys[i]]};`;
+          let btnStyle = '<style>';
+          const newKeys = Object.keys(btnAttr);
+          if (_button.type === 'Primary') {
+            btnStyle += '.theme-button-primary{';
+            for (let i = 0; i < keys.length; i++) {
+              btnStyle += `${newKeys[i]}:${btnAttr[newKeys[i]]};`;
+            }
+          } else if (_button.type === 'Secondary') {
+            btnStyle += '.theme-button-secondary{';
+            for (let i = 0; i < keys.length; i++) {
+              btnStyle += `${newKeys[i]}:${btnAttr[newKeys[i]]};`;
             }
           }
-          else if(_button.type==='Secondary'){
-            btnStyle+='.theme-button-secondary{';
-            for(let i=0; i<keys.length; i++){
-              btnStyle+=`${newKeys[i]}:${btnAttr[newKeys[i]]};`;
-            }
-          }
-          btnStyle+="}</style>";
-          head.insertAdjacentHTML('beforeend', `${btnStyle}`)
+          btnStyle += '}</style>';
+          head.insertAdjacentHTML('beforeend', `${btnStyle}`);
         });
-        formTheme?.fonts?.map((_font)=>{
-          let attributes=_font.attributes;
-          let fontAttr={};
-          const keys=Object.keys(attributes);
-          const values=Object.values(attributes);
-          for(let i=0;i<keys.length;i++){
-             const newKey=property[keys[i]];
-             fontAttr[newKey]=values[i]
+        formTheme?.fonts?.map((_font) => {
+          let attributes = _font.attributes;
+          let fontAttr = {};
+          const keys = Object.keys(attributes);
+          const values = Object.values(attributes);
+          for (let i = 0; i < keys.length; i++) {
+            const newKey = property[keys[i]];
+            fontAttr[newKey] = values[i];
           }
-          let fontStyle="<style>";
-          const newKeys=Object.keys(fontAttr);
-          if(_font.type==='DFLT'){
-            fontStyle+='.theme-text-default{';
+          let fontStyle = '<style>';
+          const newKeys = Object.keys(fontAttr);
+          if (_font.type === 'DFLT') {
+            fontStyle += '.theme-text-default{';
+          } else if (_font.type === 'PAR') {
+            fontStyle += '.theme-text-paragraph{';
+          } else if (_font.type === 'H1') {
+            fontStyle += '.theme-text-h1{';
+          } else if (_font.type === 'H2') {
+            fontStyle += '.theme-text-h2{';
+          } else if (_font.type === 'H3') {
+            fontStyle += '.theme-text-h3{';
+          } else if (_font.type === 'H4') {
+            fontStyle += '.theme-text-h4{';
+          } else if (_font.type === 'H5') {
+            fontStyle += '.theme-text-h5{';
+          } else if (_font.type === 'H6') {
+            fontStyle += '.theme-text-h6{';
           }
-          else if(_font.type==='PAR'){
-            fontStyle+='.theme-text-paragraph{';
+          for (let i = 0; i < keys.length; i++) {
+            fontStyle += `${newKeys[i]}:${fontAttr[newKeys[i]]};`;
           }
-          else if(_font.type==='H1'){
-            fontStyle+='.theme-text-h1{';
-          }
-          else if(_font.type==='H2'){
-            fontStyle+='.theme-text-h2{';
-          }
-          else if(_font.type==='H3'){
-            fontStyle+='.theme-text-h3{';
-          }
-          else if(_font.type==='H4'){
-            fontStyle+='.theme-text-h4{';
-          }
-          else if(_font.type==='H5'){
-            fontStyle+='.theme-text-h5{';
-          }
-          else if(_font.type==='H6'){
-            fontStyle+='.theme-text-h6{';
-          }
-          for(let i=0; i<keys.length; i++){
-            fontStyle+=`${newKeys[i]}:${fontAttr[newKeys[i]]};`;
-          }
-          fontStyle+="}</style>";
-          head.insertAdjacentHTML('beforeend', `${fontStyle}`)
+          fontStyle += '}</style>';
+          head.insertAdjacentHTML('beforeend', `${fontStyle}`);
         });
-      if(formTheme?.image){
-        let attributes=formTheme.image.attributes;
-        let imgAttr={};
-        const keys=Object.keys(attributes);
-        const values=Object.values(attributes);
-        for(let i=0;i<keys.length;i++){
-           const newKey=property[keys[i]];
-           imgAttr[newKey]=values[i]
+        if (formTheme?.image) {
+          let attributes = formTheme.image.attributes;
+          let imgAttr = {};
+          const keys = Object.keys(attributes);
+          const values = Object.values(attributes);
+          for (let i = 0; i < keys.length; i++) {
+            const newKey = property[keys[i]];
+            imgAttr[newKey] = values[i];
+          }
+          let imgStyle = '<style>';
+          const newKeys = Object.keys(imgAttr);
+          imgStyle += '.theme-image{';
+          for (let i = 0; i < keys.length; i++) {
+            imgStyle += `${newKeys[i]}:${imgAttr[newKeys[i]]};`;
+          }
+          imgStyle += '}</style>';
+          head.insertAdjacentHTML('beforeend', `${imgStyle}`);
         }
-        let imgStyle="<style>";
-        const newKeys=Object.keys(imgAttr);
-        imgStyle+='.theme-image{';
-          for(let i=0; i<keys.length; i++){
-            imgStyle+=`${newKeys[i]}:${imgAttr[newKeys[i]]};`;
-          }
-          imgStyle+="}</style>";
-        head.insertAdjacentHTML('beforeend', `${imgStyle}`)
-      }
-      let menuStyle=`
+        let menuStyle = `
           <style>
           .trait-menu-item-container{
             &:hover{
@@ -1657,25 +1790,33 @@ export default function Editor({
           }
           </style>
       `;
-      if(head){
-        head.insertAdjacentHTML('beforeend', `${menuStyle}`)
-      }
-
+        if (head) {
+          head.insertAdjacentHTML('beforeend', `${menuStyle}`);
+        }
       }
       store.webElements.map((el, idx) => {
         if (el?.category[0]?.name === 'New Form') {
           let formItem = {
-            isComponent: (el) => el.tagName === 'DIV' && el.classList.contains('new-form'),
+            isComponent: (el) => el.tagName === 'FORM' && el.classList.contains('new-form'),
             model: {
               defaults: {
-                tagName: 'div',
+                tagName: 'form',
                 draggable: true,
                 droppable: true,
                 selectable: true,
                 components: (props) => {
                   return <div></div>;
                 },
-                attributes: { class: 'new-form' },
+                attributes: { class: 'new-form', type: 'GET' },
+                formType: '',
+                traits: [
+                  {
+                    type: 'form-type',
+                    name: 'Type',
+                    changeProp: true,
+                    min: 1
+                  }
+                ],
                 styles: `.new-form {height:fit-content; width:500px; background-color:white}`,
                 stylable: [
                   'width',
@@ -1687,6 +1828,16 @@ export default function Editor({
                   'justify-content',
                   'display'
                 ]
+              }
+            },
+            view: {
+              init() {
+                this.listenTo(this.model, 'change:formType', this.handleChangeType);
+              },
+              handleChangeType(e) {
+                let formType = this.model.get('formType');
+                this.model.attributes.type = formType;
+                this.render();
               }
             }
           };
@@ -1707,10 +1858,10 @@ export default function Editor({
         }
         if (el?.category[0]?.name === 'Add Existing Form') {
           let formItem = {
-            isComponent: (el) => el.tagName === 'DIV' && el.classList.contains('add-form'),
+            isComponent: (el) => el.tagName === 'FORM' && el.classList.contains('add-form'),
             model: {
               defaults: {
-                tagName: 'div',
+                tagName: 'form',
                 draggable: true,
                 droppable: true,
                 selectable: true,
@@ -1876,7 +2027,9 @@ export default function Editor({
               menu: `${el?.category[0]?.mainMenu}-${el?.category[0]?.subMenu}`,
               mainMenu: `${el?.category[0]?.mainMenu}`,
               refcategory: `${el?.category[0]?.name}`,
-              submenu: el?.category[0]?.subMenu
+              submenu: el?.category[0]?.subMenu,
+              mediaType: el?.mediaType || '',
+              mediaName: el?.name || ''
             }
           );
         }
@@ -1979,52 +2132,46 @@ export default function Editor({
         html: html,
         css: css
       };
+      console.log('popstate============0', payload);
       dispatch(updatePageAction(id, payload));
     }
   });
 
-  useEffect(()=>{
-    if(selectedFont && editor){
-      const head=editor?.Canvas?.getDocument()?.head;
-        let attributes=selectedFont.attributes;
-        let fontAttr={};
-        const keys=Object.keys(attributes);
-        const values=Object.values(attributes);
-        for(let i=0;i<keys.length;i++){
-           const newKey=property[keys[i]];
-           fontAttr[newKey]=values[i]
-        }
-        let fontStyle="<style>";
-        const newKeys=Object.keys(fontAttr);
-        if(selectedFont.type==='DFLT'){
-          fontStyle+='.theme-text-default{';
-        }
-        else if(selectedFont.type==='PAR'){
-          fontStyle+='.theme-text-paragraph{';
-        }
-        else if(selectedFont.type==='H1'){
-          fontStyle+='.theme-text-h1{';
-        }
-        else if(selectedFont.type==='H2'){
-          fontStyle+='.theme-text-h2{';
-        }
-        else if(selectedFont.type==='H3'){
-          fontStyle+='.theme-text-h3{';
-        }
-        else if(selectedFont.type==='H4'){
-          fontStyle+='.theme-text-h4{';
-        }
-        else if(selectedFont.type==='H5'){
-          fontStyle+='.theme-text-h5{';
-        }
-        else if(selectedFont.type==='H6'){
-          fontStyle+='.theme-text-h6{';
-        }
-        for(let i=0; i<keys.length; i++){
-          fontStyle+=`${newKeys[i]}:${fontAttr[newKeys[i]]};`;
-        }
-        fontStyle+="}</style>";
-        head.insertAdjacentHTML('beforeend', `${fontStyle}`)
+  useEffect(() => {
+    if (selectedFont && editor) {
+      const head = editor?.Canvas?.getDocument()?.head;
+      let attributes = selectedFont.attributes;
+      let fontAttr = {};
+      const keys = Object.keys(attributes);
+      const values = Object.values(attributes);
+      for (let i = 0; i < keys.length; i++) {
+        const newKey = property[keys[i]];
+        fontAttr[newKey] = values[i];
+      }
+      let fontStyle = '<style>';
+      const newKeys = Object.keys(fontAttr);
+      if (selectedFont.type === 'DFLT') {
+        fontStyle += '.theme-text-default{';
+      } else if (selectedFont.type === 'PAR') {
+        fontStyle += '.theme-text-paragraph{';
+      } else if (selectedFont.type === 'H1') {
+        fontStyle += '.theme-text-h1{';
+      } else if (selectedFont.type === 'H2') {
+        fontStyle += '.theme-text-h2{';
+      } else if (selectedFont.type === 'H3') {
+        fontStyle += '.theme-text-h3{';
+      } else if (selectedFont.type === 'H4') {
+        fontStyle += '.theme-text-h4{';
+      } else if (selectedFont.type === 'H5') {
+        fontStyle += '.theme-text-h5{';
+      } else if (selectedFont.type === 'H6') {
+        fontStyle += '.theme-text-h6{';
+      }
+      for (let i = 0; i < keys.length; i++) {
+        fontStyle += `${newKeys[i]}:${fontAttr[newKeys[i]]};`;
+      }
+      fontStyle += '}</style>';
+      head.insertAdjacentHTML('beforeend', `${fontStyle}`);
 
       // const elType=selectedFont.type;
       // let newElType;
@@ -2070,210 +2217,212 @@ export default function Editor({
       //         attributes && Object.keys(attributes).map((_attribute,i)=>{
       //           element.style[_attribute]=values[i];
       //         })
-      //       } 
+      //       }
       //     }
       //   }
       // }
     }
-  }, [selectedFont])
+  }, [selectedFont]);
 
-  useEffect(()=>{
-    if(selectedColor){
-      const head=editor?.Canvas?.getDocument()?.head;
-      const name=selectedColor.name;
-      const value=selectedColor.value;
-      let newColors=formTheme && formTheme?.colors?.map((_color)=>{
-        if(_color._id===selectedColor._id){
-          let tempColor=JSON.parse(JSON.stringify(_color));
-          tempColor.value=value;      
-          return tempColor
-        }
-        else{
-          return _color;
-        }
-      });
-      let newButtons=formTheme && formTheme?.buttons?.map((_button)=>{
-            let tempButton=JSON.parse(JSON.stringify(_button));
-            if(tempButton.attributes.themeBackgroundColor && tempButton.attributes.themeBackgroundColor===name){
-              tempButton.attributes.backgroundColor=value;
+  useEffect(() => {
+    if (selectedColor) {
+      const head = editor?.Canvas?.getDocument()?.head;
+      const name = selectedColor.name;
+      const value = selectedColor.value;
+      let newColors =
+        formTheme &&
+        formTheme?.colors?.map((_color) => {
+          if (_color._id === selectedColor._id) {
+            let tempColor = JSON.parse(JSON.stringify(_color));
+            tempColor.value = value;
+            return tempColor;
+          } else {
+            return _color;
+          }
+        });
+      let newButtons =
+        formTheme &&
+        formTheme?.buttons?.map((_button) => {
+          let tempButton = JSON.parse(JSON.stringify(_button));
+          if (
+            tempButton.attributes.themeBackgroundColor &&
+            tempButton.attributes.themeBackgroundColor === name
+          ) {
+            tempButton.attributes.backgroundColor = value;
+          }
+          if (
+            tempButton.attributes.themeBackgroundColor &&
+            tempButton.attributes.themeColor === name
+          ) {
+            tempButton.attributes.color = value;
+          }
+          let attributes = tempButton.attributes;
+          let btnAttr = {};
+          const keys = Object.keys(attributes);
+          const values = Object.values(attributes);
+          for (let i = 0; i < keys.length; i++) {
+            const newKey = property[keys[i]];
+            btnAttr[newKey] = values[i];
+          }
+          let btnStyle = '<style>';
+          const newKeys = Object.keys(btnAttr);
+          if (tempButton.type === 'Primary') {
+            btnStyle += '.theme-button-primary{';
+            for (let i = 0; i < keys.length; i++) {
+              btnStyle += `${newKeys[i]}:${btnAttr[newKeys[i]]};`;
             }
-            if(tempButton.attributes.themeBackgroundColor && tempButton.attributes.themeColor===name){
-              tempButton.attributes.color=value;
+          } else if (tempButton.type === 'Secondary') {
+            btnStyle += '.theme-button-secondary{';
+            for (let i = 0; i < keys.length; i++) {
+              btnStyle += `${newKeys[i]}:${btnAttr[newKeys[i]]};`;
             }
-            let attributes=tempButton.attributes;
-            let btnAttr={};
-            const keys=Object.keys(attributes);
-            const values=Object.values(attributes);
-            for(let i=0;i<keys.length;i++){
-               const newKey=property[keys[i]];
-               btnAttr[newKey]=values[i]
-            }
-            let btnStyle="<style>";
-            const newKeys=Object.keys(btnAttr);
-            if(tempButton.type==='Primary'){
-              btnStyle+='.theme-button-primary{';
-              for(let i=0; i<keys.length; i++){
-                btnStyle+=`${newKeys[i]}:${btnAttr[newKeys[i]]};`;
-              }
-            }
-            else if(tempButton.type==='Secondary'){
-              btnStyle+='.theme-button-secondary{';
-              for(let i=0; i<keys.length; i++){
-                btnStyle+=`${newKeys[i]}:${btnAttr[newKeys[i]]};`;
-              }
-            }
-            btnStyle+="}</style>";
-            head.insertAdjacentHTML('beforeend', `${btnStyle}`)
-            return tempButton
-      });
-      let newFonts=formTheme && formTheme?.fonts?.map((_font)=>{
-        let tempFont=JSON.parse(JSON.stringify(_font));
-        if(tempFont.attributes.themeColor && tempFont.attributes.themeColor===name){
-          tempFont.attributes.color=value
-        }
-        let attributes=tempFont.attributes;
-          let fontAttr={};
-          const keys=Object.keys(attributes);
-          const values=Object.values(attributes);
-          for(let i=0;i<keys.length;i++){
-             const newKey=property[keys[i]];
-             fontAttr[newKey]=values[i]
           }
-          let fontStyle="<style>";
-          const newKeys=Object.keys(fontAttr);
-          if(tempFont.type==='DFLT'){
-            fontStyle+='.theme-text-default{';
+          btnStyle += '}</style>';
+          head.insertAdjacentHTML('beforeend', `${btnStyle}`);
+          return tempButton;
+        });
+      let newFonts =
+        formTheme &&
+        formTheme?.fonts?.map((_font) => {
+          let tempFont = JSON.parse(JSON.stringify(_font));
+          if (tempFont.attributes.themeColor && tempFont.attributes.themeColor === name) {
+            tempFont.attributes.color = value;
           }
-          else if(tempFont.type==='PAR'){
-            fontStyle+='.theme-text-paragraph{';
+          let attributes = tempFont.attributes;
+          let fontAttr = {};
+          const keys = Object.keys(attributes);
+          const values = Object.values(attributes);
+          for (let i = 0; i < keys.length; i++) {
+            const newKey = property[keys[i]];
+            fontAttr[newKey] = values[i];
           }
-          else if(tempFont.type==='H1'){
-            fontStyle+='.theme-text-h1{';
+          let fontStyle = '<style>';
+          const newKeys = Object.keys(fontAttr);
+          if (tempFont.type === 'DFLT') {
+            fontStyle += '.theme-text-default{';
+          } else if (tempFont.type === 'PAR') {
+            fontStyle += '.theme-text-paragraph{';
+          } else if (tempFont.type === 'H1') {
+            fontStyle += '.theme-text-h1{';
+          } else if (tempFont.type === 'H2') {
+            fontStyle += '.theme-text-h2{';
+          } else if (tempFont.type === 'H3') {
+            fontStyle += '.theme-text-h3{';
+          } else if (tempFont.type === 'H4') {
+            fontStyle += '.theme-text-h4{';
+          } else if (tempFont.type === 'H5') {
+            fontStyle += '.theme-text-h5{';
+          } else if (tempFont.type === 'H6') {
+            fontStyle += '.theme-text-h6{';
           }
-          else if(tempFont.type==='H2'){
-            fontStyle+='.theme-text-h2{';
+          for (let i = 0; i < keys.length; i++) {
+            fontStyle += `${newKeys[i]}:${fontAttr[newKeys[i]]};`;
           }
-          else if(tempFont.type==='H3'){
-            fontStyle+='.theme-text-h3{';
-          }
-          else if(tempFont.type==='H4'){
-            fontStyle+='.theme-text-h4{';
-          }
-          else if(tempFont.type==='H5'){
-            fontStyle+='.theme-text-h5{';
-          }
-          else if(tempFont.type==='H6'){
-            fontStyle+='.theme-text-h6{';
-          }
-          for(let i=0; i<keys.length; i++){
-            fontStyle+=`${newKeys[i]}:${fontAttr[newKeys[i]]};`;
-          }
-          fontStyle+="}</style>";
-          head.insertAdjacentHTML('beforeend', `${fontStyle}`)
-        return tempFont
-      });
+          fontStyle += '}</style>';
+          head.insertAdjacentHTML('beforeend', `${fontStyle}`);
+          return tempFont;
+        });
       let newImage;
-      if(formTheme && formTheme.image){
-        let newImage=JSON.parse(JSON.stringify(formTheme.image));
-        if(newImage.attributes.themeColor && newImage.attributes.themeColor===name){
-          newImage.attributes.borderColor=value
+      if (formTheme && formTheme.image) {
+        let newImage = JSON.parse(JSON.stringify(formTheme.image));
+        if (newImage.attributes.themeColor && newImage.attributes.themeColor === name) {
+          newImage.attributes.borderColor = value;
         }
-        let attributes=newImage.attributes;
-        let imgAttr={};
-        const keys=Object.keys(attributes);
-        const values=Object.values(attributes);
-        for(let i=0;i<keys.length;i++){
-           const newKey=property[keys[i]];
-           imgAttr[newKey]=values[i]
+        let attributes = newImage.attributes;
+        let imgAttr = {};
+        const keys = Object.keys(attributes);
+        const values = Object.values(attributes);
+        for (let i = 0; i < keys.length; i++) {
+          const newKey = property[keys[i]];
+          imgAttr[newKey] = values[i];
         }
-        let imgStyle="<style>";
-        const newKeys=Object.keys(imgAttr);
-        imgStyle+='.theme-image{';
-          for(let i=0; i<keys.length; i++){
-            imgStyle+=`${newKeys[i]}:${imgAttr[newKeys[i]]};`;
-          }
-          imgStyle+="}</style>";
-        head?.insertAdjacentHTML('beforeend', `${imgStyle}`)
+        let imgStyle = '<style>';
+        const newKeys = Object.keys(imgAttr);
+        imgStyle += '.theme-image{';
+        for (let i = 0; i < keys.length; i++) {
+          imgStyle += `${newKeys[i]}:${imgAttr[newKeys[i]]};`;
+        }
+        imgStyle += '}</style>';
+        head?.insertAdjacentHTML('beforeend', `${imgStyle}`);
       }
-      const payload={
-        colors:newColors,
-        buttons:newButtons,
-        fonts:newFonts,
-        image:newImage
+      const payload = {
+        colors: newColors,
+        buttons: newButtons,
+        fonts: newFonts,
+        image: newImage
       };
-      const themeId=formTheme._id;
+      const themeId = formTheme._id;
       dispatch(updateWebBuilderThemeAction(themeId, payload));
     }
-  }, [selectedColor])
+  }, [selectedColor]);
 
-  useEffect(()=>{
-    if(selectedButton && editor){
-      const head=editor?.Canvas?.getDocument()?.head;
-        let attributes=selectedButton.attributes;
-        let btnAttr={};
-        const keys=Object.keys(attributes);
-        const values=Object.values(attributes);
-        for(let i=0;i<keys.length;i++){
-           const newKey=property[keys[i]];
-           btnAttr[newKey]=values[i]
+  useEffect(() => {
+    if (selectedButton && editor) {
+      const head = editor?.Canvas?.getDocument()?.head;
+      let attributes = selectedButton.attributes;
+      let btnAttr = {};
+      const keys = Object.keys(attributes);
+      const values = Object.values(attributes);
+      for (let i = 0; i < keys.length; i++) {
+        const newKey = property[keys[i]];
+        btnAttr[newKey] = values[i];
+      }
+      let btnStyle = '<style>';
+      const newKeys = Object.keys(btnAttr);
+      if (selectedButton.type === 'Primary') {
+        btnStyle += '.theme-button-primary{';
+        for (let i = 0; i < keys.length; i++) {
+          btnStyle += `${newKeys[i]}:${btnAttr[newKeys[i]]};`;
         }
-        let btnStyle="<style>";
-        const newKeys=Object.keys(btnAttr);
-        if(selectedButton.type==='Primary'){
-          btnStyle+='.theme-button-primary{';
-          for(let i=0; i<keys.length; i++){
-            btnStyle+=`${newKeys[i]}:${btnAttr[newKeys[i]]};`;
-          }
+      } else if (selectedButton.type === 'Secondary') {
+        btnStyle += '.theme-button-secondary{';
+        for (let i = 0; i < keys.length; i++) {
+          btnStyle += `${newKeys[i]}:${btnAttr[newKeys[i]]};`;
         }
-        else if(selectedButton.type==='Secondary'){
-          btnStyle+='.theme-button-secondary{';
-          for(let i=0; i<keys.length; i++){
-            btnStyle+=`${newKeys[i]}:${btnAttr[newKeys[i]]};`;
-          }
-        }
-        btnStyle+="}</style>";
-        head.insertAdjacentHTML('beforeend', `${btnStyle}`)
-      
+      }
+      btnStyle += '}</style>';
+      head.insertAdjacentHTML('beforeend', `${btnStyle}`);
+
       // if(editor && selectedCmp){
       //   let wrapper=selectedCmp.getEl();
       //   const attributes=selectedButton.attributes;
       //   const values=Object.values(attributes);
-      //     let elements = wrapper.querySelectorAll("input[type=button]"); 
+      //     let elements = wrapper.querySelectorAll("input[type=button]");
       //     if(elements){
       //       for (let element of elements){
       //         attributes && Object.keys(attributes).map((_attribute,i)=>{
       //           element.style[_attribute]=values[i];
       //         })
-      //       } 
+      //       }
       //     }
       //   }
-      }
-  }, [selectedButton])
-  
-  useEffect(()=>{
-    if(selectedImage){
-      const head=editor?.Canvas?.getDocument()?.head;
-      if(head){
-        let newImage=JSON.parse(JSON.stringify(selectedImage));
-        let attributes=newImage.attributes;
-        let imgAttr={};
-        const keys=Object.keys(attributes);
-        const values=Object.values(attributes);
-        for(let i=0;i<keys.length;i++){
-           const newKey=property[keys[i]];
-           imgAttr[newKey]=values[i]
+    }
+  }, [selectedButton]);
+
+  useEffect(() => {
+    if (selectedImage) {
+      const head = editor?.Canvas?.getDocument()?.head;
+      if (head) {
+        let newImage = JSON.parse(JSON.stringify(selectedImage));
+        let attributes = newImage.attributes;
+        let imgAttr = {};
+        const keys = Object.keys(attributes);
+        const values = Object.values(attributes);
+        for (let i = 0; i < keys.length; i++) {
+          const newKey = property[keys[i]];
+          imgAttr[newKey] = values[i];
         }
-        let imgStyle="<style>";
-        const newKeys=Object.keys(imgAttr);
-        imgStyle+='.theme-image{';
-          for(let i=0; i<keys.length; i++){
-            imgStyle+=`${newKeys[i]}:${imgAttr[newKeys[i]]};`;
-          }
-          imgStyle+="}</style>";
-        head.insertAdjacentHTML('beforeend', `${imgStyle}`)
+        let imgStyle = '<style>';
+        const newKeys = Object.keys(imgAttr);
+        imgStyle += '.theme-image{';
+        for (let i = 0; i < keys.length; i++) {
+          imgStyle += `${newKeys[i]}:${imgAttr[newKeys[i]]};`;
+        }
+        imgStyle += '}</style>';
+        head.insertAdjacentHTML('beforeend', `${imgStyle}`);
       }
     }
-  }, [selectedImage])
+  }, [selectedImage]);
 
   return (
     <div className="d-flex">
@@ -2298,7 +2447,7 @@ export default function Editor({
                 delay={{ show: 10, hide: 20 }}
                 style={{ height: '100%' }}
               >
-                <div style={{ height: '100%', overflow: 'scroll', minWidth:'230px' }}>
+                <div style={{ height: '100%', overflow: 'scroll', minWidth: '230px' }}>
                   <div className="expanded-header">
                     <span className="me-1">
                       {sidebarData.menu.name === 'CMS' ? (
@@ -2854,38 +3003,53 @@ export default function Editor({
                         )}
                       {sidebarData.menu.id === 'theme' && (
                         <>
-                        {
-                          !themeEditing &&
-                          <div className='theme-container p-1'>             
-                            <div className='color-container' style={{width:'200px'}}>
-                              <div className='submenu-item d-flex justify-content-between align-items-center' onClick={(e)=>{
-                                  setSelectedSubMenu('colors');
-                              }}>
-                                <span className='fw-bold fs-6'>COLORS</span>
-                                <span>
-                                  <ChevronRight size={20} color="black"/>
-                                </span>
-                              </div>
-                              <div className='d-flex flex-wrap align-items-center'>
-                                {
-                                  formTheme && formTheme.colors && formTheme.colors.map((_color)=>{
-                                    return (
-
-                                        <div className='theme-color-panel d-flex justify-content-around align-items-center' style={{border:selectedColor?.name===_color?.name?'1px solid red':'none'}} onClick={(e)=>{
-                                          setSelectedColor(_color);
-                                          setSelectedSubMenu('colors');
-                                        }}>
-                                            <Input type='color' value={_color?.value} className='color-picker-element' onChange={(e)=>{
-                                                handleThemeColor(e.target.value, _color)
-                                            }}/>                                 
+                          {!themeEditing && (
+                            <div className="theme-container p-1">
+                              <div className="color-container" style={{ width: '200px' }}>
+                                <div
+                                  className="submenu-item d-flex justify-content-between align-items-center"
+                                  onClick={(e) => {
+                                    setSelectedSubMenu('colors');
+                                  }}
+                                >
+                                  <span className="fw-bold fs-6">COLORS</span>
+                                  <span>
+                                    <ChevronRight size={20} color="black" />
+                                  </span>
+                                </div>
+                                <div className="d-flex flex-wrap align-items-center">
+                                  {formTheme &&
+                                    formTheme.colors &&
+                                    formTheme.colors.map((_color) => {
+                                      return (
+                                        <div
+                                          className="theme-color-panel d-flex justify-content-around align-items-center"
+                                          style={{
+                                            border:
+                                              selectedColor?.name === _color?.name
+                                                ? '1px solid red'
+                                                : 'none'
+                                          }}
+                                          onClick={(e) => {
+                                            setSelectedColor(_color);
+                                            setSelectedSubMenu('colors');
+                                          }}
+                                        >
+                                          <Input
+                                            type="color"
+                                            value={_color?.value}
+                                            className="color-picker-element"
+                                            onChange={(e) => {
+                                              handleThemeColor(e.target.value, _color);
+                                            }}
+                                          />
                                         </div>
                                       );
                                     })}
-                                    <div onClick={(e) => addNewThemeColor()}>
-                                      <Plus size={20} />
-                                    </div>
-
-                              </div>
+                                  <div onClick={(e) => addNewThemeColor()}>
+                                    <Plus size={20} />
+                                  </div>
+                                </div>
                               </div>
                               <div className="buttons-container mt-1">
                                 <div
@@ -2967,25 +3131,38 @@ export default function Editor({
                                     <IoMdArrowDropright size={20} color="black" />
                                   </span>
                                 </div>
-                              </div> 
-                          </div>
-                        }
-                        {
-                          themeEditing && 
-                          <>
-                          {
-                            selectedSubMenu ==='text' && <TextTheme store={store} selectedColor={selectedColor} selectedFont={selectedFont} setSelectedFont={setSelectedFont}/>
-                          }
-                          {
-                            selectedSubMenu ==='images' && <ImageTheme store={store} selectedColor={selectedColor} selectedImage={selectedImage} setSelectedImage={setSelectedImage}/>
-                          }
-                          {
-                            selectedSubMenu ==='buttons' && <ButtonTheme store={store} selectedColor={selectedColor} selectedButton={selectedButton} setSelectedButton={setSelectedButton}/>
-                          }
-                          </>
-                        }
+                              </div>
+                            </div>
+                          )}
+                          {themeEditing && (
+                            <>
+                              {selectedSubMenu === 'text' && (
+                                <TextTheme
+                                  store={store}
+                                  selectedColor={selectedColor}
+                                  selectedFont={selectedFont}
+                                  setSelectedFont={setSelectedFont}
+                                />
+                              )}
+                              {selectedSubMenu === 'images' && (
+                                <ImageTheme
+                                  store={store}
+                                  selectedColor={selectedColor}
+                                  selectedImage={selectedImage}
+                                  setSelectedImage={setSelectedImage}
+                                />
+                              )}
+                              {selectedSubMenu === 'buttons' && (
+                                <ButtonTheme
+                                  store={store}
+                                  selectedColor={selectedColor}
+                                  selectedButton={selectedButton}
+                                  setSelectedButton={setSelectedButton}
+                                />
+                              )}
+                            </>
+                          )}
                         </>
-                        
                       )}
                       {sidebarData.menu.id === 'assets' && (
                         <div className="submenu-and-element d-flex">
@@ -3320,24 +3497,71 @@ export default function Editor({
                               .map((b, ix) => {
                                 return (
                                   <div className="element" key={ix}>
-                                    <img width="280" src={b.get('media')} />
-                                    <div
-                                      draggable
-                                      onDragStart={(e) => {
-                                        e.stopPropagation();
-                                        blockManager.dragStart(b, e.nativeEvent);
-                                      }}
-                                      onDragEnd={(e) => {
-                                        e.stopPropagation();
-                                        if (b.get('label') === 'New Form') {
-                                          createForm();
-                                        }
-                                        if (b.get('label') === 'Add Existing Form') {
-                                          setAddFormMdl(true);
-                                        }
-                                        blockManager.dragStop(false);
-                                      }}
-                                    ></div>
+                                    {b.get('mediaType').startsWith('video') && (
+                                      <>
+                                        <video width="280" controls>
+                                          <source src={b.get('media')} type={b.get('mediaType')} />
+                                          Your browser does not support HTML video.
+                                        </video>
+                                        <div
+                                          draggable
+                                          onDragStart={(e) => {
+                                            e.stopPropagation();
+                                            blockManager.dragStart(b, e.nativeEvent);
+                                          }}
+                                          onDragEnd={(e) => {
+                                            e.stopPropagation();
+                                            blockManager.dragStop(false);
+                                          }}
+                                        ></div>
+                                      </>
+                                    )}
+
+                                    {b.get('mediaType').startsWith('audio') && (
+                                      <div style={{ width: 140, position: 'relative' }}>
+                                        <div style={{ width: 140 }}>
+                                          <img
+                                            width="140"
+                                            src={require('@src/assets/images/audio.png').default}
+                                          />
+                                          <div>{b.mediaName}</div>
+                                        </div>
+                                        <div
+                                          style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            width: 140,
+                                            height: 150
+                                          }}
+                                          draggable
+                                          onDragStart={(e) => {
+                                            e.stopPropagation();
+                                            blockManager.dragStart(b, e.nativeEvent);
+                                          }}
+                                          onDragEnd={(e) => {
+                                            e.stopPropagation();
+                                            blockManager.dragStop(false);
+                                          }}
+                                        ></div>
+                                      </div>
+                                    )}
+
+                                    {b.get('mediaType').startsWith('image') && (
+                                      <>
+                                        <img width="280" src={b.get('media')} />
+                                        <div
+                                          draggable
+                                          onDragStart={(e) => {
+                                            e.stopPropagation();
+                                            blockManager.dragStart(b, e.nativeEvent);
+                                          }}
+                                          onDragEnd={(e) => {
+                                            e.stopPropagation();
+                                            blockManager.dragStop(false);
+                                          }}
+                                        ></div>
+                                      </>
+                                    )}
                                   </div>
                                 );
                               })}
@@ -3700,7 +3924,7 @@ export default function Editor({
       ) : (
         <></>
       )} */}
-      <div className="property-sidebar" hidden={rsidebarOpen?false:true}>
+      <div className="property-sidebar" hidden={rsidebarOpen ? false : true}>
         <PerfectScrollbar
           className="scrollable-content"
           options={{ suppressScrollX: true }}

@@ -38,7 +38,7 @@ export default function Index() {
   const [roleMdl, setRoleMdl] = useState(false);
   const [viewCMSMenu, setViewCMSMenu] = useState(false);
   const [VisibleMenu, setVisibleMenu] = useState(false);
-  const [thispage, setThispage] = useState()
+  const [thispage, setThispage] = useState();
   const store = useSelector((state) => {
     return {
       ...state.websiteEditor
@@ -49,7 +49,7 @@ export default function Index() {
 
   useEffect(async () => {
     let data = await dispatch(getWebsiteAction(id));
-    if (data.length > 0) {
+    if (data?.length > 0) {
       if (!store.currentPage) {
         dispatch(setCurrentPage(data[0]));
       }
@@ -76,6 +76,7 @@ export default function Index() {
             setCustomWidth={setCustomWidth}
             setIsClear={setIsClear}
             ispreview={ispreview}
+            ispublish={ispublish}
             setIsBack={setIsBack}
             isSave={isSave}
             setIsPreview={setIsPreview}

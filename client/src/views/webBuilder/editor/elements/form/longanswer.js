@@ -31,7 +31,7 @@ let longanswerEl = {
               id: 'long_answer'+ new Date().getTime(),
               label:'Long answer',
               type:'textarea',
-              name:'Long answer',
+              name:'longanswer',
               placeholder:'Enter your long answer',
               required: true
           }

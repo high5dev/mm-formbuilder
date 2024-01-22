@@ -36,7 +36,7 @@ const PagesRoutes = [
     exact:true
   },
   {
-    path: '/website/:id/:pageName/:blogId',
+    path: '/website/:id/:pageName/:blogId/',
     component: lazy(() => import('../../views/website')),
     layout: 'BlankLayout',
     meta: {
