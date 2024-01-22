@@ -1539,14 +1539,13 @@ export default function Editor({
         popups
       };
       if (isback) {
-        if (isSave) {
-          let res = await dispatch(updatePageAction(id, payload));
-          history.goBack();
-        } else {
-          history.goBack();
-        }
-        setIsSave(false);
+        dispatch(updatePageAction(id, payload));
+        history.goBack();
         setIsBack(false);
+      }
+      if (isSave) {
+        let res = await dispatch(updatePageAction(id, payload));
+        setIsSave(false);
       }
       if (ispreview) {
         dispatch(updatePageAction(id, payload)).then((res) => {
@@ -1569,7 +1568,7 @@ export default function Editor({
         });
       }
     }
-  }, [ispreview, ispublish, isback]);
+  }, [ispreview, ispublish, isback, isSave]);
 
   useEffect(async () => {
     if (page) {
@@ -1599,6 +1598,7 @@ export default function Editor({
             css: css,
             popups
           };
+          console.log('interval============0', payload);
           dispatch(updatePageAction(id, payload));
         }
       }, 1000 * 30);
@@ -2059,6 +2059,7 @@ export default function Editor({
         html: html,
         css: css
       };
+      console.log('popstate============0', payload);
       dispatch(updatePageAction(id, payload));
     }
   });
