@@ -256,7 +256,7 @@ export const webBuilderPlugin = (editor) => {
       let newName = '';
       let newUrl = '';
       let newImage = '';
-      let newIcon='';
+      let newIcon='fa-facebook';
       // Here we can decide to use properties from the trait
       // const traitOpts = trait.get('options') || [];
       // const options = traitOpts.length ? traitOpts : [
@@ -295,7 +295,15 @@ export const webBuilderPlugin = (editor) => {
         <div class="trait-new-social-link">
           <input class="trait-new-social-link__name" type="text" placeholder="Insert link name"/>
           <input class="trait-new-social-link__url" type="url" placeholder="Insert link URL"/>
-          <input class="trait-new-social-link__icon" placeholder="Select icon" id="new-select-icon"/>
+          <select class="trait-socialbar-icon-selection">
+            <option value="" disabled selected>Select your option</option>
+            <option class="fa" value="fa-facebook">Facebook</option>
+            <option class="fa" value="fa-twitter">Twitter</option>
+            <option class="fa" value="fa-linkedin">LinkedIn</option>
+            <option class="fa" value="fa-youtube">Youtube</option>
+            <option class="fa" value="fa-tiktok">Tiktok</option>
+            <option class="fa" value="fa-instagram">Instagram</option>
+          </select>
         </div>
         <button class="btn btn-primary mb-1 trait-new-social-link-add-btn">Add</button>
       `;
@@ -306,7 +314,7 @@ export const webBuilderPlugin = (editor) => {
       // Let's make our content interactive
       const newLinkName = el.querySelector('.trait-new-social-link__name');
       const newLinkUrl = el.querySelector('.trait-new-social-link__url');
-      const newLinkIcon = el.querySelector('.trait-new-social-link__icon');
+      const newLinkIcon = el.querySelector('.trait-socialbar-icon-selection');
       const btnAdd = el.querySelector('.trait-new-social-link-add-btn');
 
       newLinkName.addEventListener('change', ev => {
@@ -1262,12 +1270,21 @@ export const webBuilderPlugin = (editor) => {
                 <label>Icon</label>
                 <select id='trait-icon-selection' class='fa trait-icon-selection'>
                    <option class="fa" value='None'>None</option>
-                   <option class="fa" value='fa fa-search'>&#xf002 Search</option>
-                   <option class="fa" value='fa fa-angle-down'>&#xf107 Down</option>
-                   <option class="fa" value='fa fa-angle-left'>&#xf104 Left</option>
-                   <option class="fa" value='fa fa-angle-right'>&#xf105 Right</option>
-                   <option class="fa" value='fa fa-angle-up'>&#xf106 Up</option>
-                   <option class="fa" value='fa fa-redo'>&#xf01e Redo</option>
+                   <option class="fa" value='fa fa-search'>Search</option>
+                   <option class="fa" value='fa fa-angle-down'>Down</option>
+                   <option class="fa" value='fa fa-angle-left'>Left</option>
+                   <option class="fa" value='fa fa-angle-right'>Right</option>
+                   <option class="fa" value='fa fa-angle-up'>Up</option>
+                   <option class="fa" value='fa fa-redo'>Redo</option>
+                   <option class="fa" value='fab fa-google'>Google</option>
+                   <option class="fa" value='fab fa-facebook'>Facebook</option>
+                   <option class="fa" value='fab fa-instagram'>Instagram</option>
+                   <option class="fa" value='fab fa-linkedin'>Linkedin</option>
+                   <option class="fa" value='fab fa-tiktok'>TikTok</option>
+                   <option class="fa" value="far fa-envelope">Envelope</option>
+                   <option class="fa" value="fas fa-link">Link</option>
+                   <option class="fa" value="fas fa-info-circle">Information</option>
+                   <option class="fa" value="fas fa-receipt">Receipt</option>
                 </select>
             </div>
             <div>
@@ -1276,7 +1293,7 @@ export const webBuilderPlugin = (editor) => {
                 <option class="fa" value='fa-roate-0'>None</option>
                 <option class="fa" value='fa-rotate-90'>90</option>
                 <option class="fa" value='fa-rotate-180'>180</option>
-                <option class="fa" value='fa-rotate-180'>270</option>
+                <option class="fa" value='fa-rotate-270'>270</option>
               </select>
             </div>
       `;
