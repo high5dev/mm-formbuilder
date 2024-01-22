@@ -1174,7 +1174,7 @@ export default function Editor({
           });
         } else {
           cmp.set('style', {
-            width: '320px',
+            'max-width': '320px',
             'padding-left': '0.5rem',
             'padding-right': '0.5rem'
           });
@@ -1183,7 +1183,7 @@ export default function Editor({
               children.set('style', { 'font-size': '30px' });
             }
             if (children.get('tagName') == 'img')
-              children.set('style', { 'max-width': '200px', 'min-width': '200px' });
+              children.set('style', { 'max-width': '200px' });
           });
         }
       });
