@@ -1610,15 +1610,18 @@ export default function Editor({
         popups
       };
       if (isback) {
+        console.log('111111111------------------------------')
         dispatch(updatePageAction(id, payload));
         history.goBack();
         setIsBack(false);
       }
       if (isSave) {
+        console.log('2222222222------------------------------')
         let res = await dispatch(updatePageAction(id, payload));
         setIsSave(false);
       }
       if (ispreview) {
+        console.log('33333333333------------------------------')
         dispatch(updatePageAction(id, payload)).then((res) => {
           if (res) {
             history.push(`/preview/${id}/${page?.name}`);
@@ -1675,6 +1678,7 @@ export default function Editor({
           css: css,
           popups
         };
+        console.log('4444444444------------------------------')
         dispatch(updatePageAction(id, payload));
       }
     }, 1000 * 120);
@@ -2124,19 +2128,20 @@ export default function Editor({
     }
   }, [store.webBlogs]);
 
-  window.addEventListener('popstate', () => {
-    if (editor) {
-      const current_page = editor.Pages.getSelected();
-      const html = editor.getHtml({ current_page });
-      const css = editor.getCss({ current_page });
-      const payload = {
-        page: storeRef.current?.currentPage?._id,
-        html: html,
-        css: css
-      };
-      dispatch(updatePageAction(id, payload));
-    }
-  });
+  // window.addEventListener('popstate', () => {
+  //   if (editor) {
+  //     const current_page = editor.Pages.getSelected();
+  //     const html = editor.getHtml({ current_page });
+  //     const css = editor.getCss({ current_page });
+  //     const payload = {
+  //       page: storeRef.current?.currentPage?._id,
+  //       html: html,
+  //       css: css
+  //     };
+  //     console.log('55555555555------------------------------')
+  //     dispatch(updatePageAction(id, payload));
+  //   }
+  // });
 
   useEffect(() => {
     if (selectedFont && editor) {
