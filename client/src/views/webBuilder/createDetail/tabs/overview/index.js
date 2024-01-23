@@ -13,7 +13,12 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  Badge
+  Badge,
+  Label,
+  Modal,
+  ModalHeader,
+  ModalFooter,
+  ModalBody
 } from 'reactstrap';
 import {
   BarChart,
@@ -23,54 +28,98 @@ import {
   Tooltip,
   CartesianGrid,
   Cell,
-  ResponsiveContainer
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  PieChart,
+  Pie
 } from 'recharts';
 // ** Third Party Components
 import { ImAddressBook } from 'react-icons/im';
 import { FiUser, FiUsers } from 'react-icons/fi';
-import { MdOutlineDomainAdd, MdDriveFileRenameOutline  } from "react-icons/md";
+import { MdOutlineDomainAdd, MdDriveFileRenameOutline } from 'react-icons/md';
 import { FaInternetExplorer } from 'react-icons/fa';
 import { BsArrowLeftShort, BsArrowRightShort, BsGraphUp } from 'react-icons/bs';
 import DataTable from 'react-data-table-component';
 import moment from 'moment';
-import { Edit, Eye, File, FileText, Menu, MoreVertical, Share, Trash, Upload, ChevronDown } from 'react-feather';
-
+import {
+  Edit,
+  Eye,
+  File,
+  FileText,
+  Menu,
+  MoreVertical,
+  Share,
+  Trash,
+  Upload,
+  ChevronDown
+} from 'react-feather';
+const Data = [
+  { value: 2, amount: 3 },
+  { value: 6, amount: 4 },
+  { value: 9, amount: 36 },
+  { value: 21, amount: 3 },
+  { value: 54, amount: 2 },
+  { value: 17, amount: 9 }
+];
 // ** Styles
 import '@styles/react/apps/app-email.scss';
 
 const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
-  const formHistory=store?.formHistory;
-  const childForms=store?.childForms;
-  const [tab, setTab]=useState('Site')
-  const entryFilled=store?.formHistory?.entryFilled;
-  let newEntry=[];
-  entryFilled && entryFilled.map((_form)=>{
-    const formId=_form._id;
-    childForms && childForms.map((_childForm)=>{
-      if(_childForm._id===formId){
-        newEntry.push({
-          name:_childForm.name,
-          amount:_form.count
-        })
-      }
-    })
-  });
-  const pages=store?.form?.formData;
+  const formHistory = store?.formHistory;
+  const childForms = store?.childForms;
+  const [tab, setTab] = useState('Site');
+  const [openConnectDomainnModal, setOpenConnectDomainnModal] = useState(false);
+  const entryFilled = store?.formHistory?.entryFilled;
+  let newEntry = [];
+  entryFilled &&
+    entryFilled.map((_form) => {
+      const formId = _form._id;
+      childForms &&
+        childForms.map((_childForm) => {
+          if (_childForm._id === formId) {
+            newEntry.push({
+              name: _childForm.name,
+              amount: _form.count
+            });
+          }
+        });
+    });
+  const pages = store?.form?.formData;
   const chartWidth = isMobileView ? window.innerWidth - 40 : 900;
   const chartHeight = isMobileView ? 250 : 400;
-  let chartSiteViewedData=[];
-  const months=['Jan', 'Feb', 'March', 'Apr', 'May', 'June', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-  formHistory?.countPerMonthSiteViewed && formHistory?.countPerMonthSiteViewed.map((_perMonthViewed, i)=>{
-    chartSiteViewedData.push({
-      key:i, month:months[i], value:_perMonthViewed.count
-    })
-  });
-  let chartPageViewedData=[];
-  formHistory?.countPerMonthUniqueViewed && formHistory?.countPerMonthUniqueViewed.map((_perMonthUniqueViewed, i)=>{
-    chartPageViewedData.push({
-      key:i, month:months[i], value:_perMonthUniqueViewed.count
-    })
-  });
+  let chartSiteViewedData = [];
+  const months = [
+    'Jan',
+    'Feb',
+    'March',
+    'Apr',
+    'May',
+    'June',
+    'Jul',
+    'Aug',
+    'Sept',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+  formHistory?.countPerMonthSiteViewed &&
+    formHistory?.countPerMonthSiteViewed.map((_perMonthViewed, i) => {
+      chartSiteViewedData.push({
+        key: i,
+        month: months[i],
+        value: _perMonthViewed.count
+      });
+    });
+  let chartPageViewedData = [];
+  formHistory?.countPerMonthUniqueViewed &&
+    formHistory?.countPerMonthUniqueViewed.map((_perMonthUniqueViewed, i) => {
+      chartPageViewedData.push({
+        key: i,
+        month: months[i],
+        value: _perMonthUniqueViewed.count
+      });
+    });
   const columns = [
     {
       name: 'Name',
@@ -85,7 +134,7 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
       cell: (row) => (
         <span>
           <Badge color="light-primary" style={{ paddingTop: '6px' }}>
-            {moment(row?.createdAt)?.format("MM/DD/yyyy")}
+            {moment(row?.createdAt)?.format('MM/DD/yyyy')}
           </Badge>
         </span>
       )
@@ -94,12 +143,8 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
     {
       name: 'type',
       selector: (row) => row.memberType,
-      cell: (row) => (
-        <Badge color="light-primary">
-         {row?.type}
-        </Badge>
-      )
-    },
+      cell: (row) => <Badge color="light-primary">{row?.type}</Badge>
+    }
   ];
   return (
     <>
@@ -115,46 +160,55 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                         <Card className="cursor-pointer">
                           <CardBody>
                             <div className="d-flex justify-content-between">
-                              <span className='fs-4'>Analytics</span>
+                              <span className="fs-4">Analytics</span>
                             </div>
                             <Row>
                               <Col md={6}>
-                                <div className='p-1'>
+                                <div className="p-1">
                                   <div className="d-flex align-items-center">
                                     <div>Pages</div>
-                                    <span className="fw-bold ms-3 text-primary">{pages.length}</span>
+                                    <span className="fw-bold ms-3 text-primary">
+                                      {pages.length}
+                                    </span>
                                   </div>
-                                    <div className="mt-1 fw-bold">Viewed Amount Per Page</div>
-                                    {
-                                      formHistory && formHistory.countPageViewed && formHistory.countPageViewed.map((_pageView)=>{
-                                        return(
-                                          <div className="d-flex align-items-center py-1">
-                                          <div>{_pageView.pageName} Page</div>
-                                          <span className="fw-bold ms-3 text-primary">{_pageView.amount}</span>
-                                        </div>
-                                        )
-                                      })
-                                    }
+
+                                  <div className="mt-1 fw-bold">Viewed Amount Per Page</div>
+                                  <div>
+                                    <PieChart width={280} height={400}>
+                                      <Pie
+                                        data={formHistory.countPageViewed}
+                                        dataKey="amount"
+                                        cx="50%"
+                                        cy="50%"
+                                        outerRadius={100}
+                                        fill="#8884d8"
+                                        label
+                                      />
+                                    </PieChart>
+                                  </div>
                                 </div>
                               </Col>
                               <Col md={6}>
                                 <div>
                                   <div className="d-flex align-items-center">
                                     <div>Forms</div>
-                                    <span className="fw-bold ms-3 text-primary">{childForms.length}</span>
+                                    <span className="fw-bold ms-3 text-primary">
+                                      {childForms.length}
+                                    </span>
                                   </div>
                                   <div className="mt-1 fw-bold">Filled Amount Per Form</div>
                                   <div className="mt-1">
-                                    {
-                                      newEntry && newEntry.map((_entry)=>{
-                                        return(
-                                          <div className="d-flex align-items-center">
-                                              <div className=''>{_entry.name}</div>
-                                              <span className="fw-bold ms-3 text-primary">{_entry.amount}</span>
-                                          </div>
-                                        )
-                                      })
-                                    }
+                                    <PieChart width={280} height={400}>
+                                      <Pie
+                                        data={Data}
+                                        dataKey="amount"
+                                        cx="50%"
+                                        cy="50%"
+                                        outerRadius={100}
+                                        fill="#8884d8"
+                                        label
+                                      />
+                                    </PieChart>
                                   </div>
                                 </div>
                               </Col>
@@ -164,25 +218,29 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                       </Col>
                       <Col md="4">
                         <Card className="cursor-pointer">
-                            <CardBody>
-                              <div className="d-flex justify-content-between">
-                                <span>Rename Website</span>
-                                <span>
-                                  <MdDriveFileRenameOutline  size={30} />
-                                </span>
+                          <CardBody>
+                            <div className="d-flex justify-content-between align-items-end">
+                              <div>
+                                <Label>Rename Website</Label>
+                                <Input type="text" width={200} />
                               </div>
-                            </CardBody>
-                          </Card>
-                          <Card className="cursor-pointer">
-                            <CardBody>
-                              <div className="d-flex justify-content-between">
-                                <span>Connect Domain</span>
-                                <span>
-                                  <MdOutlineDomainAdd size={30} />
-                                </span>
+                              <div>
+                                <Button className="" color="primary">
+                                  Save
+                                </Button>
                               </div>
-                            </CardBody>
-                          </Card>
+                            </div>
+                          </CardBody>
+                        </Card>
+
+                        <Button
+                          color="primary"
+                          block
+                          onClick={() => setOpenConnectDomainnModal(!openConnectDomainnModal)}
+                        >
+                          <MdOutlineDomainAdd size={16} className='me-1'/>
+                          <span>Connect Domain</span>
+                        </Button>
                       </Col>
                     </Row>
                   </div>
@@ -193,9 +251,15 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                           <CardBody>
                             <div className="d-flex justify-content-between">
                               <span>Site viewed</span>
-                              <span>
-                                <FiUsers size={30} />
-                              </span>
+                              <LineChart width={80} height={20} data={Data}>
+                                <Line
+                                  type="monotone"
+                                  dataKey="amount"
+                                  dot={false}
+                                  stroke="#8884d8"
+                                  strokeWidth={2}
+                                />
+                              </LineChart>
                             </div>
                             <div className="fw-bold">{formHistory?.countSiteViewed}</div>
                           </CardBody>
@@ -206,9 +270,18 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                           <CardBody>
                             <div className="d-flex justify-content-between">
                               <span>Unique Visitors</span>
-                              <span>
+                              {/* <span>
                                 <FiUser size={30} />
-                              </span>
+                              </span> */}
+                              <LineChart width={80} height={20} data={Data}>
+                                <Line
+                                  type="basis"
+                                  dataKey="amount"
+                                  dot={false}
+                                  stroke="#8884d8"
+                                  strokeWidth={2}
+                                />
+                              </LineChart>
                             </div>
                             <div className="fw-bold">{formHistory?.countUniqueViewed}</div>
                           </CardBody>
@@ -222,6 +295,15 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                               <span>
                                 <FaInternetExplorer size={30} />
                               </span>
+                              {/* <LineChart width={80} height={20} data={Data}>
+                                <Line
+                                  type="basis"
+                                  dataKey="amount"
+                                  dot={false}
+                                  stroke="#8884d8"
+                                  strokeWidth={2}
+                                />
+                              </LineChart> */}
                             </div>
                             <div style={{ height: '20px' }}></div>
                           </CardBody>
@@ -252,7 +334,7 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                             ) : (
                               <div
                                 className="d-flex justify-content-center align-items-center"
-                                style={{fontSize:'16px' }}
+                                style={{ fontSize: '16px' }}
                               >
                                 No data available
                               </div>
@@ -274,23 +356,40 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                               </div>
                               <span>Yearly Business Overview</span>
                             </div>
-                            <div className='d-flex justify-content-around'>
-                                <div className='d-flex'>
-                                      <div className='d-flex flex-column align-items-center justify-content-around site' style={{width:'80px', height:'80px', border:tab==='Site'?'1px solid blue':'1px dashed lightgray', borderRadius:'10%'}} onClick={(e)=>setTab('Site')}>
-                                        <div>
-                                            Site
-                                        </div>
-                                        <FiUsers size={20} />
-
+                            <div className="d-flex justify-content-around">
+                              <div className="d-flex">
+                                <div
+                                  className="d-flex flex-column align-items-center justify-content-around site"
+                                  style={{
+                                    width: '80px',
+                                    height: '80px',
+                                    border:
+                                      tab === 'Site' ? '1px solid blue' : '1px dashed lightgray',
+                                    borderRadius: '10%'
+                                  }}
+                                  onClick={(e) => setTab('Site')}
+                                >
+                                  <div>Site</div>
+                                  <FiUsers size={20} />
                                 </div>
-                                <div className='d-flex flex-column align-items-center justify-content-around site ms-2' style={{width:'80px', height:'80px', border:tab==='Visitors'?'1px solid blue':'1px dashed lightgray', borderRadius:'10%'}} onClick={(e)=>setTab('Visitors')}>
-                                        <div>
-                                            Visitors
-                                        </div>
-                                        <FiUsers size={20} />
-                                </div>
+                                <div
+                                  className="d-flex flex-column align-items-center justify-content-around site ms-2"
+                                  style={{
+                                    width: '80px',
+                                    height: '80px',
+                                    border:
+                                      tab === 'Visitors'
+                                        ? '1px solid blue'
+                                        : '1px dashed lightgray',
+                                    borderRadius: '10%'
+                                  }}
+                                  onClick={(e) => setTab('Visitors')}
+                                >
+                                  <div>Visitors</div>
+                                  <FiUsers size={20} />
                                 </div>
                               </div>
+                            </div>
                             <div className="d-flex justify-content-around mt-2">
                               <div>
                                 <ResponsiveContainer width={800} aspect={2.8}>
@@ -298,7 +397,9 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                                     id="unique-chart"
                                     width={chartWidth}
                                     height={chartHeight}
-                                    data={tab==='Site'?chartSiteViewedData:chartPageViewedData}
+                                    data={
+                                      tab === 'Site' ? chartSiteViewedData : chartPageViewedData
+                                    }
                                   >
                                     <CartesianGrid
                                       stroke="rgb(218 218 218)"
@@ -309,13 +410,15 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
                                     <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                                     <YAxis />
                                     <Bar dataKey="value" barSize={25}>
-                                      {tab==='Site'?chartSiteViewedData && chartSiteViewedData.map((entry, index) => (
-                                        <Cell key={index} fill={'rgb(1, 132, 255)'} />
-                                      )):
-                                      chartPageViewedData && chartPageViewedData.map((entry, index) => (
-                                        <Cell key={index} fill={'rgb(1, 132, 255)'} />
-                                      ))
-                                      }
+                                      {tab === 'Site'
+                                        ? chartSiteViewedData &&
+                                          chartSiteViewedData.map((entry, index) => (
+                                            <Cell key={index} fill={'rgb(1, 132, 255)'} />
+                                          ))
+                                        : chartPageViewedData &&
+                                          chartPageViewedData.map((entry, index) => (
+                                            <Cell key={index} fill={'rgb(1, 132, 255)'} />
+                                          ))}
                                     </Bar>
                                   </BarChart>
                                 </ResponsiveContainer>
@@ -332,6 +435,33 @@ const OverviewStep = ({ store, isMobileView, isTabletView, dispatch }) => {
           </Col>
         </Row>
       )}
+      <Modal
+        isOpen={openConnectDomainnModal}
+        toggle={() => setOpenConnectDomainnModal(!openConnectDomainnModal)}
+        centered
+        // className={this.props.className}
+      >
+        <ModalHeader toggle={() => setOpenConnectDomainnModal(!openConnectDomainnModal)}>
+          Connect Domain
+        </ModalHeader>
+        <ModalBody>
+          <span> This is connect Domain Modal</span>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="secondary"
+            onClick={() => setOpenConnectDomainnModal(!openConnectDomainnModal)}
+          >
+            Cancel
+          </Button>{' '}
+          <Button
+            color="primary"
+            onClick={() => setOpenConnectDomainnModal(!openConnectDomainnModal)}
+          >
+            Save
+          </Button>
+        </ModalFooter>
+      </Modal>
     </>
   );
 };

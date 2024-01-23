@@ -81,11 +81,32 @@ export const webBuilderPlugin = (editor) => {
       const trait_name = trait.get('name');
       let images = component.get('images');
       let src='';
+      const newLinkContainer=document.createElement('div');
+      newLinkContainer.className ='image-url-container';
       const newLinkElement = document.createElement('div');
       newLinkElement.className = 'trait-image-url';
       newLinkElement.innerHTML = `
         <input id="input-image-url" type="url" placeholder="Insert link URL" value=${src}>/>
         <button class="btn-primary trait-image-btn">...</button>`;
+      const newUploadElement=document.createElement('div');
+      newUploadElement.className="upload-file-element";
+      newUploadElement.innerHTML=`
+      <div>
+          <input type="file" id="file" name="file" class="upload-image-element"/>
+      </div>
+      `;
+      document.querySelector('#trait-manager-container').append(newUploadElement);
+      document.querySelector('.upload-image-element').addEventListener('change', function(e){
+        const file=e.target.files[0];
+        if(file){
+          const formData = new FormData();
+          formData.append("file", file);
+          api.uploadFile(formData).then((res)=>{
+            console.log('response', response)
+            // newLinkElement.querySelector('#input-image-url').value = _url;
+          })
+        }
+      })
       const modalElement = document.createElement('div');
       modalElement.innerHTML = `
         <div class="gallery-image-list">
@@ -227,11 +248,27 @@ export const webBuilderPlugin = (editor) => {
       newLinkElement.querySelector('#input-image-url').addEventListener('change', (ev)=>{
         component.set(trait_name, ev.target.value);
       })
+      document.querySelector('.upload-image-element').addEventListener('change', function(e){
+        const file=e.target.files[0];
+        if(file){
+          const formData = new FormData();
+          formData.append("file", file);
+          api.uploadFile(formData).then((res)=>{
+            if(res){
+              const {data}=res;
+              newLinkElement.querySelector('#input-image-url').value = data.data;
+              if(data.data!=''){
+                component.set(trait_name, data.data);
+              }
+              
+            }
+          })
+        }
+      })
       modalElement.querySelector('#cancel-btn').addEventListener('click', (ev) => {
         editor.Modal.close();
       });
       
-
       return newLinkElement;
     }
   });
@@ -256,7 +293,7 @@ export const webBuilderPlugin = (editor) => {
       let newName = '';
       let newUrl = '';
       let newImage = '';
-      let newIcon='';
+      let newIcon='fa-facebook';
       // Here we can decide to use properties from the trait
       // const traitOpts = trait.get('options') || [];
       // const options = traitOpts.length ? traitOpts : [
@@ -295,7 +332,15 @@ export const webBuilderPlugin = (editor) => {
         <div class="trait-new-social-link">
           <input class="trait-new-social-link__name" type="text" placeholder="Insert link name"/>
           <input class="trait-new-social-link__url" type="url" placeholder="Insert link URL"/>
-          <input class="trait-new-social-link__icon" placeholder="Select icon" id="new-select-icon"/>
+          <select class="trait-socialbar-icon-selection">
+            <option value="" disabled selected>Select your option</option>
+            <option class="fa" value="fa-facebook">Facebook</option>
+            <option class="fa" value="fa-twitter">Twitter</option>
+            <option class="fa" value="fa-linkedin">LinkedIn</option>
+            <option class="fa" value="fa-youtube">Youtube</option>
+            <option class="fa" value="fa-tiktok">Tiktok</option>
+            <option class="fa" value="fa-instagram">Instagram</option>
+          </select>
         </div>
         <button class="btn btn-primary mb-1 trait-new-social-link-add-btn">Add</button>
       `;
@@ -306,7 +351,7 @@ export const webBuilderPlugin = (editor) => {
       // Let's make our content interactive
       const newLinkName = el.querySelector('.trait-new-social-link__name');
       const newLinkUrl = el.querySelector('.trait-new-social-link__url');
-      const newLinkIcon = el.querySelector('.trait-new-social-link__icon');
+      const newLinkIcon = el.querySelector('.trait-socialbar-icon-selection');
       const btnAdd = el.querySelector('.trait-new-social-link-add-btn');
 
       newLinkName.addEventListener('change', ev => {
@@ -1262,12 +1307,21 @@ export const webBuilderPlugin = (editor) => {
                 <label>Icon</label>
                 <select id='trait-icon-selection' class='fa trait-icon-selection'>
                    <option class="fa" value='None'>None</option>
-                   <option class="fa" value='fa fa-search'>&#xf002 Search</option>
-                   <option class="fa" value='fa fa-angle-down'>&#xf107 Down</option>
-                   <option class="fa" value='fa fa-angle-left'>&#xf104 Left</option>
-                   <option class="fa" value='fa fa-angle-right'>&#xf105 Right</option>
-                   <option class="fa" value='fa fa-angle-up'>&#xf106 Up</option>
-                   <option class="fa" value='fa fa-redo'>&#xf01e Redo</option>
+                   <option class="fa" value='fa fa-search'>Search</option>
+                   <option class="fa" value='fa fa-angle-down'>Down</option>
+                   <option class="fa" value='fa fa-angle-left'>Left</option>
+                   <option class="fa" value='fa fa-angle-right'>Right</option>
+                   <option class="fa" value='fa fa-angle-up'>Up</option>
+                   <option class="fa" value='fa fa-redo'>Redo</option>
+                   <option class="fa" value='fab fa-google'>Google</option>
+                   <option class="fa" value='fab fa-facebook'>Facebook</option>
+                   <option class="fa" value='fab fa-instagram'>Instagram</option>
+                   <option class="fa" value='fab fa-linkedin'>Linkedin</option>
+                   <option class="fa" value='fab fa-tiktok'>TikTok</option>
+                   <option class="fa" value="far fa-envelope">Envelope</option>
+                   <option class="fa" value="fas fa-link">Link</option>
+                   <option class="fa" value="fas fa-info-circle">Information</option>
+                   <option class="fa" value="fas fa-receipt">Receipt</option>
                 </select>
             </div>
             <div>
@@ -1276,7 +1330,7 @@ export const webBuilderPlugin = (editor) => {
                 <option class="fa" value='fa-roate-0'>None</option>
                 <option class="fa" value='fa-rotate-90'>90</option>
                 <option class="fa" value='fa-rotate-180'>180</option>
-                <option class="fa" value='fa-rotate-180'>270</option>
+                <option class="fa" value='fa-rotate-270'>270</option>
               </select>
             </div>
       `;
