@@ -1654,28 +1654,29 @@ export default function Editor({
           }
           setIsLoading(false);
           setIsStoreLoading(false);
+          
+          const interval = setInterval(() => {
+            if (editor) {
+              const current_page = editor.Pages.getSelected();
+              const html = editor.getHtml({ current_page });
+              const css = editor.getCss({ current_page });
+              const popups = getPopups(editor);
+              const payload = {
+                page: page?._id,
+                html: html,
+                css: css,
+                popups
+              };
+              dispatch(updatePageAction(id, payload));
+            }
+          }, 1000 * 120);
+          return () => clearInterval(interval);
+
         } else {
           setIsLoading(false);
           setIsStoreLoading(false);
         }
       });
-      const interval = setInterval(() => {
-        if (editor) {
-          const current_page = editor.Pages.getSelected();
-          const html = editor.getHtml({ current_page });
-          const css = editor.getCss({ current_page });
-          const popups = getPopups(editor);
-          const payload = {
-            page: page?._id,
-            html: html,
-            css: css,
-            popups
-          };
-          console.log('interval============0', payload);
-          dispatch(updatePageAction(id, payload));
-        }
-      }, 1000 * 30);
-      return () => clearInterval(interval);
     }
   }, [page?._id]);
 
