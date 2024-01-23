@@ -74,7 +74,7 @@ export default function Index({store, toggle, saveFormBlock}) {
   const pages=store.form.formData && store.form.formData.map((pageInfo)=>{
     return({
       label:pageInfo.name,
-      value:'/website/'+pageInfo.websiteId+'/'+pageInfo.name
+      value:'/'+pageInfo.websiteId+'/'+pageInfo.name
     })
   })
   const saveForm = () => {

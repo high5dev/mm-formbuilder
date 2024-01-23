@@ -1671,7 +1671,6 @@ export default function Editor({
             css: css,
             popups
           };
-          console.log('interval============0', payload);
           dispatch(updatePageAction(id, payload));
         }
       }, 1000 * 30);
