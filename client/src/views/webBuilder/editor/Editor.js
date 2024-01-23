@@ -1677,7 +1677,7 @@ export default function Editor({
         };
         dispatch(updatePageAction(id, payload));
       }
-    }, 1000 * 10);
+    }, 1000 * 120);
     return () => clearInterval(interval);
   }, [editor]);
 
