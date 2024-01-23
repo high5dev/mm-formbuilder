@@ -29,7 +29,6 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, getProduct
   }, [store.webDatasets]);
 
   useEffect(() => {
-    console.log('ccid------------------', selectedCmp, store.webConnections);
     const connectedCon = store.webConnections.find(c => c.componentId === selectedCmp?.ccid && c.websiteId === store?.form?._id);
     if (connectedCon) {
       const originDataset = store.webDatasets.find(ds => ds._id === connectedCon.datasetId);
@@ -259,7 +258,6 @@ const ConnectCollectionModal = ({ store, connectData, setConnectData, getProduct
                     Connections
                   </Label>
                 </div>
-                {console.log('checkedConModales', checkedConModels)}
                 {
                   checkedConModels.length > 0 && (
                     <ListGroup>

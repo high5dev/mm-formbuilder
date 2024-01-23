@@ -275,6 +275,7 @@ export default function Editor({
   const toggleCreateForm = () => setOpenCreateForm(!openCreateForm);
 
   const [selectedConnectedData, setSelectedConnectedData] = useState('');
+  const readPageStatus = useRef(false);
 
   const loadedRef = useRef();
   const storeRef = useRef();
@@ -446,7 +447,7 @@ export default function Editor({
   };
 
   const createForm = () => {
-    const pageId = page?._id;
+    const pageId = storeRef.current?.currentPage?._id;
     const websiteId = form?._id;
     const elements = [];
     const name = 'My Form';
@@ -752,7 +753,7 @@ export default function Editor({
     // dispatch(getBlogsAction(store?.form?._id));
     dispatch(getWebsiteAction(id)).then((res) => {
       if (res) {
-        dispatch(setCurrentPage(res.find((e) => e._id === page?._id)));
+        dispatch(setCurrentPage(res.find((e) => e._id === storeRef.current?.currentPage?._id)));
       } else {
       }
     });
@@ -1122,7 +1123,6 @@ export default function Editor({
       editor.setDevice('desktop');
       const allComponents = editor.getWrapper().components().models;
       allComponents.map((cmp) => {
-        console.log('------->', cmp.getClasses());
         if (cmp.get('type') == 'video') {
           cmp.set('style', {
             width: '615px',
@@ -1135,7 +1135,6 @@ export default function Editor({
       editor.setDevice('tablet');
       const allComponents = editor.getWrapper().components().models;
       allComponents.map((cmp) => {
-        console.log('------->', cmp.getClasses());
         if (cmp.get('type') == 'video') {
           cmp.set('style', {
             width: '615px',
@@ -1148,7 +1147,6 @@ export default function Editor({
       editor.setDevice('mobilePortrait');
       const allComponents = editor.getWrapper().components().models;
       allComponents.map((cmp) => {
-        console.log('------->', cmp.get('type'));
         if (cmp.get('type') == 'count-down') {
           getAllChildComponents(cmp).map((children) => {
             children.set('style', { 'font-size': '15px', 'padding-left':'0.5rem', 'padding-right':'0.5rem' });
@@ -1606,7 +1604,7 @@ export default function Editor({
       console.log(editor);
       const popups = getPopups(editor);
       const payload = {
-        page: page?._id,
+        page: storeRef.current?.currentPage?._id,
         html: html,
         css: css,
         popups
@@ -1644,9 +1642,10 @@ export default function Editor({
   }, [ispreview, ispublish, isback, isSave]);
 
   useEffect(async () => {
-    if (page) {
+    if (storeRef.current?.currentPage?._id) {
       setIsLoading(true);
       setIsStoreLoading(true);
+      readPageStatus.current = false;
       dispatch(getPageAction(storeRef.current.currentPage._id)).then((res) => {
         if (res) {
           if (editor) {
@@ -1654,31 +1653,33 @@ export default function Editor({
           }
           setIsLoading(false);
           setIsStoreLoading(false);
-          
-          const interval = setInterval(() => {
-            if (editor) {
-              const current_page = editor.Pages.getSelected();
-              const html = editor.getHtml({ current_page });
-              const css = editor.getCss({ current_page });
-              const popups = getPopups(editor);
-              const payload = {
-                page: page?._id,
-                html: html,
-                css: css,
-                popups
-              };
-              dispatch(updatePageAction(id, payload));
-            }
-          }, 1000 * 120);
-          return () => clearInterval(interval);
-
         } else {
           setIsLoading(false);
           setIsStoreLoading(false);
         }
+        readPageStatus.current = true;
       });
     }
-  }, [page?._id]);
+  }, [storeRef.current?.currentPage?._id]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (editor && readPageStatus.current === true) {
+        const current_page = editor.Pages.getSelected();
+        const html = editor.getHtml({ current_page });
+        const css = editor.getCss({ current_page });
+        const popups = getPopups(editor);
+        const payload = {
+          page: storeRef.current.currentPage._id,
+          html: html,
+          css: css,
+          popups
+        };
+        dispatch(updatePageAction(id, payload));
+      }
+    }, 1000 * 10);
+    return () => clearInterval(interval);
+  }, [editor]);
 
   useEffect(() => {
     if (editor) {
@@ -2129,11 +2130,10 @@ export default function Editor({
       const html = editor.getHtml({ current_page });
       const css = editor.getCss({ current_page });
       const payload = {
-        page: page?._id,
+        page: storeRef.current?.currentPage?._id,
         html: html,
         css: css
       };
-      console.log('popstate============0', payload);
       dispatch(updatePageAction(id, payload));
     }
   });
