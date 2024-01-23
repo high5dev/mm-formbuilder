@@ -26,13 +26,19 @@ import {
   UncontrolledDropdown,
   Card,
   UncontrolledTooltip,
-  CardBody
+  CardBody,
+  Spinner
 } from 'reactstrap';
 import '@src/assets/styles/toggle-switch.scss';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
-import { deleteWebsiteAction, getWebBuildersAction, getWebsiteAction, getWebsitesCountAction } from '../store/action';
+import {
+  deleteWebsiteAction,
+  getWebBuildersAction,
+  getWebsiteAction,
+  getWebsitesCountAction
+} from '../store/action';
 import '../../../assets/scss/style.css';
 import ReactPaginate from 'react-paginate';
 import { getUserData } from '../../../auth/utils';
@@ -72,14 +78,16 @@ export default function FunnelTable({
   const [toggleListOrBoard, setToggleListOrBoard] = useState(true);
   const [count, setCount] = useState(1);
   const [displayData, setDisplayData] = useState([]);
+  const [rowLoading, setRowLoading] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(false);
 
   const contactTypes = useSelector((state) => state.totalContacts.contactTypeList);
 
   const store = useSelector((state) => {
     return {
-        ...state?.formEditor
+      ...state?.formEditor
     };
-});
+  });
 
   // ** Function in get data on rows per page
   const handlePerPage = (e) => {
@@ -98,28 +106,30 @@ export default function FunnelTable({
   const handleEdit = (row) => {
     history.push(`/webpages/editor/${row._id}`);
   };
-  const handleDetails = (row) => {
-    dispatch(getWebsiteAction(row?._id)).then((res)=>{
-      if(res){
-        history.push(`/webbuilder-funnel/form-setting/${row._id}`);
+  const handleDetails = async (row) => {
+    setSelectedRow(row?._id);
+    setRowLoading(true);
+    await dispatch(getWebsiteAction(row?._id)).then((res) => {
+      if (res) {
+        setRowLoading(false);
+        history.push(`/webbuilder-funnel/form-setting/${row?._id}`);
       }
-    })
+    });
   };
 
-  useEffect(()=>{
-    const payload={
+  useEffect(() => {
+    const payload = {
       currentPage,
       rowsPerPage,
-      template:false
+      template: false
     };
-    dispatch(getWebBuildersAction(payload)).then(res=>{
-      if(res && res.data){
+    dispatch(getWebBuildersAction(payload)).then((res) => {
+      if (res && res.data) {
         setDisplayData([...res.data]);
-        setCount(Math.ceil(res.count / rowsPerPage))
+        setCount(Math.ceil(res.count / rowsPerPage));
       }
-    })
+    });
   }, [currentPage, rowsPerPage]);
-
 
   useEffect(() => {
     setCurrentPage(1);
@@ -129,7 +139,7 @@ export default function FunnelTable({
     return (
       <>
         <div className="justify-content-end d-flex">
-          <div className='my-auto'>
+          <div className="my-auto">
             <div className="d-flex  justify-content-end">
               {/* <label htmlFor="rows-per-page">Show</label> */}
               <Input
@@ -144,11 +154,13 @@ export default function FunnelTable({
                 <option value="25">25</option>
                 <option value="50">50</option>
               </Input>
-              <label htmlFor="rows-per-page" className='my-auto'>Per Page</label>
+              <label htmlFor="rows-per-page" className="my-auto">
+                Per Page
+              </label>
             </div>
           </div>
-          <div className='ms-1'>
-          <ReactPaginate
+          <div className="ms-1">
+            <ReactPaginate
               previousLabel={''}
               nextLabel={''}
               pageCount={count || 1}
@@ -164,9 +176,7 @@ export default function FunnelTable({
               containerClassName={'pagination react-paginate justify-content-end my-2 pe-1'}
             />
           </div>
-         
         </div>
-       
       </>
     );
   };
@@ -188,20 +198,20 @@ export default function FunnelTable({
       buttonsStyling: false
     });
     if (res.value) {
-      dispatch(deleteWebsiteAction(row._id)).then((res)=>{
-        if(res){
+      dispatch(deleteWebsiteAction(row._id)).then((res) => {
+        if (res) {
           dispatch(getWebsitesCountAction());
-          const payload={
+          const payload = {
             currentPage,
             rowsPerPage,
-            template:false
+            template: false
           };
-          dispatch(getWebBuildersAction(payload)).then(res=>{
-            if(res && res.data){
+          dispatch(getWebBuildersAction(payload)).then((res) => {
+            if (res && res.data) {
               setDisplayData([...res.data]);
-              setCount(Math.ceil(res.count / rowsPerPage))
+              setCount(Math.ceil(res.count / rowsPerPage));
             }
-          })
+          });
         }
       });
     }
@@ -238,7 +248,21 @@ export default function FunnelTable({
       name: 'Name',
       sortable: 'true',
       selector: (row) => row.name,
-      cell: (row) => <span onClick={() => handleDetails(row)}>{row.name}</span>
+      cell: (row) => (
+        <div className="d-flex  justify-content-between align-items-center">
+          <div>
+            <span onClick={() => handleDetails(row)}>{row.name}</span>
+          </div>
+          <div>
+            {' '}
+            {selectedRow === row?._id && rowLoading ? (
+              <Spinner color="primary" className="ms-4" style={{ width: '1rem', height: '1rem' }} />
+            ) : (
+              ''
+            )}
+          </div>
+        </div>
+      )
     },
     {
       name: 'Type',
@@ -259,7 +283,7 @@ export default function FunnelTable({
       cell: (row) => (
         <span onClick={() => handleDetails(row)}>
           <Badge color="light-primary" style={{ paddingTop: '6px' }}>
-            {moment(row?.updatedAt)?.format("MM/DD/yyyy")}
+            {moment(row?.updatedAt)?.format('MM/DD/yyyy')}
           </Badge>
         </span>
       )
@@ -299,7 +323,7 @@ export default function FunnelTable({
         <>
           {row.userId === user.id ? (
             <div className="column-action">
-              <UncontrolledDropdown >
+              <UncontrolledDropdown>
                 <DropdownToggle tag="div" className="btn btn-sm">
                   <MoreVertical size={14} className="cursor-pointer" />
                 </DropdownToggle>
@@ -418,7 +442,7 @@ export default function FunnelTable({
                     <div className="d-flex ">
                       <h6 className="text-secondary">Last Updated</h6>
                       <div style={{ marginLeft: '10px' }} onClick={() => handleDetails(item)}>
-                        {moment(item.updatedAt).format("MM/DD/yyyy")}
+                        {moment(item.updatedAt).format('MM/DD/yyyy')}
                       </div>
                     </div>
                     <div className="d-flex ">
@@ -511,7 +535,7 @@ export default function FunnelTable({
               ) : (
                 <div
                   className="d-flex justify-content-center align-items-center"
-                  style={{ height: '70vh', fontSize:'16px' }}
+                  style={{ height: '70vh', fontSize: '16px' }}
                 >
                   No data available
                   {/* <span className="me-2"> Loading...</span>
@@ -550,7 +574,7 @@ export default function FunnelTable({
                                 {item?.formType}
                               </Badge>
                               <Badge color="light-primary" style={{ paddingTop: '6px' }}>
-                                {moment(item.updatedAt).format("MM/DD/yyyy")}
+                                {moment(item.updatedAt).format('MM/DD/yyyy')}
                               </Badge>
                             </span>
                           </div>
@@ -570,23 +594,22 @@ export default function FunnelTable({
                                 height: `${collapse === true ? '200px' : '180px'}`
                               }}
                             >
-                              {
-                                    item?.formData?.[0] &&              
-                                    <iframe
-                                        style={{ borderRadius: '12px' }}
-                                        scrolling="no"
-                                        width="100%"
-                                        height="100%"
-                                        srcDoc={
-                                          bootstrapClass +
-                                          item?.formData?.[0].html +
-                                          '<style>' +
-                                          item?.formData?.[0].css +
-                                          '</style>'
-                                        }
-                                        title="Customized Form"
-                                      ></iframe>
-                              }
+                              {item?.formData?.[0] && (
+                                <iframe
+                                  style={{ borderRadius: '12px' }}
+                                  scrolling="no"
+                                  width="100%"
+                                  height="100%"
+                                  srcDoc={
+                                    bootstrapClass +
+                                    item?.formData?.[0].html +
+                                    '<style>' +
+                                    item?.formData?.[0].css +
+                                    '</style>'
+                                  }
+                                  title="Customized Form"
+                                ></iframe>
+                              )}
                             </div>
                           </div>
                           <div className="template-btn-group p-1">
