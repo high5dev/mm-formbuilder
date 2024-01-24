@@ -41,13 +41,9 @@ exports.createCollection = asyncHandler(async (req, res) => {
 });
 
 exports.getCollections = asyncHandler(async (req, res) => {
-  let userId = req.user._id;
-  const { organization } = req.headers;
   const websiteId = req.params.id;
   try {
     const collections = await WebSiteCollection.find({
-      userId: mongoose.Types.ObjectId(userId),
-      organizationId: organization ? mongoose.Types.ObjectId(organization) : null,
       websiteId: mongoose.Types.ObjectId(websiteId),
       isDelete: false,
     });
