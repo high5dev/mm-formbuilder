@@ -1,20 +1,14 @@
 import * as api from  '../../../store/api';
 let imageItem = {
-    isComponent: el => (el.tagName === 'A' && el.classList.contains('photo-element')),
+    isComponent: el => (el.tagName === 'IMG' && el.classList.contains('photo-element')),
     model: {
       defaults: {
-        tagName: 'a',
+        tagName: 'img',
         draggable: true,
         droppable: true,
-        attributes: { class: 'photo-element'},
-        components: (props) => {
-          return (
-            <img src="https://i.ibb.co/xM56xB3/image-large-3.png" class='theme-image image-item'/>
-          )
-        },
+        attributes: { class: 'photo-element', src:"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3R5bGU9ImZpbGw6IHJnYmEoMCwwLDAsMC4xNSk7IHRyYW5zZm9ybTogc2NhbGUoMC43NSkiPgogICAgICAgIDxwYXRoIGQ9Ik04LjUgMTMuNWwyLjUgMyAzLjUtNC41IDQuNSA2SDVtMTYgMVY1YTIgMiAwIDAgMC0yLTJINWMtMS4xIDAtMiAuOS0yIDJ2MTRjMCAxLjEuOSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMnoiPjwvcGF0aD4KICAgICAgPC9zdmc+"},
         styles: `
-        .photo-element{display:block; width:fit-content}
-        .image-item {width:100px; height:100px}
+        .photo-element{display:block; width:fit-content;width:100px; height:100px}
         `,
         stylable: ['width', 'height', 'background-color', 'margin', 'align-items', 'border', 'justify-content', 'display'],
         images:[],
@@ -28,12 +22,6 @@ let imageItem = {
           {
             type: 'image-url',
             name: 'url',
-            changeProp: true,
-            min: 1,
-          },
-          {
-            type: 'href',
-            name: 'href',
             changeProp: true,
             min: 1,
           }
@@ -52,21 +40,12 @@ let imageItem = {
         this.model.set('images', temp_images);
         }
         this.listenTo(this.model, 'change:url', this.handleChangeUrl);
-        this.listenTo(this.model, 'change:href', this.handleChangeUrl);
         this.listenTo(this.model, 'change:images', this.handleChangeImages);
       },
       handleChangeUrl(e) {
         let url=this.model.get('url');
-        if(url==='' || url===undefined){
-          url="https://i.ibb.co/xM56xB3/image-large-3.png";
-        };
-        const href=this.model.get('href');
-        this.model.attributes.attributes.href=href;
-        this.model.attributes.href=href;
-        this.model.get('components').pop();
-        this.model.get('components').push(
-          `<img src=${url} class='theme-image image-item'/>`
-        );
+        this.model.attributes.attributes.src=url;
+        this.model.attributes.src=url;
         this.render();
       },
       async handleChangeImages(e){

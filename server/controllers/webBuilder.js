@@ -1009,7 +1009,6 @@ exports.updatePageName = asyncHandler(async (req, res) => {
   try {
     const Obj=req.body;
     const _page=await WebPage.findOneAndUpdate({_id: mongoose.Types.ObjectId(id)}, Obj);
-    console.log('_page----------', _page);
     if(_page){
       return res.status(200).json({ success: true, message: `Success`});
     }
@@ -1046,7 +1045,10 @@ exports.getPage = asyncHandler(async (req, res) => {
 
 exports.getPublishPage = asyncHandler(async (req, res) => {
   let {id, pageName, pageViewed, totalViewed} = req.query;
-  const ipAddress = req.ip;
+  const ipAddress = req.ip
+    || req.connection.remoteAddress
+    || req.socket.remoteAddress
+    || req.connection.socket.remoteAddress;
   try {
     const data = await WebBuilder.findOne({_id: id});
     const page = await WebPage.findOne({ name: pageName, websiteId: mongoose.Types.ObjectId(id), isDelete: false });

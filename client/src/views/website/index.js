@@ -28,6 +28,7 @@ const days = [
 ];
 import { Helmet } from 'react-helmet';
 import Cartsidebar from '../pages/cart/cartsidebar';
+import { GiConsoleController } from 'react-icons/gi';
 
 export default function Index() {
   const { id, pageName, blogId } = useParams();
@@ -303,11 +304,11 @@ for (const [key, value] of searchParams.entries()) {
           payload.totalViewed=true;
         }
         dispatch(getPublishPageAction(payload)).then((res) => {
-          if(res){
+          if(res && res.data){
             localStorage.setItem(name, 'true');
             localStorage.setItem('totalViewed','true');
             const parser = new DOMParser();
-            let htmlCmp = parser.parseFromString(res.data, 'text/html');
+            let htmlCmp = parser.parseFromString(res.data, 'text/html').body;
             let linkElements = htmlCmp.getElementsByTagName('a');
             for (let i = 0; i < linkElements.length; i++) {
               let link_href = linkElements[i].getAttribute('href');
@@ -315,100 +316,10 @@ for (const [key, value] of searchParams.entries()) {
                 link_href = '/website' + link_href;
               }
               linkElements[i].setAttribute('href', link_href);
-            };
-            let ids=[];
-            const repeaterEl=htmlCmp.querySelector('.repeater');
-            if(repeaterEl){
-              const componentId=repeaterEl.id;
-              const repeaterItems=repeaterEl.children;
-              const repeaterItem=repeaterItems[0];
-              const clonerepeaterItem=repeaterItem.cloneNode(true);
-              const connectedEls=repeaterItem.children;
-              for(let i=0; i<connectedEls.length;i++){
-                ids.push(connectedEls[i].id);
-              }
-              if(componentId!=''){
-                const payload={
-                  ids:ids
-                }
-                dispatch(getWebConnectionValuesAction(id, payload)).then((res)=>{
-                  if(res){
-                    const {connectedkeys, connectedvalues}=res.data;
-                    if(paramKeys && paramKeys.length===1 && paramKeys[0]==='zipcode'){
-                      const zipcode=paramValues[0];
-                      const radius_m=15000000000000000;
-                      const options={};
-                      const loader = new Loader('AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o', options);     
-                      loader.load().then(function (google){
-                        var mapOptions = {
-                          zoom: 14,
-                          fullscreenControl: false,
-                          clickableIcons: false,
-                          mapTypeControl: false,
-                          streetViewControl: false,
-                          center: new google.maps.LatLng(37.7749295, -122.4194155)
-                        };
-                        const geocoder = new google.maps.Geocoder();
-                        // const mapResult = new google.maps.Map(mapEl, mapOptions);
-                        geocoder.geocode({ address: zipcode, componentRestrictions: { country: 'us' }} , function(results, status) {
-                          if (status === google.maps.GeocoderStatus.OK){
-                            if(results && results.length>0){
-                              var filteredLocations = filterByDistance(google, connectedvalues, results[0].geometry.location, radius_m);
-                              while (repeaterEl.firstChild) {
-                                repeaterEl.firstChild.remove();
-                              };
-                              if(filteredLocations && filteredLocations.length>0){
-                                for(let i=0; i<filteredLocations.length;i++){
-                                  const filteredlocation=filteredLocations[i];
-                                  let connectedItems=clonerepeaterItem.children;
-                                  for(let j=0; j<(connectedItems.length); j++){
-                                      const connectedkey=connectedkeys[j];
-                                      let connectedItem=connectedItems[j];                      
-                                      connectedItem.innerText=filteredlocation[connectedkey];
-                                  };
-                                  const item=clonerepeaterItem.cloneNode(true);
-                                  repeaterEl.append(item);
-                                }
-                              }
-
-                              var tmp = document.createElement("div");
-                              tmp.append(htmlCmp.body)
-                              setPageContent(tmp.innerHTML);
-                              // const position = { position: {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()}, map: mapResult };
-                              // const marker = new google.maps.Marker(position);
-                            }
-                          }
-                        });
-                      });
-                    }
-                    else{
-                      while (repeaterEl.firstChild) {
-                        repeaterEl.firstChild.remove();
-                      };
-                      for(let i=0; i<connectedvalues.length;i++){
-                        const connectedValue=connectedvalues[i];
-                        let connectedItems=clonerepeaterItem.children;
-                        for(let j=0; j<connectedItems.length; j++){
-                            const connectedkey=connectedkeys[j];
-                            let connectedItem=connectedItems[j];                      
-                            connectedItem.innerText=connectedValue[connectedkey];
-                        };
-                        const item=clonerepeaterItem.cloneNode(true);
-                        repeaterEl.append(item);
-                      }
-                      var tmp = document.createElement("div");
-                      tmp.append(htmlCmp.body)
-                      setPageContent(tmp.innerHTML);
-                    }
-                }
-                })
-              }
             }
-            else{
-              var tmp = document.createElement("div");
-              tmp.append(htmlCmp.body)
-              setPageContent(tmp.innerHTML);
-            }
+            var tmp = document.createElement("div");
+            tmp.append(htmlCmp)
+            setPageContent(tmp.innerHTML);
             setIsPageLoading(false);
             setPageInfo(res.pageInfo);
             setPopupData(res.pageInfo.popups || []);
@@ -815,7 +726,104 @@ for (const [key, value] of searchParams.entries()) {
           } 
         }
       };
+      let ids=[];
+      const repeaterEl=iframeDocument.querySelector('.repeater');
+      if(repeaterEl){
+        const componentId=repeaterEl.id;
+        const repeaterItems=repeaterEl.children;
+        const repeaterItem=repeaterItems[0];
+        const clonerepeaterItem=repeaterItem.cloneNode(true);
+        const connectedEls=repeaterItem.children;
+        for(let i=0; i<connectedEls.length;i++){
+          ids.push(connectedEls[i].id);
+        }
+        if(componentId!=''){
+          const payload={
+            ids:ids
+          }
+          dispatch(getWebConnectionValuesAction(id, payload)).then((res)=>{
+            if(res){
+              const {connectedkeys, connectedvalues}=res.data;
+              if(paramKeys && paramKeys.length>0 && paramKeys[0]==='zipcode'){
+                let mapEl=iframeDocument.querySelector('.googleMap');
+                const zipcode=paramValues[0];
+                let radius_m=1500;
+                if(paramKeys[1] && paramKeys[1]==='radius'){
+                  radius_m=parseInt(paramValues[1]);
+                }
+                const options={};
+                const loader = new Loader('AIzaSyBUSVulzSzbfl45dgmM8lWUQanfMz4Fb9o', options);     
+                loader.load().then(function (google){
+                  var mapOptions = {
+                    zoom: 4,
+                    center: {
+                      lat: 42.3601,
+                      lng: -71.0589
+                    }
+                    // center: new google.maps.LatLng(37.7749295, -122.4194155)
+                  };
+                  const geocoder = new google.maps.Geocoder();
+                  const mapResult = new google.maps.Map(mapEl, mapOptions);
+                  geocoder.geocode({ address: zipcode, componentRestrictions: { country: 'us' }} , function(results, status) {
+                    if (status === google.maps.GeocoderStatus.OK){
+                      if(results && results.length>0){
+                        var filteredLocations = filterByDistance(google, connectedvalues, results[0].geometry.location, radius_m);
+                        while (repeaterEl.firstChild) {
+                          repeaterEl.firstChild.remove();
+                        };
+                        if(filteredLocations && filteredLocations.length>0){
+                          for(let i=0; i<filteredLocations.length;i++){
+                            var placeLoc = new google.maps.LatLng(parseFloat(filteredLocations[i].lat), parseFloat(filteredLocations[i].lng));
+                            console.log('placeLoc', placeLoc)
+                            var marker = new google.maps.Marker({
+                              map: mapResult,
+                              position: placeLoc,
+                              icon: "https://i.ibb.co/9pmB4g8/web-logo.png"
+                              // draggable: false
+                            });
 
+                            const filteredlocation=filteredLocations[i];
+                            let connectedItems=clonerepeaterItem.children;
+                            for(let j=0; j<(connectedItems.length); j++){
+                                const connectedkey=connectedkeys[j];
+                                let connectedItem=connectedItems[j];                      
+                                connectedItem.innerText=filteredlocation[connectedkey];
+                            };
+                            const item=clonerepeaterItem.cloneNode(true);
+                            repeaterEl.append(item);
+                          }
+                        }
+                      }
+                    }
+                  });
+                });
+                // var tmp = document.createElement("div");
+                // tmp.append(iframeDocument)
+                // setPageContent(tmp.innerHTML);
+              }
+              else{
+                while (repeaterEl.firstChild) {
+                  repeaterEl.firstChild.remove();
+                };
+                for(let i=0; i<connectedvalues.length;i++){
+                  const connectedValue=connectedvalues[i];
+                  let connectedItems=clonerepeaterItem.children;
+                  for(let j=0; j<connectedItems.length; j++){
+                      const connectedkey=connectedkeys[j];
+                      let connectedItem=connectedItems[j];                      
+                      connectedItem.innerText=connectedValue[connectedkey];
+                  };
+                  const item=clonerepeaterItem.cloneNode(true);
+                  repeaterEl.append(item);
+                }
+                // var tmp = document.createElement("div");
+                // tmp.append(htmlCmp.body)
+                // setPageContent(tmp.innerHTML);
+              }
+          }
+          })
+        }
+      }
       // Attach event listener
       iframeDocument.addEventListener('click', clickHandler);
 
@@ -890,7 +898,9 @@ for (const [key, value] of searchParams.entries()) {
         {(!store.linkUrl || store.linkUrl === 'website') && pageContent &&
           <iframe srcDoc={`<head><script
               src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCG1_opG1B7MRaTXYYy0B_fTPWg-RI3Mcs&libraries=places&callback=myMap"
-            ></script></head>${pageContent}`} width={window.innerWidth} height={window.innerHeight} ref={iframeRef} />
+            >
+            </script>
+            </head>${pageContent}`} width={window.innerWidth} height={window.innerHeight} ref={iframeRef} />
         }
         <Cartsidebar store={store} showCartSidebar={showCartSidebar} setShowCartSidebar={setShowCartSidebar} cartLink={cartLink} />
         {store.linkUrl === 'preview' &&
@@ -916,7 +926,6 @@ for (const [key, value] of searchParams.entries()) {
               <div className="text-white" onClick={() => history.goBack()} style={{ cursor: 'pointer' }}>Back to Editor</div>
             </div>
             <div className='bg-grey d-flex justify-content-around'>
-            
               <iframe className="bg-white" width={width} height={window.innerHeight - 50} srcDoc={`<head><script
                   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCG1_opG1B7MRaTXYYy0B_fTPWg-RI3Mcs&libraries=places&callback=myMap"
                 ></script></head>${pageContent}`} ref={iframeRef} />

@@ -23,14 +23,8 @@
   justify-content: space-between;
   align-items: center;
 }
-.count-down-mobile{
-  padding: 10px !important;
-  display: block !important;
-  align-items: center !important;
-  justify-content: center !important;
-  color: #000 !important;
-  font-weight: bold !important;
-  text-align: center !important;
+.upload-file-element{
+  padding:20px;
 }
 
 .gallery-image-list {
@@ -553,7 +547,8 @@
 
 .trait-new-social-link__name,
 .trait-new-social-link__url,
-.trait-new-social-link__icon {
+.trait-socialbar-icon-selection,
+.trait-new-social-link__icon{
   border: 1px solid grey !important;
   border-radius: 3px;
   margin-bottom: 3px;

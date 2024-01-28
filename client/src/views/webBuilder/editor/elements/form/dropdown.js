@@ -19,14 +19,11 @@ let dropdownEl = {
           return(
             <div>
               <div>
-                  <label>{elProps[0].name}</label>
-              </div>
-              <div>
                 <select id={elProps[0].id} name={elProps[0].name} class="select-dropdown-element">
                   {
                   elProps && elProps.map((elProp)=>{
                     return(
-                        <option value={elProp.value}>{elProp.label}</option>
+                        <option value={elProp.label}>{elProp.label}</option>
                     )
       
                   })
@@ -82,14 +79,11 @@ let dropdownEl = {
       comps.push(
         <div>
           <div>
-              <label>{elProps[0].name}</label>
-          </div>
-          <div>
             <select id={elProps[0].id} name={elProps[0].name} class="select-dropdown-element">
               {
               elProps && elProps.map((elProp)=>{
                 return(
-                    <option value={elProp.value}>{elProp.label}</option>
+                    <option value={elProp.label}>{elProp.label}</option>
                 )
 
               })
