@@ -150,7 +150,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'count-item days-item' }
             },
             {
@@ -160,7 +160,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'item-label' }
             }
           ],
@@ -168,7 +168,7 @@ let countDown = {
           badgable: false,
           draggable: false,
           droppable: false,
-          selectable: false,
+          selectable: true,
           attributes: { class: 'days' }
         },
         {
@@ -178,7 +178,7 @@ let countDown = {
           badgable: false,
           draggable: false,
           droppable: false,
-          selectable: false,
+          selectable: true,
           attributes: { class: 'split-dots days-dots' }
         },
         {
@@ -191,7 +191,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'count-item hours-item' }
             },
             {
@@ -201,7 +201,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'item-label' }
             }
           ],
@@ -209,7 +209,7 @@ let countDown = {
           badgable: false,
           draggable: false,
           droppable: false,
-          selectable: false,
+          selectable: true,
           attributes: { class: 'hours' }
         },
         {
@@ -219,7 +219,7 @@ let countDown = {
           badgable: false,
           draggable: false,
           droppable: false,
-          selectable: false,
+          selectable: true,
           attributes: { class: 'split-dots hours-dots' }
         },
         {
@@ -232,7 +232,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'count-item mins-item' }
             },
             {
@@ -242,7 +242,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'item-label' }
             }
           ],
@@ -250,7 +250,7 @@ let countDown = {
           badgable: false,
           draggable: false,
           droppable: false,
-          selectable: false,
+          selectable: true,
           attributes: { class: 'mins' }
         },
         {
@@ -260,7 +260,7 @@ let countDown = {
           badgable: false,
           draggable: false,
           droppable: false,
-          selectable: false,
+          selectable: true,
           attributes: { class: 'split-dots mins-dots' }
         },
         {
@@ -273,7 +273,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'count-item secs-item' }
             },
             {
@@ -283,7 +283,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'item-label' }
             }
           ],
@@ -291,7 +291,7 @@ let countDown = {
           badgable: false,
           draggable: false,
           droppable: false,
-          selectable: false,
+          selectable: true,
           attributes: { class: 'secs' }
         },
         {
@@ -381,7 +381,7 @@ let countDown = {
                 badgable: false,
                 draggable: false,
                 droppable: false,
-                selectable: false,
+                selectable: true,
                 attributes: { class: 'count-item days-item' }
               },
               {
@@ -391,7 +391,7 @@ let countDown = {
                 badgable: false,
                 draggable: false,
                 droppable: false,
-                selectable: false,
+                selectable: true,
                 attributes: { class: 'item-label' }
               }
             ],
@@ -399,7 +399,7 @@ let countDown = {
             badgable: false,
             draggable: false,
             droppable: false,
-            selectable: false,
+            selectable: true,
             attributes: { class: 'days' }
           },
           {
@@ -409,7 +409,7 @@ let countDown = {
             badgable: false,
             draggable: false,
             droppable: false,
-            selectable: false,
+            selectable: true,
             attributes: { class: 'split-dots days-dots' }
           },
           {
@@ -422,7 +422,7 @@ let countDown = {
                 badgable: false,
                 draggable: false,
                 droppable: false,
-                selectable: false,
+                selectable: true,
                 attributes: { class: 'count-item hours-item' }
               },
               {
@@ -432,7 +432,7 @@ let countDown = {
                 badgable: false,
                 draggable: false,
                 droppable: false,
-                selectable: false,
+                selectable: true,
                 attributes: { class: 'item-label' }
               }
             ],
@@ -440,7 +440,7 @@ let countDown = {
             badgable: false,
             draggable: false,
             droppable: false,
-            selectable: false,
+            selectable: true,
             attributes: { class: 'hours' }
           },
           {
@@ -450,7 +450,7 @@ let countDown = {
             badgable: false,
             draggable: false,
             droppable: false,
-            selectable: false,
+            selectable: true,
             attributes: { class: 'split-dots hours-dots' }
           },
           {
@@ -463,7 +463,7 @@ let countDown = {
                 badgable: false,
                 draggable: false,
                 droppable: false,
-                selectable: false,
+                selectable: true,
                 attributes: { class: 'count-item mins-item' }
               },
               {
@@ -473,7 +473,7 @@ let countDown = {
                 badgable: false,
                 draggable: false,
                 droppable: false,
-                selectable: false,
+                selectable: true,
                 attributes: { class: 'item-label' }
               }
             ],
@@ -481,7 +481,7 @@ let countDown = {
             badgable: false,
             draggable: false,
             droppable: false,
-            selectable: false,
+            selectable: true,
             attributes: { class: 'mins' }
           },
           {
@@ -491,7 +491,7 @@ let countDown = {
             badgable: false,
             draggable: false,
             droppable: false,
-            selectable: false,
+            selectable: true,
             attributes: { class: 'split-dots mins-dots' }
           },
           {
@@ -504,7 +504,7 @@ let countDown = {
                 badgable: false,
                 draggable: false,
                 droppable: false,
-                selectable: false,
+                selectable: true,
                 attributes: { class: 'count-item secs-item' }
               },
               {
@@ -514,7 +514,7 @@ let countDown = {
                 badgable: false,
                 draggable: false,
                 droppable: false,
-                selectable: false,
+                selectable: true,
                 attributes: { class: 'item-label' }
               }
             ],
@@ -522,7 +522,7 @@ let countDown = {
             badgable: false,
             draggable: false,
             droppable: false,
-            selectable: false,
+            selectable: true,
             attributes: { class: 'secs' }
           },
           {
@@ -533,12 +533,6 @@ let countDown = {
             .count-item {text-align: center; font-size: 50px;}
             .item-label {text-align: center; font-size: 20px;}
             .split-dots {align-self: start; font-size: 50px; padding-right: 10px; padding-left: 10px;}
-            @media (max-width: 400px) {
-              .days, .hours, .mins, .secs {padding-right: 0px !important; padding-left: 0px !important;}
-              .count-item {
-                font-size: 30px !important;
-              }
-            }
             `,
           }
         ]);
@@ -554,7 +548,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'count-item days-item' }
             },
             {
@@ -564,7 +558,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'item-label' }
             }
           ],
@@ -572,7 +566,7 @@ let countDown = {
           badgable: false,
           draggable: false,
           droppable: false,
-          selectable: false,
+          selectable: true,
           attributes: { class: 'days' }
         },
         {
@@ -585,7 +579,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'count-item hours-item' }
             },
             {
@@ -595,7 +589,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'item-label' }
             }
           ],
@@ -603,7 +597,7 @@ let countDown = {
           badgable: false,
           draggable: false,
           droppable: false,
-          selectable: false,
+          selectable: true,
           attributes: { class: 'hours' }
         },
         {
@@ -616,7 +610,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'count-item mins-item' }
             },
             {
@@ -626,7 +620,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'item-label' }
             }
           ],
@@ -634,7 +628,7 @@ let countDown = {
           badgable: false,
           draggable: false,
           droppable: false,
-          selectable: false,
+          selectable: true,
           attributes: { class: 'mins' }
         },
         {
@@ -647,7 +641,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'count-item secs-item' }
             },
             {
@@ -657,7 +651,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'item-label' }
             }
           ],
@@ -665,7 +659,7 @@ let countDown = {
           badgable: false,
           draggable: false,
           droppable: false,
-          selectable: false,
+          selectable: true,
           attributes: { class: 'secs' }
         },
         {
@@ -676,15 +670,6 @@ let countDown = {
             .count-item {text-align: center !important; font-size: 50px !important;}
             .item-label {text-align: center !important; font-size: 20px !important;}
             .split-dots {align-self: start !important; font-size: 50px !important; padding-right: 10px !important; padding-left: 10px !important;}
-            @media (max-width: 400px) {
-              .days, .hours, .mins, .secs {padding-right: 0px !important; padding-left: 0px !important;}
-              .count-item {
-                font-size: 30px !important;
-              }
-              .split-dots {
-                font-size: 30px !important;
-              }
-            }
           `,
         }]);
       }
@@ -699,7 +684,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'count-item days-item' }
             },
             {
@@ -709,7 +694,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'item-label' }
             }
           ],
@@ -717,7 +702,7 @@ let countDown = {
           badgable: false,
           draggable: false,
           droppable: false,
-          selectable: false,
+          selectable: true,
           attributes: { class: 'days' }
         },
         {
@@ -730,7 +715,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'count-item hours-item' }
             },
             {
@@ -740,7 +725,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'item-label' }
             }
           ],
@@ -748,7 +733,7 @@ let countDown = {
           badgable: false,
           draggable: false,
           droppable: false,
-          selectable: false,
+          selectable: true,
           attributes: { class: 'hours' }
         },
         {
@@ -761,7 +746,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'count-item mins-item' }
             },
             {
@@ -771,7 +756,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'item-label' }
             }
           ],
@@ -779,7 +764,7 @@ let countDown = {
           badgable: false,
           draggable: false,
           droppable: false,
-          selectable: false,
+          selectable: true,
           attributes: { class: 'mins' }
         },
         {
@@ -792,7 +777,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'count-item secs-item' }
             },
             {
@@ -802,7 +787,7 @@ let countDown = {
               badgable: false,
               draggable: false,
               droppable: false,
-              selectable: false,
+              selectable: true,
               attributes: { class: 'item-label' }
             }
           ],
@@ -810,7 +795,7 @@ let countDown = {
           badgable: false,
           draggable: false,
           droppable: false,
-          selectable: false,
+          selectable: true,
           attributes: { class: 'secs' }
         },
         {
@@ -820,15 +805,6 @@ let countDown = {
             .count-down {padding: 10px !important; display: flex !important; align-items: center !important; justify-content: center !important; color: #000 !important; font-weight: bold !important;}
             .count-item {text-align: center !important; font-size: 50px !important;}
             .item-label {text-align: center !important; font-size: 20px !important;}
-            @media (max-width: 400px) {
-              .days, .hours, .mins, .secs {padding-right: 0px !important; padding-left: 0px !important;}
-              .count-item {
-                font-size: 30px !important;
-              }
-              .split-dots {
-                font-size: 30px !important;
-              }
-            }
           `,
         }]);
       }

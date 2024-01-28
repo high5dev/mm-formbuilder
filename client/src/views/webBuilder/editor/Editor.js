@@ -875,58 +875,6 @@ export default function Editor({
     });
 
     gjsEditor.on('component:add', (component) => {
-      let device = gjsEditor.getDevice();
-      if (device !== 'desktop' && device !== 'tablet') {
-        if (component.get('type') == 'count-down') {
-          component.set('template', component.getAttributes().template);
-          component.set('style', {
-            'text-align': 'center',
-            'padding-left': '10px',
-            'padding-right': '10px',
-            // width: 'fit-content',
-          });
-          getAllChildComponents(component).map((children) => {
-            children.set('style', { 'font-size': '15px', 'padding-left':'2px', 'padding-right':'2px' });
-          });
-        } else if (component.get('type') == 'text') {
-          component.set('style', { 'padding-left': '0.5rem', 'padding-right': '0.5rem' });
-        } else if (component.get('type') == 'video') {
-          component.set('style', {
-            width: '320px',
-            height: '200px',
-            'padding-left': '0.5rem',
-            'padding-right': '0.5rem'
-          });
-          getAllChildComponents(component).map((children) => {
-            children.set('style', { 'font-size': '16px' });
-          });
-        } 
-        else if (component.get('type') == 'social-bar') {
-          component.set('style', {
-            display: 'flex',
-            'flex-direction': 'row',
-            width: 'fit-content',
-            height: '60px'
-          })
-          getAllChildComponents(component).map((children) => {
-            children.set('style', { 'font-size': '20px' });
-          })
-         }
-        else {
-          component.set('style', {
-            'padding-left': '0.5rem',
-            'padding-right': '0.5rem'
-          });
-          getAllChildComponents(component).map((children) => {
-            if (children.get('tagName') == 'h1') {
-              children.set('style', { 'font-size': '30px' });
-            }
-            if (children.get('tagName') == 'img')
-              children.set('style', { 'max-width': '200px', 'min-width': '200px' });
-          });
-        }
-      }
-      if (!component) return;
       if (
         component.get('type') === 'gridproductgallery' ||
         component.get('type') === 'sliderproductgallery' ||
@@ -1121,70 +1069,12 @@ export default function Editor({
     });
     gjsEditor.Commands.add('set-device-desktop', (editor) => {
       editor.setDevice('desktop');
-      const allComponents = editor.getWrapper().components().models;
-      allComponents.map((cmp) => {
-        if (cmp.get('type') == 'video') {
-          cmp.set('style', {
-            width: '615px',
-            height: '350px'
-          });
-        }
-      });
     });
     gjsEditor.Commands.add('set-device-tablet', (editor) => {
       editor.setDevice('tablet');
-      const allComponents = editor.getWrapper().components().models;
-      allComponents.map((cmp) => {
-        if (cmp.get('type') == 'video') {
-          cmp.set('style', {
-            width: '615px',
-            height: '350px'
-          });
-        }
-      });
     });
     gjsEditor.Commands.add('set-device-mobile', (editor) => {
       editor.setDevice('mobilePortrait');
-      const allComponents = editor.getWrapper().components().models;
-      allComponents.map((cmp) => {
-        if (cmp.get('type') == 'count-down') {
-          getAllChildComponents(cmp).map((children) => {
-            children.set('style', { 'font-size': '15px', 'padding-left':'0.5rem', 'padding-right':'0.5rem' });
-          });
-        } else if (cmp.get('tagName') == 'h1' || cmp.get('tagName') == 'h5'  ||cmp.get('tagName') == 'p' ) {
-          // cmp.set('style', { 'padding-left': '0.5rem', 'padding-right': '0.5rem' });
-        } else if (cmp.get('type') == 'video') {
-          cmp.set('style', {
-            width: '320px',
-            height: '200px',
-            'padding-left': '0.5rem',
-            'padding-right': '0.5rem'
-          });
-        } else if (cmp.get('type') == 'social-bar') {
-          cmp.set('style', {
-            display: 'flex',
-            'flex-direction': 'row',
-            width: 'fit-content',
-            height: '60px'
-          });
-          getAllChildComponents(cmp).map((children) => {
-            children.set('style', { 'font-size': '20px' });
-          });
-        } else {
-          cmp.set('style', {
-            width: '320px',
-            'padding-left': '0.5rem',
-            'padding-right': '0.5rem'
-          });
-          getAllChildComponents(cmp).map((children) => {
-            if (children.get('tagName') == 'h1') {
-              children.set('style', { 'font-size': '30px' });
-            }
-            if (children.get('tagName') == 'img')
-              children.set('style', { 'max-width': '200px', 'min-width': '200px' });
-          });
-        }
-      });
     });
     gjsEditor.on('block:custom', (props) => {
       // The `props` will contain all the information you need in order to update your UI.
