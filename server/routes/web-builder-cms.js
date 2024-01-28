@@ -25,7 +25,7 @@ const {
 router.post("/collection/create", isAuthenticated, createCollection);
 router.post("/collection/update/:id", isAuthenticated, updateCollection);
 router.delete("/collection/delete/:id", isAuthenticated, deleteCollection);
-router.get("/collection/:id", isAuthenticated, getCollections);
+router.get("/collection/:id", getCollections);
 router.post("/dataset/create", isAuthenticated, createDataset);
 router.post("/dataset/update/:id", isAuthenticated, updateDataset);
 router.delete("/dataset/delete/:id", isAuthenticated, deleteDataset);
