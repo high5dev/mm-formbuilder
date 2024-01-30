@@ -590,6 +590,7 @@ export const renderClient = (row) => {
         color={color || 'primary'}
         className="me-1"
         content={row?.fullName || 'No Name'}
+        size={row?.size}
         initials
       />
     );

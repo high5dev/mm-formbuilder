@@ -1,5 +1,6 @@
 // ** Routes Imports
 import DashboardRoutes from './Dashboards';
+import AffiliateRoutes from './Affiliate';
 //import ContactRoutes from './Contacts';
 //import AppRoutes from './Apps';
 // import TaskRoutes from './Task';
@@ -38,6 +39,7 @@ const DefaultRoute = '/dashboard/analytics';
 // ** Merge Routess
 const Routes = [
    ...DashboardRoutes,
+   ...AffiliateRoutes,
   // ...ContactRoutes,
   // ...AppRoutes,
   // ...TaskRoutes,
