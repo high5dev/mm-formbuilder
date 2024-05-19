@@ -1,5 +1,13 @@
 /* eslint-disable consistent-return */
 const { expressjwt } = require("express-jwt");
+const Pusher = require("pusher");
+const pusher = new Pusher({
+  appId: "1754043",
+  key: "16dc4f3fac72a980dc07",
+  secret: "e9693dda7fc7aa011c45",
+  cluster: "mt1",
+  useTLS: true
+});
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
@@ -191,18 +199,18 @@ exports.signUpOrg = asyncHandler(async (req, res) => {
           if (orgExists.length === 0) {
             organizations = user.organizations
               ? [
-                  ...user.organizations,
-                  {
-                    organizationId: orgData._id,
-                    userType: ifFirstOrgUser === null ? "admin" : "user",
-                  },
-                ]
+                ...user.organizations,
+                {
+                  organizationId: orgData._id,
+                  userType: ifFirstOrgUser === null ? "admin" : "user",
+                },
+              ]
               : [
-                  {
-                    organizationId: orgData._id,
-                    userType: ifFirstOrgUser === null ? "admin" : "user",
-                  },
-                ];
+                {
+                  organizationId: orgData._id,
+                  userType: ifFirstOrgUser === null ? "admin" : "user",
+                },
+              ];
             //await Organization.findOneAndUpdate({ _id: orgData._id }, { isVerified: true });
             await User.findOneAndUpdate({ _id: user._id }, { organizations: organizations });
           } else {
@@ -237,11 +245,11 @@ exports.signUpOrg = asyncHandler(async (req, res) => {
             organizations:
               organization && orgData
                 ? [
-                    {
-                      organizationId: orgData._id,
-                      userType: ifFirstOrgUser === null ? "admin" : "user",
-                    },
-                  ]
+                  {
+                    organizationId: orgData._id,
+                    userType: ifFirstOrgUser === null ? "admin" : "user",
+                  },
+                ]
                 : null,
             // role: adminRoleData !== undefined ? adminRoleData._id : null,
           },
@@ -426,11 +434,11 @@ exports.signUpContact = asyncHandler(async (req, res) => {
             organizations:
               organization && orgData
                 ? [
-                    {
-                      organizationId: orgData._id,
-                      userType: "user",
-                    },
-                  ]
+                  {
+                    organizationId: orgData._id,
+                    userType: "user",
+                  },
+                ]
                 : null,
             roles: [
               {
@@ -514,6 +522,10 @@ exports.getContactById = asyncHandler(async (req, res) => {
 });
 
 exports.login = asyncHandler(async (req, res) => {
+  pusher.trigger("my-channel", "my-event", {
+    title: 'Auth', body: 'hello'
+  })
+
   const { phoneOrEmail, password } = req.body;
   const { organization } = req.params;
   let phone = "";
@@ -541,6 +553,7 @@ exports.login = asyncHandler(async (req, res) => {
       });
     }
   }
+
 
   if (method === "phone") {
     if (organization) {
@@ -655,7 +668,7 @@ exports.login = asyncHandler(async (req, res) => {
               organizationId: o._id,
               name: o.name,
               path: o.path,
-              logo:o?.logoLink,
+              logo: o?.logoLink,
               userType: userData.organizations.find((x) => x.organizationId.equals(o._id))
                 ?.userType,
             });
@@ -745,7 +758,7 @@ exports.sendResetPassOTP = asyncHandler(async (req, res) => {
   console.log("====================================");
   /* eslint-enable */
 
-  if(method === "email"){
+  if (method === "email") {
     Authenticate.findOne({ email }).exec(async (err, user) => {
       if (err) {
         return res.status(500).json({
@@ -759,13 +772,13 @@ exports.sendResetPassOTP = asyncHandler(async (req, res) => {
       }
       // Generate Otp
       const otp = generateOTP();
-  
+
       // Save email and otp
       await ResetPass.create({
         phoneOrEmail,
         otp,
       });
-  
+
       // Send otp
       if (method === "phone") {
         phoneOtpSend({ phone, otp, countryCode });
@@ -777,7 +790,7 @@ exports.sendResetPassOTP = asyncHandler(async (req, res) => {
       });
     });
   }
-  else{
+  else {
     Authenticate.findOne({ phone }).exec(async (err, user) => {
       if (err) {
         return res.status(500).json({
@@ -791,13 +804,13 @@ exports.sendResetPassOTP = asyncHandler(async (req, res) => {
       }
       // Generate Otp
       const otp = generateOTP();
-  
+
       // Save email and otp
       await ResetPass.create({
         phoneOrEmail,
         otp,
       });
-  
+
       // Send otp
       if (method === "phone") {
         phoneOtpSend({ phone, otp, countryCode });
@@ -809,7 +822,7 @@ exports.sendResetPassOTP = asyncHandler(async (req, res) => {
       });
     });
   }
- 
+
 });
 
 // eslint-disable-next-line consistent-return
